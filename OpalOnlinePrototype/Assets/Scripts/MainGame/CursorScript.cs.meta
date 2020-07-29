@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 13caa380ec8c4534584ca37bd28a2367
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - orthoCam: {instanceID: 0}
+  - dummyPrefab: {fileID: 114194955192358670, guid: 65ecab6fc046b9047a27cad839688e88,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,89 @@
+63-45
+ ___ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ ___ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ ___ ___ ___ ___ ___ ___ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ ___ 
+ F__ F__ f__ f__ f__ f__ f__ f__ f__ f__ F__ F__ F__ F__ S__ C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 S__ S__ S__ S__ O__ C18 C18 C18 C18 C18 O__ S__ S__ S__ S__ S__ S__ S__ S__ W__ W__ W__ W__ W__ W__ W__ W__ S__ ___ 
+ F__ f__ G40 G40 G40 G40 G40 G40 G40 G40 f__ F__ F__ F__ S__ C18 C18 C18 O__ S__ S__ S__ C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 S__ S__ C18 C18 C18 C18 C18 C18 C18 C18 S__ S__ C18 C18 C18 C18 S__ S__ W__ W__ W__ W__ W__ W__ W__ S__ ___ 
+ F__ G40 G40 G40 G40 G40 g__ g__ g__ g__ g__ f__ F__ F__ S__ C18 C18 S__ S__ S__ O__ C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 S__ C18 C18 C18 C18 C18 S__ S__ O__ S__ C18 S__ C18 C18 C18 C18 S__ C18 C18 C18 C18 C18 S__ C__ C__ C__ C__ C__ W__ W__ S__ ___ 
+ F__ g__ g__ g__ g__ g__ g__ W00 W00 W00 G00 G00 f__ F__ S__ C18 C18 C18 C18 S__ S__ S__ S__ S__ C18 C18 C18 C18 C18 S__ S__ S__ S__ S__ C18 C18 S__ S__ O__ S__ S__ C18 S__ S__ C18 C18 C18 S__ C18 C18 C18 S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ ___ 
+ F__ g__ G39 F__ g__ g__ W00 W00 W00 W00 W00 G00 G00 F__ S__ C18 C18 C18 C18 C18 C18 C18 C18 C18 S__ S__ S__ S__ S__ S__ C18 C18 C18 S__ C18 C18 S__ C18 C18 C18 C18 C18 C18 C18 S__ C18 C18 S__ C18 S__ S__ S__ C18 C18 O__ S__ F__ F__ F__ W02 W02 F__ ___ 
+ F__ g__ G39 F__ F__ g__ W00 W00 W00 W00 W00 W00 G00 F__ S__ S__ S__ S__ S__ S__ S__ S__ S__ C18 S__ S__ S__ S__ S__ C18 C18 C18 S__ S__ C18 S__ S__ C18 C18 S__ S__ S__ S__ S__ S__ S__ C18 C18 C18 C18 C18 C18 C18 C18 C18 S__ F__ F__ F__ W02 W02 F__ ___ 
+ F__ g__ G39 F__ F__ g__ W00 W00 W00 W00 W00 W00 G00 F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ C18 C18 O__ S__ S__ S__ S__ C18 C18 C18 C18 C18 S__ C18 C18 C18 S__ O__ C18 C18 C18 C18 S__ S__ S__ S__ C18 S__ S__ C18 C18 C18 S__ F__ f__ f__ W02 W02 F__ ___ 
+ F__ g__ G39 f__ F__ g__ g__ W00 W00 W00 W00 B__ g__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ g__ C18 g__ G19 S__ S__ S__ C18 C18 C18 C18 S__ S__ C18 C18 S__ S__ S__ S__ C18 C18 C18 O__ S__ C18 C18 C18 C18 S__ S__ S__ S__ S__ F__ g__ g__ W02 W02 F__ ___ 
+ F__ g__ g__ G38 F__ B__ g__ g__ g__ g__ g__ F__ F__ F__ F__ f__ f__ f__ f__ f__ F__ F__ F__ B__ g__ G19 G19 F__ F__ S__ S__ C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 S__ S__ S__ C18 S__ C18 C18 C18 C18 O__ S__ F__ g__ g__ W02 W02 F__ ___ 
+ F__ g__ g__ G38 F__ F__ B__ G41 G41 G41 F__ F__ f__ f__ f__ G29 G29 G29 G29 G29 f__ F__ F__ F__ G19 G19 G19 F__ F__ f__ S__ C18 C18 C18 C18 C18 C18 C18 S__ S__ S__ S__ S__ C18 C18 C18 S__ S__ C18 S__ S__ C18 C18 C18 O__ S__ F__ g__ g__ W02 W02 F__ ___ 
+ F__ g__ g__ B__ F__ F__ F__ F__ F__ F__ F__ F__ G29 G29 G29 G29 G29 G29 G29 G29 G29 f__ f__ F__ F__ F__ F__ f__ f__ g__ g__ C18 C18 C18 C18 C18 C18 S__ S__ O__ O__ O__ S__ S__ C18 C18 C18 S__ C18 S__ C18 S__ S__ C18 S__ F__ F__ g__ W02 W02 W02 F__ ___ 
+ F__ g__ g__ F__ F__ f__ f__ f__ F__ F__ F__ F__ G29 g__ g__ g__ g__ g__ g__ g__ g__ g__ G28 f__ f__ f__ f__ G28 g__ g__ g__ g__ S__ C18 C18 C18 S__ S__ C18 C18 C18 C18 C18 S__ S__ C18 C18 C18 C18 S__ C18 S__ C18 C18 S__ F__ f__ g__ W02 W02 W02 F__ ___ 
+ F__ g__ g__ F__ f__ G36 G36 G36 f__ f__ f__ f__ F__ F__ g__ B__ g__ G30 G30 g__ g__ g__ G28 G28 G28 G28 G28 G28 g__ g__ g__ g__ g__ S__ S__ S__ S__ S__ C18 C18 C18 C18 C18 C18 S__ S__ S__ S__ S__ C18 C18 S__ C18 C18 S__ F__ G20 g__ W02 W02 g__ F__ F__ 
+ F__ G34 g__ f__ G37 g__ g__ g__ g__ G35 G35 G35 f__ f__ g__ F__ F__ F__ G30 G30 g__ g__ g__ G28 G28 G28 G28 g__ g__ g__ g__ g__ g__ C04 C04 C04 O__ S__ O__ C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 S__ S__ F__ G20 g__ W02 W02 g__ F__ F__ 
+ F__ G34 g__ g__ g__ B__ F__ F__ F__ g__ g__ G35 g__ g__ g__ F__ F__ F__ F__ G30 g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ C04 C04 C04 C04 C04 S__ S__ C18 S__ S__ S__ S__ S__ C18 S__ S__ C18 S__ S__ S__ C18 S__ F__ F__ G20 g__ W02 W02 g__ f__ F__ 
+ F__ G34 G34 g__ g__ B__ f__ f__ f__ F__ F__ F__ g__ g__ g__ f__ f__ f__ F__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ C05 S__ C04 C04 C04 C04 S__ C18 C18 S__ C18 C18 C18 C18 C18 C18 S__ S__ C__ C__ C__ W03 S__ F__ f__ G20 g__ W02 W02 g__ G21 F__ 
+ F__ F__ G34 G34 G34 G34 G34 G34 G34 f__ f__ f__ B__ g__ g__ g__ g__ g__ f__ g__ g__ G27 G27 G27 G27 g__ g__ g__ g__ g__ g__ g__ C04 C04 C04 C04 S__ S__ C18 C18 S__ C18 C18 S__ C18 C18 O__ S__ C__ C__ W03 W03 W03 S__ F__ G20 G20 g__ W02 W02 g__ G21 F__ 
+ F__ F__ F__ G34 G34 G34 G34 G34 G34 g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ G27 G27 F__ F__ G27 G27 g__ g__ g__ g__ g__ g__ g__ g__ C04 C04 S__ O__ C18 C18 S__ S__ C18 S__ S__ S__ S__ S__ C__ W03 W03 W03 W03 S__ F__ G20 G20 g__ W02 W02 g__ G21 F__ 
+ F__ F__ F__ F__ F__ F__ F__ F__ F__ g__ g__ G31 g__ g__ g__ g__ g__ g__ g__ g__ G27 F__ F__ F__ F__ G27 G27 g__ g__ g__ g__ C06 g__ g__ C04 C04 S__ O__ C18 C18 O__ S__ C18 C18 C18 C18 C18 C18 W03 W03 W03 W03 W03 S__ F__ G20 g__ g__ W02 W02 G21 G21 F__ 
+ F__ F__ F__ f__ f__ f__ f__ f__ f__ F__ G31 G31 G31 F__ g__ g__ g__ g__ g__ g__ F__ F__ F__ F__ F__ F__ G27 g__ g__ g__ C07 S__ C08 g__ C04 C04 S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ F__ g__ g__ g__ W02 W02 G21 G21 F__ 
+ F__ F__ f__ B__ G33 G33 G33 g__ g__ f__ F__ F__ F__ f__ g__ g__ g__ g__ g__ g__ f__ f__ f__ f__ f__ f__ B__ g__ g__ g__ g__ O__ g__ g__ g__ C04 C04 C04 C04 C04 O__ C04 C04 C04 C04 F__ F__ F__ F__ F__ F__ F__ F__ F__ f__ g__ g__ g__ W02 W02 G21 G21 F__ 
+ F__ f__ G33 G33 G33 g__ G33 G33 g__ B__ f__ f__ f__ B__ g__ g__ g__ g__ g__ g__ B__ G26 G26 G26 G26 G26 g__ g__ g__ g__ g__ g__ g__ C09 g__ g__ C04 C04 C04 C04 C04 C04 C04 C04 C04 F__ F__ F__ F__ F__ F__ F__ F__ F__ g__ g__ g__ g__ W02 W02 G21 G21 F__ 
+ F__ B__ G33 G33 G33 g__ F__ F__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ G26 G26 G26 G26 g__ g__ g__ g__ g__ g__ C10 S__ C12 g__ g__ g__ C04 C04 g__ O__ S__ C04 g__ F__ F__ F__ f__ F__ F__ F__ f__ f__ g__ g__ g__ g__ W02 W02 G21 G21 F__ 
+ F__ G33 G33 G33 g__ g__ F__ f__ g__ g__ g__ g__ g__ G32 g__ g__ g__ g__ g__ g__ g__ g__ g__ G26 G26 G26 g__ g__ g__ g__ g__ g__ g__ C11 g__ g__ g__ g__ C04 g__ g__ g__ C17 g__ F__ F__ F__ f__ G22 F__ F__ f__ G22 G22 g__ g__ g__ g__ W02 W02 G21 G21 F__ 
+ F__ G33 G33 g__ g__ B__ f__ g__ g__ g__ g__ G32 G32 G32 F__ F__ F__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ C14 g__ g__ g__ g__ F__ F__ F__ F__ f__ G22 G22 f__ F__ G22 G22 B__ F__ g__ g__ g__ W02 W02 G21 G21 F__ 
+ F__ G33 G33 G33 g__ g__ g__ g__ g__ g__ g__ F__ F__ F__ f__ f__ f__ g__ g__ g__ g__ F__ F__ F__ F__ F__ F__ F__ g__ g__ g__ g__ g__ g__ g__ g__ C13 S__ C15 g__ F__ F__ f__ f__ f__ f__ B__ G22 G22 G22 f__ G22 G22 G22 F__ F__ F__ F__ W02 W02 F__ F__ F__ 
+ F__ F__ B__ G33 g__ g__ g__ g__ F__ F__ F__ f__ f__ f__ G24 G24 G24 g__ g__ g__ g__ F__ F__ f__ f__ f__ f__ F__ F__ F__ g__ g__ g__ g__ g__ g__ g__ C16 g__ g__ f__ f__ g__ g__ g__ G22 G22 G22 G22 G22 G22 G22 g__ G22 F__ f__ f__ F__ W02 W02 F__ f__ f__ 
+ F__ F__ F__ G33 g__ g__ F__ F__ f__ f__ f__ G24 G24 G24 G24 g__ g__ g__ g__ g__ g__ f__ f__ G25 G25 G25 G25 f__ f__ F__ F__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ G22 G22 g__ g__ g__ G22 F__ ___ ___ f__ F__ F__ f__ ___ ___ 
+ F__ f__ f__ F__ F__ F__ f__ f__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ G25 G25 G25 G25 G25 G25 G25 G25 f__ f__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ G22 F__ g__ g__ g__ G22 F__ ___ ___ ___ f__ f__ ___ ___ ___ 
+ F__ G23 G23 f__ f__ f__ g__ g__ g__ g__ g__ F__ F__ F__ F__ F__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ G25 G25 G25 g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ F__ F__ g__ g__ G22 G22 F__ ___ ___ ___ ___ ___ ___ ___ ___ 
+ F__ G23 G23 G23 G23 G23 g__ g__ g__ F__ F__ F__ f__ f__ f__ f__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ W01 W01 W01 W01 g__ g__ g__ F__ f__ g__ g__ G22 G22 F__ ___ ___ ___ ___ ___ ___ ___ ___ 
+ F__ G23 B__ g__ g__ g__ g__ g__ g__ f__ f__ f__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ W01 W01 W01 W01 W01 W01 W01 W01 g__ g__ f__ B__ g__ g__ G22 G22 F__ ___ ___ ___ ___ ___ ___ ___ ___ 
+ F__ G23 G23 G23 G23 g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 g__ g__ g__ g__ G22 G22 G22 F__ ___ ___ ___ ___ ___ ___ ___ ___ 
+ f__ F__ B__ G23 G23 g__ g__ g__ g__ g__ W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 g__ g__ G22 G22 F__ f__ ___ ___ ___ ___ ___ ___ ___ ___ 
+ ___ F__ G23 G23 G23 G23 G23 g__ W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 g__ g__ F__ f__ ___ ___ ___ ___ ___ ___ ___ ___ ___ 
+ ___ f__ F__ G23 G23 G23 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 g__ F__ f__ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ 
+ ___ ___ F__ B__ G23 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 F__ f__ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ 
+ ___ ___ f__ F__ G23 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 F__ F__ f__ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ 
+ ___ ___ ___ F__ G23 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 F__ F__ f__ f__ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ 
+ ___ ___ ___ f__ F__ W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 F__ F__ f__ f__ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ 
+ ___ ___ ___ ___ F__ W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 F__ F__ F__ f__ f__ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ 
+ ___ ___ ___ ___ f__ F__ W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 F__ F__ F__ f__ f__ f__ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ 
+ ___ ___ ___ ___ ___ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ f__ f__ f__ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ 
+ ___ ___ ___ ___ ___ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ 
+endmap
+0 Ambush-100
+1 Ambush-100
+2 Ambush-100
+3 Ambush-100
+4 Ambush-100
+5 Ambush-100
+6 Ambush-100
+7 Ambush-100
+8 Ambush-100
+9 Ambush-100
+10 Ambush-100
+11 Ambush-100
+12 Ambush-100
+13 Ambush-100
+14 Ambush-100
+15 Ambush-100
+16 Ambush-100
+17 Ambush-100
+18 Ambush-100
+19 Ambush-100
+20 Ambush-100
+21 Ambush-100
+22 Ambush-100
+23 Ambush-100
+24 Ambush-100
+25 Ambush-100
+26 Ambush-100
+27 Ambush-100
+28 Ambush-100
+29 Ambush-100
+30 Ambush-100
+31 Ambush-100
+32 Ambush-100
+33 Ambush-100
+34 Ambush-100
+35 Ambush-100
+36 Ambush-100
+37 Ambush-100
+38 Ambush-100
+39 Ambush-100
+40 Ambush-100
+41 Ambush-100

@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 69ac182173bf9e34d86383acfa8be670
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - MainCam: {instanceID: 0}
+  - Orthographic: {instanceID: 0}
+  - tilePrefab: {fileID: 114075612178831704, guid: 7a9b3dd9ab8e0124a8bf3e15a1e8164b,
+      type: 2}
+  - opalPrefab: {instanceID: 0}
+  - cursorPrefab: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

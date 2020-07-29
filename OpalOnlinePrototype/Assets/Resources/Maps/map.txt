@@ -1,0 +1,89 @@
+63-45
+ ___ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ ___ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ ___ ___ ___ ___ ___ ___ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ ___ 
+ F__ F__ f__ f__ f__ f__ f__ f__ f__ f__ F__ F__ F__ F__ S__ C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 S__ S__ S__ S__ O__ C18 C18 C18 C18 C18 O__ S__ S__ S__ S__ S__ S__ S__ S__ W__ W__ W__ W__ W__ W__ W__ W__ S__ ___ 
+ F__ f__ G40 G40 G40 G40 G40 G40 G40 G40 f__ F__ F__ F__ S__ C18 C18 C18 O__ S__ S__ S__ C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 S__ S__ C18 C18 C18 C18 C18 C18 C18 C18 S__ S__ C18 C18 C18 C18 S__ S__ W__ W__ W__ W__ W__ W__ W__ S__ ___ 
+ F__ G40 G40 G40 G40 G40 g__ g__ g__ g__ g__ f__ F__ F__ S__ C18 C18 S__ S__ S__ O__ C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 S__ C18 C18 C18 C18 C18 S__ S__ O__ S__ C18 S__ C18 C18 C18 C18 S__ C18 C18 C18 C18 C18 S__ C__ C__ C__ C__ C__ W__ W__ S__ ___ 
+ F__ g__ g__ g__ g__ g__ g__ W00 W00 W00 G00 G00 f__ F__ S__ C18 C18 C18 C18 S__ S__ S__ S__ S__ C18 C18 C18 C18 C18 S__ S__ S__ S__ S__ C18 C18 S__ S__ O__ S__ S__ C18 S__ S__ C18 C18 C18 S__ C18 C18 C18 S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ ___ 
+ F__ g__ G39 F__ g__ g__ W00 W00 W00 W00 W00 G00 G00 F__ S__ C18 C18 C18 C18 C18 C18 C18 C18 C18 S__ S__ S__ S__ S__ S__ C18 C18 C18 S__ C18 C18 S__ C18 C18 C18 C18 C18 C18 C18 S__ C18 C18 S__ C18 S__ S__ S__ C18 C18 O__ S__ F__ F__ F__ W02 W02 F__ ___ 
+ F__ g__ G39 F__ F__ g__ W00 W00 W00 W00 W00 W00 G00 F__ S__ S__ S__ S__ S__ S__ S__ S__ S__ C18 S__ S__ S__ S__ S__ C18 C18 C18 S__ S__ C18 S__ S__ C18 C18 S__ S__ S__ S__ S__ S__ S__ C18 C18 C18 C18 C18 C18 C18 C18 C18 S__ F__ F__ F__ W02 W02 F__ ___ 
+ F__ g__ G39 F__ F__ g__ W00 W00 W00 W00 W00 W00 G00 F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ C18 C18 O__ S__ S__ S__ S__ C18 C18 C18 C18 C18 S__ C18 C18 C18 S__ O__ C18 C18 C18 C18 S__ S__ S__ S__ C18 S__ S__ C18 C18 C18 S__ F__ f__ f__ W02 W02 F__ ___ 
+ F__ g__ G39 f__ F__ g__ g__ W00 W00 W00 W00 B__ g__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ g__ C18 g__ G19 S__ S__ S__ C18 C18 C18 C18 S__ S__ C18 C18 S__ S__ S__ S__ C18 C18 C18 O__ S__ C18 C18 C18 C18 S__ S__ S__ S__ S__ F__ g__ g__ W02 W02 F__ ___ 
+ F__ g__ g__ G38 F__ B__ g__ g__ g__ g__ g__ F__ F__ F__ F__ f__ f__ f__ f__ f__ F__ F__ F__ B__ g__ G19 G19 F__ F__ S__ S__ C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 S__ S__ S__ C18 S__ C18 C18 C18 C18 O__ S__ F__ g__ g__ W02 W02 F__ ___ 
+ F__ g__ g__ G38 F__ F__ B__ G41 G41 G41 F__ F__ f__ f__ f__ G29 G29 G29 G29 G29 f__ F__ F__ F__ G19 G19 G19 F__ F__ f__ S__ C18 C18 C18 C18 C18 C18 C18 S__ S__ S__ S__ S__ C18 C18 C18 S__ S__ C18 S__ S__ C18 C18 C18 O__ S__ F__ g__ g__ W02 W02 F__ ___ 
+ F__ g__ g__ B__ F__ F__ F__ F__ F__ F__ F__ F__ G29 G29 G29 G29 G29 G29 G29 G29 G29 f__ f__ F__ F__ F__ F__ f__ f__ g__ g__ C18 C18 C18 C18 C18 C18 S__ S__ O__ O__ O__ S__ S__ C18 C18 C18 S__ C18 S__ C18 S__ S__ C18 S__ F__ F__ g__ W02 W02 W02 F__ ___ 
+ F__ g__ g__ F__ F__ f__ f__ f__ F__ F__ F__ F__ G29 g__ g__ g__ g__ g__ g__ g__ g__ g__ G28 f__ f__ f__ f__ G28 g__ g__ g__ g__ S__ C18 C18 C18 S__ S__ C18 C18 C18 C18 C18 S__ S__ C18 C18 C18 C18 S__ C18 S__ C18 C18 S__ F__ f__ g__ W02 W02 W02 F__ ___ 
+ F__ g__ g__ F__ f__ G36 G36 G36 f__ f__ f__ f__ F__ F__ g__ B__ g__ G30 G30 g__ g__ g__ G28 G28 G28 G28 G28 G28 g__ g__ g__ g__ g__ S__ S__ S__ S__ S__ C18 C18 C18 C18 C18 C18 S__ S__ S__ S__ S__ C18 C18 S__ C18 C18 S__ F__ G20 g__ W02 W02 g__ F__ F__ 
+ F__ G34 g__ f__ G37 g__ g__ g__ g__ G35 G35 G35 f__ f__ g__ F__ F__ F__ G30 G30 g__ g__ g__ G28 G28 G28 G28 g__ g__ g__ g__ g__ g__ C04 C04 C04 O__ S__ O__ C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 C18 S__ S__ F__ G20 g__ W02 W02 g__ F__ F__ 
+ F__ G34 g__ g__ g__ B__ F__ F__ F__ g__ g__ G35 g__ g__ g__ F__ F__ F__ F__ G30 g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ C04 C04 C04 C04 C04 S__ S__ C18 S__ S__ S__ S__ S__ C18 S__ S__ C18 S__ S__ S__ C18 S__ F__ F__ G20 g__ W02 W02 g__ f__ F__ 
+ F__ G34 G34 g__ g__ B__ f__ f__ f__ F__ F__ F__ g__ g__ g__ f__ f__ f__ F__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ C05 S__ C04 C04 C04 C04 S__ C18 C18 S__ C18 C18 C18 C18 C18 C18 S__ S__ C__ C__ C__ W03 S__ F__ f__ G20 g__ W02 W02 g__ G21 F__ 
+ F__ F__ G34 G34 G34 G34 G34 G34 G34 f__ f__ f__ B__ g__ g__ g__ g__ g__ f__ g__ g__ G27 G27 G27 G27 g__ g__ g__ g__ g__ g__ g__ C04 C04 C04 C04 S__ S__ C18 C18 S__ C18 C18 S__ C18 C18 O__ S__ C__ C__ W03 W03 W03 S__ F__ G20 G20 g__ W02 W02 g__ G21 F__ 
+ F__ F__ F__ G34 G34 G34 G34 G34 G34 g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ G27 G27 F__ F__ G27 G27 g__ g__ g__ g__ g__ g__ g__ g__ C04 C04 S__ O__ C18 C18 S__ S__ C18 S__ S__ S__ S__ S__ C__ W03 W03 W03 W03 S__ F__ G20 G20 g__ W02 W02 g__ G21 F__ 
+ F__ F__ F__ F__ F__ F__ F__ F__ F__ g__ g__ G31 g__ g__ g__ g__ g__ g__ g__ g__ G27 F__ F__ F__ F__ G27 G27 g__ g__ g__ g__ C06 g__ g__ C04 C04 S__ O__ C18 C18 O__ S__ C18 C18 C18 C18 C18 C18 W03 W03 W03 W03 W03 S__ F__ G20 g__ g__ W02 W02 G21 G21 F__ 
+ F__ F__ F__ f__ f__ f__ f__ f__ f__ F__ G31 G31 G31 F__ g__ g__ g__ g__ g__ g__ F__ F__ F__ F__ F__ F__ G27 g__ g__ g__ C07 S__ C08 g__ C04 C04 S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ S__ F__ g__ g__ g__ W02 W02 G21 G21 F__ 
+ F__ F__ f__ B__ G33 G33 G33 g__ g__ f__ F__ F__ F__ f__ g__ g__ g__ g__ g__ g__ f__ f__ f__ f__ f__ f__ B__ g__ g__ g__ g__ O__ g__ g__ g__ C04 C04 C04 C04 C04 O__ C04 C04 C04 C04 F__ F__ F__ F__ F__ F__ F__ F__ F__ f__ g__ g__ g__ W02 W02 G21 G21 F__ 
+ F__ f__ G33 G33 G33 g__ G33 G33 g__ B__ f__ f__ f__ B__ g__ g__ g__ g__ g__ g__ B__ G26 G26 G26 G26 G26 g__ g__ g__ g__ g__ g__ g__ C09 g__ g__ C04 C04 C04 C04 C04 C04 C04 C04 C04 F__ F__ F__ F__ F__ F__ F__ F__ F__ g__ g__ g__ g__ W02 W02 G21 G21 F__ 
+ F__ B__ G33 G33 G33 g__ F__ F__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ G26 G26 G26 G26 g__ g__ g__ g__ g__ g__ C10 S__ C12 g__ g__ g__ C04 C04 g__ O__ S__ C04 g__ F__ F__ F__ f__ F__ F__ F__ f__ f__ g__ g__ g__ g__ W02 W02 G21 G21 F__ 
+ F__ G33 G33 G33 g__ g__ F__ f__ g__ g__ g__ g__ g__ G32 g__ g__ g__ g__ g__ g__ g__ g__ g__ G26 G26 G26 g__ g__ g__ g__ g__ g__ g__ C11 g__ g__ g__ g__ C04 g__ g__ g__ C17 g__ F__ F__ F__ f__ G22 F__ F__ f__ G22 G22 g__ g__ g__ g__ W02 W02 G21 G21 F__ 
+ F__ G33 G33 g__ g__ B__ f__ g__ g__ g__ g__ G32 G32 G32 F__ F__ F__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ C14 g__ g__ g__ g__ F__ F__ F__ F__ f__ G22 G22 f__ F__ G22 G22 B__ F__ g__ g__ g__ W02 W02 G21 G21 F__ 
+ F__ G33 G33 G33 g__ g__ g__ g__ g__ g__ g__ F__ F__ F__ f__ f__ f__ g__ g__ g__ g__ F__ F__ F__ F__ F__ F__ F__ g__ g__ g__ g__ g__ g__ g__ g__ C13 S__ C15 g__ F__ F__ f__ f__ f__ f__ B__ G22 G22 G22 f__ G22 G22 G22 F__ F__ F__ F__ W02 W02 F__ F__ F__ 
+ F__ F__ B__ G33 g__ g__ g__ g__ F__ F__ F__ f__ f__ f__ G24 G24 G24 g__ g__ g__ g__ F__ F__ f__ f__ f__ f__ F__ F__ F__ g__ g__ g__ g__ g__ g__ g__ C16 g__ g__ f__ f__ g__ g__ g__ G22 G22 G22 G22 G22 G22 G22 g__ G22 F__ f__ f__ F__ W02 W02 F__ f__ f__ 
+ F__ F__ F__ G33 g__ g__ F__ F__ f__ f__ f__ G24 G24 G24 G24 g__ g__ g__ g__ g__ g__ f__ f__ G25 G25 G25 G25 f__ f__ F__ F__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ G22 G22 g__ g__ g__ G22 F__ ___ ___ f__ F__ F__ f__ ___ ___ 
+ F__ f__ f__ F__ F__ F__ f__ f__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ G25 G25 G25 G25 G25 G25 G25 G25 f__ f__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ G22 F__ g__ g__ g__ G22 F__ ___ ___ ___ f__ f__ ___ ___ ___ 
+ F__ G23 G23 f__ f__ f__ g__ g__ g__ g__ g__ F__ F__ F__ F__ F__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ G25 G25 G25 g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ F__ F__ g__ g__ G22 G22 F__ ___ ___ ___ ___ ___ ___ ___ ___ 
+ F__ G23 G23 G23 G23 G23 g__ g__ g__ F__ F__ F__ f__ f__ f__ f__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ W01 W01 W01 W01 g__ g__ g__ F__ f__ g__ g__ G22 G22 F__ ___ ___ ___ ___ ___ ___ ___ ___ 
+ F__ G23 B__ g__ g__ g__ g__ g__ g__ f__ f__ f__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ W01 W01 W01 W01 W01 W01 W01 W01 g__ g__ f__ B__ g__ g__ G22 G22 F__ ___ ___ ___ ___ ___ ___ ___ ___ 
+ F__ G23 G23 G23 G23 g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ g__ W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 g__ g__ g__ g__ G22 G22 G22 F__ ___ ___ ___ ___ ___ ___ ___ ___ 
+ f__ F__ B__ G23 G23 g__ g__ g__ g__ g__ W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 g__ g__ G22 G22 F__ f__ ___ ___ ___ ___ ___ ___ ___ ___ 
+ ___ F__ G23 G23 G23 G23 G23 g__ W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 g__ g__ F__ f__ ___ ___ ___ ___ ___ ___ ___ ___ ___ 
+ ___ f__ F__ G23 G23 G23 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 g__ F__ f__ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ 
+ ___ ___ F__ B__ G23 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 F__ f__ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ 
+ ___ ___ f__ F__ G23 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 F__ F__ f__ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ 
+ ___ ___ ___ F__ G23 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 F__ F__ f__ f__ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ 
+ ___ ___ ___ f__ F__ W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 F__ F__ f__ f__ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ 
+ ___ ___ ___ ___ F__ W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 F__ F__ F__ f__ f__ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ 
+ ___ ___ ___ ___ f__ F__ W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 W01 F__ F__ F__ f__ f__ f__ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ 
+ ___ ___ ___ ___ ___ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ F__ f__ f__ f__ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ 
+ ___ ___ ___ ___ ___ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ f__ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ 
+endmap
+0 Bubbacle-30 Mechalodon-30 Succuum-30 Slungus-5 Finbow-5
+1 Bubbacle-25 Mechalodon-25 Succuum-25 Charayde-24 Finbow-1
+2 Mechalodon-30 Charayde-25 Drizziphyl-20 Froxic-20 Finbow-5
+3 Bubbacle-25 Nachteous-25 Glorm-25 Wingnition-15 Amalgum-5 Spillarc-5
+4 Oremordilla-20 Terradactyl-20 Strikel-15 FumePlume-15 Hoviron-15 Pebblepal-5 Experiment42-5 Duplimorph-5
+5 Oremordilla-20 Terradactyl-20 Strikel-15 FumePlume-15 Hoviron-15 Pebblepal-5 Experiment42-5 Duplimorph-5
+6 Oremordilla-20 Terradactyl-20 Strikel-15 FumePlume-15 Hoviron-15 Pebblepal-5 Experiment42-5 Duplimorph-5
+7 Oremordilla-20 Terradactyl-20 Strikel-15 FumePlume-15 Hoviron-15 Pebblepal-5 Experiment42-5 Duplimorph-5
+8 Oremordilla-20 Terradactyl-20 Strikel-15 FumePlume-15 Hoviron-15 Pebblepal-5 Experiment42-5 Duplimorph-5
+9 Oremordilla-20 Terradactyl-20 Strikel-15 FumePlume-15 Hoviron-15 Pebblepal-5 Experiment42-5 Duplimorph-5
+10 Oremordilla-20 Terradactyl-20 Strikel-15 FumePlume-15 Hoviron-15 Pebblepal-5 Experiment42-5 Duplimorph-5
+11 Oremordilla-20 Terradactyl-20 Strikel-15 FumePlume-15 Hoviron-15 Pebblepal-5 Experiment42-5 Duplimorph-5
+12 Oremordilla-20 Terradactyl-20 Strikel-15 FumePlume-15 Hoviron-15 Pebblepal-5 Experiment42-5 Duplimorph-5
+13 Oremordilla-20 Terradactyl-20 Strikel-15 FumePlume-15 Hoviron-15 Pebblepal-5 Experiment42-5 Duplimorph-5
+14 Oremordilla-20 Terradactyl-20 Strikel-15 FumePlume-15 Hoviron-15 Pebblepal-5 Experiment42-5 Duplimorph-5
+15 Oremordilla-20 Terradactyl-20 Strikel-15 FumePlume-15 Hoviron-15 Pebblepal-5 Experiment42-5 Duplimorph-5
+16 Oremordilla-20 Terradactyl-20 Strikel-15 FumePlume-15 Hoviron-15 Pebblepal-5 Experiment42-5 Duplimorph-5
+17 Oremordilla-20 Terradactyl-20 Strikel-15 FumePlume-15 Hoviron-15 Pebblepal-5 Experiment42-5 Duplimorph-5
+18 Wobblestone-20 Thermor-15 Glummer-15 Glorm-15 Crystallite-15 Spiritch-5 Prismin-5 Jetjinn-5 Chasmcrawler-4 Diamite-1
+19 Ambush-25 Glummer-25 Luminute-25 Sorceraura-10 Teslamp-5 Hopscure-5 Slungus-5
+20 Verminfection-25 Sentree-20 Butterflight-20 Cottonmaw-10 Drizziphyl-10 Fluttorch-10 Froxic-5
+21 Verminfection-25 Sentree-20 Butterflight-20 Cottonmaw-10 Drizziphyl-10 Fluttorch-10 Froxic-5
+22 Verminfection-20 Sentree-15 Butterflight-15 Overgroink-20 Cottonmaw-10 Fluttorch-10 Aughtment-5 Protectric-5
+23 Sentree-20 Butterflight-20 Cactoid-15 Overgroink-15 Zheep-15 Inseedious-10 Froxic-5
+24 Sentree-20 Butterflight-20 Cactoid-15 Overgroink-15 Zheep-15 Inseedious-10 Froxic-5
+25 Sentree-20 Butterflight-20 Cactoid-15 Overgroink-15 Zheep-15 Inseedious-10 Froxic-5
+26 Sentree-25 Butterflight-25 Meadowebb-15 Chardinal-10 Heatriarch-10 Zheep-10 Hearthhog-5
+27 Sentree-25 Butterflight-25 Meadowebb-15 Chardinal-10 Heatriarch-10 Zheep-10 Hearthhog-5
+28 Sentree-25 Butterflight-25 Meadowebb-15 Chardinal-10 Heatriarch-10 Zheep-10 Hearthhog-5
+29 Sentree-25 Butterflight-25 Meadowebb-15 Chardinal-10 Heatriarch-10 Zheep-10 Hearthhog-5
+30 Sentree-25 Butterflight-25 Meadowebb-15 Chardinal-10 Heatriarch-10 Zheep-10 Hearthhog-5
+31 Sentree-25 Butterflight-25 Meadowebb-15 Chardinal-10 Heatriarch-10 Zheep-10 Hearthhog-5
+32 Sentree-25 Butterflight-25 Meadowebb-15 Chardinal-10 Heatriarch-10 Zheep-10 Hearthhog-5
+33 Zheep-20 Butterflight-20 Cactoid-20 Betary-15 Sentree-15 Beamrider-5 Shocket-5
+34 Sentree-20 Butterflight-20 Chardinal-15 Excremite-15 Zheep-15 Luminute-10 Ambush-5
+35 Sentree-20 Butterflight-20 Chardinal-15 Excremite-15 Zheep-15 Luminute-10 Ambush-5
+36 Sentree-20 Butterflight-20 Chardinal-15 Excremite-15 Zheep-15 Luminute-10 Ambush-5
+37 Sentree-20 Butterflight-20 Chardinal-15 Excremite-15 Zheep-15 Luminute-10 Ambush-5
+38 Sentree-20 Butterflight-20 Chardinal-15 Excremite-15 Zheep-15 Luminute-10 Ambush-5
+39 Sentree-20 Butterflight-20 Chardinal-15 Excremite-15 Zheep-15 Luminute-10 Ambush-5
+40 Sentree-20 Butterflight-20 Chardinal-15 Excremite-15 Zheep-15 Luminute-10 Ambush-5
+41 Sentree-20 Butterflight-20 Chardinal-15 Excremite-15 Zheep-15 Luminute-10 Ambush-5
