@@ -30,8 +30,8 @@ public class Reflectron : OpalScript
         Attacks[1] = new Attack("TODO", 0, 0, 0, "TODO");
         Attacks[2] = new Attack("TODO", 0, 0, 0, "TODO");
         Attacks[3] = new Attack("TODO", 0, 0, 0, "TODO");
-        type1 = "TODO";
-        type2 = "TODO";
+        type1 = "Swarm";
+        type2 = "Metal";
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
