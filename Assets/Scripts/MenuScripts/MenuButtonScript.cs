@@ -68,6 +68,10 @@ public class MenuButtonScript : MonoBehaviour {
         {
             main.nextPage(-1);
         }
+        else if (purpose == "teams")
+        {
+            mainCam.transform.position = target;
+        }
         //rend.material = pressed;
         if (pressedS != null)
         {

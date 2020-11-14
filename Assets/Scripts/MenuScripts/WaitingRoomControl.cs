@@ -83,10 +83,11 @@ public class WaitingRoomControl : MonoBehaviourPunCallbacks, IPunObservable
         chatTextHistory.text = chat;
     }
 
-    public void startMatch()
+    public void startMatch() //needs to detect number of players
     {
         if (PhotonNetwork.CurrentRoom.PlayerCount >= 2)
         {
+            glob.setNumPlayers(PhotonNetwork.CurrentRoom.PlayerCount);
             PhotonNetwork.CurrentRoom.IsOpen = false;
             PhotonNetwork.LoadLevel("MainGame");
         }

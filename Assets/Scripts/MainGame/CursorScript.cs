@@ -922,6 +922,26 @@ public class CursorScript : MonoBehaviour {
         }
     }
 
+    public void doAttack(int x, int y, int at, OpalScript updatedPlayer)
+    {
+        updatedPlayer.prepAttack(at);
+        Projectile tempProj = Instantiate(currentProj);
+        tempProj.setUp(updatedPlayer.getAttacks()[at].getShape(), updatedPlayer.getMainType());
+        updatedPlayer.adjustProjectile(tempProj, at);
+        if (boardScript.tileGrid[x, y].currentPlayer != null)
+        {
+            tempProj.fire(updatedPlayer, boardScript.tileGrid[x, y].currentPlayer, at);
+        }
+        else
+        {
+            tempProj.fire(updatedPlayer, boardScript.tileGrid[x, y], at);
+        }
+        if (boardScript.tileGrid[x, y].type == "Boulder" && updatedPlayer.getAttacks()[at].getBaseDamage() > 0)
+        {
+            boardScript.setTile(x, y, "Grass", true);
+        }
+    }
+
     public void pressEndTurn()
     {
         selectedPlayer.setMyTurn(false);
@@ -1086,6 +1106,29 @@ public class CursorScript : MonoBehaviour {
             }
             else
             {
+            }
+        }
+        else if(targetShape == 8)
+        {
+            if (tempTarget.transform.position.x > selectedPlayer.getPos().x && tempTarget.transform.position.z > selectedPlayer.getPos().z) //top right
+            {
+                targetShape = 80; 
+                targetRange = 10;
+            }
+            else if (tempTarget.transform.position.x < selectedPlayer.getPos().x && tempTarget.transform.position.z > selectedPlayer.getPos().z) //top left
+            {
+                targetShape = 82;
+                targetRange = 10;
+            }
+            else if (tempTarget.transform.position.x > selectedPlayer.getPos().x && tempTarget.transform.position.z < selectedPlayer.getPos().z) //bottom right
+            {
+                targetShape = 83;
+                targetRange = 10;
+            }
+            else if (tempTarget.transform.position.x < selectedPlayer.getPos().x && tempTarget.transform.position.z < selectedPlayer.getPos().z) //bottom left
+            {
+                targetShape = 81;
+                targetRange = 10;
             }
         }
         tempTarget.Spawn(targetRange, targetShape, targets);

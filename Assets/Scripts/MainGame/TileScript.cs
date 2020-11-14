@@ -530,4 +530,26 @@ public class TileScript : MonoBehaviour {
     {
         return decayTurn;
     }
+
+    public OpalScript getCurrentOpal()
+    {
+        if(currentPlayer == null)
+        {
+            foreach(OpalScript o in boardScript.gameOpals)
+            {
+                if(o.getPos().x == getPos().x && o.getPos().z == getPos().z)
+                {
+                    standingOn(o);
+                }
+            }
+        }
+        else
+        {
+            if (currentPlayer.getPos().x != getPos().x || currentPlayer.getPos().z != getPos().z)
+            {
+                standingOn(null);
+            }
+        }
+        return currentPlayer;
+    }
 }

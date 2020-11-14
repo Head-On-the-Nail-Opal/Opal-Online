@@ -45,6 +45,7 @@ abstract public class OpalScript : MonoBehaviour {
     protected int armor = 0;
     public bool display = false;
     protected List<ParticleSystem> armors = new List<ParticleSystem>();
+    private int matchID;
 
 
     public bool shrouded = false;
@@ -157,7 +158,7 @@ abstract public class OpalScript : MonoBehaviour {
         }
         if (player != null)
         {
-            currentTile = boardScript.tileGrid[(int)(getPos().x), (int)(getPos().z)];
+            //currentTile = boardScript.tileGrid[(int)(getPos().x), (int)(getPos().z)];
             if (currentTile != lastTile)
             {
                 //currentTile.standingOn(this);
@@ -317,6 +318,16 @@ abstract public class OpalScript : MonoBehaviour {
                 doTempBuff(int.Parse(inceptionParsed[0]), int.Parse(inceptionParsed[1]), int.Parse(inceptionParsed[2]));
                 i++;
             }
+    }
+
+    public void setID(int id)
+    {
+        matchID = id;
+    }
+
+    public int getID()
+    {
+        return matchID;
     }
 
     public void showSpot(bool show)
@@ -638,6 +649,11 @@ abstract public class OpalScript : MonoBehaviour {
         return currentTile;
     }
 
+    public void setCurrentTile(TileScript ct)
+    {
+        currentTile = ct;
+    }
+
     public bool getBurning()
     {
         return burning;
@@ -885,6 +901,19 @@ abstract public class OpalScript : MonoBehaviour {
         
     }
 
+    private OpalScript barriarraySurrounding()
+    {
+        OpalScript target = null;
+        foreach(TileScript t in getSurroundingTiles(false))
+        {
+            if(t.getCurrentOpal() != null && t.getCurrentOpal().getMyName() == "Barriarray")
+            {
+                return t.getCurrentOpal();
+            }
+        }
+        return target;
+    }
+
     //mod specifies whether defense should modify the damage taken
     public virtual void takeDamage(int dam, bool mod, bool effect)
     {
@@ -896,6 +925,11 @@ abstract public class OpalScript : MonoBehaviour {
         {
             addArmor(-1);
             onDamage(-1);
+            return;
+        }
+        if (barriarraySurrounding() != null)
+        {
+            barriarraySurrounding().takeDamage(dam, mod, effect);
             return;
         }
         if(!mod)
@@ -929,7 +963,7 @@ abstract public class OpalScript : MonoBehaviour {
         onDamage(dam);
     }
 
-    public void spawnOplet(OpalScript oplet, TileScript target)
+    public OpalScript spawnOplet(OpalScript oplet, TileScript target)
     {
         int minionCount = 0;
         oplet.setOpal(null);
@@ -965,7 +999,9 @@ abstract public class OpalScript : MonoBehaviour {
             }
             target.standingOn(opalTwo);
             opalTwo.setSkipTurn(true);
+            return opalTwo;
         }
+        return null;
     }
 
     public void healStatusEffects()
@@ -1042,6 +1078,7 @@ abstract public class OpalScript : MonoBehaviour {
     {
         if (health != maxHealth || overheal)
         {
+            onHeal(heal);
             boardScript.callParticles("health", transform.position);
             if (health + heal >= maxHealth)
             {
@@ -1068,7 +1105,6 @@ abstract public class OpalScript : MonoBehaviour {
                 health += heal;
             }
         }
-
     }
 
 
@@ -1208,6 +1244,16 @@ abstract public class OpalScript : MonoBehaviour {
         return;
     }
 
+    public virtual void onHeal(int amount)
+    {
+        return;
+    }
+
+    public virtual void toggleMethod()
+    {
+        return;
+    }
+
     public virtual int checkCanAttack(TileScript target, int attackNum)
     {
         if (target != null && target.currentPlayer != null)
@@ -1244,6 +1290,38 @@ abstract public class OpalScript : MonoBehaviour {
             }
             //probably want to clean out this list every once in a while
         }
+    }
+
+    public List<TileScript> getSurroundingTiles(bool adj)
+    {
+        List<TileScript> output = new List<TileScript>();
+        for (int i = -1; i < 2; i++)
+        {
+            for (int j = -1; j < 2; j++)
+            {
+                if (getPos().x + i < 10 && getPos().x + i > -1 && getPos().z + j < 10 && getPos().z + j > -1 && !(i == 0 && j == 0) && (!adj || (Mathf.Abs(i) != Mathf.Abs(j))))
+                {
+                    output.Add(boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j]);
+                }
+            }
+        }
+        return output;
+    }
+
+    public List<TileScript> getDiagonalTiles()
+    {
+        List<TileScript> output = new List<TileScript>();
+        for (int i = -1; i < 2; i++)
+        {
+            for (int j = -1; j < 2; j++)
+            {
+                if (getPos().x + i < 10 && getPos().x + i > -1 && getPos().z + j < 10 && getPos().z + j > -1 && !(i == 0 && j == 0) && ((Mathf.Abs(i) == Mathf.Abs(j))))
+                {
+                    output.Add(boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j]);
+                }
+            }
+        }
+        return output;
     }
 
     public void setTempBuff(int targetStat, int turnLength, int targetNum)

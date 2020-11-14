@@ -10,6 +10,7 @@ public class MainMenuScript : MonoBehaviour {
     private List<OpalScript> greenTeam = new List<OpalScript>();
     private List<OpalScript> orangeTeam = new List<OpalScript>();
     private List<PlateScript> displayOpals = new List<PlateScript>();
+    private List<List<OpalScript>> teams = new List<List<OpalScript>>();
     private GlobalScript glob;
     public string currentTeam;
     public string blueController;

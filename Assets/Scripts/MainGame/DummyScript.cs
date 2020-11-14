@@ -27,6 +27,7 @@ public class DummyScript : MonoBehaviour {
      * 5 = target just growth tiles
      * 6 = laser beam, line which ignores line of sight
      * 7 = target all opals
+     * 8 = diagonal laser beam
      * */
     public void Spawn(int tD, int d, int attackState, bool original)
     {
@@ -43,6 +44,11 @@ public class DummyScript : MonoBehaviour {
         if (attackState == 3 && !onFlood() && original)
         {
             Spawn(tD, d, 1, true);
+            return;
+        }
+        if(attackState == 8)
+        {
+            findDiagonals();
             return;
         }
         if ((d < tD && this.spawned < (tD - d)))
@@ -205,6 +211,23 @@ public class DummyScript : MonoBehaviour {
                 if (boardScript.tileGrid[i, j].type == "Growth" && !boardScript.tileGrid[i, j].getFallen())
                 { 
                     boardScript.dummies[i,j].Spawn(range, 0, 1, false);
+                }
+            }
+        }
+        DestroyImmediate(this.gameObject);
+    }
+
+    private void findDiagonals()
+    {
+        for(int i = -1; i < 2; i++)
+        {
+            for(int j = -1; j < 2; j++)
+            {
+                if(Mathf.Abs(i) == Mathf.Abs(j) && (i != 0 && j != 0) && (pos.x + i > -1 && pos.x + i < 10 && pos.z + j > -1 && pos.z + j < 10))
+                {
+                    DummyScript tempDummy = Instantiate<DummyScript>(this);
+                    tempDummy.setCoordinates((int)(pos.x + i),(int)( pos.z + j));
+                    boardScript.dummies[(int)(pos.x + i),(int)( pos.z + j)] = tempDummy;
                 }
             }
         }

@@ -84,6 +84,7 @@ public class GroundScript : MonoBehaviour {
     private MultiplayerManager mm;
 
     private string bothTeams;
+    private int isBarriarray = -1;
 
 
     private void Awake()
@@ -109,6 +110,8 @@ public class GroundScript : MonoBehaviour {
         orangePlate = Resources.Load<GameObject>("Prefabs/OrangePlate");
 
         debuffEffect = Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/DebuffEffect");
+
+        growthTilePrefab = Resources.Load<TileScript>("Prefabs/Tiles/GrowthTile");
 
         tempB = glob.getBlueTeam();
         tempR = glob.getRedTeam();
@@ -607,7 +610,9 @@ public class GroundScript : MonoBehaviour {
             return;
         }
         TileScript replaced = tileGrid[x, y];
-        OpalScript standing = replaced.currentPlayer;
+        OpalScript standing = replaced.getCurrentOpal();
+        if(standing != null)
+            print(standing.getMyName());
         if(type == replaced.type)
         {
             return;
@@ -619,7 +624,7 @@ public class GroundScript : MonoBehaviour {
                 return;
             }
         }
-        
+
         /**if (replaced.type == "Miasma" && type != "Miasma" && replaced.currentPlayer != null)
         {
             //replaced.currentPlayer.doBuff(0, -2, 0, false);
@@ -629,11 +634,11 @@ public class GroundScript : MonoBehaviour {
             DestroyImmediate(replaced.currentEffect);
             replaced.currentPlayer.doBuff(-2, -2, 0, false);
         }*/
+        TileScript tempTile = new TileScript();
         if (type.Equals("Grass"))
         {
             replaced.standingOn(null);
             replaced.setCoordinates(-100, -100);
-            TileScript tempTile;
             if ((int)(x + y) % 2 == 0)
                 tempTile = Instantiate<TileScript>(tilePrefab);
             else
@@ -653,7 +658,7 @@ public class GroundScript : MonoBehaviour {
                 }
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
-                TileScript tempTile = Instantiate<TileScript>(fireTilePrefab);
+                tempTile = Instantiate<TileScript>(fireTilePrefab);
                 tempTile.transform.SetParent(GameBoard);
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
@@ -666,7 +671,7 @@ public class GroundScript : MonoBehaviour {
             {
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
-                TileScript tempTile = Instantiate<TileScript>(miasmaTilePrefab);
+                tempTile = Instantiate<TileScript>(miasmaTilePrefab);
                 tempTile.transform.SetParent(GameBoard);
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
@@ -679,7 +684,7 @@ public class GroundScript : MonoBehaviour {
             {
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
-                TileScript tempTile = Instantiate<TileScript>(growthTilePrefab);
+                tempTile = Instantiate<TileScript>(growthTilePrefab);
                 tempTile.transform.SetParent(GameBoard);
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
@@ -692,7 +697,7 @@ public class GroundScript : MonoBehaviour {
             {
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
-                TileScript tempTile = Instantiate<TileScript>(floodTilePrefab);
+                tempTile = Instantiate<TileScript>(floodTilePrefab);
                 tempTile.transform.SetParent(GameBoard);
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
@@ -701,7 +706,7 @@ public class GroundScript : MonoBehaviour {
             {
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
-                TileScript tempTile = Instantiate<TileScript>(tilePrefab);
+                tempTile = Instantiate<TileScript>(tilePrefab);
                 tempTile.transform.SetParent(GameBoard);
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
@@ -718,7 +723,7 @@ public class GroundScript : MonoBehaviour {
             {
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
-                TileScript tempTile = Instantiate<TileScript>(boulderTilePrefab);
+                tempTile = Instantiate<TileScript>(boulderTilePrefab);
                 tempTile.transform.SetParent(GameBoard);
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
@@ -728,7 +733,7 @@ public class GroundScript : MonoBehaviour {
             {
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
-                TileScript tempTile = Instantiate<TileScript>(tilePrefab);
+                tempTile = Instantiate<TileScript>(tilePrefab);
                 tempTile.transform.SetParent(GameBoard);
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
@@ -741,13 +746,15 @@ public class GroundScript : MonoBehaviour {
             {
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
-                TileScript tempTile = Instantiate<TileScript>(sporeTilePrefab);
+                tempTile = Instantiate<TileScript>(sporeTilePrefab);
                 tempTile.transform.SetParent(GameBoard);
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
                 tempTile.standingOn(standing);
             }
         }
+        if(standing != null)
+            standing.setCurrentTile(tempTile);
     }
 
     public void protSetTrap(float x, float y, string traptype)
@@ -902,5 +909,30 @@ public class GroundScript : MonoBehaviour {
             tempCharge.transform.localScale = new Vector3(0.1111f, 0.1111f, 0.11111f);
             charges.Add(tempCharge);
         } //6.5,-7.8 ---> 7.501, -6.799
+    }
+
+    public bool checkForBarriarray()
+    {
+        if (isBarriarray == -1)
+        { 
+            foreach(OpalScript o in gameOpals)
+            {
+                if (o.getMyName() == "Barriarray")
+                {
+                    isBarriarray = 1;
+                    return true;
+                }
+                else
+                {
+                    isBarriarray = 0;
+                    return false;
+                }
+            }
+        }
+        else if (isBarriarray == 1)
+        {
+            return true;
+        }
+        return false;
     }
 }

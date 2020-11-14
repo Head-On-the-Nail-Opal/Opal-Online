@@ -62,6 +62,40 @@ public class Target : MonoBehaviour {
                 }
             }
         }
+        else if (shape > 79 && shape < 84)
+        {
+            for (int i = 0; i < range - 1; i++)
+            {
+                if (shape == 80)
+                {
+                    Target tempTarget = Instantiate<Target>(this);
+                    tempTarget.setCoordinates((int)pos.x + i + 1, (int)pos.z +i+1, attack, current);
+                    tempTarget.setOffsets(i + 1, i+1);
+                    buff.Add(tempTarget);
+                }
+                else if (shape == 81)
+                {
+                    Target tempTarget = Instantiate<Target>(this);
+                    tempTarget.setCoordinates((int)pos.x - i - 1, (int)pos.z-i-1, attack, current);
+                    tempTarget.setOffsets(-i - 1, -i-1);
+                    buff.Add(tempTarget);
+                }
+                else if (shape == 82)
+                {
+                    Target tempTarget = Instantiate<Target>(this);
+                    tempTarget.setCoordinates((int)pos.x-i-1, (int)pos.z + i + 1, attack, current);
+                    tempTarget.setOffsets(-i-1, i + 1);
+                    buff.Add(tempTarget);
+                }
+                else if (shape == 83)
+                {
+                    Target tempTarget = Instantiate<Target>(this);
+                    tempTarget.setCoordinates((int)pos.x+i+1, (int)pos.z - i - 1, attack, current);
+                    tempTarget.setOffsets(i+1, -i - 1);
+                    buff.Add(tempTarget);
+                }
+            }
+        }
         else
         {
             Target tempTarget = Instantiate<Target>(this);

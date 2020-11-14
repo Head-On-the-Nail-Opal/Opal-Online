@@ -12,7 +12,7 @@ public class AttackScreen : MonoBehaviour
     public Text range;
     public Text mechanic;
     private Vector3 myPos;
-    private string[] shapes = new string[] { "", "Mortar", "Unimplemented", "Water Rush", "Line of Sight", "Target Growths", "Laser Beam", "All Opals"};
+    private string[] shapes = new string[] { "", "Mortar", "Unimplemented", "Water Rush", "Line of Sight", "Target Growths", "Laser Beam", "All Opals", "Diagonal Laser"};
     private SpriteRenderer sr;
 
     private void Awake()

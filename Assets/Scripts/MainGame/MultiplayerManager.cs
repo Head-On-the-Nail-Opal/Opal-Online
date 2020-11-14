@@ -18,6 +18,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
     private string teamThree = "";
     private string teamFour = "";
     private string gameString = "";
+    private string gameHistory = "";
     private GroundScript boardScript;
     private CursorScript cs;
     public Text chatTextHistory;
@@ -41,7 +42,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(teamTwo);
             stream.SendNext(teamThree);
             stream.SendNext(teamFour);
-            stream.SendNext(gameString);
+            stream.SendNext(gameHistory);
             stream.SendNext(numPlayers);
             stream.SendNext(chat);
         }
@@ -53,7 +54,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
             this.teamTwo = (string)stream.ReceiveNext();
             this.teamThree = (string)stream.ReceiveNext();
             this.teamFour = (string)stream.ReceiveNext();
-            this.gameString = (string)stream.ReceiveNext();
+            this.gameHistory = (string)stream.ReceiveNext();
             this.numPlayers = (string)stream.ReceiveNext();
             this.chat = (string)stream.ReceiveNext();
         }
@@ -69,7 +70,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
             if (command != "")
             {
                 print("Received command: " + command);
-                //multiplayerData = "";
+                gameHistory += command + '\n';
                 string[] parsedCommand = command.Split(',');
                 if (parsedCommand[0] == "place" && int.Parse(parsedCommand[4]) != boardScript.getOnlineTeam())
                 {
@@ -108,7 +109,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
                 }
                 else if (parsedCommand[0] == "reset")
                 {
-                    //boardScript.updateFromString(boardScript.getMM().getGameData());
+
                 }
             }
             else
@@ -159,7 +160,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
 
     public string getGameData()
     {
-        return gameString;
+        return gameHistory;
     }
 
     public void sendMultiplayerData(string data)
