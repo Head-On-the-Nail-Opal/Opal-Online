@@ -152,6 +152,7 @@ public class TextScript : MonoBehaviour {
             displayCurrent.setOpal(null);
             displayCurrent.transform.position = new Vector3(5.55f, 3.42f, -10.05f);
             displayCurrent.transform.localRotation = Quaternion.Euler(40, -45, 0);
+            displayCurrent.showSpot(false);
             //displayCurrent.transform.localScale *= 2;
         }
         Attack[] atlist = opal.getAttacks();
@@ -286,6 +287,7 @@ public class TextScript : MonoBehaviour {
                 displaySelected.setOpal(null);
                 displaySelected.transform.position = new Vector3(16.46f, 3.46f, 0.83f);
                 displaySelected.transform.localRotation = Quaternion.Euler(40, -45, 0);
+                displaySelected.showSpot(false);
                 //displaySelected.transform.localScale *= 2;
             }
             targetName.text = opal.getName();
@@ -370,7 +372,7 @@ public class TextScript : MonoBehaviour {
                 targetScreen.GetComponent<SpriteRenderer>().material.color = new Color(1, 0.3f, 0.3f);
                 foreach (Transform t in outline.GetComponentInChildren<Transform>())
                 {
-                    t.GetComponent<Renderer>().material.color = Color.red;
+                    //t.GetComponent<Renderer>().material.color = Color.red;
                 }
             }
         }
@@ -392,7 +394,7 @@ public class TextScript : MonoBehaviour {
                 targetScreen.GetComponent<SpriteRenderer>().material.color = new Color(0.4f, 0.4f, 1);
                 foreach (Transform t in outline.GetComponentInChildren<Transform>())
                 {
-                    t.GetComponent<Renderer>().material.color = Color.blue;
+                    //t.GetComponent<Renderer>().material.color = Color.blue;
                 }
             }
         }

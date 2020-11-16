@@ -14,6 +14,7 @@ public class GroundScript : MonoBehaviour {
 
     public List<OpalScript> gameOpals = new List<OpalScript>();
     private List<OpalScript> nonSortedGameOpals = new List<OpalScript>();
+    public List<int> alreadyMoved = new List<int>();
     public List<OpalScript> p1Opals = new List<OpalScript>(); 
     public List<OpalScript> p2Opals = new List<OpalScript>();
     public List<OpalScript> p3Opals = new List<OpalScript>();
@@ -86,6 +87,9 @@ public class GroundScript : MonoBehaviour {
     private string bothTeams;
     private int isBarriarray = -1;
 
+    private Canvas myCanvas;
+
+    private OpalScript boulder;
 
     private void Awake()
     {
@@ -93,6 +97,7 @@ public class GroundScript : MonoBehaviour {
         GameObject board = new GameObject("Gameboard");
         glob = GameObject.Find("GlobalObject").GetComponent<GlobalScript>();
         mm = GameObject.Find("MultiplayerManager").GetComponent<MultiplayerManager>();
+        myCanvas = GameObject.Find("Canvas").GetComponent<Canvas>();
         blueTeamPriority = 0;
         redTeamPriority = 0;
 
@@ -103,6 +108,7 @@ public class GroundScript : MonoBehaviour {
         sporeTilePrefab = Resources.Load<TileScript>("Prefabs/Tiles/SporeTile");
         chargeLightning = Resources.Load<GameObject>("Prefabs/LightningCharge");
         chargeEffect = Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/ChargeEffect");
+        boulder = Resources.Load<OpalScript>("Prefabs/Boulder");
 
         redPlate = Resources.Load<GameObject>("Prefabs/RedPlate");
         bluePlate = Resources.Load<GameObject>("Prefabs/BluePlate");
@@ -257,6 +263,7 @@ public class GroundScript : MonoBehaviour {
     {
         myCursor = Instantiate<CursorScript>(cursorPrefab);
         int p = 0;
+        int idCount = 0;
         foreach (OpalScript o in tempB)
         {
             print(o.GetType());
@@ -267,6 +274,8 @@ public class GroundScript : MonoBehaviour {
             p2Opals.Add(temp);
             blueTeamPriority += temp.getSpeed() * 10;
             blueTeamPriority += temp.getPriority();
+            temp.setID(idCount);
+            idCount++;
             p += 3;
         }
         p = 0;
@@ -279,6 +288,8 @@ public class GroundScript : MonoBehaviour {
             p1Opals.Add(temp);
             redTeamPriority += temp.getSpeed() * 10;
             redTeamPriority += temp.getPriority();
+            temp.setID(idCount);
+            idCount++;
             p += 3;
         }
         p = 0;
@@ -291,6 +302,8 @@ public class GroundScript : MonoBehaviour {
             p3Opals.Add(temp);
             greenTeamPriority += temp.getSpeed() * 10;
             greenTeamPriority += temp.getPriority();
+            temp.setID(idCount);
+            idCount++;
             p += 3;
         }
         p = 0;
@@ -303,6 +316,8 @@ public class GroundScript : MonoBehaviour {
             p4Opals.Add(temp);
             orangeTeamPriority += temp.getSpeed() * 10;
             orangeTeamPriority += temp.getPriority();
+            temp.setID(idCount);
+            idCount++;
             p += 3;
         }
         if (!getMult()) { 
@@ -624,16 +639,6 @@ public class GroundScript : MonoBehaviour {
                 return;
             }
         }
-
-        /**if (replaced.type == "Miasma" && type != "Miasma" && replaced.currentPlayer != null)
-        {
-            //replaced.currentPlayer.doBuff(0, -2, 0, false);
-        }
-        else if (replaced.type == "Growth" && type != "Growth" && replaced.currentPlayer != null)
-        {
-            DestroyImmediate(replaced.currentEffect);
-            replaced.currentPlayer.doBuff(-2, -2, 0, false);
-        }*/
         TileScript tempTile = new TileScript();
         if (type.Equals("Grass"))
         {
@@ -649,7 +654,7 @@ public class GroundScript : MonoBehaviour {
             tempTile.standingOn(standing);
         }
         else if (type.Equals("Fire")) {
-            if (replaced.type != "Miasma" && replaced.type != "Flood" && replaced.type != "Boulder" || over)
+            if (replaced.type != "Miasma" && replaced.type != "Flood" && !(replaced.getCurrentOpal() != null && replaced.getCurrentOpal().getMyName() == "Boulder") || over)
             {
                 if(replaced.getWet() == true)
                 {
@@ -667,7 +672,7 @@ public class GroundScript : MonoBehaviour {
         }
         else if (type.Equals("Miasma"))
         {
-            if (replaced.type != "Growth" && replaced.type != "Fire" && replaced.type != "Flood" || over)
+            if (replaced.type != "Growth" && replaced.type != "Fire" && replaced.type != "Flood" && !(replaced.getCurrentOpal() != null && replaced.getCurrentOpal().getMyName() == "Boulder") || over)
             {
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
@@ -680,7 +685,7 @@ public class GroundScript : MonoBehaviour {
         }
         else if (type.Equals("Growth"))
         {
-            if (replaced.type != "Fire" && replaced.type != "Growth" && replaced.type != "Boulder" || over)
+            if (replaced.type != "Fire" && replaced.type != "Growth" && !(replaced.getCurrentOpal() != null && replaced.getCurrentOpal().getMyName() == "Boulder") || over)
             {
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
@@ -693,7 +698,7 @@ public class GroundScript : MonoBehaviour {
         }
         else if (type.Equals("Flood"))
         {
-            if (replaced.type != "Boulder" && replaced.type != "Spore" && replaced.type != "Growth" || over)
+            if (!(replaced.getCurrentOpal() != null && replaced.getCurrentOpal().getMyName() == "Boulder") && replaced.type != "Spore" && replaced.type != "Growth" || over)
             {
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
@@ -702,8 +707,9 @@ public class GroundScript : MonoBehaviour {
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
                 tempTile.standingOn(standing);
-            }else if(replaced.type == "Boulder")
+            }else if(replaced.getCurrentOpal() != null && replaced.getCurrentOpal().getMyName() == "Boulder")
             {
+                standing.takeDamage(standing.getHealth(), false, false);
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
                 tempTile = Instantiate<TileScript>(tilePrefab);
@@ -721,6 +727,7 @@ public class GroundScript : MonoBehaviour {
             }
             if (replaced.type != "Flood" || over)
             {
+                /*
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
                 tempTile = Instantiate<TileScript>(boulderTilePrefab);
@@ -728,25 +735,15 @@ public class GroundScript : MonoBehaviour {
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
                 tempTile.standingOn(standing);
+                */
+                placeBoulder(tileGrid[x, y]);
+                
             }
             else if (replaced.type == "Flood")
             {
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
                 tempTile = Instantiate<TileScript>(tilePrefab);
-                tempTile.transform.SetParent(GameBoard);
-                tempTile.setCoordinates(x, y);
-                tileGrid[x, y] = tempTile;
-                tempTile.standingOn(standing);
-            }
-        }
-        else if (type == "Spore")
-        {
-            if (replaced.type != "Fire" && replaced.type != "Growth" && replaced.type != "Boulder" && replaced.type != "Flood" || over)
-            {
-                replaced.standingOn(null);
-                replaced.setCoordinates(-100, -100);
-                tempTile = Instantiate<TileScript>(sporeTilePrefab);
                 tempTile.transform.SetParent(GameBoard);
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
@@ -813,68 +810,80 @@ public class GroundScript : MonoBehaviour {
     public void updateTurnOrder(int currentTurn)
     {
         float i = 0;
-        if (currentTurn == 0)
+
+        // if(opalTurns.Count > 0 && opalTurns[opalTurns.Count - 1] != null)
+        //     DestroyImmediate(opalTurns[opalTurns.Count-1].gameObject);
+        foreach(OpalScript o in opalTurns)
         {
-            if(opalTurns.Count > 0 && opalTurns[opalTurns.Count - 1] != null)
-                DestroyImmediate(opalTurns[opalTurns.Count-1].gameObject);
-            opalTurns.Clear();
-            foreach (OpalScript o in gameOpals)
+            DestroyImmediate(o.gameObject);
+        }
+        opalTurns.Clear();
+        sortOpals(gameOpals);
+        foreach (OpalScript o in gameOpals)
+        {
+            if (!o.getDead() && !alreadyMoved.Contains(o.getID())) 
             {
-                if (!o.getDead())
+                OpalScript temp = Instantiate<OpalScript>(o, myCanvas.transform);
+                
+                opalTurns.Add(temp);
+                temp.healStatusEffects();
+                temp.transform.localPosition = new Vector3(835, 425 - i,0);
+                temp.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
+                temp.transform.localScale = new Vector3(100*temp.transform.localScale.x, 100 * temp.transform.localScale.y, 1);
+                GameObject pl;
+                if(o.getTeam() == "Red")
                 {
-                    OpalScript temp = Instantiate<OpalScript>(o);
-                    opalTurns.Add(temp);
-                    temp.healStatusEffects();
-                    temp.transform.position = new Vector3(14, 10 - i, 8);
-                    if(o.getTeam() == "Red")
-                    {
-                        GameObject pl = Instantiate<GameObject>(redPlate, temp.transform);
-                        pl.transform.localScale = new Vector3(pl.transform.localScale.x / temp.transform.localScale.x, pl.transform.localScale.y / temp.transform.localScale.y, pl.transform.localScale.z / temp.transform.localScale.z);
-                        pl.transform.position = new Vector3(pl.transform.position.x, pl.transform.position.y - 0.00001f, pl.transform.position.z);
-                    }
-                    else if(o.getTeam() == "Blue")
-                    {
-                        GameObject pl = Instantiate<GameObject>(bluePlate, temp.transform);
-                        pl.transform.localScale = new Vector3(pl.transform.localScale.x / temp.transform.localScale.x, pl.transform.localScale.y / temp.transform.localScale.y, pl.transform.localScale.z / temp.transform.localScale.z);
-                        pl.transform.position = new Vector3(pl.transform.position.x, pl.transform.position.y - 0.00001f, pl.transform.position.z);
-                    }
-                    else if (o.getTeam() == "Green")
-                    {
-                        GameObject pl = Instantiate<GameObject>(greenPlate, temp.transform);
-                        pl.transform.localScale = new Vector3(pl.transform.localScale.x / temp.transform.localScale.x, pl.transform.localScale.y / temp.transform.localScale.y, pl.transform.localScale.z / temp.transform.localScale.z);
-                        pl.transform.position = new Vector3(pl.transform.position.x, pl.transform.position.y - 0.00001f, pl.transform.position.z);
-                    }
-                    else if (o.getTeam() == "Orange")
-                    {
-                        GameObject pl = Instantiate<GameObject>(orangePlate, temp.transform);
-                        pl.transform.localScale = new Vector3(pl.transform.localScale.x / temp.transform.localScale.x, pl.transform.localScale.y / temp.transform.localScale.y, pl.transform.localScale.z / temp.transform.localScale.z);
-                        pl.transform.position = new Vector3(pl.transform.position.x, pl.transform.position.y - 0.00001f, pl.transform.position.z);
-                    }
-                    i += 1.8f;
+                    pl = Instantiate<GameObject>(redPlate, temp.transform);
+                    pl.transform.position = new Vector3(pl.transform.position.x, pl.transform.position.y - 0.00001f, pl.transform.position.z);
+                }
+                else if(o.getTeam() == "Blue")
+                {
+                    pl = Instantiate<GameObject>(bluePlate, temp.transform);
+                    pl.transform.position = new Vector3(pl.transform.position.x, pl.transform.position.y - 0.00001f, pl.transform.position.z);
+                }
+                else if (o.getTeam() == "Green")
+                {
+                    pl = Instantiate<GameObject>(greenPlate, temp.transform);
+                    pl.transform.position = new Vector3(pl.transform.position.x, pl.transform.position.y - 0.00001f, pl.transform.position.z);
                 }
                 else
                 {
-                    OpalScript temp = Instantiate<OpalScript>(o);
-                    temp.setDead();
-                    
-                    opalTurns.Add(temp);
-                    temp.transform.position = new Vector3(-100, -100, -100);
+                    pl = Instantiate<GameObject>(orangePlate, temp.transform);
+                    pl.transform.position = new Vector3(pl.transform.position.x, pl.transform.position.y - 0.00001f, pl.transform.position.z);
                 }
+                pl.transform.localScale = new Vector3(150/pl.transform.localScale.x, 150/pl.transform.localScale.x,3);
+                pl.AddComponent<TurnHighlighter>();
+                pl.AddComponent<BoxCollider2D>();
+                pl.GetComponent<TurnHighlighter>().setUp(this, o.getID());
+                i += 150f;
             }
-        } else
-        {
-            if (opalTurns.Count > 0 && opalTurns[opalTurns.Count - 1] != null && opalTurns[currentTurn - 1] != null && opalTurns[currentTurn - 1].gameObject)
-                DestroyImmediate(opalTurns[currentTurn - 1].gameObject);
-            foreach(OpalScript o in opalTurns)
+            else
             {
-                if (o != null && !o.getDead())
-                {
-                    o.transform.position = new Vector3(14, 10 - i, 8);
-                    o.healStatusEffects();
-                    i += 1.8f;
-                }
+                //OpalScript temp = Instantiate<OpalScript>(o);
+                //temp.setDead();
+                    
+                //opalTurns.Add(temp);
+                //temp.transform.position = new Vector3(-100, -100, -100);
             }
         }
+    }
+
+    public void highlightOpal(int id, bool highlight)
+    {
+        foreach(OpalScript o in gameOpals)
+        {
+            if(o.getID() == id)
+            {
+                o.showSpot(highlight);
+                return;
+            }
+        }
+    }
+
+    public void updateCurrent(int id)
+    {
+
+        myCursor.updateCurrent(id);
     }
 
     public void doWet(int x, int y, bool wet)
@@ -934,5 +943,13 @@ public class GroundScript : MonoBehaviour {
             return true;
         }
         return false;
+    }
+
+    public void placeBoulder(TileScript target)
+    {
+        OpalScript opalTwo = Instantiate<OpalScript>(boulder);
+        opalTwo.setOpal(myCursor.getCurrentOpal().getTeam());
+        opalTwo.setPos((int)target.getPos().x, (int)target.getPos().z);
+        target.standingOn(opalTwo);
     }
 }

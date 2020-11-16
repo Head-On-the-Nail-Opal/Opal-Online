@@ -136,7 +136,8 @@ public class CursorScript : MonoBehaviour {
         tileFrom = boardScript.tileGrid[(int)myPos.x, (int)myPos.z];
         if(tileFrom != lastTile)
         {
-            if(tileFrom.currentPlayer != null)
+            ts.updateSelected(tileFrom.currentPlayer);
+            if (tileFrom.currentPlayer != null)
             {
                 if(tileFrom.currentPlayer.getPos().x != myPos.x || tileFrom.currentPlayer.getPos().z != myPos.z)
                 {
@@ -160,8 +161,8 @@ public class CursorScript : MonoBehaviour {
                 t.setRelativeCoordinates((int)myPos.x, (int)myPos.z, attacking, selectedPlayer);
             }
         }
-        ts.updateSelected(tileFrom.currentPlayer);
-        ts.updateCurrent(selectedPlayer, distance);
+        
+        //ts.updateCurrent(selectedPlayer, distance);
         
         if (placing)
         {
@@ -609,6 +610,7 @@ public class CursorScript : MonoBehaviour {
 
     public void updateData()
     {
+        boardScript.updateTurnOrder(currentTurn);
         if(boardScript.getMult())
             boardScript.getMM().sendFullGameData(boardScript.generateString());
     }
@@ -688,6 +690,7 @@ public class CursorScript : MonoBehaviour {
     {
         boardScript.recallParticles();
         selectedPlayer.handleTempBuffs(true);
+        boardScript.alreadyMoved.Add(selectedPlayer.getID());
         if(!placing)
             selectedPlayer.onEnd();
         if (selectedPlayer.getCurrentTile() != null)
@@ -747,6 +750,7 @@ public class CursorScript : MonoBehaviour {
                 fallState++;
             }
             boardScript.sortOpals(boardScript.gameOpals);
+            boardScript.alreadyMoved.Clear();
             if (placing)
             {
                 placing = false;
@@ -946,6 +950,18 @@ public class CursorScript : MonoBehaviour {
     {
         selectedPlayer.setMyTurn(false);
         nextTurn();
+    }
+
+    public void updateCurrent(int id)
+    {
+        foreach(OpalScript o in boardScript.gameOpals)
+        {
+            if(o.getID() == id)
+            {
+                ts.updateSelected(o);
+                return;
+            }
+        }
     }
 
     private void destroyDummies()

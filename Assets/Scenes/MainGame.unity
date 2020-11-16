@@ -2993,6 +2993,7 @@ MonoBehaviour:
   generatedPaths: []
   switchCam: 0
   gameOpals: []
+  alreadyMoved: 
   p1Opals: []
   p2Opals: []
   p3Opals: []
@@ -18569,8 +18570,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1378639169}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 827, y: 440, z: 0}
-  m_LocalScale: {x: 20, y: 20, z: 0}
+  m_LocalPosition: {x: 835, y: 425, z: 0}
+  m_LocalScale: {x: 21, y: 21, z: 0}
   m_Children: []
   m_Father: {fileID: 518550068}
   m_RootOrder: 7

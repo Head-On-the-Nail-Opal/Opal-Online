@@ -211,6 +211,7 @@ public class Projectile : MonoBehaviour{
             cs.updateData();
             if (from != target)
                 cs.restartAttack();
+            cs.checkWin();
         }
         DestroyImmediate(this.gameObject);
     }
@@ -256,6 +257,7 @@ public class Projectile : MonoBehaviour{
             cs.updateData();
             if (from != target.currentPlayer)
                 cs.restartAttack();
+            cs.checkWin();
         }
         
         DestroyImmediate(this.gameObject);

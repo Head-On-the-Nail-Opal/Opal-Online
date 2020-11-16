@@ -34,6 +34,8 @@ public class DamageResultScript : MonoBehaviour {
 
     void Awake () {
         i = 0;
+        if(GetComponentInParent<OpalScript>().getMyName() == "Boulder")
+            transform.localScale = new Vector3(1,1,1);
 	}
 	
 	// Update is called once per frame

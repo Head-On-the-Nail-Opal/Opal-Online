@@ -64,23 +64,7 @@ public class Succuum : OpalScript {
                 }
                 dist = Mathf.Abs(dist);
             }
-            if (direct == "right")
-            {
-                target.nudge(4, true, true);
-            }
-            else if (direct == "left")
-            {
-                target.nudge(4, true, false);
-            }
-            else if (direct == "up")
-            {
-                target.nudge(4, false, true);
-            }
-            else if (direct == "down")
-            {
-                target.nudge(4, false, false);
-            }
-            for (int i = 0; i < dist+1; i++)
+            for (int i = 0; i < dist + 1; i++)
             {
                 if (direct == "right")
                 {
@@ -98,6 +82,22 @@ public class Succuum : OpalScript {
                 {
                     getBoard().setTile((int)getPos().x, (int)getPos().z + i, "Flood", false);
                 }
+            }
+            if (direct == "right")
+            {
+                target.nudge(4, true, true);
+            }
+            else if (direct == "left")
+            {
+                target.nudge(4, true, false);
+            }
+            else if (direct == "up")
+            {
+                target.nudge(4, false, true);
+            }
+            else if (direct == "down")
+            {
+                target.nudge(4, false, false);
             }
          
             return 0;

@@ -501,6 +501,7 @@ abstract public class OpalScript : MonoBehaviour {
                     lastTile.setImpassable(false);
                 lastTile = currentTile;
                 onMove(totalDist);
+                onMove(x, y);
             }
             return (int)(Mathf.Abs(lastPos.x - x) + Mathf.Abs(lastPos.z - y));
         }
@@ -508,6 +509,11 @@ abstract public class OpalScript : MonoBehaviour {
     }
 
     public virtual void onMove(int distanceMoved)
+    {
+        return;
+    }
+
+    public virtual void onMove(int x, int z)
     {
         return;
     }
@@ -680,6 +686,7 @@ abstract public class OpalScript : MonoBehaviour {
         {
             if(newburn && !burning && !(currentTile != null && currentTile.type == "Flood"))
             {
+                onStatusCondition(false, true, false);
                 currentBurn = Instantiate<ParticleSystem>(burningParticle, this.transform);
                 burnTimer = 3;
             }else if(!newburn && burning)
@@ -691,6 +698,7 @@ abstract public class OpalScript : MonoBehaviour {
             }
             burning = newburn;
         }
+
     }
 
     public bool getLifted()
@@ -704,6 +712,7 @@ abstract public class OpalScript : MonoBehaviour {
         {
             if (newLift && !lifted)
             {
+                onStatusCondition(false, false, true);
                 currentLift = Instantiate<ParticleSystem>(liftedParticle, this.transform);
                 liftTimer = 3;
             }
@@ -714,6 +723,7 @@ abstract public class OpalScript : MonoBehaviour {
             }
             lifted = newLift;
         }
+        
     }
 
     public string getDetails()
@@ -732,6 +742,7 @@ abstract public class OpalScript : MonoBehaviour {
         {
             if (newpoison && !poisoned && currentTile != null && !(currentTile.type == "Growth"))
             {
+                onStatusCondition(true, false, false);
                 currentPoison = Instantiate<ParticleSystem>(poisonedParticle, this.transform);
                 poisonTimer = 3;
                 poisonCounter = 4;
@@ -744,6 +755,7 @@ abstract public class OpalScript : MonoBehaviour {
             }
             poisoned = newpoison;
         }
+        
     }
 
     public void setPoisonTimer(int time, bool over)
@@ -1009,6 +1021,11 @@ abstract public class OpalScript : MonoBehaviour {
         setBurning(false);
         setPoison(false);
         setLifted(false);
+    }
+
+    public virtual void onStatusCondition(bool p, bool b, bool l)
+    {
+        return;
     }
 
     public void nudge(int dist, bool xorz, bool sign) //true for x, false for z
