@@ -50,6 +50,12 @@ public class MainMenuScript : MonoBehaviour {
     public InputField opalSearch;
     private GameObject nPage;
     private GameObject lPage;
+    public Text currentTeamNumOpals;
+    private List<PlateScript> teamEditor = new List<PlateScript>();
+    public GameObject teamScreen;
+    private PlateScript platePrefab;
+    private PlateScript currentTeamPlate = null;
+    public OpalDisplay teamOpalDisplay;
 
 
     // Use this for initialization
@@ -57,7 +63,7 @@ public class MainMenuScript : MonoBehaviour {
         currentController = "";
         mainCam = GameObject.Find("Main Camera");
         allOpals = Resources.LoadAll<OpalScript>("Prefabs/Opals");
-        PlateScript platePrefab = Resources.Load<PlateScript>("Prefabs/OpalPlate");
+        platePrefab = Resources.Load<PlateScript>("Prefabs/OpalPlate");
         teamDisplay = Resources.Load<TeamDisplay>("Prefabs/TeamDisplay");
         glob = GameObject.Find("GlobalObject").GetComponent<GlobalScript>();
         mm = GameObject.Find("MultiplayerManager").GetComponent<MultiplayerManager>();
@@ -83,6 +89,7 @@ public class MainMenuScript : MonoBehaviour {
             }
             displayOpals.Add(tempP);
         }
+        setupTeamDisplay();
         startButton.transform.position = new Vector3(-100, -100, -100);
         TargetInfo.transform.position = new Vector3(0.2f, 18, -1);
         mainDisplay.clearInfo();
@@ -729,7 +736,7 @@ public class MainMenuScript : MonoBehaviour {
         selectionDisplay.getCurrentOpal().setOpal(null);
         if(selectionDisplay.getCurrentOpal() != null && ((!checkRepeats(blueTeam, selectionDisplay.getCurrentOpal()) && !checkRepeats(redTeam, selectionDisplay.getCurrentOpal())) && !checkRepeats(greenTeam, selectionDisplay.getCurrentOpal()) && !checkRepeats(orangeTeam, selectionDisplay.getCurrentOpal()) || (dupes == 1 && !checkRepeats(getTeam(currentTeam), selectionDisplay.getCurrentOpal()))) && !full)
         {
-            if (dupes == 0)
+            if (dupes == 0 && currentTeamPlate == null)
             {
                 foreach (PlateScript p in displayOpals)
                 {
@@ -738,6 +745,19 @@ public class MainMenuScript : MonoBehaviour {
                         p.setTeam(currentTeam);
                     }
                 }
+            }
+            if(currentTeamPlate != null)
+            {
+                //print("du hello");
+                foreach(PlateScript p in teamEditor)
+                {
+                    if (p.getOpal() != null && p.getOpal().getMyName() == selectionDisplay.getCurrentOpal().getMyName())
+                        return;
+                }
+                currentTeamPlate.setPlate(selectionDisplay.getCurrentOpal());
+                currentTeamPlate = null;
+                mainCam.transform.position = new Vector3(0, 15, -10);
+                return;
             }
             if (currentTeam == "blue")
             {
@@ -1207,5 +1227,56 @@ public class MainMenuScript : MonoBehaviour {
     public void displayOpal(OpalScript o)
     {
         selectionDisplay.setCurrentOpal(o);
+    }
+
+    public void displayOpal(OpalScript o, bool team)
+    {
+        if (o != null)
+        {
+            teamOpalDisplay.setCurrentOpal(o);
+        }
+    }
+
+    public void incTeamNum()
+    {
+        if(currentTeamNumOpals.text != "8")
+        {
+            currentTeamNumOpals.text = (int.Parse(currentTeamNumOpals.text) + 1) + "";
+            PlateScript temp = Instantiate<PlateScript>(platePrefab, teamScreen.transform);
+            temp.transform.localPosition = new Vector3((int.Parse(currentTeamNumOpals.text)-1)*1.8f - 4,10.1f, 3);
+            teamEditor.Add(temp);
+            temp.setTeamPlate();
+        }
+    }
+
+    public void decrTeamNum()
+    {
+        if (currentTeamNumOpals.text != "1")
+        {
+            currentTeamNumOpals.text = (int.Parse(currentTeamNumOpals.text) - 1) + "";
+            teamEditor[int.Parse(currentTeamNumOpals.text)].setPlate(null);
+            DestroyImmediate(teamEditor[int.Parse(currentTeamNumOpals.text)].gameObject);
+            teamEditor.RemoveAt(int.Parse(currentTeamNumOpals.text));
+        }
+    }
+
+    private void setupTeamDisplay()
+    {
+        if (teamEditor.Count < 1)
+        {
+            for (int i = 0; i < int.Parse(currentTeamNumOpals.text); i++)
+            {
+                PlateScript temp = Instantiate<PlateScript>(platePrefab, teamScreen.transform);
+                temp.transform.localPosition = new Vector3(i*1.8f - 4,10.1f,3);
+                teamEditor.Add(temp);
+                temp.setTeamPlate();
+            }
+        }
+    }
+
+    public void chooseOneOpal(PlateScript p)
+    {
+        currentTeamPlate = p;
+        mainCam.transform.position = new Vector3(20, 15, -10);
     }
 }

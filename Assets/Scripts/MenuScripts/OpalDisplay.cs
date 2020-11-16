@@ -22,6 +22,7 @@ public class OpalDisplay : MonoBehaviour {
     public Text priority;
     private OpalScript currentOpal = null;
     private OpalScript currentOpalInstance;
+    public bool supersizeMe = false;
 
 
     // Use this for initialization
@@ -48,6 +49,10 @@ public class OpalDisplay : MonoBehaviour {
             currentOpalInstance.setVariant(o.getVariant());
             currentOpalInstance.transform.position = new Vector3(OpalSpot.transform.position.x, OpalSpot.transform.position.y, -3);
             currentOpalInstance.transform.localScale *= 2;
+            if (supersizeMe)
+            {
+                currentOpalInstance.transform.localScale *= 2;
+            }
             currentOpalInstance.transform.Rotate(new Vector3(0, 45, 0));
             //TargetInfo.transform.position = new Vector3(0, 18, -1);
             Name.text = currentOpalInstance.getMyName() + "";

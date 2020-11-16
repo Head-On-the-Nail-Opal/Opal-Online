@@ -85,6 +85,7 @@ public class MenuButtonScript : MonoBehaviour {
 
     private void OnMouseUp()
     {
+        //print(": "+purpose);
         if (purpose == "")
         {
             mainCam.transform.position = target;
@@ -105,6 +106,15 @@ public class MenuButtonScript : MonoBehaviour {
             main.menuState = setMenuState;
             main.setTeamDisplays();
             main.blueController = "keyboard";
+        }
+        else if (purpose == "incTeam")
+        {
+            print("du hello");
+            main.incTeamNum();
+        }
+        else if (purpose == "decTeam")
+        {
+            main.decrTeamNum();
         }
         if (!main.checkController(main.currentTeam, "keyboard"))
         {
@@ -140,6 +150,7 @@ public class MenuButtonScript : MonoBehaviour {
         {
             sR.sprite = unpressedS;
         }
+        
         main.menuState = setMenuState;
     }
 
