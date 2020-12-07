@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +13,8 @@ public class MainMenuScript : MonoBehaviour {
     private List<OpalScript> orangeTeam = new List<OpalScript>();
     private List<PlateScript> displayOpals = new List<PlateScript>();
     private List<List<OpalScript>> teams = new List<List<OpalScript>>();
+    private List<OpalTeam> displayTeams = new List<OpalTeam>();
+    private List<OpalScript> myOpals = new List<OpalScript>();
     private GlobalScript glob;
     public string currentTeam;
     public string blueController;
@@ -39,7 +43,7 @@ public class MainMenuScript : MonoBehaviour {
     private bool opletBool = false;
     private int numTeams = 2;
     private int numOpals = 4;
-    private bool choose = true; 
+    private bool choose = true;
     public List<TeamDisplay> displayPlates = new List<TeamDisplay>();
     private bool startDraft = true;
     private int dupes = 0;
@@ -56,10 +60,14 @@ public class MainMenuScript : MonoBehaviour {
     private PlateScript platePrefab;
     private PlateScript currentTeamPlate = null;
     public OpalDisplay teamOpalDisplay;
+    public MenuButtonScript createTeamButton;
+    public MenuButtonScript addNewTeamButton;
+    private int currentEditorTeam = -1;
 
 
     // Use this for initialization
-    void Start () {
+
+    void Start() {
         currentController = "";
         mainCam = GameObject.Find("Main Camera");
         allOpals = Resources.LoadAll<OpalScript>("Prefabs/Opals");
@@ -69,19 +77,20 @@ public class MainMenuScript : MonoBehaviour {
         mm = GameObject.Find("MultiplayerManager").GetComponent<MultiplayerManager>();
         lPage = GameObject.Find("LastPage");
         nPage = GameObject.Find("NextPage");
+        createTeamButton.gameObject.SetActive(false);
         lPage.SetActive(false);
         float x = 20;
         float y = 19;
         int i = 0;
         int offset = 0;
-        maxOpalPage = Mathf.CeilToInt(allOpals.Length/25f);
-        for(int j = 0 + offset; j < 25+offset; j++)
+        maxOpalPage = Mathf.CeilToInt(allOpals.Length / 25f);
+        for (int j = 0 + offset; j < 25 + offset; j++)
         {
             PlateScript tempP = Instantiate<PlateScript>(platePrefab);
             tempP.setPlate(allOpals[j], x, y);
             x += 1.6f;
             i++;
-            if(i == 5)
+            if (i == 5)
             {
                 x = 20;
                 y -= 1.6f;
@@ -103,10 +112,12 @@ public class MainMenuScript : MonoBehaviour {
         currentTeam = "blue";
         currentText.text = "Current Player: Blue";
         currentText.color = Color.blue;
+        loadData();
+        //loadTeams();
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update() {
         int num = 0;
         foreach (string s in Input.GetJoystickNames())
         {
@@ -114,7 +125,7 @@ public class MainMenuScript : MonoBehaviour {
         }
         //print(num);
         Vector3 mousePos = Input.mousePosition;
-        if(menuState == "Draft" && startDraft)
+        if (menuState == "Draft" && startDraft)
         {
             if (!choose)
             {
@@ -190,12 +201,12 @@ public class MainMenuScript : MonoBehaviour {
                 currentText.text = "Current Player: Blue";
                 currentText.color = Color.blue;
             }
-            if(menuState == "Draft")
+            if (menuState == "Draft")
             {
                 if (currentTeam == "blue" && blueController == "joystick 1" || currentTeam == "red" && redController == "joystick 1" || currentTeam == "green" && greenController == "joystick 1" || currentTeam == "orange" && orangeController == "joystick 1")
                     addCurrentOpal();
             }
-            if(menuState == "Play")
+            if (menuState == "Play")
             {
                 startGame();
                 currentTeam = "blue";
@@ -212,7 +223,7 @@ public class MainMenuScript : MonoBehaviour {
             if (menuState == "Draft")
             {
                 //if (currentTeam == "blue" && blueController == "joystick 1" || currentTeam == "red" && redController == "joystick 1")
-                   // clear();
+                // clear();
             }
         }
         else if (Input.GetAxis("dpadRight") > 0)
@@ -243,7 +254,7 @@ public class MainMenuScript : MonoBehaviour {
                 }
             }
         }
-        else if(Input.GetAxis("dpadUp") > 0)
+        else if (Input.GetAxis("dpadUp") > 0)
         {
             if (menuState == "Draft" && opletBool)
             {
@@ -348,8 +359,8 @@ public class MainMenuScript : MonoBehaviour {
             }
             if (menuState == "Draft")
             {
-               // if (currentTeam == "blue" && blueController == "joystick 2" || currentTeam == "red" && redController == "joystick 2")
-                  //  clear();
+                // if (currentTeam == "blue" && blueController == "joystick 2" || currentTeam == "red" && redController == "joystick 2")
+                //  clear();
             }
         }
         else if (Input.GetAxis("dpadRight 2") > 0)
@@ -672,7 +683,7 @@ public class MainMenuScript : MonoBehaviour {
                     if (numTeams > 1)
                     {
                         currentTeam = "red";
-                        
+
                         controllerSelect.text = "Red Player\nPress A or SPACE";
                     }
                     else
@@ -696,7 +707,7 @@ public class MainMenuScript : MonoBehaviour {
                         currentTeam = "green";
                         controllerSelect.text = "Green Player\nPress A or SPACE";
                     }
-                }else if(currentTeam == "green")
+                } else if (currentTeam == "green")
                 {
                     greenController = "keyboard";
                     if (numTeams == 3)
@@ -711,13 +722,13 @@ public class MainMenuScript : MonoBehaviour {
                         controllerSelect.text = "Orange Player\nPress A or SPACE";
                     }
                 }
-                else if(currentTeam == "orange")
+                else if (currentTeam == "orange")
                 {
                     orangeController = "keyboard";
                     currentTeam = "blue";
                     mainCam.transform.position = new Vector3(20, 15, -10);
                     menuState = "Draft";
-                    
+
                 }
             }
         }
@@ -729,12 +740,12 @@ public class MainMenuScript : MonoBehaviour {
 
     public void addCurrentOpal()
     {
-        if(selectionDisplay.getCurrentOpal() == null)
+        if (selectionDisplay.getCurrentOpal() == null)
         {
             return;
         }
         selectionDisplay.getCurrentOpal().setOpal(null);
-        if(selectionDisplay.getCurrentOpal() != null && ((!checkRepeats(blueTeam, selectionDisplay.getCurrentOpal()) && !checkRepeats(redTeam, selectionDisplay.getCurrentOpal())) && !checkRepeats(greenTeam, selectionDisplay.getCurrentOpal()) && !checkRepeats(orangeTeam, selectionDisplay.getCurrentOpal()) || (dupes == 1 && !checkRepeats(getTeam(currentTeam), selectionDisplay.getCurrentOpal()))) && !full)
+        if (selectionDisplay.getCurrentOpal() != null && ((!checkRepeats(blueTeam, selectionDisplay.getCurrentOpal()) && !checkRepeats(redTeam, selectionDisplay.getCurrentOpal())) && !checkRepeats(greenTeam, selectionDisplay.getCurrentOpal()) && !checkRepeats(orangeTeam, selectionDisplay.getCurrentOpal()) || (dupes == 1 && !checkRepeats(getTeam(currentTeam), selectionDisplay.getCurrentOpal()))) && !full)
         {
             if (dupes == 0 && currentTeamPlate == null)
             {
@@ -746,10 +757,10 @@ public class MainMenuScript : MonoBehaviour {
                     }
                 }
             }
-            if(currentTeamPlate != null)
+            if (currentTeamPlate != null)
             {
                 //print("du hello");
-                foreach(PlateScript p in teamEditor)
+                foreach (PlateScript p in teamEditor)
                 {
                     if (p.getOpal() != null && p.getOpal().getMyName() == selectionDisplay.getCurrentOpal().getMyName())
                         return;
@@ -757,6 +768,7 @@ public class MainMenuScript : MonoBehaviour {
                 currentTeamPlate.setPlate(selectionDisplay.getCurrentOpal());
                 currentTeamPlate = null;
                 mainCam.transform.position = new Vector3(0, 15, -10);
+                displayOpal(selectionDisplay.getCurrentOpal(), true);
                 return;
             }
             if (currentTeam == "blue")
@@ -785,7 +797,7 @@ public class MainMenuScript : MonoBehaviour {
             }
         }
         selectionDisplay.setCurrentOpal(null);
-        if (redTeam.Count + blueTeam.Count + greenTeam.Count + orangeTeam.Count == numOpals*numTeams)
+        if (redTeam.Count + blueTeam.Count + greenTeam.Count + orangeTeam.Count == numOpals * numTeams)
         {
             full = true;
             startButton.transform.position = new Vector3(24, 17f, -3);
@@ -808,10 +820,10 @@ public class MainMenuScript : MonoBehaviour {
 
     private void populateTeams()
     {
-        while(!full)
+        while (!full)
         {
             OpalScript temp = Instantiate<OpalScript>(allOpals[Random.Range(0, allOpals.Length)]);
-            temp.setVariant(""+Random.Range(0, 2));
+            temp.setVariant("" + Random.Range(0, 2));
             mainDisplay.setCurrentOpal(temp);
             addCurrentOpal();
         }
@@ -819,13 +831,13 @@ public class MainMenuScript : MonoBehaviour {
 
     private bool checkRepeats(List<OpalScript> opals, OpalScript check)
     {
-        if(dupes == 2)
+        if (dupes == 2)
         {
             return false;
         }
-        foreach(OpalScript o in opals)
+        foreach (OpalScript o in opals)
         {
-            if(o.getMyName() == check.getMyName())
+            if (o.getMyName() == check.getMyName())
             {
                 return true;
             }
@@ -836,7 +848,7 @@ public class MainMenuScript : MonoBehaviour {
     public void clear()
     {
         menuState = "Draft";
-        foreach(TeamDisplay t in displayPlates)
+        foreach (TeamDisplay t in displayPlates)
         {
             t.clear();
         }
@@ -861,9 +873,9 @@ public class MainMenuScript : MonoBehaviour {
     public void clearSingleOpal(OpalScript o)
     {
         int i = 0;
-        foreach(OpalScript opal in blueTeam)
+        foreach (OpalScript opal in blueTeam)
         {
-            if(o.getMyName() == opal.getMyName())
+            if (o.getMyName() == opal.getMyName())
             {
                 break;
             }
@@ -871,7 +883,7 @@ public class MainMenuScript : MonoBehaviour {
         }
         foreach (PlateScript p in displayOpals)
         {
-            if(p.getOpal() != null && o.getMyName() == p.getOpal().getMyName())
+            if (p.getOpal() != null && o.getMyName() == p.getOpal().getMyName())
                 p.setTeam("reset");
         }
         blueTeam.RemoveAt(i);
@@ -887,7 +899,7 @@ public class MainMenuScript : MonoBehaviour {
             lPage.SetActive(false);
             List<OpalScript> searched = new List<OpalScript>();
             //print(opalSearch.text);
-            foreach(OpalScript o in allOpals)
+            foreach (OpalScript o in allOpals)
             {
                 o.setOpal(null);
                 if (o.getMyName() != null && o.getMyName().ToLower().Contains(opalSearch.text.ToLower()))
@@ -900,9 +912,9 @@ public class MainMenuScript : MonoBehaviour {
             {
                 p.clearPlate();
             }
-            for(int i = 0; i < searched.Count; i++)
+            for (int i = 0; i < searched.Count; i++)
             {
-                if(i > displayOpals.Count - 1)
+                if (i > displayOpals.Count - 1)
                 {
                     break;
                 }
@@ -968,7 +980,7 @@ public class MainMenuScript : MonoBehaviour {
     {
         if (allOpals.Length < x + y)
             return null;
-        return allOpals[(int)(x+y)];
+        return allOpals[(int)(x + y)];
     }
 
     public void setPlateActive(bool hmm)
@@ -978,7 +990,7 @@ public class MainMenuScript : MonoBehaviour {
 
     public void setCurrentOplet(int num)
     {
-        currentOplet= num;
+        currentOplet = num;
     }
 
     public void cycleChoose()
@@ -997,10 +1009,10 @@ public class MainMenuScript : MonoBehaviour {
     public void cycleDuplicate(int add)
     {
         dupes += add;
-        if(dupes > 2)
+        if (dupes > 2)
         {
             dupes = 0;
-        }else if(dupes < 0)
+        } else if (dupes < 0)
         {
             dupes = 2;
         }
@@ -1008,11 +1020,11 @@ public class MainMenuScript : MonoBehaviour {
         {
             dupeText.text = "Allow Duplicates?\nNo Duplicates";
         }
-        else if(dupes == 1)
+        else if (dupes == 1)
         {
             dupeText.text = "Allow Duplicates?\nNo Team Duplicates";
         }
-        else if(dupes == 2)
+        else if (dupes == 2)
         {
             dupeText.text = "Allow Duplicates?\nNo Limits";
         }
@@ -1026,11 +1038,11 @@ public class MainMenuScript : MonoBehaviour {
     public void setOpaloids()
     {
         return;
-        if(mainDisplay.getCurrentOpalInstance().getOplets() != null)
+        if (mainDisplay.getCurrentOpalInstance().getOplets() != null)
         {
             opletBool = true;
             opletButton.transform.position = new Vector3(opletButton.transform.position.x, opletButton.transform.position.y, -1);
-            if(currentOplet >= mainDisplay.getCurrentOpalInstance().getOplets().Count)
+            if (currentOplet >= mainDisplay.getCurrentOpalInstance().getOplets().Count)
             {
                 currentOplet = 0;
             }
@@ -1049,9 +1061,9 @@ public class MainMenuScript : MonoBehaviour {
 
     public bool checkController(string player, string controller)
     {
-        if(currentTeam == "blue" && blueController == controller)
+        if (currentTeam == "blue" && blueController == controller)
         {
-            if(player == "blue")
+            if (player == "blue")
             {
                 return true;
             }
@@ -1094,9 +1106,9 @@ public class MainMenuScript : MonoBehaviour {
                 currentText.text = "Current Player: Red";
                 currentText.color = Color.red;
             }
-        }else if(currentTeam == "red")
+        } else if (currentTeam == "red")
         {
-            if(numTeams > 2)
+            if (numTeams > 2)
             {
                 currentTeam = "green";
                 currentText.text = "Current Player: Green";
@@ -1108,7 +1120,7 @@ public class MainMenuScript : MonoBehaviour {
                 currentText.text = "Current Player: Blue";
                 currentText.color = Color.blue;
             }
-        }else if(currentTeam == "green")
+        } else if (currentTeam == "green")
         {
             if (numTeams > 3)
             {
@@ -1123,7 +1135,7 @@ public class MainMenuScript : MonoBehaviour {
                 currentText.color = Color.blue;
             }
         }
-        else if(currentTeam == "orange")
+        else if (currentTeam == "orange")
         {
             currentTeam = "blue";
             currentText.text = "Current Player: Blue";
@@ -1163,7 +1175,7 @@ public class MainMenuScript : MonoBehaviour {
         //print("duh hello");
         TeamDisplay teamTemp = Instantiate<TeamDisplay>(teamDisplay);
         teamTemp.setUp("blue", numOpals);
-        teamTemp.transform.localPosition = new Vector3(11.7f,19.4f, -4f);
+        teamTemp.transform.localPosition = new Vector3(11.7f, 19.4f, -4f);
         displayPlates.Add(teamTemp);
 
         if (numTeams >= 2)
@@ -1184,7 +1196,7 @@ public class MainMenuScript : MonoBehaviour {
 
 
         }
-        if(numTeams >= 4)
+        if (numTeams >= 4)
         {
             TeamDisplay teamTemp4 = Instantiate<TeamDisplay>(teamDisplay);
             teamTemp4.setUp("orange", numOpals);
@@ -1196,14 +1208,14 @@ public class MainMenuScript : MonoBehaviour {
 
     public void nextPage(int inc)
     {
-        if(currentOpalPage + inc < maxOpalPage && currentOpalPage + inc >= 0)
+        if (currentOpalPage + inc < maxOpalPage && currentOpalPage + inc >= 0)
         {
             nPage.SetActive(true);
             lPage.SetActive(true);
             if (currentOpalPage + inc == 0)
             {
                 lPage.SetActive(false);
-            }else if (currentOpalPage + inc == maxOpalPage-1)
+            } else if (currentOpalPage + inc == maxOpalPage - 1)
             {
                 nPage.SetActive(false);
             }
@@ -1239,13 +1251,14 @@ public class MainMenuScript : MonoBehaviour {
 
     public void incTeamNum()
     {
-        if(currentTeamNumOpals.text != "8")
+        if (currentTeamNumOpals.text != "8")
         {
             currentTeamNumOpals.text = (int.Parse(currentTeamNumOpals.text) + 1) + "";
             PlateScript temp = Instantiate<PlateScript>(platePrefab, teamScreen.transform);
-            temp.transform.localPosition = new Vector3((int.Parse(currentTeamNumOpals.text)-1)*1.8f - 4,10.1f, 3);
+            temp.transform.localPosition = new Vector3((int.Parse(currentTeamNumOpals.text) - 1) * 1.8f - 4, 10.1f, 3);
             teamEditor.Add(temp);
             temp.setTeamPlate();
+            createTeamButton.gameObject.SetActive(false);
         }
     }
 
@@ -1257,6 +1270,18 @@ public class MainMenuScript : MonoBehaviour {
             teamEditor[int.Parse(currentTeamNumOpals.text)].setPlate(null);
             DestroyImmediate(teamEditor[int.Parse(currentTeamNumOpals.text)].gameObject);
             teamEditor.RemoveAt(int.Parse(currentTeamNumOpals.text));
+            int currentPopulation = 0;
+            foreach (PlateScript pl in teamEditor)
+            {
+                if (pl.getOpal() != null)
+                {
+                    currentPopulation++;
+                }
+            }
+            if (currentPopulation == int.Parse(currentTeamNumOpals.text))
+            {
+                createTeamButton.gameObject.SetActive(true);
+            }
         }
     }
 
@@ -1267,7 +1292,7 @@ public class MainMenuScript : MonoBehaviour {
             for (int i = 0; i < int.Parse(currentTeamNumOpals.text); i++)
             {
                 PlateScript temp = Instantiate<PlateScript>(platePrefab, teamScreen.transform);
-                temp.transform.localPosition = new Vector3(i*1.8f - 4,10.1f,3);
+                temp.transform.localPosition = new Vector3(i * 1.8f - 4, 10.1f, 3);
                 teamEditor.Add(temp);
                 temp.setTeamPlate();
             }
@@ -1278,5 +1303,209 @@ public class MainMenuScript : MonoBehaviour {
     {
         currentTeamPlate = p;
         mainCam.transform.position = new Vector3(20, 15, -10);
+        int currentPopulation = 0;
+        foreach (PlateScript pl in teamEditor)
+        {
+            if (pl.getOpal() != null)
+            {
+                currentPopulation++;
+            }
+        }
+        if (currentPopulation == int.Parse(currentTeamNumOpals.text) || (currentPopulation == int.Parse(currentTeamNumOpals.text) - 1 && currentTeamPlate.getOpal() == null))
+        {
+            createTeamButton.gameObject.SetActive(true);
+        }
+    }
+
+    public void createTeam()
+    {
+        List<OpalScript> teamOpals = new List<OpalScript>();
+        foreach (PlateScript p in teamEditor)
+        {
+            teamOpals.Add(p.getOpal());
+        }
+        createTeam(teamOpals);
+    }
+
+    public void createTeam(List<OpalScript> o)
+    {
+        List<OpalScript> teamOpals = o;
+        OpalTeam temp = Instantiate<OpalTeam>(Resources.Load<OpalTeam>("Prefabs/OpalTeam"));
+        if (currentEditorTeam == -1)
+        {
+            teams.Add(teamOpals);
+            temp.setMain(this, teams.Count - 1);
+            if (teams.Count == 1)
+                temp.transform.position = new Vector3(-30, 5 - teams.Count * 1.5f, -1);
+            else
+                temp.transform.position = new Vector3(-30, 4.2f - teams.Count * 1.4f, -1);
+            temp.displayTeam(teamOpals);
+            displayTeams.Add(temp);
+        }
+        else
+        {
+            teams[currentEditorTeam] = teamOpals;
+            temp.setMain(this, currentEditorTeam);
+            if (currentEditorTeam + 1 == 1)
+                temp.transform.position = new Vector3(-30, 5 - (currentEditorTeam + 1) * 1.5f, -1);
+            else
+                temp.transform.position = new Vector3(-30, 4.2f - (currentEditorTeam + 1) * 1.4f, -1);
+            temp.displayTeam(teamOpals);
+            displayTeams[currentEditorTeam].selfDestruct();
+            DestroyImmediate(displayTeams[currentEditorTeam].gameObject);
+            displayTeams.RemoveAt(currentEditorTeam);
+            displayTeams.Insert(currentEditorTeam, temp);
+            currentEditorTeam = -1;
+        }
+        createTeamButton.gameObject.SetActive(false);
+        foreach (PlateScript p in teamEditor)
+        {
+            p.setPlate(null);
+        }
+        mainCam.transform.position = new Vector3(-25, 0, -10);
+        if (teams.Count == 6)
+        {
+            addNewTeamButton.gameObject.SetActive(false);
+        }
+        loadTeams();
+    }
+
+    public void displayTeam(List<OpalScript> opals, int teamNum)
+    {
+        mainCam.transform.position = new Vector3(0, 15, -10);
+        while (opals.Count != teamEditor.Count)
+        {
+            if (opals.Count > teamEditor.Count)
+                incTeamNum();
+            else if (opals.Count < teamEditor.Count)
+                decrTeamNum();
+        }
+        int i = 0;
+        foreach (PlateScript p in teamEditor)
+        {
+            p.setPlate(opals[i]);
+            i++;
+        }
+        createTeamButton.gameObject.SetActive(true);
+        currentEditorTeam = teamNum;
+    }
+
+    public void deleteTeam(OpalTeam oT, int teamNum)
+    {
+        teams.RemoveAt(teamNum);
+        loadTeams();
+    }
+
+    public void loadTeams()
+    {
+        if(displayTeams.Count > 0)
+        {
+            foreach(OpalTeam oT in displayTeams)
+            {
+                oT.selfDestruct();
+            }
+        }
+        displayTeams.Clear();
+        int i = 0;
+        foreach(List<OpalScript> l in teams)
+        {
+            List<OpalScript> teamOpals = l;
+            OpalTeam temp = Instantiate<OpalTeam>(Resources.Load<OpalTeam>("Prefabs/OpalTeam"));
+            temp.setMain(this, i);
+            if (i == 0)
+                temp.transform.position = new Vector3(-30, 5 - (i+1) * 1.5f, -1);
+            else
+                temp.transform.position = new Vector3(-30, 4.2f - (i+1) * 1.4f, -1);
+            temp.displayTeam(teamOpals);
+            displayTeams.Add(temp);
+            i++;
+        }
+        saveData();
+    }
+
+    public void startMultiplayerGame()
+    {
+        if (teams[0] != null)
+        {
+            doMultiplayerSettings();
+            blueTeam = teams[0];
+            blueController = "keyboard";
+            startGame();
+        }
+    }
+
+    public void saveData()
+    {
+        return;
+        string path = "Assets/Resources/save.txt";
+        using (var stream = new FileStream(path, FileMode.Truncate))
+        {
+            using (var writer = new StreamWriter(stream))
+            {
+                writer.Write("Please don't change this, it will be encrypted eventually.\n");
+                foreach(List<OpalScript> lO in teams)
+                {
+                    foreach(OpalScript o in lO)
+                    {
+                        o.setOpal(null);
+                        //print(o.getMyName());
+                        writer.Write(o.getMyName() + ",");
+                        
+                    }
+                    writer.Write("\n");
+                }
+                writer.Write("endTeams\n");
+                foreach (OpalScript o in myOpals)
+                {
+                    o.setOpal(null);
+                    //print(o.getMyName());
+                    writer.Write(o.getMyName() + ",");
+                }
+                writer.Write("\n");
+                writer.Write("endOpals\n");
+            }
+        }
+        //AssetDatabase.ImportAsset(path);
+        //TextAsset asset = Resources.Load<TextAsset>("save");
+    }
+
+    public void loadData()
+    {
+        return;
+        string path = "Assets/Resources/save.txt";
+        //Read the text from directly from the test.txt file
+        StreamReader reader = new StreamReader(path);
+        string reid = reader.ReadLine();
+        reid = reader.ReadLine();
+        while (reid != "endTeams")
+        {
+            string[] opalNames = reid.Split(',');
+            List<OpalScript> opals = new List<OpalScript>();
+            foreach(string name in opalNames)
+            {
+                if (name != "\n" && name != "")
+                {
+                   // print(name);
+                    opals.Add(Resources.Load<OpalScript>("Prefabs/Opals/" + name));
+                }
+            }
+            teams.Add(opals);
+            reid = reader.ReadLine();
+        }
+        /*while(reid != "endOpals")
+        {
+            string[] opalNames = reid.Split(',');
+            foreach (string name in opalNames)
+            {
+                if (name != "\n" && name != "")
+                {
+                    myOpals.Add(Resources.Load<OpalScript>("Prefabs/Opals/" + name));
+                }
+            }
+
+            reid = reader.ReadLine();
+        }*/
+        reader.Close();
+        loadTeams();
     }
 }

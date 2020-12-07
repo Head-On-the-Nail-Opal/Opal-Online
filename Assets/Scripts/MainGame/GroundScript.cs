@@ -608,21 +608,21 @@ public class GroundScript : MonoBehaviour {
         }
     }
 
-    public void setTile(OpalScript o, string type, bool over)
+    public TileScript setTile(OpalScript o, string type, bool over)
     {
-        setTile((int)o.getPos().x, (int)o.getPos().z, type, over);
+        return setTile((int)o.getPos().x, (int)o.getPos().z, type, over);
     }
 
-    public void setTile(TileScript t, string type, bool over)
+    public TileScript setTile(TileScript t, string type, bool over)
     {
-        setTile((int)t.getPos().x, (int)t.getPos().z, type, over);
+        return setTile((int)t.getPos().x, (int)t.getPos().z, type, over);
     }
 
-    public void setTile(int x, int y, string type, bool over)
+    public TileScript setTile(int x, int y, string type, bool over)
     {
         if(x < 0 || x > 9 || y < 0 || y > 9 || tileGrid[x,y].getFallen())
         {
-            return;
+            return null;
         }
         TileScript replaced = tileGrid[x, y];
         OpalScript standing = replaced.getCurrentOpal();
@@ -630,13 +630,13 @@ public class GroundScript : MonoBehaviour {
             print(standing.getMyName());
         if(type == replaced.type)
         {
-            return;
+            return null;
         }
         if (type == "Boulder")
         {
             if (replaced.currentPlayer != null)
             {
-                return;
+                return null;
             }
         }
         TileScript tempTile = new TileScript();
@@ -659,7 +659,7 @@ public class GroundScript : MonoBehaviour {
                 if(replaced.getWet() == true)
                 {
                     doWet((int)replaced.getPos().x, (int)replaced.getPos().z, false);
-                    return;
+                    return null;
                 }
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
@@ -723,7 +723,7 @@ public class GroundScript : MonoBehaviour {
         {
             if(replaced.currentPlayer != null)
             {
-                return;
+                return null;
             }
             if (replaced.type != "Flood" || over)
             {
@@ -752,6 +752,7 @@ public class GroundScript : MonoBehaviour {
         }
         if(standing != null)
             standing.setCurrentTile(tempTile);
+        return tileGrid[x, y];
     }
 
     public void protSetTrap(float x, float y, string traptype)
@@ -833,7 +834,7 @@ public class GroundScript : MonoBehaviour {
                 GameObject pl;
                 if(o.getTeam() == "Red")
                 {
-                    pl = Instantiate<GameObject>(redPlate, temp.transform);
+                    pl = Instantiate<GameObject>(redPlate,temp.transform);
                     pl.transform.position = new Vector3(pl.transform.position.x, pl.transform.position.y - 0.00001f, pl.transform.position.z);
                 }
                 else if(o.getTeam() == "Blue")
@@ -851,7 +852,8 @@ public class GroundScript : MonoBehaviour {
                     pl = Instantiate<GameObject>(orangePlate, temp.transform);
                     pl.transform.position = new Vector3(pl.transform.position.x, pl.transform.position.y - 0.00001f, pl.transform.position.z);
                 }
-                pl.transform.localScale = new Vector3(150/pl.transform.localScale.x, 150/pl.transform.localScale.x,3);
+                pl.transform.localScale /= temp.transform.lossyScale.x;
+                pl.transform.localScale *= 0.8f;
                 pl.AddComponent<TurnHighlighter>();
                 pl.AddComponent<BoxCollider2D>();
                 pl.GetComponent<TurnHighlighter>().setUp(this, o.getID());

@@ -41,10 +41,11 @@ public class Excremite : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Crappy Load", 2, 4, 0, "Summon a Dunglet");
-        Attacks[1] = new Attack("Brown Coat", 0, 1, 0, "Adjacent Opals gain +3 defense for two turns. Swarm types gain +2 attack for two turns as well.", 1);
+        Attacks[0] = new Attack("Crappy Load", 2, 4, 0, "Summon two Dunglets");
+        Attacks[0].setUses(2);
+        Attacks[1] = new Attack("Huck", 4, 1, 0, "Give an Opal +2 attack.");
         Attacks[2] = new Attack("Smelly Bite", 3, 4, 6, "Deal 6 damage for each Boulder on surrounding tiles (0)");
-        Attacks[3] = new Attack("Rock Carapace", 2, 1, 0, "Break a Boulder and gain +3 defense.");
+        Attacks[3] = new Attack("Rock Carapace", 0, 1, 0, "Surrounding Boulders gain +3 defense.");
         type1 = "Ground";
         type2 = "Swarm";
     }
@@ -52,17 +53,12 @@ public class Excremite : OpalScript
     public override void onStart()
     {
         boulderDamage = 0;
-        for(int i = -1; i < 2; i++)
+        List<TileScript> sur = getSurroundingTiles(false);
+        foreach (TileScript t in sur)
         {
-            for(int j = -1; j < 2; j++)
+            if (t.currentPlayer != null && t.currentPlayer.getMyName() == "Boulder")
             {
-                if (getPos().x + i > -1 && getPos().x + i < 10 && getPos().z + j > -1 && getPos().z + j < 10)
-                {
-                    if (boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].type == "Boulder")
-                    {
-                        boulderDamage++;
-                    }
-                }
+                boulderDamage++;
             }
         }
         Attacks[2] = new Attack("Smelly Bite", 3, 4, 6, "Deal 6 damage for each Boulder on surrounding tiles ("+boulderDamage+")");
@@ -71,17 +67,12 @@ public class Excremite : OpalScript
     public override void onMove(int distanceMoved)
     {
         boulderDamage = 0;
-        for (int i = -1; i < 2; i++)
+        List<TileScript> sur = getSurroundingTiles(false);
+        foreach (TileScript t in sur)
         {
-            for (int j = -1; j < 2; j++)
+            if (t.currentPlayer != null && t.currentPlayer.getMyName() == "Boulder")
             {
-                if (getPos().x + i > -1 && getPos().x + i < 10 && getPos().z + j > -1 && getPos().z + j < 10)
-                {
-                    if (boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].type == "Boulder")
-                    {
-                        boulderDamage++;
-                    }
-                }
+                boulderDamage++;
             }
         }
         Attacks[2] = new Attack("Smelly Bite", 3, 4, 6, "Deal 6 damage for each Boulder on surrounding tiles (" + boulderDamage + ")");
@@ -96,14 +87,7 @@ public class Excremite : OpalScript
         }
         else if (attackNum == 1) //Insight
         {
-            if (target.getPos() != getPos())
-            {
-                target.doTempBuff(1, 1, 3);
-                if (target.getMainType() == "Swarm" || target.getSecondType() == "Swarm")
-                {
-                    target.doTempBuff(0, -1, 2);
-                }
-            }
+            target.doTempBuff(0, -1, 2);
             return 0;
         }
         else if (attackNum == 2) //Spectral Lunge
@@ -112,6 +96,14 @@ public class Excremite : OpalScript
             return cA.getBaseDamage() * boulderDamage + getAttack();
         }else if(attackNum == 3)
         {
+            List<TileScript> sur = getSurroundingTiles(false);
+            foreach(TileScript t in sur)
+            {
+                if(t.currentPlayer != null && t.currentPlayer.getMyName() == "Boulder")
+                {
+                    t.currentPlayer.doTempBuff(1, -1, 3);
+                }
+            }
             return 0;
         }
         return cA.getBaseDamage() + getAttack();
@@ -215,7 +207,7 @@ public class Excremite : OpalScript
         {
             return 0;
         }
-        if(attackNum == 3 && target.type == "Boulder")
+        if(attackNum == 3 && target.currentPlayer != null)
         {
             return 0;
         }

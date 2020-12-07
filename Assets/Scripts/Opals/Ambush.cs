@@ -100,7 +100,7 @@ public class Ambush : OpalScript {
         Attack cA = Attacks[attackNum];
         if (attackNum == 0) //Thorns
         {
-            if(currentTile.type == "Growth")
+            if(currentTile.type == "Growth") //there is some issue with setting the currentTile type
             {
                 if(target.type == "Growth")
                 {

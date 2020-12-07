@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class Terradactyl : OpalScript
 {
+    int fu = 0;
     override public void setOpal(string pl)
     {
-        health = 30;
+        health = 20;
         maxHealth = health;
         attack = 4;
         defense = 2;
-        speed = 2;
+        speed = 3;
         priority = 2;
         myName = "Terradactyl";
         transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.6f;
@@ -26,28 +27,62 @@ public class Terradactyl : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Sky Drop", 2, 1, 3, "Place boulders in a 2 tile radius. Opals in radius are damaged instead.", 2);
-        Attacks[1] = new Attack("Momentum", 1, 1, 0, "Place a boulder on an adjacent tile and gain +2 attack and +2 speed for 1 turn.");
-        Attacks[2] = new Attack("Catapult", 15, 1, 0, "Place boulders on all adjacent tiles and move anywhere on the map.");
-        Attacks[3] = new Attack("Fragmented Stone", 2, 4, 0, "Destroy a target Boulder and gain +1 speed.");
+        Attacks[0] = new Attack("Favorable Terrain", 0, 0, 0, "Gain +1 speed (for 1 turn) for each Boulder you start your turn surrounded by.");
+        Attacks[1] = new Attack("Catapult", 6, 1, 0, "Break an adjacent Boulder. Deal damage to an Opal within 6 tiles based on that Boulder's defense. Place Boulders adjacent to them with the same defense.");
+        Attacks[1].setUses(2);
+        Attacks[2] = new Attack("Rock Stack", 3, 1, 0, "Place a Boulder. It gains +5 defense for each Boulder adjacent to it on placement.");
+        Attacks[3] = new Attack("Heavy Flight", 5, 1, 0, "Fly to a tile. Leave a boulder where you left with +5 defense.");
         type1 = "Air";
         type2 = "Ground";
         og = true;
     }
 
+    public override void onStart()
+    {
+        fu = -1;
+        Attacks[1] = new Attack("Catapult", 1, 1, 0, "Break an adjacent Boulder. Deal damage to an Opal within 6 tiles based on that Boulder's defense. Surround them by Boulders with the same defense.");
+        Attacks[1].setUses(2);
+        foreach(TileScript t in getSurroundingTiles(false))
+        {
+            if (t.currentPlayer != null && t.currentPlayer.getMyName() == "Boulder")
+            {
+                doTempBuff(2, 1, 1);
+            }
+        }
+    }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
     {
         Attack cA = Attacks[attackNum];
         if (attackNum == 0) //Sky Drop
         {
-            if(target == this)
-            {
-                return 0;
-            }
         }
         else if (attackNum == 1) //Momentum
         {
+            if(fu == -1)
+            {
+                if(target.getMyName() == "Boulder")
+                {
+                    if(target.getDefense() > 0)
+                        fu = target.getDefense();
+                    target.takeDamage(target.getHealth(), false, false);
+                    Attacks[1] = new Attack("Catapult", 6, 1, 0, "Break an adjacent Boulder. Deal damage to an Opal within 6 tiles based on that Boulder's defense. Surround them by Boulders with the same defense.");
+                    Attacks[1].setUses(2);
+                }
+            }
+            else
+            {
+                target.takeDamage(fu + getAttack(), true, false);
+                List<TileScript> tiles = target.getSurroundingTiles(true);
+                foreach(TileScript t in tiles)
+                {
+                    TileScript temp = boardScript.setTile(t, "Boulder", false);
+                    if(temp.currentPlayer != null && temp.currentPlayer.getMyName() == "Boulder")
+                    {
+                        temp.currentPlayer.doTempBuff(1, -1, fu);
+                    }
+                }
+            }
             return 0;
         }
         else if (attackNum == 2) //Catapult
@@ -62,37 +97,28 @@ public class Terradactyl : OpalScript
         Attack cA = Attacks[attackNum];
         if (attackNum == 0) //Sky Drop
         {
-            getBoard().setTile((int)target.getPos().x, (int)target.getPos().z, "Boulder", false);
         }
         else if (attackNum == 1) //Momentum
         {
-            getBoard().setTile((int)target.getPos().x, (int)target.getPos().z, "Boulder", false);
-            doTempBuff(0, 2, 2);
-            doTempBuff(2, 2, 2);
+
             return 0;
         }
         else if (attackNum == 2) //Catapult
         {
-            Vector2 lp = new Vector2(getPos().x, getPos().z);
-            doMove((int)target.getPos().x, (int)target.getPos().z, 0);
-            for (int i = -1; i < 2; i++)
+            TileScript targ = boardScript.setTile(target, "Boulder", false);
+            if(targ.getCurrentOpal() != null && targ.getCurrentOpal().getMyName() == "Boulder")
             {
-                for (int j = -1; j < 2; j++)
+                foreach(TileScript t in targ.getCurrentOpal().getSurroundingTiles(true))
                 {
-                    if (Mathf.Abs(i) != Mathf.Abs(j))
+                    if(t.getCurrentOpal() != null && t.getCurrentOpal().getMyName() == "Boulder")
                     {
-                        getBoard().setTile((int)lp.x + i, (int)lp.y + j, "Boulder", false);
+                        targ.currentPlayer.doTempBuff(1, -1, 5);
                     }
                 }
             }
             return 0;
         }else if(attackNum == 3)
         {
-            if(target.type == "Boulder")
-            {
-                boardScript.setTile(target, "Grass", true);
-                doTempBuff(2, -1, 1);
-            }
             return 0;
         }
         return cA.getBaseDamage() + getAttack();
@@ -104,7 +130,7 @@ public class Terradactyl : OpalScript
             return 0;
         if (attackNum == 0)
         {
-            return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+            return 0;
         }
         else if (attackNum == 1)
         {
@@ -116,6 +142,13 @@ public class Terradactyl : OpalScript
         }
         else if (attackNum == 3)
         {
+            TileScript startingTile = currentTile;
+            doMove((int)target.getPos().x, (int)target.getPos().z, 0);
+            boardScript.setTile(startingTile, "Boulder", false);
+            if (startingTile.getCurrentOpal() != null && startingTile.getCurrentOpal().getMyName() == "Boulder")
+            {
+                startingTile.currentPlayer.doTempBuff(1, -1, 5);
+            }
             return 0;
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
@@ -123,7 +156,11 @@ public class Terradactyl : OpalScript
 
     public override int checkCanAttack(TileScript target, int attackNum)
     {
-        if((attackNum == 3 || attackNum == 1) && target.currentPlayer != null)
+        if(attackNum == 1 && (fu == 0 && target.currentPlayer != null && target.currentPlayer.getMyName() == "Boulder"))
+        {
+            return 0;
+        }
+        if((attackNum == 2 || attackNum == 3) && target.currentPlayer != null)
         {
             return -1;
         }

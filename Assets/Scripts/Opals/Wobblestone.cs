@@ -26,10 +26,10 @@ public class Wobblestone : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Cobbled", 0, 0, 0, "<Passive>\nFor each boulder Wobblestone breaks, gain +2 attack.");
-        Attacks[1] = new Attack("Rolling", 4, 4, 8, "Move Wobblestone adjacent to target. Can target boulders.");
+        Attacks[0] = new Attack("Cobbled", 0, 0, 0, "<Passive>\nWhen Wobblestone targets a Boulder with an ability it gains +5 defense and doesn't take damage.");
+        Attacks[1] = new Attack("Rolling", 4, 4, 8, "Move Wobblestone adjacent to target. If the target is a Boulder, gain +3 attack.");
         Attacks[2] = new Attack("Meteor", 2, 4, 10, "Place a boulder and deal damage to targets adjacent to placed boulder.");
-        Attacks[3] = new Attack("Landslide", 1, 4, 0, "Place boulders in the area of effect.", 1);
+        Attacks[3] = new Attack("Landslide", 1, 4, 0, "Place boulders in the area of effect. They all have 1 health.", 1);
         type1 = "Ground";
         type2 = "Ground";
     }
@@ -46,7 +46,7 @@ public class Wobblestone : OpalScript
         {
             return 0;
         }
-        else if (attackNum == 1) //unfinished
+        else if (attackNum == 1)
         {
             if (getPos().x == target.getPos().x)
             {
@@ -70,7 +70,15 @@ public class Wobblestone : OpalScript
                     nudge(-(int)target.getPos().x + (int)getPos().x, true, false);
                 }
             }
-            target.takeDamage(8 + getAttack(), true, true);
+            if (target != null && target.getMyName() == "Boulder")
+            {
+                target.doTempBuff(1, -1, 5);
+                target.doTempBuff(0, -1, 3);
+            }
+            else
+            {
+                target.takeDamage(8 + getAttack(), true, true);
+            }
         }
         else if (attackNum == 2) //Catapult
         {
@@ -131,7 +139,14 @@ public class Wobblestone : OpalScript
                     {
                         if (target.getPos().x + i < 10 && target.getPos().x + i > -1 && target.getPos().z + j < 10 && target.getPos().z + j > -1 && boardScript.tileGrid[(int)target.getPos().x + i, (int)target.getPos().z + j].currentPlayer != null)
                         {
-                            boardScript.tileGrid[(int)target.getPos().x + i, (int)target.getPos().z + j].currentPlayer.takeDamage(cA.getBaseDamage() + getAttack(), true, true);
+                            if (target.currentPlayer != null && target.currentPlayer.getMyName() == "Boulder")
+                            {
+                                boardScript.tileGrid[(int)target.getPos().x + i, (int)target.getPos().z + j].currentPlayer.doTempBuff(1, -1, 5);
+                            }
+                            else
+                            {
+                                boardScript.tileGrid[(int)target.getPos().x + i, (int)target.getPos().z + j].currentPlayer.takeDamage(cA.getBaseDamage() + getAttack(), true, true);
+                            }
                         }
                     }
                 }
@@ -141,6 +156,7 @@ public class Wobblestone : OpalScript
         else if (attackNum == 3) //Catapult
         {
             boardScript.setTile(target, "Boulder", false);
+            target.currentPlayer.takeDamage(4, false, false);
             return 0;
         }
         return cA.getBaseDamage() + getAttack();

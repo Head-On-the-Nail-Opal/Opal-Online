@@ -101,11 +101,11 @@ public class MenuButtonScript : MonoBehaviour {
             main.setTeamDisplays();
         }else if(purpose == "setup2")
         {
-            mainCam.transform.position = target;
-            main.doMultiplayerSettings();
-            main.menuState = setMenuState;
-            main.setTeamDisplays();
+            main.startMultiplayerGame();
             main.blueController = "keyboard";
+        }else if(purpose == "teams")
+        {
+            main.displayOpal(null, true);
         }
         else if (purpose == "incTeam")
         {
@@ -115,6 +115,9 @@ public class MenuButtonScript : MonoBehaviour {
         else if (purpose == "decTeam")
         {
             main.decrTeamNum();
+        }else if(purpose == "createTeam")
+        {
+            main.createTeam();
         }
         if (!main.checkController(main.currentTeam, "keyboard"))
         {

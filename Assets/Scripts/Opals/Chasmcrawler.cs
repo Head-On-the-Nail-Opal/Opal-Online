@@ -28,7 +28,7 @@ public class Chasmcrawler : OpalScript
         player = pl;
         Attacks[0] = new Attack("Sealed Away", 0, 0, 0, "<Passive>\n Chasmcrawler begins the game with two layers of boulders surrounding it.");
         Attacks[1] = new Attack("Rampage", 3, 4, 5, "Deal damage to up to 5 Opals. Gain +1 attack for each Opal damaged. Cannot break boulders.", 1);
-        Attacks[2] = new Attack("Entomb", 3, 4, 0, "Place a boulder trap which places boulders on tiles adjacent to its victim.");
+        Attacks[2] = new Attack("Stone Monument", 4, 4, 0, "Place a Boulder. It has +10 defense.");
         Attacks[3] = new Attack("Frustrated Slumber", 0, 1, 0, "Gain +2 attack. Lose -3 speed for 1 turn.");
         type1 = "Ground";
         type2 = "Dark";
@@ -73,7 +73,7 @@ public class Chasmcrawler : OpalScript
         }
         else if (attackNum == 1) //Seed Launch
         {
-            if (target != this)
+            if (target != this && target.getMyName() != "Boulder")
             {
                 doTempBuff(0, -1, 1);
                 target.takeDamage(5 + getAttack(), true, true);
@@ -106,7 +106,11 @@ public class Chasmcrawler : OpalScript
         }
         else if (attackNum == 2) //Grass Cover
         {
-            boardScript.protSetTrap(target.getPos().x, target.getPos().z, "Tomb");
+            TileScript t = boardScript.setTile(target, "Boulder", false);
+            if(t.currentPlayer != null && t.currentPlayer.getMyName() == "Boulder")
+            {
+                t.currentPlayer.doTempBuff(1,-1,10);
+            }
             return 0;
         }
         return cA.getBaseDamage() + getAttack();

@@ -31,7 +31,7 @@ public class PlateScript : MonoBehaviour {
         transform.position = new Vector3(x, y, -1);
         opalOne.transform.position = new Vector3(transform.position.x, transform.position.y - 0.8f, -2.5f);
         opalOne.transform.localScale *= 1.2f;
-        opalOne.transform.Rotate(new Vector3(0,45,0));
+        opalOne.transform.rotation = Quaternion.Euler(0, 0, 0);
     }
 
     public void setPlate(OpalScript opal)
@@ -50,7 +50,7 @@ public class PlateScript : MonoBehaviour {
         //opalOne.setVariant("1");
         opalOne.transform.position = new Vector3(transform.position.x, transform.position.y - 0.8f, -2.5f);
         opalOne.transform.localScale *= 1.2f;
-        opalOne.transform.Rotate(new Vector3(0, 45, 0));
+        opalOne.transform.rotation = Quaternion.Euler(0, 0, 0);
         specificOpal = opalOne;
         if (panel != null)
             DestroyImmediate(background);

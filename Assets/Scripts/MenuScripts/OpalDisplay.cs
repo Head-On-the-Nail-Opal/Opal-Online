@@ -53,7 +53,7 @@ public class OpalDisplay : MonoBehaviour {
             {
                 currentOpalInstance.transform.localScale *= 2;
             }
-            currentOpalInstance.transform.Rotate(new Vector3(0, 45, 0));
+            currentOpalInstance.transform.rotation = Quaternion.Euler(0, 0, 0);
             //TargetInfo.transform.position = new Vector3(0, 18, -1);
             Name.text = currentOpalInstance.getMyName() + "";
             Health.text = currentOpalInstance.getHealth() + "";
@@ -93,7 +93,7 @@ public class OpalDisplay : MonoBehaviour {
             currentOpalInstance.setOpal(null);
             currentOpalInstance.transform.position = new Vector3(-4 + 1.7f, 29, -2);
             currentOpalInstance.transform.localScale *= 2;
-            currentOpalInstance.transform.Rotate(new Vector3(0, 45, 0));
+            currentOpalInstance.transform.rotation = Quaternion.Euler(0, 0, 0);
             //TargetInfo.transform.position = new Vector3(0, 18, -1);
             Name.text = currentOpalInstance.getMyName() + "";
             Health.text = currentOpalInstance.getHealth() + "";

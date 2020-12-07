@@ -132,6 +132,7 @@ public class CursorScript : MonoBehaviour {
         {
             return;
         }
+        //print("oof");
         moveCursor(myPos, orthoCam.WorldToScreenPoint(myPos), orthoCam.WorldToScreenPoint(reticle.transform.position));
         tileFrom = boardScript.tileGrid[(int)myPos.x, (int)myPos.z];
         if(tileFrom != lastTile)
