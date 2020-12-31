@@ -7,15 +7,8 @@ public class Excremite : OpalScript
     private Dunglet dungletPrefab;
     private int boulderDamage = 0;
 
-    private void Awake()
+    public override void onAwake()
     {
-        GameObject board = GameObject.Find("Main Camera");
-        boardScript = board.GetComponent<GroundScript>();
-        transform.position = new Vector3(5, 0.5f, 5);
-        anim = GetComponent<Animator>();
-        damRes = Resources.Load<DamageResultScript>("Prefabs/AttackResult");
-        burningParticle = Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/PassiveBurn");
-        poisonedParticle = Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/PassivePoison");
         dungletPrefab = Resources.Load<Dunglet>("Prefabs/SubOpals/Dunglet");
     }
 
@@ -114,39 +107,7 @@ public class Excremite : OpalScript
         Attack cA = Attacks[attackNum];
         if (attackNum == 0) //Duplicate
         {
-            int minionCount = 0;
-            foreach(OpalScript o in boardScript.gameOpals)
-            {
-                if(o.getMyName() == "Dunglet" && o.getDead() == false)
-                    minionCount++;
-            }
-            if (minionCount < 4) {
-                DamageResultScript temp = Instantiate<DamageResultScript>(damRes, this.transform);
-                temp.setUp(minionCount + 1, swarmLimit);
-                Dunglet opalTwo = Instantiate<Dunglet>(dungletPrefab);
-                opalTwo.setOpal(player); // Red designates player 1, Blue designates player 2
-                opalTwo.setPos((int)target.getPos().x, (int)target.getPos().z);
-                getBoard().gameOpals.Add(opalTwo);
-                getBoard().addToUnsorted(opalTwo);
-                if (player == "Red")
-                {
-                    getBoard().p2Opals.Add(opalTwo);
-                }
-                else if (player == "Green")
-                {
-                    getBoard().p3Opals.Add(opalTwo);
-                }
-                else if (player == "Orange")
-                {
-                    getBoard().p4Opals.Add(opalTwo);
-                }
-                else
-                {
-                    getBoard().p1Opals.Add(opalTwo);
-                }
-                target.standingOn(opalTwo);
-                opalTwo.setSkipTurn(true);
-            }
+            spawnOplet(dungletPrefab, target);
             return 0;
         }
         else if (attackNum == 1) //Insight

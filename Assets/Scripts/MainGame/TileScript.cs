@@ -377,7 +377,7 @@ public class TileScript : MonoBehaviour {
 
     public void fixWeirdness()
     {
-        if(currentPlayer != null)
+        if(currentPlayer != null && currentPlayer.getMyName() != "Boulder")
         {
             if(currentPlayer.getPos().x != getPos().x || currentPlayer.getPos().z != getPos().z)
             {
@@ -385,7 +385,7 @@ public class TileScript : MonoBehaviour {
                 print("Cleared a disassociated ghost");
             }
         }
-        else
+        else if(currentPlayer == null)
         {
             if(impassable && type != "Boulder" && !fallen)
             {

@@ -6,16 +6,9 @@ public class Heatriarch : OpalScript
 {
     private Heant heantPrefab;
 
-    private void Awake()
+    public override void onAwake()
     {
-        GameObject board = GameObject.Find("Main Camera");
-        boardScript = board.GetComponent<GroundScript>();
-        transform.position = new Vector3(5, 0.5f, 5);
-        anim = GetComponent<Animator>();
-        burningParticle = Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/PassiveBurn");
-        poisonedParticle = Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/PassivePoison");
         heantPrefab = Resources.Load<Heant>("Prefabs/SubOpals/Heant");
-        damRes = Resources.Load<DamageResultScript>("Prefabs/AttackResult");
     }
 
     override public void setOpal(string pl)
@@ -99,23 +92,7 @@ public class Heatriarch : OpalScript
             {
                 if (target.type == "Fire")
                 {
-                    Heant opalTwo = Instantiate<Heant>(heantPrefab);
-                    opalTwo.setOpal(player); // Red designates player 1, Blue designates player 2
-                    opalTwo.setPos((int)target.getPos().x, (int)target.getPos().z);
-                    getBoard().gameOpals.Add(opalTwo);
-                    getBoard().addToUnsorted(opalTwo);
-                    if (player == "Red")
-                    {
-                        getBoard().p2Opals.Add(opalTwo);
-                    }
-                    else
-                    {
-                        getBoard().p1Opals.Add(opalTwo);
-                    }
-                    DamageResultScript temp = Instantiate<DamageResultScript>(damRes, opalTwo.transform);
-                    temp.setUp(minionCount + 1, swarmLimit);
-                    target.standingOn(opalTwo);
-                    opalTwo.setSkipTurn(true);
+                    spawnOplet(heantPrefab, target);
                 }
             }
             return 0;

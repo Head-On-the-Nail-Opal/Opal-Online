@@ -7,6 +7,11 @@ public class Spiritch : OpalScript
     private Numbskull dimstingPrefab;
 
 
+    public override void onAwake()
+    {
+        dimstingPrefab = Resources.Load<Numbskull>("Prefabs/SubOpals/Numbskull");
+    }
+
     override public void setOpal(string pl)
     {
         health = 10;
@@ -29,7 +34,6 @@ public class Spiritch : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        dimstingPrefab = Resources.Load<Numbskull>("Prefabs/SubOpals/Numbskull");
         Attacks[0] = new Attack("Restless", 0, 0, 0, "<Passive>\n On death, spawn a Numbskull to replace Spiritch.");
         Attacks[1] = new Attack("Unholy", 0, 1, 0, "Adjacent Opals gain +2 attack. If they are Swarm types they gain +1 speed as well.", 1);
         Attacks[2] = new Attack("Undead Legion", 1, 0, 0, "Spawn a Numbskull. Take 5 damage.");
@@ -41,45 +45,11 @@ public class Spiritch : OpalScript
 
     public override void onDie()
     {
-        int minionCount = 0;
-        foreach (OpalScript o in boardScript.gameOpals)
-        {
-            if (o.getMyName() == "Numbskull" && o.getDead() == false)
-                minionCount++;
-        }
-        if (minionCount < 4)
-        {
-            DamageResultScript temp = Instantiate<DamageResultScript>(damRes, this.transform);
-            temp.setUp(minionCount + 1, swarmLimit);
-            Numbskull opalTwo = Instantiate<Numbskull>(dimstingPrefab);
-            opalTwo.setOpal(player); // Red designates player 1, Blue designates player 2
-            opalTwo.setPos((int)getPos().x, (int)getPos().z);
-            getBoard().gameOpals.Add(opalTwo);
-            getBoard().addToUnsorted(opalTwo);
-            if (player == "Red")
-            {
-                getBoard().p2Opals.Add(opalTwo);
-            }
-            else if (player == "Green")
-            {
-                getBoard().p3Opals.Add(opalTwo);
-            }
-            else if (player == "Orange")
-            {
-                getBoard().p4Opals.Add(opalTwo);
-            }
-            else
-            {
-                getBoard().p1Opals.Add(opalTwo);
-            }
-            opalTwo.setSkipTurn(true);
-            //getBoard().sortOpals(getBoard().gameOpals);
-            transform.position = new Vector3(-100, -100, -100);
-            //currentTile.standingOn(null);
-            currentTile.standingOn(opalTwo);
-            setIt(opalTwo);
-            setDead();
-        }
+        spawnOplet(dimstingPrefab, currentTile);
+        
+        transform.position = new Vector3(-100, -100, -100);
+        //currentTile.standingOn(null);
+        setDead();
     }
 
 
@@ -125,41 +95,9 @@ public class Spiritch : OpalScript
         }
         else if (attackNum == 2) //Spectral Lunge
         {
-            int minionCount = 0;
-            foreach (OpalScript o in boardScript.gameOpals)
-            {
-                if (o.getMyName() == "Numbskull" && o.getDead() == false)
-                    minionCount++;
-            }
-            if (minionCount < 4)
-            {
-                DamageResultScript temp = Instantiate<DamageResultScript>(damRes, this.transform);
-                temp.setUp(minionCount + 1, swarmLimit);
-                Numbskull opalTwo = Instantiate<Numbskull>(dimstingPrefab);
-                opalTwo.setOpal(player); // Red designates player 1, Blue designates player 2
-                opalTwo.setPos((int)target.getPos().x, (int)target.getPos().z);
-                getBoard().gameOpals.Add(opalTwo);
-                getBoard().addToUnsorted(opalTwo);
-                if (player == "Red")
-                {
-                    getBoard().p2Opals.Add(opalTwo);
-                }
-                else if (player == "Green")
-                {
-                    getBoard().p3Opals.Add(opalTwo);
-                }
-                else if (player == "Orange")
-                {
-                    getBoard().p4Opals.Add(opalTwo);
-                }
-                else
-                {
-                    getBoard().p1Opals.Add(opalTwo);
-                }
-                opalTwo.setSkipTurn(true);
-                target.standingOn(opalTwo);
-                takeDamage(5, false, true);
-            }
+            spawnOplet(dimstingPrefab, target);
+            takeDamage(5, false, true);
+            
             return 0;
         }
         return cA.getBaseDamage() + getAttack();

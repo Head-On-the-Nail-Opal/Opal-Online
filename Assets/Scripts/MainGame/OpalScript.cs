@@ -45,7 +45,7 @@ abstract public class OpalScript : MonoBehaviour {
     protected int armor = 0;
     public bool display = false;
     protected List<ParticleSystem> armors = new List<ParticleSystem>();
-    private int matchID;
+    private int matchID = -1;
 
 
     public bool shrouded = false;
@@ -67,6 +67,7 @@ abstract public class OpalScript : MonoBehaviour {
     private GameObject mySpot;
 
     private bool earlyEnd = false;
+    private Spiritch spiritchPrefab;
 
     private void Awake()
     {
@@ -80,6 +81,8 @@ abstract public class OpalScript : MonoBehaviour {
         armorParticle = Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/Armor");
         damRes = Resources.Load<DamageResultScript>("Prefabs/AttackResult");
         playerIndicator = Resources.Load<GameObject>("Prefabs/TeamLabel");
+        spiritchPrefab = Resources.Load<Spiritch>("Prefabs/Opals/Spiritch");
+        onAwake();
     }
 
     void Start () {
@@ -221,6 +224,11 @@ abstract public class OpalScript : MonoBehaviour {
     }
 
     public virtual void preFire(int attackNum, TileScript target)
+    {
+        return;
+    }
+
+    public virtual void onAwake()
     {
         return;
     }
@@ -842,6 +850,7 @@ abstract public class OpalScript : MonoBehaviour {
 
     public IEnumerator shrinker()
     {
+        
         onDie();
         float shrink = 1f;
         for (int i = 0; i < 20; i++)
@@ -855,6 +864,11 @@ abstract public class OpalScript : MonoBehaviour {
         if(transform.position.x != -100)
             boardScript.tileGrid[(int)getPos().x, (int)getPos().z].currentPlayer = null;
         transform.position = new Vector3(-100, -100, -100);
+    }
+
+    public IEnumerator moveDelay()
+    {
+        yield return new WaitForSeconds(0.5f);
     }
 
     public IEnumerator dancer()
@@ -970,6 +984,10 @@ abstract public class OpalScript : MonoBehaviour {
             if(temp != null)
                 temp.setImpassable(false);
             dead = true;
+            if (boardScript.getMyCursor().getCurrentOpal() != null && boardScript.getMyCursor().getCurrentOpal().getMyName() == "Numbskull" && boardScript.getMyCursor().getCurrentOpal().getTeam() != getTeam())
+            {
+                spawnOplet(spiritchPrefab, temp);
+            }
             StartCoroutine(shrinker());
         }
         onDamage(dam);
@@ -978,10 +996,10 @@ abstract public class OpalScript : MonoBehaviour {
     public OpalScript spawnOplet(OpalScript oplet, TileScript target)
     {
         int minionCount = 0;
-        oplet.setOpal(null);
+        //oplet.setOpal(null);
         foreach (OpalScript o in boardScript.gameOpals)
         {
-            if (o.getMyName() == oplet.getMyName() && o.getDead() == false)
+            if (o.getMyName() == oplet.getMyName() && o.getTeam() == getTeam() && o.getDead() == false)
                 minionCount++;
         }
         if (minionCount < 4)
@@ -989,8 +1007,9 @@ abstract public class OpalScript : MonoBehaviour {
             DamageResultScript temp = Instantiate<DamageResultScript>(damRes, this.transform);
             temp.setUp(minionCount + 1, swarmLimit);
             OpalScript opalTwo = Instantiate<OpalScript>(oplet);
-            opalTwo.setOpal(player); // Red designates player 1, Blue designates player 2
+            opalTwo.setOpal(player); 
             opalTwo.setPos((int)target.getPos().x, (int)target.getPos().z);
+            opalTwo.setID(boardScript.gameOpals.Count+1);
             getBoard().gameOpals.Add(opalTwo);
             getBoard().addToUnsorted(opalTwo);
             if (player == "Red")

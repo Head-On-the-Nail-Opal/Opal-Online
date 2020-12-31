@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MenuButtonScript : MonoBehaviour {
     public Vector3 target;
@@ -167,6 +168,10 @@ public class MenuButtonScript : MonoBehaviour {
         else
         {
             sR.color = new Color(1f, 0.2f, 1f);
+            if(purpose == "teams")
+            {
+                transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().color = new Color(1f, 0f, 0f);
+            }
         }
     }
 
@@ -180,6 +185,10 @@ public class MenuButtonScript : MonoBehaviour {
         else
         {
             sR.color = new Color(1f, 1f, 1f);
+            if (purpose == "teams")
+            {
+                transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().color = new Color(0f, 0f, 1f);
+            }
         }
     }
 

@@ -7,16 +7,9 @@ public class Numbskull : OpalScript
 
     private Spiritch dimstingPrefab;
 
-    private void Awake()
+    public override void onAwake()
     {
-        GameObject board = GameObject.Find("Main Camera");
-        boardScript = board.GetComponent<GroundScript>();
-        transform.position = new Vector3(5, 0.5f, 5);
-        anim = GetComponent<Animator>();
-        burningParticle = Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/PassiveBurn");
-        poisonedParticle = Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/PassivePoison");
         dimstingPrefab = Resources.Load<Spiritch>("Prefabs/Opals/Spiritch");
-        damRes = Resources.Load<DamageResultScript>("Prefabs/AttackResult");
     }
 
     override public void setOpal(string pl)
@@ -42,7 +35,7 @@ public class Numbskull : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Haunting", 0, 0, 0, "<Passive>\n Enemy opals killed by Numbskull leave a Spiritch in their place.");
-        Attacks[1] = new Attack("Spiritual Essence", 1, 1, 5, "Deal 10 damage to a Spiritch and heal 5 health. Does not trigger Haunting. You may move after using this ability.");
+        Attacks[1] = new Attack("Gambit", 0, 1, 10, "Deal damage in an area of effect.",1);
         Attacks[2] = new Attack("Shade Grasp", 1, 1, 6, "You may move after using this ability.");
         Attacks[3] = new Attack("Fateful Reward", 0, 1, 0, "Take 3 damage. Gain +3 attack.");
         type1 = "Dark";
@@ -74,15 +67,7 @@ public class Numbskull : OpalScript
         }
         else if (attackNum == 1) //Seed Launch
         {
-            if(target.getMyName() == "Spiritch")
-            {
-                doHeal(5, false);
-                return 10 + target.getDefense();
-            }
-            else
-            {
-                return 0;
-            }
+
         }
         else if (attackNum == 2) //Grass Cover
         {

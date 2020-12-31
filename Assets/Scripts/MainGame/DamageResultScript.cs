@@ -20,7 +20,7 @@ public class DamageResultScript : MonoBehaviour {
         }
         else
         {
-            body.text = "No Damage";
+            body.text = " ";
             body.color = new Color(0, 0, 0);
         }
     }

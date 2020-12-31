@@ -34,18 +34,22 @@ public class InanimateOpal : OpalScript
         speed = 0;
         priority = 0;
         myName = "Boulder";
-        transform.localScale = new Vector3(3f, 3f, 1);
-        if (pl == "Red" || pl == "Green")
+        transform.localScale = new Vector3(0.12f, 0.12f, 1);
+        ///transform.position = new Vector3(transform.position.x + 0.3f, transform.position.y-0.3f, transform.position.z - 0.3f);
+        //offsetX = 0.6f;
+        //offsetY = -0.1f;
+        //offsetZ = -0.6f;
+        if (Random.Range(0,2) == 0)
         {
-            GetComponent<SpriteRenderer>().flipX = true;
+            transform.GetChild(0).GetComponent<SpriteRenderer>().flipX = true;
         }
         else
         {
-            GetComponent<SpriteRenderer>().flipX = false;
+            transform.GetChild(0).GetComponent<SpriteRenderer>().flipX = false;
         }
-        offsetX = 0;
-        offsetY = 0f;
-        offsetZ = 0;
+        //offsetX = 0;
+        //offsetY = 0f;
+        //offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Boulder", 0, 0, 0, "Boulders do not act and are stationary obstacles");
         Attacks[1] = new Attack("Boulder", 0, 0, 0, "Boulders can be pushed and broken by attacks");
@@ -54,4 +58,9 @@ public class InanimateOpal : OpalScript
         type1 = "Ground";
         type2 = "Ground";
     }
+
+    //public void setPos(int x, int y)
+    //{
+     //   transform.position = new Vector3(x + offsetX, 0.4f + offsetY, y + offsetZ);
+   // }
 }

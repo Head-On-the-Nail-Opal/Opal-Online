@@ -9,15 +9,8 @@ public class Amalgum : OpalScript
     private int currentUse = 0;
     private Amal tempAmal;
 
-    private void Awake()
+    public override void onAwake()
     {
-        GameObject board = GameObject.Find("Main Camera");
-        boardScript = board.GetComponent<GroundScript>();
-        transform.position = new Vector3(5, 0.5f, 5);
-        anim = GetComponent<Animator>();
-        damRes = Resources.Load<DamageResultScript>("Prefabs/AttackResult");
-        burningParticle = Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/PassiveBurn");
-        poisonedParticle = Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/PassivePoison");
         amalPrefab = Resources.Load<Amal>("Prefabs/SubOpals/Amal");
         gumPrefab = Resources.Load<Gum>("Prefabs/SubOpals/Gum");
     }
@@ -79,60 +72,14 @@ public class Amalgum : OpalScript
         {
             if (currentUse == 0)
             {
-                Amal opalOne = Instantiate<Amal>(amalPrefab);
-                tempAmal = opalOne;
-                opalOne.setOpal(player); // Red designates player 1, Blue designates player 2
-                opalOne.setPos((int)target.getPos().x, (int)target.getPos().z);
-                getBoard().gameOpals.Add(opalOne);
-                getBoard().addToUnsorted(opalOne);
-                if (player == "Red")
-                {
-                    getBoard().p2Opals.Add(opalOne);
-                }
-                else if (player == "Green")
-                {
-                    getBoard().p3Opals.Add(opalOne);
-                }
-                else if (player == "Orange")
-                {
-                    getBoard().p4Opals.Add(opalOne);
-                }
-                else
-                {
-                    getBoard().p1Opals.Add(opalOne);
-                }
-                opalOne.setSkipTurn(true);
-                target.standingOn(opalOne);
+                tempAmal = (Amal)spawnOplet(amalPrefab, target);
                 currentUse = 1;
             }
             else
             {
-                Gum opalTwo = Instantiate<Gum>(gumPrefab);
-                opalTwo.setOpal(player); // Red designates player 1, Blue designates player 2
-                opalTwo.setPos((int)target.getPos().x, (int)target.getPos().z);
-                getBoard().gameOpals.Add(opalTwo);
-                getBoard().addToUnsorted(opalTwo);
-                if (player == "Red")
-                {
-                    getBoard().p2Opals.Add(opalTwo);
-                }
-                else if (player == "Green")
-                {
-                    getBoard().p3Opals.Add(opalTwo);
-                }
-                else if (player == "Orange")
-                {
-                    getBoard().p4Opals.Add(opalTwo);
-                }
-                else
-                {
-                    getBoard().p1Opals.Add(opalTwo);
-                }
-                opalTwo.setSkipTurn(true);
-                //getBoard().sortOpals(getBoard().gameOpals);
-                target.standingOn(opalTwo);
-                tempAmal.setTwin(opalTwo);
-                opalTwo.setTwin(tempAmal);
+                Gum tempGum = (Gum)spawnOplet(gumPrefab, target);
+                tempAmal.setTwin(tempGum);
+                tempGum.setTwin(tempAmal);
                 takeDamage(getHealth(), false, false);
             }
             return 0;

@@ -34,6 +34,10 @@ public class OpalTeam : MonoBehaviour
         int i = 0;
         foreach(OpalScript o in input)
         {
+            if(o.gameObject.activeSelf == false)
+            {
+                o.gameObject.SetActive(true);
+            }
             OpalScript opalOne = Instantiate<OpalScript>(o);
             opalOne.setOpal(null);
             opalOne.transform.position = new Vector3(transform.position.x + i*1.2f - 3, transform.position.y, -2.5f);
@@ -96,6 +100,7 @@ public class OpalTeam : MonoBehaviour
         foreach(OpalScript o in opals)
         {
             DestroyImmediate(o.gameObject);
+            //o.gameObject.SetActive(false);
         }
         foreach(GameObject g in backgrounds)
         {

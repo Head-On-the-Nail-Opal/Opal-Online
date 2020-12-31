@@ -4,7 +4,13 @@ using UnityEngine;
 
 public class Duplimorph : OpalScript
 {
+    private Duplimorph duplimorphPrefab;
 
+    public override void onAwake()
+    {
+        duplimorphPrefab = Resources.Load<Duplimorph>("Prefabs/Opals/Duplimorph");
+
+    }
     override public void setOpal(string pl)
     {
         health = 20;
@@ -74,35 +80,14 @@ public class Duplimorph : OpalScript
             takeDamage(7, false, true);
             if (health > 0)
             {
-                Duplimorph opalOne = Instantiate<Duplimorph>(this);
-                opalOne.setOpal(player); // Red designates player 1, Blue designates player 2
-                opalOne.setPos((int)target.getPos().x, (int)target.getPos().z);
-                getBoard().gameOpals.Add(opalOne);
-                getBoard().addToUnsorted(opalOne);
-                if (player == "Red")
-                {
-                    getBoard().p2Opals.Add(opalOne);
-                }
-                else if (player == "Green")
-                {
-                    getBoard().p3Opals.Add(opalOne);
-                }
-                else if (player == "Orange")
-                {
-                    getBoard().p4Opals.Add(opalOne);
-                }
-                else
-                {
-                    getBoard().p1Opals.Add(opalOne);
-                }
+                OpalScript opalOne = spawnOplet(duplimorphPrefab, target);
+                
                 opalOne.setHealth(this.health);
                 List<TempBuff> temp = getBuffs();
                 foreach (TempBuff t in temp)
                 {
                     opalOne.doTempBuff(t.getTargetStat(), t.getTurnlength(), t.getAmount());
                 }
-                target.standingOn(opalOne);
-                opalOne.skipfirstTurn = true;
             }
         }
         else if (attackNum == 1) //Insight

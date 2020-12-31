@@ -1331,26 +1331,45 @@ public class MainMenuScript : MonoBehaviour {
     {
         List<OpalScript> teamOpals = o;
         OpalTeam temp = Instantiate<OpalTeam>(Resources.Load<OpalTeam>("Prefabs/OpalTeam"));
+        List<OpalScript> copy = new List<OpalScript>();
+        foreach(OpalScript opal in teamOpals)
+        {
+            OpalScript opalCopy = Instantiate<OpalScript>(opal);
+            opalCopy.setOpal(null);
+            copy.Add(opalCopy);
+        }
         if (currentEditorTeam == -1)
         {
-            teams.Add(teamOpals);
+            teams.Add(copy);
             temp.setMain(this, teams.Count - 1);
-            if (teams.Count == 1)
+
+            if (teams.Count == 0)
                 temp.transform.position = new Vector3(-30, 5 - teams.Count * 1.5f, -1);
             else
                 temp.transform.position = new Vector3(-30, 4.2f - teams.Count * 1.4f, -1);
-            temp.displayTeam(teamOpals);
+
+            if (teams.Count == 0)
+                addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 5 - (teams.Count + 1) * 1.5f, addNewTeamButton.transform.position.z);
+            else
+                addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 4.2f - (teams.Count + 1) * 1.4f, addNewTeamButton.transform.position.z);
+            temp.displayTeam(copy);
             displayTeams.Add(temp);
         }
         else
         {
-            teams[currentEditorTeam] = teamOpals;
+            teams[currentEditorTeam] = copy;
             temp.setMain(this, currentEditorTeam);
-            if (currentEditorTeam + 1 == 1)
+            if (currentEditorTeam == 1)
                 temp.transform.position = new Vector3(-30, 5 - (currentEditorTeam + 1) * 1.5f, -1);
             else
                 temp.transform.position = new Vector3(-30, 4.2f - (currentEditorTeam + 1) * 1.4f, -1);
-            temp.displayTeam(teamOpals);
+
+            if (currentEditorTeam == 1)
+                addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 5 - (currentEditorTeam + 1) * 1.5f, addNewTeamButton.transform.position.z);
+            else
+                addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 4.2f - (currentEditorTeam + 1) * 1.4f, addNewTeamButton.transform.position.z);
+
+            temp.displayTeam(copy);
             displayTeams[currentEditorTeam].selfDestruct();
             DestroyImmediate(displayTeams[currentEditorTeam].gameObject);
             displayTeams.RemoveAt(currentEditorTeam);
@@ -1363,6 +1382,7 @@ public class MainMenuScript : MonoBehaviour {
             p.setPlate(null);
         }
         mainCam.transform.position = new Vector3(-25, 0, -10);
+        
         if (teams.Count == 6)
         {
             addNewTeamButton.gameObject.SetActive(false);
@@ -1394,6 +1414,14 @@ public class MainMenuScript : MonoBehaviour {
     {
         teams.RemoveAt(teamNum);
         loadTeams();
+        if (teams.Count == 0)
+            addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 5 - (teams.Count + 1) * 1.5f, addNewTeamButton.transform.position.z);
+        else
+            addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 4.2f - (teams.Count + 1) * 1.4f, addNewTeamButton.transform.position.z);
+        if (teams.Count < 6)
+        {
+            addNewTeamButton.gameObject.SetActive(true);
+        }
     }
 
     public void loadTeams()
@@ -1416,7 +1444,7 @@ public class MainMenuScript : MonoBehaviour {
                 temp.transform.position = new Vector3(-30, 5 - (i+1) * 1.5f, -1);
             else
                 temp.transform.position = new Vector3(-30, 4.2f - (i+1) * 1.4f, -1);
-            temp.displayTeam(teamOpals);
+            temp.displayTeam(teamOpals); //this is broken
             displayTeams.Add(temp);
             i++;
         }

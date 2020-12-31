@@ -138,7 +138,7 @@ public class CursorScript : MonoBehaviour {
         if(tileFrom != lastTile)
         {
             ts.updateSelected(tileFrom.currentPlayer);
-            if (tileFrom.currentPlayer != null)
+            if (tileFrom.currentPlayer != null && tileFrom.currentPlayer.getMyName() != "Boulder")
             {
                 if(tileFrom.currentPlayer.getPos().x != myPos.x || tileFrom.currentPlayer.getPos().z != myPos.z)
                 {
@@ -408,6 +408,7 @@ public class CursorScript : MonoBehaviour {
         if ((Input.GetKeyUp(KeyCode.LeftShift) && currentController == "keyboard") || (Input.GetButtonUp("LBump" + addon) && (currentController == "joystick 1" || currentController == "joystick 2" || currentController == "joystick 3" || currentController == "joystick 4")))
         {
             ts.displayAttacks(null, null);
+            ts.disableBuffs(selectedPlayer, tileFrom.currentPlayer);
             foreach (OpalScript o in boardScript.gameOpals)
             {
                 o.showSpot(false);
@@ -770,7 +771,16 @@ public class CursorScript : MonoBehaviour {
         moving = false;
         attacking = -1;
         ts.updateAttackScreen(selectedPlayer, attacking, boardScript.tileGrid[(int)myPos.x, (int)myPos.z]);
-        selectedPlayer = boardScript.gameOpals[currentTurn];
+        OpalScript nextOpal = boardScript.gameOpals[0];
+        foreach(OpalScript o in boardScript.gameOpals)
+        {
+            if (!boardScript.alreadyMoved.Contains(o.getID()))
+            {
+                nextOpal = o;
+                break;
+            }
+        }
+        selectedPlayer = nextOpal;
         boardScript.updateTurnOrder(currentTurn);
         if (selectedPlayer.getDead() == true)
         {

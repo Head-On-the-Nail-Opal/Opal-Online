@@ -90,6 +90,7 @@ public class GroundScript : MonoBehaviour {
     private Canvas myCanvas;
 
     private OpalScript boulder;
+    private OpalScript boulder2;
 
     private void Awake()
     {
@@ -108,7 +109,8 @@ public class GroundScript : MonoBehaviour {
         sporeTilePrefab = Resources.Load<TileScript>("Prefabs/Tiles/SporeTile");
         chargeLightning = Resources.Load<GameObject>("Prefabs/LightningCharge");
         chargeEffect = Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/ChargeEffect");
-        boulder = Resources.Load<OpalScript>("Prefabs/Boulder");
+        boulder = Resources.Load<OpalScript>("Prefabs/Boulder0");
+        boulder2 = Resources.Load<OpalScript>("Prefabs/Boulder1");
 
         redPlate = Resources.Load<GameObject>("Prefabs/RedPlate");
         bluePlate = Resources.Load<GameObject>("Prefabs/BluePlate");
@@ -374,6 +376,11 @@ public class GroundScript : MonoBehaviour {
         switchCam = 1;
     }
 
+    public CursorScript getMyCursor()
+    {
+        return myCursor;
+    }
+
     public void addToUnsorted(OpalScript o)
     {
         nonSortedGameOpals.Add(o);
@@ -521,15 +528,7 @@ public class GroundScript : MonoBehaviour {
                 }
                 if(result == 0)
                 {
-                    List<string> temp = new List<string>();
-                    temp.Add(t.getMyName());
-                    temp.Add(o.getMyName());
-                    temp.Sort();
-                    result = temp.IndexOf(t.getMyName());
-                    if (result == 0)
-                        result = 1;
-                    else if (result == 1)
-                        result = -1;
+                    result = t.getID() - o.getID();
                 }
             }
         }
@@ -652,6 +651,8 @@ public class GroundScript : MonoBehaviour {
             tempTile.setCoordinates(x, y);
             tileGrid[x, y] = tempTile;
             tempTile.standingOn(standing);
+            if (standing != null)
+                standing.setCurrentTile(tempTile);
         }
         else if (type.Equals("Fire")) {
             if (replaced.type != "Miasma" && replaced.type != "Flood" && !(replaced.getCurrentOpal() != null && replaced.getCurrentOpal().getMyName() == "Boulder") || over)
@@ -668,6 +669,8 @@ public class GroundScript : MonoBehaviour {
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
                 tempTile.standingOn(standing);
+                if(standing != null)
+                    standing.setCurrentTile(tempTile);
             }
         }
         else if (type.Equals("Miasma"))
@@ -681,6 +684,8 @@ public class GroundScript : MonoBehaviour {
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
                 tempTile.standingOn(standing);
+                if (standing != null)
+                    standing.setCurrentTile(tempTile);
             }
         }
         else if (type.Equals("Growth"))
@@ -694,6 +699,8 @@ public class GroundScript : MonoBehaviour {
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
                 tempTile.standingOn(standing);
+                if (standing != null)
+                    standing.setCurrentTile(tempTile);
             }
         }
         else if (type.Equals("Flood"))
@@ -707,7 +714,10 @@ public class GroundScript : MonoBehaviour {
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
                 tempTile.standingOn(standing);
-            }else if(replaced.getCurrentOpal() != null && replaced.getCurrentOpal().getMyName() == "Boulder")
+                if (standing != null)
+                    standing.setCurrentTile(tempTile);
+            }
+            else if(replaced.getCurrentOpal() != null && replaced.getCurrentOpal().getMyName() == "Boulder")
             {
                 standing.takeDamage(standing.getHealth(), false, false);
                 replaced.standingOn(null);
@@ -717,6 +727,8 @@ public class GroundScript : MonoBehaviour {
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
                 tempTile.standingOn(standing);
+                if (standing != null)
+                    standing.setCurrentTile(tempTile);
             }
         }
         else if (type.Equals("Boulder"))
@@ -750,8 +762,6 @@ public class GroundScript : MonoBehaviour {
                 tempTile.standingOn(standing);
             }
         }
-        if(standing != null)
-            standing.setCurrentTile(tempTile);
         return tileGrid[x, y];
     }
 
@@ -808,7 +818,7 @@ public class GroundScript : MonoBehaviour {
         return null;
     }
 
-    public void updateTurnOrder(int currentTurn)
+    public void updateTurnOrder(int currentTurn) //duplimorph ultra broke, minions don't delete on death
     {
         float i = 0;
 
@@ -820,6 +830,20 @@ public class GroundScript : MonoBehaviour {
         }
         opalTurns.Clear();
         sortOpals(gameOpals);
+        if(myCursor.getCurrentOpal() != null)
+        {
+            int num = 0;
+            foreach(OpalScript o in gameOpals)
+            {
+                if(o.getID() == myCursor.getCurrentOpal().getID())
+                {
+                    break;
+                }
+                num++;
+            }
+            gameOpals.RemoveAt(num);
+            gameOpals.Insert(0,myCursor.getCurrentOpal());
+        }
         foreach (OpalScript o in gameOpals)
         {
             if (!o.getDead() && !alreadyMoved.Contains(o.getID())) 
@@ -949,9 +973,29 @@ public class GroundScript : MonoBehaviour {
 
     public void placeBoulder(TileScript target)
     {
-        OpalScript opalTwo = Instantiate<OpalScript>(boulder);
+        OpalScript b = boulder;
+        if (Random.Range(0,2)==0)
+        {
+            b = boulder2;
+        }
+        OpalScript opalTwo = Instantiate<OpalScript>(b);
         opalTwo.setOpal(myCursor.getCurrentOpal().getTeam());
         opalTwo.setPos((int)target.getPos().x, (int)target.getPos().z);
+        //opalTwo.transform.localPosition = new Vector3(opalTwo.transform.localPosition.x + 0.3f, opalTwo.transform.localPosition.y - 0.1f, opalTwo.transform.localPosition.z - 0.3f);
+        opalTwo.setCurrentTile(target);
         target.standingOn(opalTwo);
+    }
+
+    public int getNextID()
+    {
+        int i = 0;
+        foreach(OpalScript o in gameOpals)
+        {
+            if(o.getID() != -1)
+            {
+                i++;
+            }
+        }
+        return i;
     }
 }

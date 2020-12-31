@@ -119,6 +119,13 @@ public class Terradactyl : OpalScript
             return 0;
         }else if(attackNum == 3)
         {
+            TileScript startingTile = currentTile;
+            doMove((int)target.getPos().x, (int)target.getPos().z, 0);
+            boardScript.setTile(startingTile, "Boulder", false);
+            if (startingTile.getCurrentOpal() != null && startingTile.getCurrentOpal().getMyName() == "Boulder")
+            {
+                startingTile.currentPlayer.doTempBuff(1, -1, 5);
+            }
             return 0;
         }
         return cA.getBaseDamage() + getAttack();
@@ -142,13 +149,7 @@ public class Terradactyl : OpalScript
         }
         else if (attackNum == 3)
         {
-            TileScript startingTile = currentTile;
-            doMove((int)target.getPos().x, (int)target.getPos().z, 0);
-            boardScript.setTile(startingTile, "Boulder", false);
-            if (startingTile.getCurrentOpal() != null && startingTile.getCurrentOpal().getMyName() == "Boulder")
-            {
-                startingTile.currentPlayer.doTempBuff(1, -1, 5);
-            }
+            
             return 0;
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();

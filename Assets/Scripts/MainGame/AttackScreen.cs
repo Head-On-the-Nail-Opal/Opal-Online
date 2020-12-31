@@ -48,7 +48,13 @@ public class AttackScreen : MonoBehaviour
 
     public void updateScreen(OpalScript attacking, int attackNum, TileScript target)
     {
-        if(attacking != null)
+        name.text = "";
+        damage.text = "";
+        description.text = "";
+        range.text = "";
+        mechanic.text = "";
+        shape.text = "";
+        if (attacking != null)
         {
             if(attacking.getTeam() == "Red")
             {
@@ -70,12 +76,6 @@ public class AttackScreen : MonoBehaviour
         {
             //doattacking = false;
             transform.position = new Vector3(-100, -100, -100);
-            name.text = "";
-            damage.text = "";
-            description.text = "";
-            range.text = "";
-            mechanic.text = "";
-            shape.text = "";
             return;
 
         }
