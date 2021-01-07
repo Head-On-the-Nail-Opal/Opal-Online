@@ -716,6 +716,7 @@ public class GroundScript : MonoBehaviour {
                 tempTile.standingOn(standing);
                 if (standing != null)
                     standing.setCurrentTile(tempTile);
+                
             }
             else if(replaced.getCurrentOpal() != null && replaced.getCurrentOpal().getMyName() == "Boulder")
             {
@@ -760,6 +761,26 @@ public class GroundScript : MonoBehaviour {
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
                 tempTile.standingOn(standing);
+            }
+        }
+        if(tileGrid[x,y].type == "Flood")
+        {
+            
+            List<TileScript> output = new List<TileScript>();
+            TileScript temp = tileGrid[x, y];
+            temp.determineShape();
+            bool adj = false;
+            for (int i = -1; i < 2; i++)
+            {
+                for (int j = -1; j < 2; j++)
+                {
+                    if (temp.getPos().x + i < 10 && temp.getPos().x + i > -1 && temp.getPos().z + j < 10 && temp.getPos().z + j > -1 && !(i == 0 && j == 0) && (!adj || (Mathf.Abs(i) != Mathf.Abs(j))))
+                    {
+                        output.Add(tileGrid[(int)temp.getPos().x + i, (int)temp.getPos().z + j]);
+                        if(tileGrid[(int)temp.getPos().x + i, (int)temp.getPos().z + j].type == "Flood")
+                            tileGrid[(int)temp.getPos().x + i, (int)temp.getPos().z + j].determineShape();
+                    }
+                }
             }
         }
         return tileGrid[x, y];
@@ -984,6 +1005,15 @@ public class GroundScript : MonoBehaviour {
         //opalTwo.transform.localPosition = new Vector3(opalTwo.transform.localPosition.x + 0.3f, opalTwo.transform.localPosition.y - 0.1f, opalTwo.transform.localPosition.z - 0.3f);
         opalTwo.setCurrentTile(target);
         target.standingOn(opalTwo);
+    }
+
+    public string getTileType(int x, int z)
+    {
+        if(x >= 0 && x <= 9 && z >= 0 && z <= 9)
+        {
+            return tileGrid[x, z].type;
+        }
+        return null;
     }
 
     public int getNextID()

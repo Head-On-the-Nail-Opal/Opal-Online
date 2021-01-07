@@ -9,8 +9,10 @@ public class TileScript : MonoBehaviour {
     public Material grass2;
     public string type;
     public GameObject GrowthEffect;
+    public List<Sprite> connectedTileSprites;
+    public GameObject changeTexture;
+    private ConnectedTile connectedTile;
 
-    
     public OpalScript currentPlayer = null;
     public GameObject currentEffect = null;
     private GameObject trapEffect = null;
@@ -32,6 +34,18 @@ public class TileScript : MonoBehaviour {
     private int decayTurn;
     private bool impassable = false;
     private TileScript link;
+    private SpriteRenderer changeSpriteRenderer;
+
+    private List<List<Sprite>> directions = new List<List<Sprite>>();
+    private List<Sprite> east = new List<Sprite>();
+    private List<Sprite> north = new List<Sprite>();
+    private List<Sprite> west = new List<Sprite>();
+    private List<Sprite> south = new List<Sprite>();
+    private List<Sprite> northeast = new List<Sprite>();
+    private List<Sprite> northwest = new List<Sprite>();
+    private List<Sprite> southeast = new List<Sprite>();
+    private List<Sprite> southwest = new List<Sprite>();
+
 
     public void Awake()
     {
@@ -42,9 +56,157 @@ public class TileScript : MonoBehaviour {
         bluePlate = Resources.Load<GameObject>("Prefabs/BluePlate");
         greenPlate = Resources.Load<GameObject>("Prefabs/GreenPlate");
         orangePlate = Resources.Load<GameObject>("Prefabs/OrangePlate");
+        if (changeTexture != null)
+            changeSpriteRenderer = changeTexture.GetComponent<SpriteRenderer>();
         if(type == "Boulder")
         {
             impassable = true;
+        }
+        connectedTile = transform.GetChild(0).transform.GetComponentInChildren<ConnectedTile>();
+        if(connectedTileSprites.Count > 0)
+        {
+            directions.Add(northwest); 
+            directions.Add(north);
+            directions.Add(northeast);
+            directions.Add(west);
+            directions.Add(new List<Sprite>());
+            directions.Add(east);
+            directions.Add(southwest);
+            directions.Add(south);
+            directions.Add(southeast);
+            int i = 0;
+            foreach(Sprite s in connectedTileSprites)
+            {
+                switch (i)
+                {
+                    case 0:
+                        east.Add(s);
+                        southeast.Add(s);
+                        south.Add(s);
+                        break;
+                    case 1:
+                        east.Add(s);
+                        southeast.Add(s);
+                        south.Add(s);
+                        southwest.Add(s);
+                        west.Add(s);
+                        break;
+                    case 2:
+                        south.Add(s);
+                        southwest.Add(s);
+                        west.Add(s);
+                        break;
+                    case 3:
+                        south.Add(s);
+                        break;
+                    case 4:
+                        north.Add(s);
+                        west.Add(s);
+                        break;
+                    case 5:
+                        north.Add(s);
+                        east.Add(s);
+                        south.Add(s);
+                        southeast.Add(s);
+                        northeast.Add(s);
+                        break;
+                    case 6:
+                        north.Add(s);
+                        east.Add(s);
+                        south.Add(s);
+                        west.Add(s);
+                        southeast.Add(s);
+                        southwest.Add(s);
+                        northeast.Add(s);
+                        northwest.Add(s);
+                        break;
+                    case 7:
+                        north.Add(s);
+                        west.Add(s);
+                        south.Add(s);
+                        southwest.Add(s);
+                        southwest.Add(s);
+                        break;
+                    case 8:
+                        north.Add(s);
+                        south.Add(s);
+                        break;
+                    case 9:
+                        north.Add(s);
+                        east.Add(s);
+                        break;
+                    case 10:
+                        north.Add(s);
+                        northeast.Add(s);
+                        east.Add(s);
+                        break;
+                    case 11:
+                        north.Add(s);
+                        northeast.Add(s);
+                        east.Add(s);
+                        west.Add(s);
+                        northwest.Add(s);
+                        break;
+                    case 12:
+                        north.Add(s);
+                        west.Add(s);
+                        northwest.Add(s);
+                        break;
+                    case 13:
+                        north.Add(s);
+                        break;
+                    case 14:
+                        east.Add(s);
+                        south.Add(s);
+                        break;
+                    case 15:
+                        east.Add(s);
+                        break;
+                    case 16:
+                        east.Add(s);
+                        west.Add(s);
+                        break;
+                    case 17:
+                        west.Add(s);
+                        break;
+                    case 19:
+                        west.Add(s);
+                        south.Add(s);
+                        break;
+                    case 20:
+                        north.Add(s);
+                        west.Add(s);
+                        south.Add(s);
+                        east.Add(s);
+                        northeast.Add(s);
+                        northwest.Add(s);
+                        southwest.Add(s);
+                        break;
+                    case 21:
+                        north.Add(s);
+                        west.Add(s);
+                        south.Add(s);
+                        east.Add(s);
+                        northeast.Add(s);
+                        northwest.Add(s);
+                        break;
+                    case 22:
+                        north.Add(s);
+                        west.Add(s);
+                        south.Add(s);
+                        east.Add(s);
+                        northeast.Add(s);
+                        break;
+                    case 23:
+                        north.Add(s);
+                        west.Add(s);
+                        south.Add(s);
+                        east.Add(s);
+                        break;
+                }
+
+                i++;
+            }
         }
     }
 
@@ -54,7 +216,7 @@ public class TileScript : MonoBehaviour {
         gridPos.y = col;
         if (type == "Flood")
         {
-            transform.position = new Vector3(gridPos.x, -1.1f, gridPos.y);
+            transform.position = new Vector3(gridPos.x, -1f, gridPos.y);
         }
         else
         {
@@ -552,4 +714,249 @@ public class TileScript : MonoBehaviour {
         }
         return currentPlayer;
     }
+
+    public void determineShape()
+    {
+        string shape = "";
+        int dec = 1;
+        for (int i = -1; i < 2; i++)
+        {
+            for (int j = -1; j < 2; j++)
+            {
+                if (boardScript.getTileType((int)gridPos.x + i, (int)gridPos.y + j) == "Flood")
+                {
+                    shape += 4;
+                }
+                else
+                {
+                    shape += 1;
+                }
+                dec *= 10;
+            }
+        }
+        print("(X:" + gridPos.x + ",Y:" + gridPos.y + ") = " + shape);
+        changeSpriteRenderer.sprite = connectedTileSprites[18];
+        connectedTile.changeSprite(shape);
+    }
+
+    public void determineShapeALSOOLD()
+    {
+        string shape = "";
+        int dec = 1;
+        for (int i = -1; i < 2; i++)
+        {
+            for (int j = -1; j < 2; j++)
+            {
+                if (boardScript.getTileType((int)gridPos.x + i, (int)gridPos.y + j) == "Flood")
+                {
+                    shape += 4;
+                }
+                else
+                {
+                    shape += 1;
+                }
+                dec *= 10;
+            }
+        }
+        print("(X:" + gridPos.x + ",Y:" + gridPos.y + ") = " + shape);
+        changeSpriteRenderer.sprite = connectedTileSprites[18];
+
+        int dir0 = 0;
+        List<Sprite> maybeMe = new List<Sprite>();
+        List<Sprite> notMe = new List<Sprite>();
+        foreach(List<Sprite> ls in directions)
+        {
+            foreach(Sprite s in ls)
+            {
+                if (shape[dir0] == '4' && notMe.Contains(s)) //check its 
+                {
+                    if (maybeMe.Contains(s))
+                        maybeMe.Remove(s);
+                } else if (shape[dir0] == '1' && maybeMe.Contains(s))
+                {
+                    maybeMe.Remove(s);
+                    if (!notMe.Contains(s))
+                    {
+                        notMe.Add(s);
+                    }
+                }
+                else if (shape[dir0] == '4' && !maybeMe.Contains(s) && !notMe.Contains(s))
+                {
+                    maybeMe.Add(s);
+                }
+                else if (shape[dir0] == '1' && !notMe.Contains(s))
+                {
+                    notMe.Add(s);
+                    if (maybeMe.Contains(s))
+                        maybeMe.Remove(s);
+                }
+            }
+            dir0++;
+        }
+
+        foreach(Sprite s in maybeMe)
+        {
+            if (notMe.Contains(s))
+            {
+                maybeMe.Remove(s);
+            }
+        }
+        if(maybeMe.Count >= 1)
+        {
+            changeSpriteRenderer.sprite = maybeMe[maybeMe.Count-1];
+        }
+        print(maybeMe.Count);
+    }
+
+    public void determineShapeOLD() 
+    {
+        int shape = 0;
+        int dec = 1;
+        for(int i = -1; i < 2; i++)
+        {
+            for(int j = -1; j < 2; j++)
+            {
+                if(boardScript.getTileType((int)gridPos.x+i, (int)gridPos.y+j) == "Flood")
+                {
+                    shape += 4 * dec;
+                }
+                else
+                {
+                    shape += 1 * dec;
+                }
+                dec *= 10;
+            }
+        }
+        if(shape == 111141111)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[18];
+        }else if(shape == 444444444)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[6];
+        }
+        else if (shape == 441441111)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[0];
+        }
+        else if (shape == 144144111)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[2];
+        }
+        else if (shape == 111441441)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[10];
+        }
+        else if (shape == 111144144)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[12];
+        }
+        else if(shape == 144144144)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[7];
+        }
+        else if (shape == 441441441)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[5];
+        }
+        else if (shape == 111444444)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[11];
+        }
+        else if (shape == 444444111)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[1];
+        }
+        else if (shape == 141141111)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[3];
+        }
+        else if (shape == 141141444)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[8];
+        }
+        else if (shape == 444141141)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[8];
+        }
+        else if (shape == 111141141)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[13];
+        }else if(shape == 141141141)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[8];
+        }
+        else if(shape == 141444141)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[23];
+        }else if(shape == 111141444)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[13];
+        }
+        else if (shape == 444141111)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[3];
+        }
+        else if (shape == 411441411)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[15];
+        }
+        else if (shape == 114144114)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[17];
+        }else if(shape == 111441111)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[15];
+        }
+        else if (shape == 111144111)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[17];
+        }
+        else if (shape == 111444111)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[16];
+        }
+        else if (shape == 411441111)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[15];
+        }
+        else if (shape == 114144111)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[17];
+        }
+        else if (shape == 141444111)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[0];
+        }
+        else if (shape == 441141111)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[3];
+        }
+        else if (shape == 141441141)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[5];
+        }
+        else if (shape == 111441411)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[13];
+        }
+
+        else if(shape == 111411411)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[11];
+        }
+        else if(shape == 111444141)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[15];
+        }
+        else if(shape == 111144114)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[17];
+        }
+
+        else
+        {
+            print("(X:" + gridPos.x + ",Y:" + gridPos.y + ") = " + shape);
+        }
+    }
+
 }
