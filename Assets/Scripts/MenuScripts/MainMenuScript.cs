@@ -63,6 +63,7 @@ public class MainMenuScript : MonoBehaviour {
     public MenuButtonScript createTeamButton;
     public MenuButtonScript addNewTeamButton;
     private int currentEditorTeam = -1;
+    private TextAsset save;
 
 
     // Use this for initialization
@@ -77,6 +78,7 @@ public class MainMenuScript : MonoBehaviour {
         mm = GameObject.Find("MultiplayerManager").GetComponent<MultiplayerManager>();
         lPage = GameObject.Find("LastPage");
         nPage = GameObject.Find("NextPage");
+        save = Resources.Load<TextAsset>("Assets/save.txt");
         createTeamButton.gameObject.SetActive(false);
         lPage.SetActive(false);
         float x = 20;
@@ -1468,8 +1470,8 @@ public class MainMenuScript : MonoBehaviour {
 
     public void saveData()
     {
-        string path = "Assets/Resources/save.txt";
-        using (var stream = new FileStream(path, FileMode.Truncate))
+        string path = "/StreamingAssets/save.txt";
+        using (var stream = new FileStream(Application.dataPath + path, FileMode.Truncate))
         {
             using (var writer = new StreamWriter(stream))
             {
@@ -1502,9 +1504,9 @@ public class MainMenuScript : MonoBehaviour {
 
     public void loadData()
     {
-        string path = "Assets/Resources/save.txt";
+        string path = "/StreamingAssets/save.txt";
         //Read the text from directly from the test.txt file
-        StreamReader reader = new StreamReader(path);
+        StreamReader reader = new StreamReader(Application.dataPath + path);
         string reid = reader.ReadLine();
         reid = reader.ReadLine();
         while (reid != "endTeams")
