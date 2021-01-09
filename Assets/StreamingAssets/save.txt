@@ -1,5 +1,4 @@
 Please don't change this, it will be encrypted eventually.
-Ambush,Sentree,Cactoid,Butterflight,Diamite,Tortquoise,
 endTeams
 
 endOpals
