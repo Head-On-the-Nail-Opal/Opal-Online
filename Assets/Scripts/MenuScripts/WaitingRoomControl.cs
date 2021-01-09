@@ -76,6 +76,11 @@ public class WaitingRoomControl : MonoBehaviourPunCallbacks, IPunObservable
         }
     }
 
+    [PunRPC] private void updatePlayerCount()
+    {
+        glob.setNumPlayers(PhotonNetwork.CurrentRoom.PlayerCount);
+    }
+
     [PunRPC]
     private void sendChatData(string data)
     {
@@ -87,7 +92,7 @@ public class WaitingRoomControl : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (PhotonNetwork.CurrentRoom.PlayerCount >= 2)
         {
-            glob.setNumPlayers(PhotonNetwork.CurrentRoom.PlayerCount);
+            this.photonView.RPC("updatePlayerCount", RpcTarget.All);
             PhotonNetwork.CurrentRoom.IsOpen = false;
             PhotonNetwork.LoadLevel("MainGame");
         }
