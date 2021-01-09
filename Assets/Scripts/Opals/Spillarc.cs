@@ -29,7 +29,7 @@ public class Spillarc : OpalScript
         }
         Attacks[0] = new Attack("Prismatic Soothe", 1, 3, 0, "<Water Rush>\nHeal another Opal 8 health. Place Flood surrounding the target.");
         Attacks[1] = new Attack("Encolour", 1, 3, 0, "<Water Rush>\nBuff another Opal by +3 attack and +2 defense for 1 turn");
-        Attacks[2] = new Attack("Soak", 2, 1, 6, "If the target Opal is not on Flood, replace the tile they're standing on with Flood and deal 8 more damage.");
+        Attacks[2] = new Attack("Soak", 2, 1, 6, "If the target Opal is not on Flood, replace the tile they're standing on with Flood.");
         Attacks[3] = new Attack("Water Down",0,1,0,"Overheal self by 6 health. Place flood at your feet and on adjacent tiles.");
         type1 = "Water";
         type2 = "Light";
@@ -58,13 +58,6 @@ public class Spillarc : OpalScript
         }
         else if (attackNum == 2) //Soak
         {
-            int flud = 0;
-            if (boardScript.tileGrid[(int)(target.getPos().x), (int)(target.getPos().z)].type != "Flood")
-            {
-                flud = 8;
-                getBoard().setTile((int)target.getPos().x, (int)target.getPos().z, "Flood", false);
-            }
-            return cA.getBaseDamage() + getAttack() + flud;
 
         }
         else if (attackNum == 3) //Encolour

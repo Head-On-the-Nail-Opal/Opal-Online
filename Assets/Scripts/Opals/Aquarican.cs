@@ -29,7 +29,7 @@ public class Aquarican : OpalScript
         Attacks[0] = new Attack("Water Bowl", 0, 0, 0, "<Passive>\n On the start of its turn, if it's attack is less than 1, Aquarican takes 10 damage.");
         Attacks[1] = new Attack("Refill", 0, 1, 0, "Remove the Flood tile at your feet and gain +6 attack.");
         Attacks[2] = new Attack("Spout Snipe", 6, 4, 5, "Lose -4 attack after using this attack.");
-        Attacks[3] = new Attack("Refresh", 1, 3, 0, "<Water Rush>\n Give target Opal +4 attack and +1 speed for 1 turn. Gain +4 attack for 1 turn.");
+        Attacks[3] = new Attack("Refresh", 1, 3, 0, "<Water Rush>\n Give target Opal +4 attack and +1 speed for 1 turn. Gain +4 attack for 1 turn. Place a Flood at your feet.");
         type1 = "Water";
         type2 = "Air";
     }
@@ -68,6 +68,7 @@ public class Aquarican : OpalScript
             target.doTempBuff(0, 1, 4);
             target.doTempBuff(2, 1, 1);
             doTempBuff(0, 1, 4);
+            boardScript.setTile(this, "Flood", false);
             return 0;
         }
         return cA.getBaseDamage() + getAttack();

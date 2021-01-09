@@ -6,6 +6,8 @@ public class Wingnition : OpalScript
 {
     private Bombat bombatPrefab;
     private int boulderDamage = 0;
+    private bool bombatted = false;
+    private Vector2 origPos = new Vector2();
 
     public override void onAwake()
     {
@@ -19,7 +21,7 @@ public class Wingnition : OpalScript
         maxHealth = health;
         attack = 0;
         defense = 2;
-        speed = 3;
+        speed = 4;
         priority = 7;
         myName = "Wingnition";
         transform.localScale = new Vector3(0.2f, 0.2f, 1) * 1.1f;
@@ -35,16 +37,19 @@ public class Wingnition : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Call Pup", 1, 0, 0, "Summon an exploding Bombat");
-        Attacks[1] = new Attack("Wing Flap", 0, 1, 0, "Push adjacent Opals away until they hit something. They gain +3 attack for 2 turns.");
-        Attacks[2] = new Attack("Sonar", 2, 1, 0, "Heal a target 5 health. If they're Swarm type then also give them +3 attack for 2 turns.");
-        Attacks[3] = new Attack("Swiften", 2, 1, 0, "Give a target +2 speed for 2 turns. They gain Lift.");
+        Attacks[0] = new Attack("Call Bombat", 1, 0, 0, "<Free Ability>\nSummon an exploding Bombat once per turn");
+        Attacks[0].setFreeAction(true);
+        Attacks[1] = new Attack("Coddle", 1, 1, 0, "Give target +3 speed for 1 turn. Heal them 5 health and they gain lift.");
+        Attacks[2] = new Attack("Retract", 0, 1, 0, "Fly back to the tile you started your turn on.");
+        Attacks[3] = new Attack("Unrelenting Flap", 1, 1, 0, "Push the target 5 tiles, give them +4 attack, and give them lift.");
         type1 = "Air";
         type2 = "Swarm";
     }
 
     public override void onStart()
     {
+        bombatted = false;
+        origPos = new Vector2(currentTile.getPos().x, currentTile.getPos().z);
     }
 
     public override void onMove(int distanceMoved)
@@ -60,42 +65,56 @@ public class Wingnition : OpalScript
         }
         else if (attackNum == 1) //Insight
         {
-            for (int i = -1; i < 2; i++)
-            {
-                for (int j = -1; j < 2; j++)
-                {
-                    if (!(i == 0 && j == 0) && (i == 0 || j == 0))
-                    {
-                        if (getPos().x + i < 10 && getPos().x + i > -1 && getPos().z + j < 10 && getPos().z + j > -1 && boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer != null)
-                        {
-                            boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer.doTempBuff(0, 2, 3);
-                            if (i == 0 && j == -1)
-                                boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer.nudge(10, false, false);
-                            if (i == 0 && j == 1)
-                                boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer.nudge(10, false, true);
-                            if (i == 1 && j == 0)
-                                boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer.nudge(10, true, true);
-                            if (i == -1 && j == 0)
-                                boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer.nudge(10, true, false);
-                        }
-                    }
-                }
-            }
+            target.doTempBuff(2, 1, 3);
+            target.doHeal(1, false);
+            target.setLifted(true);
             return 0;
         }
         else if (attackNum == 2) //Spectral Lunge
         {
-
-            target.doHeal(5, false);
-            if (target.getMainType() == "Swarm" || target.getSecondType() == "Swarm")
-            {
-                target.doTempBuff(0, 2, 3);
-            }
+            doMove((int)origPos.x, (int)origPos.y,0);
             return 0;
         }else if(attackNum == 3)
         {
-            target.doTempBuff(2, 2, 2);
+            string direct = "right";
+            int dist = (int)getPos().x - (int)target.getPos().x;
+            if (dist == 0)
+            {
+                direct = "up";
+                dist = (int)getPos().z - (int)target.getPos().z;
+            }
+            if (dist < 0)
+            {
+                if (direct == "right")
+                {
+                    direct = "left";
+                }
+                else if (direct == "up")
+                {
+                    direct = "down";
+                }
+                dist = Mathf.Abs(dist);
+            }
+            if (direct == "right")
+            {
+                target.nudge(5, true, false);
+            }
+            else if (direct == "left")
+            {
+                target.nudge(5, true, true);
+            }
+            else if (direct == "up")
+            {
+                target.nudge(5, false, false);
+            }
+            else if (direct == "down")
+            {
+                target.nudge(5, false, true);
+            }
+            target.doTempBuff(0, -1, 4);
+            target.doHeal(5, false);
             target.setLifted(true);
+            return 0;
         }
         return cA.getBaseDamage() + getAttack();
     }
@@ -106,6 +125,7 @@ public class Wingnition : OpalScript
         if (attackNum == 0) //Duplicate
         {
             spawnOplet(bombatPrefab, target);
+            bombatted = true;
             return 0;
         }
         else if (attackNum == 1) //Insight
@@ -155,7 +175,7 @@ public class Wingnition : OpalScript
 
     public override int checkCanAttack(TileScript target, int attackNum)
     {
-        if (attackNum == 0 && target.currentPlayer == null)
+        if (attackNum == 0 && target.currentPlayer == null && !bombatted)
         {
             return 0;
         }

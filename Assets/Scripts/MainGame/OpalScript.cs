@@ -866,6 +866,26 @@ abstract public class OpalScript : MonoBehaviour {
         transform.position = new Vector3(-100, -100, -100);
     }
 
+    public IEnumerator yowch()
+    {
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        if(sr != null)
+        {
+            sr.color = new Color(1, 0, 0);
+        }
+        transform.RotateAround(new Vector3(transform.position.x, transform.position.y-1, transform.position.z), Vector3.up, -45);
+        for (int i = 0; i < 20; i++)
+        {
+            yield return new WaitForSeconds(0.05f);
+        }
+        if (sr != null)
+        {
+            sr.color = new Color(0, 0, 0);
+        }
+    }
+
+
+
     public IEnumerator moveDelay()
     {
         yield return new WaitForSeconds(0.5f);
@@ -964,8 +984,10 @@ abstract public class OpalScript : MonoBehaviour {
             DamageResultScript temp;
             temp = Instantiate<DamageResultScript>(damRes, this.transform);
             temp.setUp(-dam);
-            if(effect)
-               boardScript.callParticles("damage", transform.position);
+            if (effect)
+            {
+                boardScript.callParticles("damage", transform.position);
+            }
         }
         else if (dam - getDefense() > 0 && dam > 0)
         {
@@ -978,16 +1000,17 @@ abstract public class OpalScript : MonoBehaviour {
         if(this.health <= 0)
         {
             TileScript temp = currentTile;
-            if(currentTile != null)
+            if (currentTile != null)
                 temp.standingOn(null);
+            onDeathTile(temp);
+            if (boardScript.getMyCursor().getCurrentOpal() != null && boardScript.getMyCursor().getCurrentOpal().getMyName() == "Numbskull" && boardScript.getMyCursor().getCurrentOpal().getTeam() != getTeam())
+            {
+                boardScript.getMyCursor().getCurrentOpal().spawnOplet(spiritchPrefab, boardScript.tileGrid[(int)getPos().x, (int)getPos().z]);
+            }
             currentTile = null;
             if(temp != null)
                 temp.setImpassable(false);
             dead = true;
-            if (boardScript.getMyCursor().getCurrentOpal() != null && boardScript.getMyCursor().getCurrentOpal().getMyName() == "Numbskull" && boardScript.getMyCursor().getCurrentOpal().getTeam() != getTeam())
-            {
-                spawnOplet(spiritchPrefab, temp);
-            }
             StartCoroutine(shrinker());
         }
         onDamage(dam);
@@ -1033,6 +1056,11 @@ abstract public class OpalScript : MonoBehaviour {
             return opalTwo;
         }
         return null;
+    }
+
+    public virtual void onDeathTile(TileScript t)
+    {
+
     }
 
     public void healStatusEffects()

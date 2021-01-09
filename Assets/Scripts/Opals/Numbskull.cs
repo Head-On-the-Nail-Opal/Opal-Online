@@ -77,35 +77,6 @@ public class Numbskull : OpalScript
             takeDamage(3, false, true);
             doTempBuff(0, -1, 3);
         }
-        if (getAttackDamage(2, target.getCurrentTile()) >= target.getHealth() && target.getTeam() != getTeam())
-        {
-            Spiritch opalTwo = Instantiate<Spiritch>(dimstingPrefab);
-            opalTwo.setOpal(player); // Red designates player 1, Blue designates player 2
-            opalTwo.setPos((int)target.getPos().x, (int)target.getPos().z);
-            getBoard().gameOpals.Add(opalTwo);
-            getBoard().addToUnsorted(opalTwo);
-            if (player == "Red")
-            {
-                getBoard().p2Opals.Add(opalTwo);
-            }else if(player == "Green")
-            {
-                getBoard().p3Opals.Add(opalTwo);
-            }
-            else if (player == "Orange")
-            {
-                getBoard().p4Opals.Add(opalTwo);
-            }
-            else
-            {
-                getBoard().p1Opals.Add(opalTwo);
-            }
-            opalTwo.setSkipTurn(true);
-            //getBoard().sortOpals(getBoard().gameOpals);
-            target.transform.position = new Vector3(-100, -100, -100);
-            target.getCurrentTile().standingOn(null);
-            target.getCurrentTile().standingOn(opalTwo);
-            target.setDead();
-        }
         return cA.getBaseDamage() + getAttack();
     }
 
@@ -143,11 +114,7 @@ public class Numbskull : OpalScript
         }
         else if (attackNum == 1)
         {
-            if(target.currentPlayer.getMyName() == "Spiritch")
-            {
-                return 10;
-            }
-            return 0;
+
         }
         else if (attackNum == 2)
         {

@@ -511,6 +511,8 @@ public class CursorScript : MonoBehaviour {
                     destroyDummies();
                     boardScript.spotlight.transform.position = new Vector3((int)selectedPlayer.getPos().x, 2, (int)(int)selectedPlayer.getPos().z);
                     ts.updateCurrent(selectedPlayer, distance);
+                    if(tileFrom.getCurrentOpal() != null)
+                        ts.updateSelected(tileFrom.getCurrentOpal());
                     boardScript.diplayPath(false);
                     moving = false;
                     tdistance = -1;
@@ -613,6 +615,9 @@ public class CursorScript : MonoBehaviour {
     public void updateData()
     {
         boardScript.updateTurnOrder(currentTurn);
+        ts.updateCurrent(getCurrentOpal(), distance);
+        if(tileFrom.getCurrentOpal() != null)
+            ts.updateSelected(tileFrom.getCurrentOpal());
         if(boardScript.getMult())
             boardScript.getMM().sendFullGameData(boardScript.generateString());
     }
@@ -691,7 +696,10 @@ public class CursorScript : MonoBehaviour {
     public void nextTurn()
     {
         boardScript.recallParticles();
-        selectedPlayer.handleTempBuffs(true);
+        if (selectedPlayer.getSkipTurn() == false)
+            selectedPlayer.handleTempBuffs(true);
+        else
+            selectedPlayer.setSkipTurn(false);
         boardScript.alreadyMoved.Add(selectedPlayer.getID());
         if(!placing)
             selectedPlayer.onEnd();
@@ -791,7 +799,7 @@ public class CursorScript : MonoBehaviour {
             checkWin(); 
         if (selectedPlayer.getSkipTurn())
         {
-            selectedPlayer.setSkipTurn(false);
+            //selectedPlayer.setSkipTurn(false);
             nextTurn();
             return;
         }

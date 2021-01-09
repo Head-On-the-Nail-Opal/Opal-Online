@@ -72,7 +72,7 @@ public class Jetjinn : OpalScript
         }
         else if (attackNum == 1) //Seed Launch
         {
-            boardScript.setTile((int)target.getCurrentTile().getPos().x, (int)target.getCurrentTile().getPos().z, "Fire", false);
+            boardScript.setTile(target, "Fire", false);
         }
         else if (attackNum == 2) //Grass Cover
         {

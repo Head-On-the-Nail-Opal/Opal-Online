@@ -1448,6 +1448,10 @@ public class MainMenuScript : MonoBehaviour {
             displayTeams.Add(temp);
             i++;
         }
+        if (teams.Count == 0)
+            addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 5 - (teams.Count + 1) * 1.5f, addNewTeamButton.transform.position.z);
+        else
+            addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 4.2f - (teams.Count + 1) * 1.4f, addNewTeamButton.transform.position.z);
         saveData();
     }
 
@@ -1464,7 +1468,6 @@ public class MainMenuScript : MonoBehaviour {
 
     public void saveData()
     {
-        return;
         string path = "Assets/Resources/save.txt";
         using (var stream = new FileStream(path, FileMode.Truncate))
         {
@@ -1499,7 +1502,6 @@ public class MainMenuScript : MonoBehaviour {
 
     public void loadData()
     {
-        return;
         string path = "Assets/Resources/save.txt";
         //Read the text from directly from the test.txt file
         StreamReader reader = new StreamReader(path);

@@ -7,7 +7,7 @@ public class Diamite : OpalScript
     private List<OpalScript> oofed = new List<OpalScript>();
     override public void setOpal(string pl)
     {
-        health = 5;
+        health = 10;
         maxHealth = health;
         attack = 1;
         defense = 2;
@@ -54,12 +54,15 @@ public class Diamite : OpalScript
 
     public override void onDamage(int dam)
     {
-        clearBuffs();
-        foreach(OpalScript o in oofed)
+        if (dam != -1)
         {
-            o.doTempBuff(2, -1, 1);
+            clearBuffs();
+            foreach (OpalScript o in oofed)
+            {
+                o.doTempBuff(2, -1, 1);
+            }
+            oofed.Clear();
         }
-        oofed.Clear();
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -73,6 +76,7 @@ public class Diamite : OpalScript
         {
             target.doTempBuff(2, -1, -1);
             doTempBuff(2, -1, 1);
+            oofed.Add(target);
             return 0;
         }
         else if (attackNum == 2) //Grass Cover

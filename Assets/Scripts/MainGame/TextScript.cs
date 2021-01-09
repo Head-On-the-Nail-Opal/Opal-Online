@@ -255,12 +255,18 @@ public class TextScript : MonoBehaviour {
 
     public void disableBuffs(OpalScript current, OpalScript selected)
     {
-        currentAttack.text = "" + current.getAttack();
-        currentDefense.text = "" + current.getDefense();
-        currentSpeed.text = "" + current.getSpeed();
-        targetAttack.text = "" + selected.getAttack();
-        targetDefense.text = "" + selected.getDefense();
-        targetSpeed.text = "" + selected.getSpeed();
+        if (current != null)
+        {
+            currentAttack.text = "" + current.getAttack();
+            currentDefense.text = "" + current.getDefense();
+            currentSpeed.text = "" + current.getSpeed();
+        }
+        if (selected != null)
+        {
+            targetAttack.text = "" + selected.getAttack();
+            targetDefense.text = "" + selected.getDefense();
+            targetSpeed.text = "" + selected.getSpeed();
+        }
     }
 
     public void updateSelected(OpalScript opal)

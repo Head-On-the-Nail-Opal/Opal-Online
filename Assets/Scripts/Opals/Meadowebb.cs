@@ -30,7 +30,7 @@ public class Meadowebb : OpalScript
         Attacks[1] = new Attack("Seeded", 1, 5, 0, "Place a Growth tile adjacent to any Growth tile. May use this three times.");
         Attacks[1].setUses(3);
         Attacks[2] = new Attack("Green Bite", 1, 1, 4, "Deal double damage to an Opal standing on Growth.");
-        Attacks[3] = new Attack("Dewy Munch", 0, 1, 0, "For each adjacent Opal gain +2 health.", 1);
+        Attacks[3] = new Attack("Dewy Munch", 0, 1, 0, "For each adjacent Opal gain +2 health. Placea growth tile underfoot.", 1);
         type1 = "Grass";
         type2 = "Grass";
     }
@@ -86,6 +86,10 @@ public class Meadowebb : OpalScript
             if(target != this)
             {
                 doHeal(2, false);
+            }
+            else
+            {
+                boardScript.setTile(this, "Growth", false);
             }
             return 0;
         }
