@@ -109,11 +109,12 @@ public class Succuum : OpalScript {
             {
                 for(int j = -1; j < 2; j++)
                 {
-                    getBoard().setTile((int)target.getPos().x+i, (int)target.getPos().z+j, "Flood", false);
+                    
                     if(boardScript.tileGrid[(int)target.getPos().x + i, (int)target.getPos().z + j].currentPlayer != null)
                     {
                         boardScript.tileGrid[(int)target.getPos().x + i, (int)target.getPos().z + j].currentPlayer.setLifted(true);
                     }
+                    getBoard().setTile((int)target.getPos().x + i, (int)target.getPos().z + j, "Flood", false);
                 }
             }
             return 0;

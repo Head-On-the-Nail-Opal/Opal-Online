@@ -28,7 +28,7 @@ public class Prismin : OpalScript
             GetComponent<SpriteRenderer>().flipX = false;
         }
         Attacks[0] = new Attack("Sync", 2, 4, 0, "Switch buffs and debuffs with a target Opal");
-        Attacks[1] = new Attack("Restore", 6, 4, 0, "Remove status effects from and heal a target 4 health, and gain +1 attack and +1 defense");
+        Attacks[1] = new Attack("Restore", 6, 4, 0, "Remove status effects from and overheal a target 4 health, and gain +1 attack and +1 defense");
         Attacks[2] = new Attack("Shift", 3, 4, 0, "Double all buffs and debuffs on Prismin. Switch them to target. They last 1 turn.");
         Attacks[3] = new Attack("Enforce", 0, 1, 0, "Gain +2 attack and +2 defense. Overheal by 4.");
         type1 = "Light";
@@ -67,7 +67,7 @@ public class Prismin : OpalScript
         else if (attackNum == 1) //Restore
         {
             target.healStatusEffects();
-            target.doHeal(4, false);
+            target.doHeal(4, true);
             doTempBuff(0, -1, 1);
             doTempBuff(1, -1, 1);
             return 0;

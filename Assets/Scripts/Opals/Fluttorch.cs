@@ -5,6 +5,8 @@ using UnityEngine;
 public class Fluttorch : OpalScript
 {
 
+    bool cinderWing = false;
+
     override public void setOpal(string pl)
     {
         health = 15;
@@ -27,19 +29,28 @@ public class Fluttorch : OpalScript
         offsetY = 0f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Torched", 0, 0, 0, "<Passive>\n Place flame tiles under your feet as you move.");
-        Attacks[1] = new Attack("Emberflap", 1, 4, 4, "Push target back 1 tile. Set the tile they started on and the tile they landed on on fire.");
-        Attacks[2] = new Attack("Heatburst", 0, 1, 0, "Gain +1 speed for 1 turn for each surrounding Flame.");
-        Attacks[3] = new Attack("Extinguishing Slash",0,1,0,"Put out adjacent flames. Adjacent Opals that were standing on flames take 12 damage.",1);
+        Attacks[0] = new Attack("Cinder Wings", 0, 1, 0, "<Free Ability>\nTake 5 damage. Tiles you move over this turn light on fire.");
+        Attacks[0].setFreeAction(true);
+        Attacks[1] = new Attack("Light the Way", 2, 4, 0, "Give an Opal +3 speed for 1 turn and Lift. All tiles adjacent and under them light on fire.");
+        Attacks[2] = new Attack("Torch Fire", 2, 4, 5, "Give target lift and burning.");
+        Attacks[3] = new Attack("Warmth Support",2,4,0, "Heal a target by 6. If the are lifted give them +3 attack. If they are burning they take burn damage.");
         type1 = "Fire";
         type2 = "Air";
 
     }
 
+    public override void onStart()
+    {
+        cinderWing = false;
+    }
+
     public override void onMove(PathScript p)
     {
-        boardScript.setTile((int)p.getPos().x, (int)p.getPos().z, "Fire", false);
-        currentTile = boardScript.tileGrid[(int)p.getPos().x, (int)p.getPos().z];
+        if (cinderWing)
+        {
+            boardScript.setTile((int)p.getPos().x, (int)p.getPos().z, "Fire", false);
+            currentTile = boardScript.tileGrid[(int)p.getPos().x, (int)p.getPos().z];
+        }
         //boardScript.tileGrid[(int)p.getPos().x, (int)p.getPos().z].standingOn(null);
     }
 
@@ -48,42 +59,34 @@ public class Fluttorch : OpalScript
         Attack cA = Attacks[attackNum];
         if (attackNum == 0) //Thorns
         {
+            takeDamage(5, false, true);
+            cinderWing = true;
             return 0;
         }
         else if (attackNum == 1) //Seed Launch
         {
-            Vector3 temp = target.getPos();
-            pushAway(1, target);
-            boardScript.setTile((int)temp.x, (int)temp.z, "Fire", false);
-            
-            boardScript.setTile((int)target.getPos().x, (int)target.getPos().z, "Fire", false);
+            target.doTempBuff(2, 1, 3);
+            target.setLifted(true);
+            boardScript.setTile(target, "Fire", false);
+            foreach(TileScript t in target.getSurroundingTiles(true))
+            {
+                boardScript.setTile(t, "Fire", false);
+            }
+            return 0;
         }
         else if (attackNum == 2) //Grass Cover
         {
-            int num = 0;
-            for (int i = -1; i < 2; i++)
-            {
-                for (int j = -1; j < 2; j++)
-                {
-                    if (getPos().x + i < 10 && getPos().x + i > -1 && getPos().z + j < 10 && getPos().z + j > -1 && boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].type == "Fire")
-                    {
-                        num++;
-                    }
-                }
-            }
-            doTempBuff(2, 2, num);
-            return 0;
+            target.setBurning(true);
+            target.setLifted(true);
         }
         else if (attackNum == 3) //Grass Cover
         {
-            if(target.getCurrentTile().type == "Fire")
+            target.doHeal(6, false);
+            if (target.getLifted())
+                target.doTempBuff(0, -1, 3);
+            if (target.getBurning())
             {
-                boardScript.setTile(target, "Grass", true);
-                if (target == this)
-                {
-                    return 0;
-                }
-                return 12 + getAttack();
+                target.takeBurnDamage(false);
             }
             return 0;
         }
@@ -107,8 +110,6 @@ public class Fluttorch : OpalScript
         }
         else if (attackNum == 3) //Grass Cover
         {
-            if(target.type == "Fire")
-                boardScript.setTile(target, "Grass", true);
             return 0;
         }
         return cA.getBaseDamage() + getAttack();
@@ -124,18 +125,15 @@ public class Fluttorch : OpalScript
         }
         else if (attackNum == 1)
         {
-            return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+            return 0;
         }
         else if (attackNum == 2)
         {
-            return 0;
         }
         else if (attackNum == 3)
         {
-            if(target.type == "Fire")
-            {
-                return 12 + getAttack() - target.currentPlayer.getDefense();
-            }
+            if (target.currentPlayer.getBurning())
+                return target.currentPlayer.getBurningDamage();
             return 0;
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
@@ -143,10 +141,6 @@ public class Fluttorch : OpalScript
 
     public override int checkCanAttack(TileScript target, int attackNum)
     {
-        if (attackNum == 3)
-        {
-            return 0;
-        }
         if (target.currentPlayer != null)
         {
             return 0;

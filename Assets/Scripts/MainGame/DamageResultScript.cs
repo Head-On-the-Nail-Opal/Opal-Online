@@ -8,9 +8,12 @@ public class DamageResultScript : MonoBehaviour {
     public Text body;
 	// Use this for initialization
 
-    public void setUp(int amount)
+    public void setUp(int amount, OpalScript myBoy)
     {
-        if(amount > 0)
+        transform.position = myBoy.transform.position;
+        transform.rotation = myBoy.transform.rotation;
+        transform.localScale /= 5;
+        if (amount > 0)
         {
             body.text = "+" + amount;
             body.color = new Color(0, 1, 0);
@@ -25,17 +28,17 @@ public class DamageResultScript : MonoBehaviour {
         }
     }
 
-    public void setUp(int num, int denom)
+    public void setUp(int num, int denom, OpalScript myBoy)
     {
-
-         body.text = num+"/"+denom;
+        transform.position = myBoy.transform.position;
+        transform.rotation = myBoy.transform.rotation;
+        transform.localScale /= 5;
+        body.text = num+"/"+denom;
         body.color = Color.green;
     }
 
     void Awake () {
         i = 0;
-        if(GetComponentInParent<OpalScript>().getMyName() == "Boulder")
-            transform.localScale = new Vector3(1,1,1);
 	}
 	
 	// Update is called once per frame

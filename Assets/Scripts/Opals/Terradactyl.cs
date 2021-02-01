@@ -27,7 +27,7 @@ public class Terradactyl : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Favorable Terrain", 0, 0, 0, "Gain +1 speed (for 1 turn) for each Boulder you start your turn surrounded by.");
+        Attacks[0] = new Attack("Favorable Terrain", 0, 0, 0, "<Passive>\nGain +1 speed (for 1 turn) for each Boulder you start your turn surrounded by.");
         Attacks[1] = new Attack("Catapult", 6, 1, 0, "Break an adjacent Boulder. Deal damage to an Opal within 6 tiles based on that Boulder's defense. Place Boulders adjacent to them with the same defense.");
         Attacks[1].setUses(2);
         Attacks[2] = new Attack("Rock Stack", 3, 1, 0, "Place a Boulder. It gains +5 defense for each Boulder adjacent to it on placement.");
@@ -63,23 +63,23 @@ public class Terradactyl : OpalScript
             {
                 if(target.getMyName() == "Boulder")
                 {
-                    if(target.getDefense() > 0)
+                    if(target.getDefense() > -1)
                         fu = target.getDefense();
                     target.takeDamage(target.getHealth(), false, false);
-                    Attacks[1] = new Attack("Catapult", 6, 1, 0, "Break an adjacent Boulder. Deal damage to an Opal within 6 tiles based on that Boulder's defense. Surround them by Boulders with the same defense.");
-                    Attacks[1].setUses(2);
+                    Attacks[1] = new Attack("Catapult", 6, 1, 0, "Break an adjacent Boulder. Deal damage to an Opal within 6 tiles based on that Boulder's defense. Place Boulders adjacent to them with the same defense.");
+                   // Attacks[1].setUses(2);
                 }
             }
             else
             {
-                target.takeDamage(fu + getAttack(), true, false);
+                target.takeDamage(fu + getAttack(), true, true);
                 List<TileScript> tiles = target.getSurroundingTiles(true);
                 foreach(TileScript t in tiles)
                 {
                     TileScript temp = boardScript.setTile(t, "Boulder", false);
-                    if(temp.currentPlayer != null && temp.currentPlayer.getMyName() == "Boulder")
+                    if(t.currentPlayer != null && t.currentPlayer.getMyName() == "Boulder")
                     {
-                        temp.currentPlayer.doTempBuff(1, -1, fu);
+                        t.currentPlayer.doTempBuff(1, -1, fu);
                     }
                 }
             }
@@ -100,7 +100,14 @@ public class Terradactyl : OpalScript
         }
         else if (attackNum == 1) //Momentum
         {
-
+            if(fu != -1)
+            {
+                print("du hello");
+                boardScript.setTile(target, "Boulder", false);
+                OpalScript temp = target.currentPlayer;
+                if(temp != null)
+                    temp.doTempBuff(1, -1, fu);
+            }
             return 0;
         }
         else if (attackNum == 2) //Catapult
@@ -149,7 +156,6 @@ public class Terradactyl : OpalScript
         }
         else if (attackNum == 3)
         {
-            
             return 0;
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();

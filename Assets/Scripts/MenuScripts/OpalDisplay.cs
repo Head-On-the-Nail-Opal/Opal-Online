@@ -46,6 +46,7 @@ public class OpalDisplay : MonoBehaviour {
         {
             currentOpalInstance = Instantiate<OpalScript>(o);
             currentOpalInstance.setOpal(null);
+            currentOpal.setPersonality(o.getPersonality());
             currentOpalInstance.setVariant(o.getVariant());
             currentOpalInstance.transform.position = new Vector3(OpalSpot.transform.position.x, OpalSpot.transform.position.y, -3);
             currentOpalInstance.transform.localScale *= 2;

@@ -138,4 +138,17 @@ public class Heatriarch : OpalScript
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
     }
+
+    public override int checkCanAttack(TileScript target, int attackNum)
+    {
+        if(attackNum == 1 || attackNum == 0)
+        {
+            return 0;
+        }
+        else if(target.getCurrentOpal() != null)
+        {
+            return 0;
+        }
+        return -1;
+    }
 }

@@ -72,6 +72,13 @@ public class MenuButtonScript : MonoBehaviour {
         else if (purpose == "teams")
         {
             mainCam.transform.position = target;
+        }else if(purpose == "personality")
+        {
+            main.setNextPersonality();
+        }
+        else if (purpose == "items")
+        {
+            mainCam.transform.position = new Vector3(0, 26, -10);
         }
         //rend.material = pressed;
         if (pressedS != null)
@@ -172,6 +179,10 @@ public class MenuButtonScript : MonoBehaviour {
             {
                 transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().color = new Color(1f, 0f, 0f);
             }
+            else if (purpose == "personality")
+            {
+                transform.GetComponent<Text>().color = new Color(1f, 0f, 0f);
+            }
         }
     }
 
@@ -188,6 +199,10 @@ public class MenuButtonScript : MonoBehaviour {
             if (purpose == "teams")
             {
                 transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().color = new Color(0f, 0f, 1f);
+            }
+            else if(purpose == "personality")
+            {
+                transform.GetComponent<Text>().color = new Color(1f, 1f, 1f);
             }
         }
     }

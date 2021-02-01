@@ -41,21 +41,25 @@ public class GlobalScript : MonoBehaviour {
         foreach(OpalScript o in rT)
         {
             OpalScript temp = Instantiate(o);
+            temp.setPersonality(o.getPersonality());
             redTeam.Add(temp);
         }
         foreach (OpalScript o in bT)
         {
             OpalScript temp = Instantiate(o);
+            temp.setPersonality(o.getPersonality());
             blueTeam.Add(temp);
         }
         foreach (OpalScript o in gT)
         {
             OpalScript temp = Instantiate(o);
+            temp.setPersonality(o.getPersonality());
             greenTeam.Add(temp);
         }
         foreach (OpalScript o in oT)
         {
             OpalScript temp = Instantiate(o);
+            temp.setPersonality(o.getPersonality());
             orangeTeam.Add(temp);
         }
         //redTeam = rT;

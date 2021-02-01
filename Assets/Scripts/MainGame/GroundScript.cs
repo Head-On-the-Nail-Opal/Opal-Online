@@ -207,7 +207,7 @@ public class GroundScript : MonoBehaviour {
                 if (s != "")
                 {
                     //print(s);
-                    OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + s));
+                    OpalScript temp = convertOpalFromString(s);
                     temp.setPos(-100, -100);
                     tempB.Add(temp);
                 }
@@ -218,7 +218,7 @@ public class GroundScript : MonoBehaviour {
                 if (s != "")
                 {
                     //print(s);
-                    OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + s));
+                    OpalScript temp = convertOpalFromString(s);
                     temp.setPos(-100, -100);
                     tempR.Add(temp);
                 }
@@ -231,7 +231,7 @@ public class GroundScript : MonoBehaviour {
                     if (s != "")
                     {
                         //print(s);
-                        OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + s));
+                        OpalScript temp = convertOpalFromString(s);
                         temp.setPos(-100, -100);
                         tempG.Add(temp);
                     }
@@ -245,7 +245,7 @@ public class GroundScript : MonoBehaviour {
                     if (s != "")
                     {
                         //print(s);
-                        OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + s));
+                        OpalScript temp = convertOpalFromString(s);
                         temp.setPos(-100, -100);
                         tempO.Add(temp);
                     }
@@ -254,6 +254,12 @@ public class GroundScript : MonoBehaviour {
             
             setTheRestUp();
         }
+    }
+
+    public OpalScript convertOpalFromString(string s)
+    {
+        OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + s));
+        return temp;
     }
 
     public int getOnlineTeam()
@@ -268,10 +274,12 @@ public class GroundScript : MonoBehaviour {
         int idCount = 0;
         foreach (OpalScript o in tempB)
         {
-            print(o.GetType());
+            //print(o.GetType());
             OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + o.GetType()));
+            //temp.setPersonality(o.getPersonality());
             temp.GetComponent<SpriteRenderer>().flipX = false;
             temp.setOpal("Blue");
+            //temp.setPersonality(o.getPersonality());
             temp.setPos(-100, -100);
             p2Opals.Add(temp);
             blueTeamPriority += temp.getSpeed() * 10;
@@ -286,6 +294,7 @@ public class GroundScript : MonoBehaviour {
             OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + o.GetType()));
             temp.GetComponent<SpriteRenderer>().flipX = true;
             temp.setOpal("Red");
+            //temp.setPersonality(o.getPersonality());
             temp.setPos(-100, -100);
             p1Opals.Add(temp);
             redTeamPriority += temp.getSpeed() * 10;
@@ -300,6 +309,7 @@ public class GroundScript : MonoBehaviour {
             OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + o.GetType()));
             temp.GetComponent<SpriteRenderer>().flipX = false;
             temp.setOpal("Green");
+           // temp.setPersonality(o.getPersonality());
             temp.setPos(-100, -100);
             p3Opals.Add(temp);
             greenTeamPriority += temp.getSpeed() * 10;
@@ -314,6 +324,7 @@ public class GroundScript : MonoBehaviour {
             OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + o.GetType()));
             temp.GetComponent<SpriteRenderer>().flipX = false;
             temp.setOpal("Orange");
+           // temp.setPersonality(o.getPersonality());
             temp.setPos(-100, -100);
             p4Opals.Add(temp);
             orangeTeamPriority += temp.getSpeed() * 10;
@@ -784,6 +795,30 @@ public class GroundScript : MonoBehaviour {
             }
         }
         return tileGrid[x, y];
+    }
+
+    public bool isValidTile(int x, int y)
+    {
+        if (x < 10 && x > -1 && y < 10 && y > -1)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public void setTiles(TileScript start, int dist, string type)
+    {
+        setTile(start, type, false);
+        for(int i = -dist+1; i < dist; i++)
+        {
+            for(int j = -dist+1; j < dist; j++)
+            {
+                if (isValidTile(i + (int)start.getPos().x, j + (int)start.getPos().z))
+                {
+                    setTile(tileGrid[i + (int)start.getPos().x, j + (int)start.getPos().z], type, false);
+                }
+            }
+        }
     }
 
     public void protSetTrap(float x, float y, string traptype)

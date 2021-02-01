@@ -1,4 +1,6 @@
 Please don't change this, it will be encrypted eventually.
+Ambush,Sentree,Gorj,Glummer,
+Hopscure,Diamite,Duplimorph,Wingnition,
 endTeams
 
 endOpals

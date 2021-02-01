@@ -220,7 +220,7 @@ public class TileScript : MonoBehaviour {
         }
         else
         {
-            transform.position = new Vector3(gridPos.x, -1, gridPos.y);
+            transform.position = new Vector3(gridPos.x, -1f, gridPos.y);
         }
         if (type.Equals("Grass"))
         {
@@ -521,6 +521,15 @@ public class TileScript : MonoBehaviour {
             currentPlayer.setDead();
             StartCoroutine(currentPlayer.shrinker());
             myCurs.checkWin();
+        }
+        foreach(OpalScript o in boardScript.gameOpals)
+        {
+            if(o.getCurrentTile() == this)
+            {
+                o.setDead();
+                StartCoroutine(o.shrinker());
+                myCurs.checkWin();
+            }
         }
         if (onMe != null)
         {

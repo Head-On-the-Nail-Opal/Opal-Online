@@ -64,6 +64,13 @@ public class MainMenuScript : MonoBehaviour {
     public MenuButtonScript addNewTeamButton;
     private int currentEditorTeam = -1;
     private TextAsset save;
+    public Text personalityTracker;
+    private int personalityNum = 0;
+    private ItemLabel itemLabelPrefab;
+    public ItemDescriptions iD;
+    public Text description;
+
+    private List<string> personalities = new List<string>();
 
 
     // Use this for initialization
@@ -74,6 +81,7 @@ public class MainMenuScript : MonoBehaviour {
         allOpals = Resources.LoadAll<OpalScript>("Prefabs/Opals");
         platePrefab = Resources.Load<PlateScript>("Prefabs/OpalPlate");
         teamDisplay = Resources.Load<TeamDisplay>("Prefabs/TeamDisplay");
+        itemLabelPrefab = Resources.Load<ItemLabel>("Prefabs/ItemThing");
         glob = GameObject.Find("GlobalObject").GetComponent<GlobalScript>();
         mm = GameObject.Find("MultiplayerManager").GetComponent<MultiplayerManager>();
         lPage = GameObject.Find("LastPage");
@@ -100,6 +108,7 @@ public class MainMenuScript : MonoBehaviour {
             }
             displayOpals.Add(tempP);
         }
+        setUpItems();
         setupTeamDisplay();
         startButton.transform.position = new Vector3(-100, -100, -100);
         TargetInfo.transform.position = new Vector3(0.2f, 18, -1);
@@ -114,6 +123,7 @@ public class MainMenuScript : MonoBehaviour {
         currentTeam = "blue";
         currentText.text = "Current Player: Blue";
         currentText.color = Color.blue;
+        loadPersonalities();
         loadData();
         //loadTeams();
     }
@@ -1172,6 +1182,49 @@ public class MainMenuScript : MonoBehaviour {
         mult = true;
     }
 
+    public void setUpItems()
+    {
+        iD.setUp();
+        List<string> items = new List<string>();
+        for(int i = 0; i < iD.itemsCount(); i++)
+        {
+            items.Add(iD.getItem(i));
+        }
+        float height = 30;
+        foreach(string name in items)
+        {
+            print(name);
+            ItemLabel temp = Instantiate<ItemLabel>(itemLabelPrefab);
+            temp.setText(name);
+            temp.setMain(this);
+            temp.transform.position = new Vector3(-5,height,-2);
+            temp.transform.localScale /= 2;
+            height -= 0.5f;
+        }
+    }
+
+    public void readDescription(string name)
+    {
+        description.text = iD.getDescFromItem(name);
+    }
+
+    public void loadPersonalities()
+    {
+        //personality format: name;health,attack,defense,speed,priority
+        personalities.Add("Straight-Edge;0,0,0,0,0");
+        personalities.Add("Proud;0,1,-1,0,0");
+        personalities.Add("Reserved;0,-1,1,0,0");
+        personalities.Add("Risk-Taker;0,2,-2,0,0");
+        personalities.Add("Worried;0,-2,2,0,0");
+        personalities.Add("Tactical;0,3,0,-1,0");
+        personalities.Add("Cautious;0,0,3,-1,0");
+        personalities.Add("Relaxed;5,0,0,-1,0");
+        personalities.Add("Optimistic;5,-2,0,0,0");
+        personalities.Add("Pessimistic;5,0,-2,0,0");
+        personalities.Add("Impatient;0,-2,-2,1,0");
+        //personalities.Add("Jumpy;0,-1,-,1,0");
+    }
+
     public void setTeamDisplays()
     {
         //print("duh hello");
@@ -1241,6 +1294,9 @@ public class MainMenuScript : MonoBehaviour {
     public void displayOpal(OpalScript o)
     {
         selectionDisplay.setCurrentOpal(o);
+        if(o != null)
+            personalityTracker.text = "Current Personality\n"+o.getPersonality()+"\n"+getPersonalityStats(o.getPersonality());
+
     }
 
     public void displayOpal(OpalScript o, bool team)
@@ -1338,6 +1394,7 @@ public class MainMenuScript : MonoBehaviour {
         {
             OpalScript opalCopy = Instantiate<OpalScript>(opal);
             opalCopy.setOpal(null);
+            opalCopy.setPersonality(opal.getPersonality());
             copy.Add(opalCopy);
         }
         if (currentEditorTeam == -1)
@@ -1424,6 +1481,106 @@ public class MainMenuScript : MonoBehaviour {
         {
             addNewTeamButton.gameObject.SetActive(true);
         }
+    }
+
+    private string getPersonalityStats(string personality)
+    {
+        if(personality == "Straight-Edge")
+        {
+            return "(No Stat Changes)";
+        }
+        if(personality == "")
+        {
+            return "";
+        }
+        string stats = "";
+        foreach(string s in personalities)
+        {
+            string[] temp = s.Split(';');
+            if(temp[0] == personality)
+            {
+                stats = temp[1];
+            }
+        }
+        if(stats == "")
+        {
+            return "";
+        }
+        string[] temp2 = stats.Split(',');
+        string pHealth = temp2[0];
+        string pAttack = temp2[1];
+        string pDefense = temp2[2];
+        string pSpeed = temp2[3];
+        string pPriority = temp2[4];
+        string firsthalf = "";
+        string secondhalf = "";
+        if (int.Parse(pHealth) > 0)
+        {
+            firsthalf = "+" + pHealth + " health, ";
+        }
+        if (int.Parse(pAttack) > 0)
+        {
+            firsthalf = "+" + pAttack + " attack, ";
+        }
+        else if (int.Parse(pAttack) < 0)
+        {
+            secondhalf = pAttack + " attack.";
+        }
+
+        if (int.Parse(pDefense) > 0)
+        {
+            firsthalf = "+" + pDefense + " defense, ";
+        }
+        else if (int.Parse(pDefense) < 0)
+        {
+            secondhalf += pDefense + " defense.";
+        }
+
+        if (int.Parse(pSpeed) > 0)
+        {
+            firsthalf = "+" + pSpeed + " speed, ";
+        }
+        else if (int.Parse(pSpeed) < 0)
+        {
+            secondhalf = pSpeed + " speed.";
+        }
+
+        if (int.Parse(pPriority) > 0)
+        {
+            firsthalf = "+" + pPriority + " priority, ";
+        }
+        else if (int.Parse(pPriority) < 0)
+        {
+            secondhalf = pPriority + " priority.";
+        }
+        return firsthalf + secondhalf;
+
+    }
+
+    public void setNextPersonality()
+    {
+        personalityNum++;
+        if(personalityNum >= personalities.Count)
+        {
+            personalityNum = 0;
+        }
+        string[] temp = personalities[personalityNum].Split(';');
+        string pName = temp[0];
+        string stats = temp[1];
+        personalityTracker.text = "Current Personality\n" + pName + "\n" + getPersonalityStats(pName);
+        findViewedOpal().setPersonality(pName);
+        
+    }
+
+    private OpalScript findViewedOpal()
+    {
+
+        foreach(OpalScript o in teams[currentEditorTeam])
+        {
+            if (o.getMyName() == teamOpalDisplay.getCurrentOpal().getMyName())
+                return teamOpalDisplay.getCurrentOpal();
+        }
+        return null;
     }
 
     public void loadTeams()

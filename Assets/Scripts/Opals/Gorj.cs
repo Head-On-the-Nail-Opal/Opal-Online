@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class Gorj : OpalScript
 {
-    List<string> tiles = new List<string>();
+    List<OpalScript> victims = new List<OpalScript>();
+    OpalScript victim = null;
     override public void setOpal(string pl)
     {
-        health = 200;
+        health = 25;
         maxHealth = health;
         attack = 0;
         defense = 0;
-        speed = 0;
+        speed = 2;
         priority = 0;
         myName = "Gorj";
         transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.9f;
@@ -27,12 +28,40 @@ public class Gorj : OpalScript
         offsetY = 0f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Unwieldy Smack", 1, 1, 4, "If the target's defense is higher than this attack's damage, gain that much defense and take 25 damage.");
-        Attacks[1] = new Attack("Engorge", 0, 1, 0, "Remove special effects from surrounding tiles and under you. Take 50 damage.");
-        Attacks[2] = new Attack("Belch", 4, 4, 0, "Place the tiles that you last destroyed with Engorge. Take 10 damage.");
-        Attacks[3] = new Attack("Wake Up", 0, 1, 0, "Take 50 damage and gain +1 speed.");
+        Attacks[0] = new Attack("Soft Belly", 0, 0, 0, "<Passive>\nWhen Gorj takes damage while it is engorged it will spit it's victim out.");
+        Attacks[1] = new Attack("Consume", 1, 1, 0, "Consume an Opal. Gorj's speed is set to 2");
+        Attacks[2] = new Attack("Belly Laugh", 0, 1, 0, "Gain +3 defense. If engorged, deal 5 damage to the victim");
+        Attacks[3] = new Attack("Mulch Munch", 0, 1, 0, "Eat the ground beneath Gorj, each tile type affecting Gorj and it's victim differently.");
         type1 = "Void";
         type2 = "Void";
+    }
+
+
+    public override void onDamage(int dam)
+    {
+        if(victims.Count != 0)
+        {
+            List<TileScript> temps = new List<TileScript>();
+            foreach (OpalScript o in victims)
+            {
+                print(o.name);
+                if(o.getHealth() >= 0) {
+                    foreach (TileScript t in getSurroundingTiles(false))
+                    {
+                        print(t.type);
+                        if (!t.getImpassable() && t.currentPlayer == null && !temps.Contains(t))
+                        {
+                            temps.Add(t);
+                            o.setNotDead();
+                            o.setPos((int)t.getPos().x, (int)t.getPos().z);
+                            o.doMove((int)t.getPos().x, (int)t.getPos().z, 0);
+                            break;
+                        }
+                    }
+                    transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.9f;
+                }
+            }
+        }
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -40,49 +69,74 @@ public class Gorj : OpalScript
         Attack cA = Attacks[attackNum];
         if (attackNum == 0)
         {
-            if(target.getDefense() > cA.getBaseDamage() + getAttack())
-            {
-                takeDamage(25, false, true);
-                setTempBuff(1, -1, target.getDefense());
-            }
+            return 0;
         }
         else if (attackNum == 1)
         {
-            tiles.Clear();
-            for (int i = -1; i < 2; i++)
-            {
-                for (int j = -1; j < 2; j++)
-                {
-                    if (target.getPos().x + i < 10 && target.getPos().x + i > -1 && target.getPos().z + j < 10 && target.getPos().z + j > -1)
-                    {
-                        tiles.Add(boardScript.tileGrid[(int)target.getPos().x + i, (int)target.getPos().z + j].type);
-                        getBoard().setTile((int)target.getPos().x + i, (int)target.getPos().z + j, "Grass", true);
-                    }
-                }
-            }
-            takeDamage(50, false, true);
+            victims.Add(target);
+            target.setDead();
+            //if(target.getCurrentTile() != null)
+            target.getCurrentTile().standingOn(null);
+            target.transform.position = new Vector3(-100, -100, -100);
+            setTempBuff(2, -1, 2);
+            transform.localScale *= 1.3f;
             return 0;
         }
         else if (attackNum == 2)
         {
-            int num = 0;
-            Vector2 targetPos = new Vector2((int)target.getPos().x, (int)target.getPos().z);
-            for (int i = -1; i < 2; i++)
+            doTempBuff(0, -1, 3);
+            if(victims.Count != 0)
             {
-                for (int j = -1; j < 2; j++)
+                foreach (OpalScript o in victims)
                 {
-                    if(tiles[num] != "Grass")
-                        getBoard().setTile((int)targetPos.x + i, (int)targetPos.y + j, tiles[num], false);
-                    num++;
+                    o.takeDamage(5, false, false);
+                    if(o.getHealth() <= 0)
+                    {
+                        transform.localScale /= 1.3f;
+                    }
                 }
             }
-            takeDamage(10, false, true);
             return 0;
         }
         else if (attackNum == 3)
         {
-            takeDamage(50, false, true);
-            doTempBuff(2, -1, 1);
+            if (currentTile.type == "Fire")
+            {
+                takeBurnDamage(false);
+                foreach(OpalScript o in victims)
+                {
+                    o.takeDamage(10, false, false);
+                }
+            }
+            else if (currentTile.type == "Growth")
+            {
+                foreach (OpalScript o in victims)
+                {
+                    o.doTempBuff(0, -1, 6);
+                    o.doTempBuff(1, -1, 6);
+                }
+                doTempBuff(0, -1, 2);
+                doTempBuff(1, -1, 2);
+            }
+            else if(currentTile.type == "Miasma")
+            {
+                foreach (OpalScript o in victims)
+                {
+                    o.doTempBuff(0, -1, -4);
+                    o.doTempBuff(1, -1, -4);
+                }
+                doTempBuff(0, -1, -1);
+                doTempBuff(1, -1, -1);
+            }
+            else if(currentTile.type == "Flood")
+            {
+                foreach (OpalScript o in victims)
+                {
+                    o.doHeal(5, false);
+                }
+                doHeal(5, false);
+            }
+            boardScript.setTile(currentTile, "Grass", true);
             return 0;
         }
         return cA.getBaseDamage() + getAttack();
@@ -102,18 +156,7 @@ public class Gorj : OpalScript
         }
         else if (attackNum == 2)
         {
-            int num = 0;
-            Vector2 targetPos = new Vector2((int)target.getPos().x, (int)target.getPos().z);
-            for (int i = -1; i < 2; i++)
-            {
-                for (int j = -1; j < 2; j++)
-                {
-                    if (tiles[num] != "Grass")
-                        getBoard().setTile((int)targetPos.x + i, (int)targetPos.y + j, tiles[num], false);
-                    num++;
-                }
-            }
-            takeDamage(10, false, true);
+
             return 0;
         }
         else if (attackNum == 3)
@@ -129,7 +172,7 @@ public class Gorj : OpalScript
             return 0;
         if (attackNum == 0)
         {
-
+            return 0;
         }
         else if (attackNum == 1)
         {
@@ -141,17 +184,13 @@ public class Gorj : OpalScript
         }
         else if (attackNum == 3)
         {
-            return 50;
+            return 0;
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
     }
 
     public override int checkCanAttack(TileScript target, int attackNum)
     {
-        if (attackNum == 2)
-        {
-            return 0;
-        }
         if (target.currentPlayer != null)
         {
             return 0;

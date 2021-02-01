@@ -46,6 +46,7 @@ abstract public class OpalScript : MonoBehaviour {
     public bool display = false;
     protected List<ParticleSystem> armors = new List<ParticleSystem>();
     private int matchID = -1;
+    private int minionCount = 0;
 
 
     public bool shrouded = false;
@@ -68,6 +69,7 @@ abstract public class OpalScript : MonoBehaviour {
 
     private bool earlyEnd = false;
     private Spiritch spiritchPrefab;
+    private string personality = "Straight-Edge";
 
     private void Awake()
     {
@@ -82,12 +84,13 @@ abstract public class OpalScript : MonoBehaviour {
         damRes = Resources.Load<DamageResultScript>("Prefabs/AttackResult");
         playerIndicator = Resources.Load<GameObject>("Prefabs/TeamLabel");
         spiritchPrefab = Resources.Load<Spiritch>("Prefabs/Opals/Spiritch");
+        playerIndicator = Resources.Load<GameObject>("Prefabs/TeamLabel");
         onAwake();
     }
 
     void Start () {
         //transform.position = new Vector3(5,0.5f,5);
-        playerIndicator = Resources.Load<GameObject>("Prefabs/TeamLabel");
+        
     }
 
     public void setOpal(int h, int a, int d, int s, string n, float scale, float ofX, float ofY, float ofZ, string p, string t1, string t2)
@@ -128,11 +131,11 @@ abstract public class OpalScript : MonoBehaviour {
     //Start changes
 
     void Update () {
-        if(!setTeam && player != null && playerIndicator != null)
+        if((mySpot == null || !setTeam) && player != null && playerIndicator != null)
         {
             GameObject spot = Instantiate<GameObject>(playerIndicator);
-            spot.transform.position = new Vector3(getPos().x,0.001f ,getPos().y);
-            spot.transform.localScale = new Vector3(1f / transform.localScale.x, 0.0001f / transform.localScale.y, 1/transform.localScale.z);
+            spot.transform.localPosition = new Vector3(0,-1.1f ,0);
+            spot.transform.localScale = new Vector3(1f / transform.localScale.x/3, 0.0001f / transform.localScale.y, 1/transform.localScale.x/3);
             spot.transform.SetParent(this.transform, false);
             setTeam = true;
             Material temp = new Material(Shader.Find("Standard"));
@@ -151,9 +154,13 @@ abstract public class OpalScript : MonoBehaviour {
             {
                 temp.color = new Color(1, 0.5f, 0);
             }
-            spot.GetComponent<MeshRenderer>().material = temp;
+            foreach(MeshRenderer m in spot.GetComponentsInChildren<MeshRenderer>())
+            {
+                m.material = temp;
+            }
             mySpot = spot;
             showSpot(false);
+            StartCoroutine(spinSpot());
         }
         if(transform.position.x < -99 || display)
         {
@@ -169,6 +176,8 @@ abstract public class OpalScript : MonoBehaviour {
             }
         }
 	}
+
+    
 
     //Variant documentation - changed from griff's version
     //skin is decided by the last two digits
@@ -213,6 +222,67 @@ abstract public class OpalScript : MonoBehaviour {
             t.localScale *= sizes[size];
         }
         anim.CrossFade(myName + skin, 0);
+    }
+
+    public string convertToString(OpalScript o)
+    {
+        return o.getMyName();
+    }
+
+    public OpalScript convertFromString(string s)
+    {
+        OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + s));
+        return temp;
+    }
+
+    public void proccessPersonality(string p)
+    {
+        switch (p) {
+            case "Proud":
+                attack += 1;
+                defense -= 1;
+                break;
+            case "Reserved":
+                attack -= 1;
+                defense += 1;
+                break;
+            case "Risk-Taker":
+                attack += 2;
+                defense -= 2;
+                break;
+            case "Worried":
+                attack -= 2;
+                defense += 2;
+                break;
+            case "Tactical":
+                attack += 3;
+                speed -= 1;
+                break;
+            case "Cautious":
+                defense += 3;
+                speed -= 1;
+                break;
+            case "Relaxed":
+                maxHealth += 5;
+                health += 5;
+                speed -= 1;
+                break;
+            case "Optimistic":
+                maxHealth += 5;
+                health += 5;
+                attack -= 2;
+                break;
+            case "Pesimistic":
+                maxHealth += 5;
+                health += 5;
+                defense -= 2;
+                break;
+            case "Impatient":
+                speed += 1;
+                attack -= 2;
+                defense -= 2;
+                break;
+        }
     }
 
     public void summonParticle(string name)
@@ -340,17 +410,23 @@ abstract public class OpalScript : MonoBehaviour {
 
     public void showSpot(bool show)
     {
-        if(mySpot == null)
+        if(mySpot == null || (myTurn && !show))
         {
             return;
         }
         if (show)
         {
-            mySpot.GetComponent<MeshRenderer>().enabled = true;
+            foreach (MeshRenderer m in mySpot.GetComponentsInChildren<MeshRenderer>())
+            {
+                m.enabled = true;
+            }
         }
         else
         {
-            mySpot.GetComponent<MeshRenderer>().enabled = false;
+            foreach (MeshRenderer m in mySpot.GetComponentsInChildren<MeshRenderer>())
+            {
+                m.enabled = false;
+            }
         }
     }
 
@@ -369,6 +445,16 @@ abstract public class OpalScript : MonoBehaviour {
     public string getVariant()
     {
         return variant;
+    }
+
+    public void setPersonality(string per)
+    {
+        personality = per;
+    }
+
+    public string getPersonality()
+    {
+        return personality;
     }
 
     public void addArmor(int add)
@@ -401,7 +487,7 @@ abstract public class OpalScript : MonoBehaviour {
         if (mySpot != null)
         {
             showSpot(true);
-            mySpot.transform.position = new Vector3(x, 0.001f, y); //fix me
+            mySpot.transform.position = new Vector3(x, 0.01f, y); //fix me
             showSpot(false);
         }
     }
@@ -584,6 +670,12 @@ abstract public class OpalScript : MonoBehaviour {
     {
         dead = true;
     }
+
+    public void setNotDead()
+    {
+        dead = false;
+    }
+
     public bool getDead()
     {
         return dead;
@@ -840,11 +932,15 @@ abstract public class OpalScript : MonoBehaviour {
     {
         if(flood)
         {
-            transform.position = new Vector3(getPos().x, 0.2f + offsetY, getPos().z);
+            //transform.position = new Vector3(getPos().x, transform.position.y - 0.3f, getPos().z);
+            //if (mySpot != null)
+                //mySpot.transform.localPosition = new Vector3(0, 0f - offsetY, 0);
         }
         else
         {
-            transform.position = new Vector3(getPos().x, 0.5f + offsetY, getPos().z);
+            //transform.position = new Vector3(getPos().x, getPos().y + getYOffset(), getPos().z);
+            //if(mySpot != null)
+                //mySpot.transform.localPosition = new Vector3(0, -1.0f - offsetY, 0);
         }
     }
 
@@ -864,6 +960,16 @@ abstract public class OpalScript : MonoBehaviour {
         if(transform.position.x != -100)
             boardScript.tileGrid[(int)getPos().x, (int)getPos().z].currentPlayer = null;
         transform.position = new Vector3(-100, -100, -100);
+    }
+
+    public IEnumerator spinSpot()
+    {
+        mySpot.transform.Rotate(45, 0, 0);
+        while (mySpot != null)
+        {
+            mySpot.transform.Rotate(0, 5, 0);
+            yield return new WaitForSeconds(0.05f);
+        }
     }
 
     public IEnumerator yowch()
@@ -982,8 +1088,8 @@ abstract public class OpalScript : MonoBehaviour {
         {
             this.health -= dam;
             DamageResultScript temp;
-            temp = Instantiate<DamageResultScript>(damRes, this.transform);
-            temp.setUp(-dam);
+            temp = Instantiate<DamageResultScript>(damRes);
+            temp.setUp(-dam, this);
             if (effect)
             {
                 boardScript.callParticles("damage", transform.position);
@@ -992,8 +1098,8 @@ abstract public class OpalScript : MonoBehaviour {
         else if (dam - getDefense() > 0 && dam > 0)
         {
             this.health = this.health - (dam - getDefense());
-            DamageResultScript temp = Instantiate<DamageResultScript>(damRes, this.transform);
-            temp.setUp(-(dam - getDefense()));
+            DamageResultScript temp = Instantiate<DamageResultScript>(damRes);
+            temp.setUp(-(dam - getDefense()), this);
             if (effect)
                 boardScript.callParticles("damage", transform.position);
         }
@@ -1016,19 +1122,70 @@ abstract public class OpalScript : MonoBehaviour {
         onDamage(dam);
     }
 
+    public void takeDamageBelowArmor(int dam, bool mod, bool effect)
+    {
+        if (dam <= 0)
+        {
+            return;
+        }
+        if (barriarraySurrounding() != null)
+        {
+            barriarraySurrounding().takeDamage(dam, mod, effect);
+            return;
+        }
+        if (!mod)
+        {
+            this.health -= dam;
+            DamageResultScript temp;
+            temp = Instantiate<DamageResultScript>(damRes);
+            temp.setUp(-dam, this);
+            if (effect)
+            {
+                boardScript.callParticles("damage", transform.position);
+            }
+        }
+        else if (dam - getDefense() > 0 && dam > 0)
+        {
+            this.health = this.health - (dam - getDefense());
+            DamageResultScript temp = Instantiate<DamageResultScript>(damRes);
+            temp.setUp(-(dam - getDefense()), this);
+            if (effect)
+                boardScript.callParticles("damage", transform.position);
+        }
+        if (this.health <= 0)
+        {
+            TileScript temp = currentTile;
+            if (currentTile != null)
+                temp.standingOn(null);
+            onDeathTile(temp);
+            if (boardScript.getMyCursor().getCurrentOpal() != null && boardScript.getMyCursor().getCurrentOpal().getMyName() == "Numbskull" && boardScript.getMyCursor().getCurrentOpal().getTeam() != getTeam())
+            {
+                boardScript.getMyCursor().getCurrentOpal().spawnOplet(spiritchPrefab, boardScript.tileGrid[(int)getPos().x, (int)getPos().z]);
+            }
+            currentTile = null;
+            if (temp != null)
+                temp.setImpassable(false);
+            dead = true;
+            StartCoroutine(shrinker());
+        }
+        onDamage(dam);
+    }
+
     public OpalScript spawnOplet(OpalScript oplet, TileScript target)
     {
-        int minionCount = 0;
-        //oplet.setOpal(null);
+        minionCount = 0;
         foreach (OpalScript o in boardScript.gameOpals)
         {
-            if (o.getMyName() == oplet.getMyName() && o.getTeam() == getTeam() && o.getDead() == false)
+            if (o.GetType() == oplet.GetType() && o.getDead() != true && o.getTeam() == getTeam())
+            {
+                print("du hello");
                 minionCount++;
+            }
         }
         if (minionCount < 4)
         {
-            DamageResultScript temp = Instantiate<DamageResultScript>(damRes, this.transform);
-            temp.setUp(minionCount + 1, swarmLimit);
+            DamageResultScript temp = Instantiate<DamageResultScript>(damRes);
+            temp.setUp(minionCount + 1, swarmLimit, this);
             OpalScript opalTwo = Instantiate<OpalScript>(oplet);
             opalTwo.setOpal(player); 
             opalTwo.setPos((int)target.getPos().x, (int)target.getPos().z);
@@ -1052,6 +1209,7 @@ abstract public class OpalScript : MonoBehaviour {
                 getBoard().p1Opals.Add(opalTwo);
             }
             target.standingOn(opalTwo);
+            opalTwo.currentTile = target;
             opalTwo.setSkipTurn(true);
             return opalTwo;
         }
@@ -1149,23 +1307,23 @@ abstract public class OpalScript : MonoBehaviour {
                 if (overheal)
                 {
                     health += heal;
-                    DamageResultScript temp = Instantiate<DamageResultScript>(damRes, this.transform);
-                    temp.setUp(heal);
+                    DamageResultScript temp = Instantiate<DamageResultScript>(damRes);
+                    temp.setUp(heal, this);
                 }else if(health > maxHealth)
                 {
                     return;
                 }
                 else
                 {
-                    DamageResultScript temp = Instantiate<DamageResultScript>(damRes, this.transform);
-                    temp.setUp(maxHealth - health);
+                    DamageResultScript temp = Instantiate<DamageResultScript>(damRes);
+                    temp.setUp(maxHealth - health, this);
                     health = maxHealth;
                 }
             }
             else
             {
-                DamageResultScript temp = Instantiate<DamageResultScript>(damRes, this.transform);
-                temp.setUp(heal);
+                DamageResultScript temp = Instantiate<DamageResultScript>(damRes);
+                temp.setUp(heal, this);
                 health += heal;
             }
         }
@@ -1237,7 +1395,7 @@ abstract public class OpalScript : MonoBehaviour {
         if (decay)
         {
             burnTimer--;
-            if(currentTile.type == "Fire")
+            if(currentTile != null && currentTile.type == "Fire")
             {
                 burnTimer = 3;
             }
@@ -1257,7 +1415,7 @@ abstract public class OpalScript : MonoBehaviour {
         if (decay)
         {
             poisonTimer--;
-            if (currentTile.type == "Miasma")
+            if (currentTile != null && currentTile.type == "Miasma")
             {
                 poisonTimer = 3;
             }

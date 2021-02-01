@@ -695,6 +695,11 @@ public class CursorScript : MonoBehaviour {
 
     public void nextTurn()
     {
+        selectedPlayer.setMyTurn(false);
+        foreach (OpalScript o in boardScript.gameOpals)
+        {
+            o.showSpot(false);
+        }
         boardScript.recallParticles();
         if (selectedPlayer.getSkipTurn() == false)
             selectedPlayer.handleTempBuffs(true);
@@ -830,7 +835,7 @@ public class CursorScript : MonoBehaviour {
             nextTurn();
             return;
         }
-        
+        selectedPlayer.showSpot(true);
         if (selectedPlayer.getCurrentTile() != null)
             selectedPlayer.getCurrentTile().setImpassable(false);
         //selectedPlayer.handleTempBuffs(true);
@@ -967,7 +972,7 @@ public class CursorScript : MonoBehaviour {
 
     public void pressEndTurn()
     {
-        selectedPlayer.setMyTurn(false);
+        
         nextTurn();
     }
 

@@ -5,9 +5,8 @@ using UnityEngine;
 public class Volcoco : OpalScript
 {
     private int eruptionRange = 1;
-    private int eruptionDamage = 0;
-    private bool eruptionAOE = false;
-    private int adjacentTargets = 0;
+    private int eruptionDamage = 5;
+    private int currentCycle = 0;
 
     override public void setOpal(string pl)
     {
@@ -31,17 +30,50 @@ public class Volcoco : OpalScript
         offsetY = 0f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Eruption", 1, 1, 0, "Target tiles light on Fire.");
-        Attacks[1] = new Attack("Rumble", 0, 1, 0, "Light current tile on Fire. Eruption gains +2 range.");
-        Attacks[2] = new Attack("Spitting Fire", 1, 4, 0, "Light the target tile on Fire. Eruption deals +3 damage.");
-        Attacks[3] = new Attack("Lava Flow", 0, 1, 0, "Light adjacent tiles on fire. If there are at least three Opals adjacent to Volcoco, next turn Eruption hits adjacent targets.", 1);
+        Attacks[0] = new Attack("Eruption", 1, 1, 5, "Deal 5 damage. This attack gains +1 range for each surrounding growth, and +2 damage for each surrounding fire.");
+        Attacks[1] = new Attack("Ash Deposit", 0, 1, 0, "Surrounding Opals standing on fire take burn damage, surrounding opals standing on growth gain +2 attack and +2 defense");
+        Attacks[2] = new Attack("Natural Cycle", 2, 1, 0, "Place a growth tile and then a fire tile. Then repeat.");
+        Attacks[2].setUses(4);
+        Attacks[3] = new Attack("Heatleaf", 0, 5, 0, "Opal standing on a growth takes damage from their burn.");
         type1 = "Fire";
         type2 = "Grass";
     }
 
     public override void onStart()
     {
-        adjacentTargets = 0;
+        currentCycle = 0;
+        int extraDamage = 0;
+        int extraRange = 0;
+        foreach (TileScript t in getSurroundingTiles(false))
+        {
+            if (t.type == "Growth")
+            {
+                extraRange++;
+            }
+            else if (t.type == "Fire")
+            {
+                extraDamage++;
+            }
+        }
+        Attacks[0] = new Attack("Eruption", 1 + extraRange, 1, 5 + extraDamage*2, "This attack gains +1 range for each surrounding growth, and +2 damage for each surrounding fire.");
+    }
+
+    public override void onMove(int distanceMoved)
+    {
+        int extraDamage = 0;
+        int extraRange = 0;
+        foreach (TileScript t in getSurroundingTiles(false))
+        {
+            if (t.type == "Growth")
+            {
+                extraRange++;
+            }
+            else if (t.type == "Fire")
+            {
+                extraDamage++;
+            }
+        }
+        Attacks[0] = new Attack("Eruption", 1+extraRange, 1, 5+extraDamage*2, "This attack gains +1 range for each surrounding growth, and +2 damage for each surrounding fire.");
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -49,34 +81,44 @@ public class Volcoco : OpalScript
         Attack cA = Attacks[attackNum];
         if (attackNum == 0)
         {
-            boardScript.setTile(target, "Fire", false);
-            Attacks[0] = new Attack("Eruption", eruptionRange, 1, eruptionDamage, "Target tiles light on Fire.");
+            
         }
         else if (attackNum == 1)
         {
-            boardScript.setTile(target, "Fire", false);
-            eruptionRange += 2;
-            Attacks[0] = new Attack("Eruption", eruptionRange, 1, eruptionDamage, "Target tiles light on Fire.");
+            foreach(TileScript t in getSurroundingTiles(false))
+            {
+                if(t.getCurrentOpal() != null)
+                {
+                    if(t.type == "Growth")
+                    {
+                        t.getCurrentOpal().doTempBuff(0, -1, 2);
+                        t.getCurrentOpal().doTempBuff(1, -1, 2);
+                    }
+                    else if(t.type == "Fire")
+                    {
+                        t.getCurrentOpal().takeBurnDamage(false);
+                    }
+                }
+            }
             return 0;
         }
         else if (attackNum == 2)
         {
-            boardScript.setTile(target, "Fire", false);
-            eruptionDamage += 3;
-            Attacks[0] = new Attack("Eruption", eruptionRange, 1, eruptionDamage, "Target tiles light on Fire.");
+            if (currentCycle == 0)
+            {
+                boardScript.setTile(target, "Growth", false);
+                currentCycle++;
+            }
+            else
+            {
+                boardScript.setTile(target, "Fire", false);
+                currentCycle = 0;
+            }
             return 0;
         }
         else if (attackNum == 3)
         {
-            if (target != this)
-            {
-                boardScript.setTile(target, "Fire", false);
-                adjacentTargets++;
-                if (adjacentTargets >= 3)
-                {
-                    Attacks[0] = new Attack("Eruption", eruptionRange, 1, eruptionDamage, "Target tiles light on Fire.", 1);
-                }
-            }
+            target.takeBurnDamage(false);
             return 0;
         }
         return cA.getBaseDamage() + getAttack();
@@ -87,19 +129,26 @@ public class Volcoco : OpalScript
         Attack cA = Attacks[attackNum];
         if (attackNum == 0)
         {
-            boardScript.setTile(target, "Fire", false);
-            Attacks[0] = new Attack("Eruption", eruptionRange, 1, eruptionDamage, "Target tiles light on Fire.");
             return 0;
         }
         else if (attackNum == 1)
         {
+            
             return 0;
         }
         else if (attackNum == 2)
         {
-            boardScript.setTile(target, "Fire", false);
-            eruptionDamage += 3;
-            Attacks[0] = new Attack("Eruption", eruptionRange, 1, eruptionDamage, "Target tiles light on Fire.");
+            if (currentCycle == 0)
+            {
+                boardScript.setTile(target, "Growth", false);
+                currentCycle++;
+            }
+            else
+            {
+                boardScript.setTile(target, "Fire", false);
+                currentCycle = 0;
+            }
+            
             return 0;
         }
         else if (attackNum == 2)
@@ -120,6 +169,8 @@ public class Volcoco : OpalScript
         }
         else if (attackNum == 1)
         {
+            if (target.type == "Fire" && target.getCurrentOpal() != null && target.getCurrentOpal().getBurning())
+                return target.getCurrentOpal().getBurningDamage();
             return 0;
         }
         else if (attackNum == 2)
@@ -128,6 +179,8 @@ public class Volcoco : OpalScript
         }
         else if (attackNum == 2)
         {
+            if (target.type == "Growth" && target.getCurrentOpal() != null && target.getCurrentOpal().getBurning())
+                return target.getCurrentOpal().getBurningDamage();
             return 0;
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
@@ -135,7 +188,7 @@ public class Volcoco : OpalScript
 
     public override int checkCanAttack(TileScript target, int attackNum)
     {
-        if (attackNum == 3)
+        if (attackNum == 2)
         {
             return 0;
         }
