@@ -203,6 +203,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
     public void sendMultiplayerTeam(string myTeam)
     {
         this.photonView.RPC("sendTeam", RpcTarget.All, myTeam);
+        print("Team sent!");
     }
 
     public void setUpMM(GroundScript bs, CursorScript c)

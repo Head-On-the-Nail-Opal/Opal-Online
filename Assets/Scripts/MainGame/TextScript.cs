@@ -57,6 +57,11 @@ public class TextScript : MonoBehaviour {
     public Text tileDescription1;
     public Text tileDescription2;
 
+    public GameObject itemUI;
+    public Text itemName;
+    public Text itemDesc;
+    public ItemDescriptions iD;
+
     public AttackScreen attackScreen;
     public AttackScreen attackScreen1;
     public AttackScreen attackScreen2;
@@ -638,6 +643,7 @@ public class TextScript : MonoBehaviour {
             attackScreen1.updateScreen(null, -1, null);
             attackScreen2.updateScreen(null, -1, null);
             attackScreen3.updateScreen(null, -1, null);
+            updateCharm(null);
         }
         if(selected == null)
         {
@@ -647,6 +653,7 @@ public class TextScript : MonoBehaviour {
                 attackScreen1.updateScreen(current, 1, null);
                 attackScreen2.updateScreen(current, 2, null);
                 attackScreen3.updateScreen(current, 3, null);
+                updateCharm(current);
             }
         }
         else
@@ -655,6 +662,37 @@ public class TextScript : MonoBehaviour {
             attackScreen1.updateScreen(selected, 1, null);
             attackScreen2.updateScreen(selected, 2, null);
             attackScreen3.updateScreen(selected, 3, null);
+            updateCharm(selected);
+        }
+    }
+
+    public void updateCharm(OpalScript o)
+    {
+        if(o == null)
+        {
+            itemUI.GetComponent<SpriteRenderer>().enabled = false;
+            itemName.text = "";
+            itemName.fontSize = 20;
+            itemDesc.text = "";
+        }else if (o.getCharm() == "")
+        {
+            itemUI.GetComponent<SpriteRenderer>().enabled = false;
+            itemName.text = "No Charm";
+            itemName.fontSize = 20;
+            itemDesc.text = "This opal carries no charm.";
+        }else if (!o.getCharmRevealed())
+        {
+            itemUI.GetComponent<SpriteRenderer>().enabled = true;
+            itemName.text = "Hidden Charm";
+            itemName.fontSize = 20;
+            itemDesc.text = "This charm is still unknown.";
+        }
+        else
+        {
+            itemUI.GetComponent<SpriteRenderer>().enabled = true;
+            itemName.text = o.getCharm();
+            itemName.fontSize = 20;
+            itemDesc.text = iD.getDescFromItem(o.getCharm());
         }
     }
 }

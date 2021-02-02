@@ -69,6 +69,9 @@ public class MainMenuScript : MonoBehaviour {
     private ItemLabel itemLabelPrefab;
     public ItemDescriptions iD;
     public Text description;
+    public Text charmLabel;
+    private OpalScript viewedOpal = null;
+    private List<string> bannedCharms = new List<string>();
 
     private List<string> personalities = new List<string>();
 
@@ -1193,7 +1196,7 @@ public class MainMenuScript : MonoBehaviour {
         float height = 30;
         foreach(string name in items)
         {
-            print(name);
+            //print(name);
             ItemLabel temp = Instantiate<ItemLabel>(itemLabelPrefab);
             temp.setText(name);
             temp.setMain(this);
@@ -1223,6 +1226,32 @@ public class MainMenuScript : MonoBehaviour {
         personalities.Add("Pessimistic;5,0,-2,0,0");
         personalities.Add("Impatient;0,-2,-2,1,0");
         //personalities.Add("Jumpy;0,-1,-,1,0");
+    }
+
+    public void setCurrentCharmName(string name)
+    {
+        OpalScript temp = viewedOpal;
+        if (bannedCharms.Contains(name))
+        {
+            return;
+        }
+        if (temp.getCharm() != null)
+        {
+            bannedCharms.Remove(temp.getCharm());
+        }
+        bannedCharms.Add(name);
+        temp.setCharm(name);
+        mainCam.transform.position = new Vector3(0,15,-10);
+        //print(temp.getMyName() + "'s charm is set to " + temp.getCharm());
+        setCurrentCharm(temp);
+    }
+
+    public void setCurrentCharm(OpalScript op)
+    {
+        if (op.getCharm() == null)
+            charmLabel.text = "Current Charm: None";
+        else
+            charmLabel.text = "Current Charm: " +  op.getCharm();
     }
 
     public void setTeamDisplays()
@@ -1294,8 +1323,14 @@ public class MainMenuScript : MonoBehaviour {
     public void displayOpal(OpalScript o)
     {
         selectionDisplay.setCurrentOpal(o);
-        if(o != null)
-            personalityTracker.text = "Current Personality\n"+o.getPersonality()+"\n"+getPersonalityStats(o.getPersonality());
+        if (o != null)
+        {
+            personalityTracker.text = "Current Personality\n" + o.getPersonality() + "\n" + getPersonalityStats(o.getPersonality());
+            if (o.getCharm() == null)
+                charmLabel.text = "Current Charm: None";
+            else
+                charmLabel.text = "Current Charm: " + o.getCharm();
+        }
 
     }
 
@@ -1304,6 +1339,7 @@ public class MainMenuScript : MonoBehaviour {
         if (o != null)
         {
             teamOpalDisplay.setCurrentOpal(o);
+            viewedOpal = o;
         }
     }
 
@@ -1394,11 +1430,14 @@ public class MainMenuScript : MonoBehaviour {
         {
             OpalScript opalCopy = Instantiate<OpalScript>(opal);
             opalCopy.setOpal(null);
-            opalCopy.setPersonality(opal.getPersonality());
+            //opalCopy.setPersonality(opal.getPersonality());
+            opalCopy.setDetails(opal);
+            //print(opalCopy.getCharm());
             copy.Add(opalCopy);
         }
         if (currentEditorTeam == -1)
         {
+            bannedCharms.Clear();
             teams.Add(copy);
             temp.setMain(this, teams.Count - 1);
 
@@ -1416,6 +1455,7 @@ public class MainMenuScript : MonoBehaviour {
         }
         else
         {
+            bannedCharms.Clear();
             teams[currentEditorTeam] = copy;
             temp.setMain(this, currentEditorTeam);
             if (currentEditorTeam == 1)
@@ -1451,6 +1491,17 @@ public class MainMenuScript : MonoBehaviour {
 
     public void displayTeam(List<OpalScript> opals, int teamNum)
     {
+        foreach(OpalScript o in opals)
+        {
+            if(o == null)
+            {
+                return;
+            }
+            if(o.getCharm() != null)
+            {
+                bannedCharms.Add(o.getCharm());
+            }
+        }
         mainCam.transform.position = new Vector3(0, 15, -10);
         while (opals.Count != teamEditor.Count)
         {
@@ -1467,11 +1518,13 @@ public class MainMenuScript : MonoBehaviour {
         }
         createTeamButton.gameObject.SetActive(true);
         currentEditorTeam = teamNum;
+        displayOpal(opals[0], true);
     }
 
     public void deleteTeam(OpalTeam oT, int teamNum)
     {
         teams.RemoveAt(teamNum);
+        bannedCharms.Clear();
         loadTeams();
         if (teams.Count == 0)
             addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 5 - (teams.Count + 1) * 1.5f, addNewTeamButton.transform.position.z);
@@ -1568,8 +1621,7 @@ public class MainMenuScript : MonoBehaviour {
         string pName = temp[0];
         string stats = temp[1];
         personalityTracker.text = "Current Personality\n" + pName + "\n" + getPersonalityStats(pName);
-        findViewedOpal().setPersonality(pName);
-        
+        viewedOpal.setPersonality(pName);
     }
 
     private OpalScript findViewedOpal()
@@ -1638,8 +1690,7 @@ public class MainMenuScript : MonoBehaviour {
                     foreach(OpalScript o in lO)
                     {
                         o.setOpal(null);
-                        //print(o.getMyName());
-                        writer.Write(o.getMyName() + ",");
+                        writer.Write(o.saveOpal() + ",");
                         
                     }
                     writer.Write("\n");
@@ -1648,8 +1699,7 @@ public class MainMenuScript : MonoBehaviour {
                 foreach (OpalScript o in myOpals)
                 {
                     o.setOpal(null);
-                    //print(o.getMyName());
-                    writer.Write(o.getMyName() + ",");
+                    writer.Write(o.saveOpal() + ",");
                 }
                 writer.Write("\n");
                 writer.Write("endOpals\n");
@@ -1674,8 +1724,11 @@ public class MainMenuScript : MonoBehaviour {
             {
                 if (name != "\n" && name != "")
                 {
-                   // print(name);
-                    opals.Add(Resources.Load<OpalScript>("Prefabs/Opals/" + name));
+                    string[] parsed = name.Split('|');
+                    OpalScript temp = Resources.Load<OpalScript>("Prefabs/Opals/" + parsed[0]);
+                    temp.setFromSave(name);
+                    opals.Add(temp);
+
                 }
             }
             teams.Add(opals);

@@ -433,12 +433,13 @@ public class TileScript : MonoBehaviour {
                 impassable = false;
             if (type.Equals("Miasma") && currentPlayer != null)
             {
-                currentPlayer.doBuff(0, -2, 0, false);
+                currentPlayer.doTempBuff(1, -1, -2);
                 currentPlayer.shrouded = false;
             }
             if (type.Equals("Growth") && currentPlayer != null)
             {
-                currentPlayer.doBuff(-2, -2, 0, false);
+                currentPlayer.doTempBuff(0, -1, -2);
+                currentPlayer.doTempBuff(1, -1, -2);
                 DestroyImmediate(currentEffect);
             }
         }
@@ -465,7 +466,7 @@ public class TileScript : MonoBehaviour {
                 if (!player.shrouded)
                 {
                     player.setPoison(true);
-                    player.doBuff(0, 2, 0, false);
+                    player.doTempBuff(1, -1, 2);
                     player.shrouded = true;
                 }
             }
@@ -478,7 +479,8 @@ public class TileScript : MonoBehaviour {
                     temp.transform.position = new Vector3(gridPos.x, -1f, gridPos.y);
                     currentEffect = temp;
                     player.setPoison(false);
-                    player.doBuff(2, 2, 0, false);
+                    player.doTempBuff(0, -1, 2);
+                    player.doTempBuff(1, -1, 2);
                 }
             }
             if(trapEffect != null && currentTrap != "PortalOut")

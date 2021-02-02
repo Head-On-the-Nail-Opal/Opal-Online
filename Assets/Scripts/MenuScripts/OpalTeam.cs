@@ -40,7 +40,7 @@ public class OpalTeam : MonoBehaviour
             }
             OpalScript opalOne = Instantiate<OpalScript>(o);
             opalOne.setOpal(null);
-            opalOne.setPersonality(o.getPersonality());
+            opalOne.setDetails(o);
             opalOne.transform.position = new Vector3(transform.position.x + i*1.2f - 3, transform.position.y, -2.5f);
             opalOne.transform.localScale *= 1f;
             opalOne.transform.rotation = Quaternion.Euler(0, 0, 0);

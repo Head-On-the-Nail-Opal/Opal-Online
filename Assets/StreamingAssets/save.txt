@@ -1,6 +1,7 @@
 Please don't change this, it will be encrypted eventually.
-Ambush,Sentree,Gorj,Glummer,
-Hopscure,Diamite,Duplimorph,Wingnition,
+Ambush|Cloak of Whispers|Risk-Taker,
+Excremite||Straight-Edge,Shineode||Straight-Edge,Tortquoise||Straight-Edge,Wobblestone||Straight-Edge,
+Wingnition||Straight-Edge,Hopscure||Straight-Edge,Diamite||Straight-Edge,Duplimorph||Straight-Edge,
 endTeams
 
 endOpals

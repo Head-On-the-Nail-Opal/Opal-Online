@@ -107,7 +107,7 @@ public class Spillarc : OpalScript
             {
                 return Attacks[attackNum].getBaseDamage()  + getAttack() - target.currentPlayer.getDefense();
             }
-            return Attacks[attackNum].getBaseDamage() + 8 + getAttack() - target.currentPlayer.getDefense();
+            return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
     }

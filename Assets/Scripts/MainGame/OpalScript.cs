@@ -47,6 +47,8 @@ abstract public class OpalScript : MonoBehaviour {
     protected List<ParticleSystem> armors = new List<ParticleSystem>();
     private int matchID = -1;
     private int minionCount = 0;
+    private string myCharm;
+    private bool charmRevealed = false;
 
 
     public bool shrouded = false;
@@ -71,6 +73,9 @@ abstract public class OpalScript : MonoBehaviour {
     private Spiritch spiritchPrefab;
     private string personality = "Straight-Edge";
 
+    private Vector3 startTile;
+    private bool takenDamage = false;
+
     private void Awake()
     {
         GameObject board = GameObject.Find("Main Camera");
@@ -85,6 +90,11 @@ abstract public class OpalScript : MonoBehaviour {
         playerIndicator = Resources.Load<GameObject>("Prefabs/TeamLabel");
         spiritchPrefab = Resources.Load<Spiritch>("Prefabs/Opals/Spiritch");
         playerIndicator = Resources.Load<GameObject>("Prefabs/TeamLabel");
+        GameObject iDBody = GameObject.Find("ItemDescriptions");
+        ItemDescriptions iD = iDBody.GetComponent<ItemDescriptions>();
+        iD.setUp();
+        if(boardScript != null && !boardScript.getMult())
+            myCharm = iD.getRandomCharmName();
         onAwake();
     }
 
@@ -235,8 +245,26 @@ abstract public class OpalScript : MonoBehaviour {
         return temp;
     }
 
+    public string saveOpal()
+    {
+        return getMyName() +'|'+ getCharm() +'|'+ getPersonality();
+    }
+
+    public void setFromSave(string data)
+    {
+        string[] parsed = data.Split('|');
+        myCharm = parsed[1];
+        personality = parsed[2];
+    }
+
+    public bool getCharmRevealed()
+    {
+        return charmRevealed;
+    }
+
     public void proccessPersonality(string p)
     {
+        print("I am " + p);
         switch (p) {
             case "Proud":
                 attack += 1;
@@ -283,6 +311,31 @@ abstract public class OpalScript : MonoBehaviour {
                 defense -= 2;
                 break;
         }
+    }
+
+    public string getCharm()
+    {
+        return myCharm;
+    }
+
+    public void setCharm(string i)
+    {
+        //print("Set charm to " + i.getName());
+        myCharm = i;
+    }
+    
+    /**public void setCharm(string n)
+    {
+        myCharm = new Charm();
+        myCharm.setName(n);
+        print(getMyName() + "'s charm is set to " + myCharm.getName());
+    }*/
+
+    public void setDetails(OpalScript o)
+    {
+        myCharm = o.getCharm();
+        personality = o.getPersonality();
+        //proccessPersonality(personality);
     }
 
     public void summonParticle(string name)
@@ -459,6 +512,7 @@ abstract public class OpalScript : MonoBehaviour {
 
     public void addArmor(int add)
     {
+        onArmorItem(add);
         armor += add;
         if(armor < 0)
         {
@@ -782,6 +836,12 @@ abstract public class OpalScript : MonoBehaviour {
 
     public void setBurning(bool newburn)
     {
+        if(myCharm == "InsectHusk")
+        {
+            setPoison(true);
+            charmRevealed = true;
+            return;
+        }
         if (type1 != "Fire" && type2 != "Fire")
         {
             if(newburn && !burning && !(currentTile != null && currentTile.type == "Flood"))
@@ -814,12 +874,22 @@ abstract public class OpalScript : MonoBehaviour {
             {
                 onStatusCondition(false, false, true);
                 currentLift = Instantiate<ParticleSystem>(liftedParticle, this.transform);
-                liftTimer = 3;
+                liftTimer = 2;
+                if(myCharm == "Balloon of Light")
+                {
+                    doTempBuff(2, -1, 1);
+                    charmRevealed = true;
+                }
             }
             else if (!newLift && lifted)
             {
                 DestroyImmediate(currentLift.gameObject);
                 currentLift = null;
+                if (myCharm == "Balloon of Light")
+                {
+                    doTempBuff(2, -1, -1);
+                    charmRevealed = true;
+                }
             }
             lifted = newLift;
         }
@@ -948,6 +1018,7 @@ abstract public class OpalScript : MonoBehaviour {
     {
         
         onDie();
+        onDieItem();
         float shrink = 1f;
         for (int i = 0; i < 20; i++)
         {
@@ -1120,6 +1191,7 @@ abstract public class OpalScript : MonoBehaviour {
             StartCoroutine(shrinker());
         }
         onDamage(dam);
+        onDamageItem(dam);
     }
 
     public void takeDamageBelowArmor(int dam, bool mod, bool effect)
@@ -1388,6 +1460,7 @@ abstract public class OpalScript : MonoBehaviour {
                 a.getCurrentUse(-a.getCurrentUse(0));
         }
         onStart();
+        onStartItem();
     }
 
     public void takeBurnDamage(bool decay)
@@ -1406,7 +1479,15 @@ abstract public class OpalScript : MonoBehaviour {
             }
         }
         takeDamage(burnCounter, false, false);
-        burnCounter += 2;
+        if (myCharm == "Heat-Proof Cloth")
+        {
+            burnCounter += 1;
+            charmRevealed = true;
+        }
+        else
+        {
+            burnCounter += 2;
+        }
         boardScript.callParticles("burning", transform.position);
     }
 
@@ -1474,6 +1555,155 @@ abstract public class OpalScript : MonoBehaviour {
     public virtual void toggleMethod()
     {
         return;
+    }
+
+    public void onPlacementItem()
+    {
+        if(myCharm == "Defense Orb")
+        {
+            doTempBuff(1, -1, 4);
+            charmRevealed = true;
+        }else if(myCharm == "Makeshift Shield")
+        {
+            addArmor(1);
+            charmRevealed = true;
+        }
+        else if (myCharm == "Cursed Ring")
+        {
+            setPoison(true);
+            charmRevealed = true;
+        }
+        switch (myCharm)
+        {
+            case "Cloak of Whispers":
+                doTempBuff(2, -1, 2);
+                charmRevealed = true;
+                break;
+            case "Death Wish":
+                doTempBuff(0, -1, -2);
+                doTempBuff(1, -1, 2);
+                charmRevealed = true;
+                break;
+        }
+    }
+
+    public void onDamageItem(int dam)
+    {
+        switch (myCharm) {
+            case "Defense Orb":
+                doTempBuff(1, -1, -1);
+                break;
+            case "Jade Figure":
+                if(currentTile != null && currentTile.type == "Growth")
+                {
+                    doTempBuff(0, -1, 1);
+                    doTempBuff(1, -1, 1);
+                    charmRevealed = true;
+                }
+                break;
+            case "Broken Doll":
+                if(dam > 0)
+                {
+                    if(boardScript.getMyCursor().getCurrentOpal().getTeam() == getTeam())
+                    {
+                        doTempBuff(2, 1, 2);
+                    }
+                    charmRevealed = true;
+                }
+                break;
+            case "Potion of Gratitude":
+                if(dam > 0)
+                {
+                    if (!takenDamage)
+                    {
+                        doHeal(10, false);
+                        charmRevealed = true;
+                        takenDamage = true;
+                    }
+                }
+                break;
+        }
+    }
+
+    public void onStartItem()
+    {
+        switch (myCharm) {
+            case "Lightweight Fluid":
+                doHeal(2, getLifted());
+                charmRevealed = true;
+                break;
+            case "Metal Scrap":
+                if (currentTile != null)
+                {
+                    startTile = currentTile.getPos();
+                }
+                break;
+        }
+    }
+
+    public void onEndItem()
+    {
+        switch (myCharm)
+        {
+            case "Metal Scrap":
+                if (currentTile != null && currentTile.getPos() == startTile)
+                {
+                    addArmor(1);
+                    charmRevealed = true;
+                }
+                break;
+            case "Mysterious Leaf":
+                if(currentTile != null && currentTile.type == "Growth")
+                {
+                    foreach(TileScript t in getSurroundingTiles(true))
+                    {
+                        if(t.getCurrentOpal() != null)
+                        {
+                            t.getCurrentOpal().doTempBuff(0, -1, 1);
+                            t.getCurrentOpal().doTempBuff(1, -1, 1);
+                        }
+                    }
+                    charmRevealed = true;
+                }
+                break;
+        }
+    }
+
+    public void onArmorItem(int add)
+    {
+        switch (myCharm)
+        {
+            case "Comfortable Padding":
+                if(add > 1)
+                {
+                    doTempBuff(0, -1, 2);
+                    charmRevealed = true;
+                }
+                else
+                {
+                    doTempBuff(0, -1, -2);
+                    charmRevealed = true;
+                }
+                break;
+        }
+    }
+
+    public void onDieItem()
+    {
+        switch (myCharm)
+        {
+            case "Grieving Shrimp":
+                foreach(OpalScript o in boardScript.gameOpals)
+                {
+                    if(o.getTeam() == getTeam())
+                    {
+                        o.doTempBuff(0, 1, 7);
+                        o.doTempBuff(1, 1, 7);
+                    }
+                }
+                charmRevealed = true;
+                break;
+        }
     }
 
     public virtual int checkCanAttack(TileScript target, int attackNum)

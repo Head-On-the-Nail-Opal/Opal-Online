@@ -706,8 +706,11 @@ public class CursorScript : MonoBehaviour {
         else
             selectedPlayer.setSkipTurn(false);
         boardScript.alreadyMoved.Add(selectedPlayer.getID());
-        if(!placing)
+        if (!placing)
+        {
             selectedPlayer.onEnd();
+            selectedPlayer.onEndItem();
+        }
         if (selectedPlayer.getCurrentTile() != null)
         {
             if(selectedPlayer.getDead())
@@ -775,8 +778,10 @@ public class CursorScript : MonoBehaviour {
                 }
                 foreach(OpalScript o in boardScript.gameOpals)
                 {
-                    
+
+                    o.proccessPersonality(o.getPersonality());
                     o.onPlacement();
+                    o.onPlacementItem();
                 }
             }
             StartCoroutine(ts.displayRoundNum(roundNum));

@@ -27,7 +27,7 @@ public class Charayde : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Deluge", 0, 0, 0, "<Passive>\n Place flood tiles down wherever you move.");
-        Attacks[1] = new Attack("Sap Ray", 4, 4, 4, "Target loses 2 speed for 2 turns, Charayde gains +2 speed for 2 turns.");
+        Attacks[1] = new Attack("Sap Ray", 4, 4, 4, "Target loses 2 speed for 1 turn, Charayde gains +2 speed for 1 turn.");
         Attacks[2] = new Attack("Spinal Blade", 1, 3, 10, "<Water Rush>\n May move after attacking");
         Attacks[3] = new Attack("Sacrifice", 0, 1, 0, "Gain +1 speed, take 5 damage. Place Flood under your feet and on adjacent tiles.");
         type1 = "Water";
@@ -67,8 +67,8 @@ public class Charayde : OpalScript
         }
         else if (attackNum == 1) //Seed Launch
         {
-            doTempBuff(2, 3, 2);
-            target.doTempBuff(2, 2, -2);
+            doTempBuff(2, 2, 2);
+            target.doTempBuff(2, 1, -2);
         }
         else if (attackNum == 2) //Grass Cover
         {

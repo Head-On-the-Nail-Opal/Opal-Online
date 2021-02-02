@@ -36,6 +36,11 @@ public class ItemLabel : MonoBehaviour
         m.readDescription(itemText.text);
     }
 
+    public void OnMouseUp()
+    {
+        m.setCurrentCharmName(itemText.text);
+    }
+
     public void OnMouseExit()
     {
         transform.localScale /= 1.1f;

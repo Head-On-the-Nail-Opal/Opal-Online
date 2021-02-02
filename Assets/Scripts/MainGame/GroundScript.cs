@@ -143,7 +143,7 @@ public class GroundScript : MonoBehaviour {
             string sendMe = "";
             foreach (OpalScript o in tempB)
             {
-                sendMe += o.GetType() + ",";
+                sendMe += o.GetType().ToString() +o.saveOpal() + ",";
             }
             myTeam = sendMe;
             print(myTeam);
@@ -256,9 +256,13 @@ public class GroundScript : MonoBehaviour {
         }
     }
 
-    public OpalScript convertOpalFromString(string s)
+    public OpalScript convertOpalFromString(string data)
     {
-        OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + s));
+        string[] parsed = data.Split('|');
+        //Debug.LogError("du hello:" +data);
+        OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + parsed[0]));
+        temp.setPersonality(parsed[2]);
+        temp.setCharm(parsed[1]);
         return temp;
     }
 
@@ -276,7 +280,7 @@ public class GroundScript : MonoBehaviour {
         {
             //print(o.GetType());
             OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + o.GetType()));
-            //temp.setPersonality(o.getPersonality());
+            temp.setDetails(o);
             temp.GetComponent<SpriteRenderer>().flipX = false;
             temp.setOpal("Blue");
             //temp.setPersonality(o.getPersonality());
@@ -294,6 +298,7 @@ public class GroundScript : MonoBehaviour {
             OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + o.GetType()));
             temp.GetComponent<SpriteRenderer>().flipX = true;
             temp.setOpal("Red");
+            temp.setDetails(o);
             //temp.setPersonality(o.getPersonality());
             temp.setPos(-100, -100);
             p1Opals.Add(temp);
@@ -309,7 +314,8 @@ public class GroundScript : MonoBehaviour {
             OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + o.GetType()));
             temp.GetComponent<SpriteRenderer>().flipX = false;
             temp.setOpal("Green");
-           // temp.setPersonality(o.getPersonality());
+            temp.setDetails(o);
+            // temp.setPersonality(o.getPersonality());
             temp.setPos(-100, -100);
             p3Opals.Add(temp);
             greenTeamPriority += temp.getSpeed() * 10;
@@ -324,7 +330,8 @@ public class GroundScript : MonoBehaviour {
             OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + o.GetType()));
             temp.GetComponent<SpriteRenderer>().flipX = false;
             temp.setOpal("Orange");
-           // temp.setPersonality(o.getPersonality());
+            temp.setDetails(o);
+            // temp.setPersonality(o.getPersonality());
             temp.setPos(-100, -100);
             p4Opals.Add(temp);
             orangeTeamPriority += temp.getSpeed() * 10;

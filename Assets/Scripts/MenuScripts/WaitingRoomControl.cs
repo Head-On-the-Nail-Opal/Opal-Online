@@ -23,7 +23,6 @@ public class WaitingRoomControl : MonoBehaviourPunCallbacks, IPunObservable
     void Start()
     {
         glob = GameObject.Find("GlobalObject").GetComponent<GlobalScript>();
-
         username = glob.getUsername();
         roomName.text = PhotonNetwork.CurrentRoom.Name;
 

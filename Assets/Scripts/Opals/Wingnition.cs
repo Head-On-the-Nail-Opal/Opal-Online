@@ -48,8 +48,11 @@ public class Wingnition : OpalScript
 
     public override void onStart()
     {
-        bombatted = false;
-        origPos = new Vector2(currentTile.getPos().x, currentTile.getPos().z);
+        if (!dead)
+        {
+            bombatted = false;
+            origPos = new Vector2(currentTile.getPos().x, currentTile.getPos().z);
+        }
     }
 
     public override void onMove(int distanceMoved)

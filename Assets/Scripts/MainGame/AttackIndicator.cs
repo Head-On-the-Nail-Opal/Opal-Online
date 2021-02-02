@@ -26,6 +26,10 @@ public class AttackIndicator : MonoBehaviour
 
     public void displayAttack(int attackNum)
     {
+        if (sr == null)
+        {
+            return;
+        }
         if(attackNum == -1)
         {
             sr.sprite = NoAttack;
