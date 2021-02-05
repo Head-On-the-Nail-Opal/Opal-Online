@@ -152,6 +152,16 @@ public class WaitingRoomControl : MonoBehaviourPunCallbacks, IPunObservable
         playerList.text = playerListBuilder;
     }
 
+    public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
+    {
+        string playerListBuilder = "";
+        foreach (Photon.Realtime.Player p in PhotonNetwork.PlayerList)
+        {
+            playerListBuilder += p.NickName + "\n";
+        }
+        playerList.text = playerListBuilder;
+    }
+
     private void processChat()
     {
         if (!typing && Input.GetKeyDown(KeyCode.Return) && username != "")
