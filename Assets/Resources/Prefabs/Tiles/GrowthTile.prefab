@@ -284,6 +284,8 @@ MonoBehaviour:
   type: Growth
   GrowthEffect: {fileID: 1379738769713980, guid: 5154482cb8c4e3749933b3e1fd0a8561,
     type: 3}
+  connectedTileSprites: []
+  changeTexture: {fileID: 0}
   currentPlayer: {fileID: 0}
   currentEffect: {fileID: 0}
 --- !u!1 &3510633135418901946
@@ -5186,8 +5188,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 2097769597
+  m_SortingLayer: -3
   m_SortingOrder: 0
   m_Sprite: {fileID: 1543457907869305163, guid: 33b1734f0c0a79e4287194c1130c68bd,
     type: 3}
@@ -5287,8 +5289,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 283430477
-  m_SortingLayer: -2
+  m_SortingLayerID: 2097769597
+  m_SortingLayer: -3
   m_SortingOrder: 0
   m_Sprite: {fileID: 8685582167891548945, guid: 532d26ae5c23f454481ae27405f87289,
     type: 3}

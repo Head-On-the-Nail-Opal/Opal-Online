@@ -93,8 +93,8 @@ abstract public class OpalScript : MonoBehaviour {
         GameObject iDBody = GameObject.Find("ItemDescriptions");
         ItemDescriptions iD = iDBody.GetComponent<ItemDescriptions>();
         iD.setUp();
-        if(boardScript != null && !boardScript.getMult())
-            myCharm = iD.getRandomCharmName();
+        //if(boardScript != null && !boardScript.getMult())
+            //myCharm = iD.getRandomCharmName();
         onAwake();
     }
 
@@ -264,7 +264,7 @@ abstract public class OpalScript : MonoBehaviour {
 
     public void proccessPersonality(string p)
     {
-        print("I am " + p);
+        //print("I am " + p);
         switch (p) {
             case "Proud":
                 attack += 1;
@@ -879,6 +879,11 @@ abstract public class OpalScript : MonoBehaviour {
                 {
                     doTempBuff(2, -1, 1);
                     charmRevealed = true;
+                }else if(myCharm == "Floating Bandages")
+                {
+                    setPoison(false);
+                    setBurning(false);
+                    charmRevealed = true;
                 }
             }
             else if (!newLift && lifted)
@@ -1176,6 +1181,12 @@ abstract public class OpalScript : MonoBehaviour {
         }
         if(this.health <= 0)
         {
+            if(getCharm() == "Spectre Essence" && !charmRevealed)
+            {
+                health = 1;
+                charmRevealed = true;
+                return;
+            }
             TileScript temp = currentTile;
             if (currentTile != null)
                 temp.standingOn(null);
@@ -1370,6 +1381,11 @@ abstract public class OpalScript : MonoBehaviour {
 
     public void doHeal(int heal, bool overheal)
     {
+        if(myCharm == "Jasper Figure")
+        {
+            overheal = true;
+            charmRevealed = true;
+        }
         if (health != maxHealth || overheal)
         {
             onHeal(heal);
@@ -1576,12 +1592,28 @@ abstract public class OpalScript : MonoBehaviour {
         switch (myCharm)
         {
             case "Cloak of Whispers":
-                doTempBuff(2, -1, 2);
+                doTempBuff(2, -1, 1);
                 charmRevealed = true;
                 break;
             case "Death Wish":
                 doTempBuff(0, -1, -2);
                 doTempBuff(1, -1, 2);
+                charmRevealed = true;
+                break;
+            case "Taunting Mask":
+                doTempBuff(1, -1, 5);
+                charmRevealed = true;
+                break;
+            case "Juniper Necklace":
+                foreach(OpalScript o in boardScript.gameOpals)
+                {
+                    if(o != null && o.getTeam() == getTeam() && (o.getMainType() == "Void" || o.getSecondType() == "Void"))
+                    {
+                        doTempBuff(0, -1, 1);
+                        doTempBuff(1, -1, 1);
+                        doTempBuff(2, -1, 1);
+                    }
+                }
                 charmRevealed = true;
                 break;
         }
@@ -1622,6 +1654,36 @@ abstract public class OpalScript : MonoBehaviour {
                     }
                 }
                 break;
+            case "Taunting Mask":
+                if(dam > defense)
+                {
+                    boardScript.myCursor.getCurrentOpal().doHeal(2, false);
+                    charmRevealed = true;
+                }
+                break;
+            case "Death's Skull":
+                if(dam > health + defense)
+                {
+                    boardScript.myCursor.getCurrentOpal().takeDamage(dam, true, true);
+                    charmRevealed = true;
+                }
+                break;
+            case "Golden Figure":
+                doHeal(2, false);
+                charmRevealed = true;
+                break;
+            case "Garnet Figure":
+                boardScript.setTile(boardScript.myCursor.getCurrentOpal(), "Fire", false);
+                charmRevealed = true;
+                break;
+            case "Suffering Crown":
+                if(boardScript.myCursor.getCurrentOpal().getAttack() > getAttack())
+                {
+                    doTempBuff(0, -1, 5);
+                    charmRevealed = true;
+                }
+                return;
+            
         }
     }
 
@@ -1637,6 +1699,21 @@ abstract public class OpalScript : MonoBehaviour {
                 {
                     startTile = currentTile.getPos();
                 }
+                break;
+            case "Azurite Figure":
+                if(currentTile != null)
+                {
+                    boardScript.setTile(currentTile, "Flood", false);
+                }
+                charmRevealed = true;
+                break;
+            case "Dripping Candle":
+                foreach(TileScript t in getSurroundingTiles(true))
+                {
+                    if (t.getCurrentOpal() != null)
+                        t.getCurrentOpal().setBurning(true);
+                }
+                charmRevealed = true;
                 break;
         }
     }
@@ -1663,6 +1740,28 @@ abstract public class OpalScript : MonoBehaviour {
                             t.getCurrentOpal().doTempBuff(1, -1, 1);
                         }
                     }
+                    charmRevealed = true;
+                }
+                break;
+            case "Damp Machine":
+                if(currentTile != null && currentTile.type == "Flood")
+                {
+                    doTempBuff(1, -1, 2);
+                }
+                break;
+            case "Whetstone":
+                bool rock = false;
+                foreach(TileScript t in getSurroundingTiles(true))
+                {
+                    if(t.getCurrentOpal() != null && t.getCurrentOpal().getMyName() == "Boulder")
+                    {
+                        t.getCurrentOpal().doTempBuff(1,-1,2);
+                        rock = true;
+                    }
+                }
+                if (rock)
+                {
+                    doTempBuff(1, -1, 2);
                     charmRevealed = true;
                 }
                 break;
@@ -1857,21 +1956,28 @@ abstract public class OpalScript : MonoBehaviour {
         handleTempBuffs(false);
     }
 
-    public TempBuff doTempBuff(int ts,int tl,int a)
+    public TempBuff doTempBuff(int ts, int tl, int a, bool effect)
     {
         if (a > 0)
         {
-            boardScript.callParticles("buff", transform.position);
+            if(effect)
+                boardScript.callParticles("buff", transform.position);
         }
         else if (a < 0)
         {
-            boardScript.callParticles("debuff", transform.position);
+            if(effect)
+                boardScript.callParticles("debuff", transform.position);
         }
         TempBuff temp = new TempBuff(ts, tl, a);
         onBuff(temp);
         buffs.Add(temp);
         handleTempBuffs(false);
         return temp;
+    }
+
+    public TempBuff doTempBuff(int ts,int tl,int a)
+    {
+        return doTempBuff(ts, tl, a, true);
     }
 
     public class TempBuff

@@ -28,7 +28,7 @@ public class Diamite : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Precious", 0, 0, 0, "<Passive>\nWhen Diamite takes damage, it loses all stat changes, and opponents regain stats drained by Diamite.");
-        Attacks[1] = new Attack("Crystallizing Bite", 1, 1, 1, "Target loses -1 speed. Gain +1 speed. May move after using this.");
+        Attacks[1] = new Attack("Crystallizing Bite", 1, 1, 1, "Target loses -1 speed and -2 attack. Gain +1 speed and +2 attack. May move after using this.");
         Attacks[2] = new Attack("Chip Gem", 0, 1, 0, "Take 1 damage, then gain +2 armor.");
         Attacks[3] = new Attack("Crack", 0, 1, 0, "Lose an armor and gain +3 defense. Then take 1 damage.");
         type1 = "Dark";
@@ -60,6 +60,7 @@ public class Diamite : OpalScript
             foreach (OpalScript o in oofed)
             {
                 o.doTempBuff(2, -1, 1);
+                o.doTempBuff(0, -1, 2);
             }
             oofed.Clear();
         }
@@ -75,6 +76,8 @@ public class Diamite : OpalScript
         else if (attackNum == 1) //Seed Launch
         {
             target.doTempBuff(2, -1, -1);
+            doTempBuff(0, -1, 2);
+            target.doTempBuff(0, -1, -2);
             doTempBuff(2, -1, 1);
             oofed.Add(target);
             return 0;

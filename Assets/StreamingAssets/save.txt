@@ -1,7 +1,9 @@
 Please don't change this, it will be encrypted eventually.
-Ambush|Cloak of Whispers|Risk-Taker,
-Excremite||Straight-Edge,Shineode||Straight-Edge,Tortquoise||Straight-Edge,Wobblestone||Straight-Edge,
-Wingnition||Straight-Edge,Hopscure||Straight-Edge,Diamite||Straight-Edge,Duplimorph||Straight-Edge,
+Ambush|Defense Orb|Risk-Taker,Sentree|Metal Scrap|Worried,Terradactyl|Cloak of Whispers|Straight-Edge,Glummer|Mysterious Leaf|Worried,
+Wingnition|Potion of Gratitude|Impatient,Hopscure|Broken Doll|Straight-Edge,Diamite|Makeshift Shield|Impatient,Duplimorph|Lightweight Fluid|Pessimistic,
+Ambush|Defense Orb|Risk-Taker,Excremite||Straight-Edge,Chardinal||Straight-Edge,Charayde||Straight-Edge,Beamrider||Straight-Edge,Finbow||Straight-Edge,Fragmatom||Straight-Edge,Froxic||Straight-Edge,
+Snugbun|Suffering Crown|Pessimistic,KnightLite|Comfortable Padding|Risk-Taker,Prismin|Lightweight Fluid|Optimistic,Shineode|Defense Orb|Worried,
+Chasmcrawler|Metal Scrap|Tactical,Wobblestone|Taunting Mask|Risk-Taker,Terradactyl|Cloak of Whispers|Straight-Edge,Oremordilla|Whetstone|Worried,
 endTeams
 
 endOpals
