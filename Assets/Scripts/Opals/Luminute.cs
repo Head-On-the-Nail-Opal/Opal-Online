@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Luminute : OpalScript
 {
-    bool didMove;
+    bool canMove = true;
     override public void setOpal(string pl)
     {
         health = 30;
@@ -28,68 +28,49 @@ public class Luminute : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Group Aura", 6, 4, 6, "Each adjacent Opal with lower speed than Luminite adds 6 to this ability's damage.");
-        Attacks[1] = new Attack("Nap", 1, 1, 0, "If Luminute didn't move this turn, overheal target and Luminute 8 health. Luminute loses 2 speed for 1 turn.");
-        Attacks[2] = new Attack("Distracting Orb", 0, 1, 0, "Adjacent Opals are healed 10 health, they take -2 speed for 1 turn.", 1);
-        Attacks[3] = new Attack("Poppy Breath", 0, 5, 0, "Overheal a target on any Growth by 10 health, they lose -4 speed for 1 turn.");
+        Attacks[0] = new Attack("Distracted", 0, 0, 0, "Every other turn Luminute will be unable to act");
+        Attacks[1] = new Attack("Overgrowth", 3, 1, 0, "Give an Opal +2 attack and defense. Place a growth under them. Has 2 uses.");
+        Attacks[1].setUses(2);
+        Attacks[2] = new Attack("Pretty Orb", 2, 1, 0, "Targets lose their next turn.", 1);
+        Attacks[3] = new Attack("Orb Sprouts", 0, 5, 0, "Overheal a target on any Growth by 15 health, they lose -4 speed for 1 turn.");
         type1 = "Light";
         type2 = "Grass";
     }
 
     public override void onStart()
     {
-        didMove = false;
+        if (!canMove)
+        {
+            boardScript.getMyCursor().nextTurn();
+        }
+        canMove = !canMove;
     }
 
-    public override void onMove(int distanceMoved)
-    {
-        didMove = true;
-    }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
     {
         Attack cA = Attacks[attackNum];
         if (attackNum == 0) //Balance
         {
-            int addon = 0;
-            for (int i = -1; i < 2; i++)
-            {
-                for (int j = -1; j < 2; j++)
-                {
-                    if (!(i == 0 && j == 0) && (i == 0 || j == 0))
-                    {
-                        if (getPos().x + i < 10 && getPos().x + i > -1 && getPos().z + j < 10 && getPos().z + j > -1 && boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer != null)
-                        {
-                            if (boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer.getSpeed() < getSpeed())
-                                addon += 6;
-                        }
-                    }
-                }
-            }
-            return cA.getBaseDamage() + getAttack() + addon;
+
+            return 0;
         }
         else if (attackNum == 1) //Restore
         {
-            if (didMove == false)
-            {
-                target.doHeal(8, true);
-                doHeal(8, true);
-                doTempBuff(2, 2, -2);
-            }
+            boardScript.setTile(target, "Growth", false);
+            target.doTempBuff(0, -1, 2);
+            target.doTempBuff(1, -1, 2);
             return 0;
         }
         else if (attackNum == 2) //Shift
         {
-            if (target.getPos() != getPos())
-            {
-                target.doHeal(10, false);
-                target.doTempBuff(2, 1, -2);
-            }
+            target.setSkipTurn(true);
             return 0;
         }else if(attackNum == 3)
         {
             target.doHeal(10, true);
             target.doTempBuff(2, 1, -4);
+            return 0;
         }
         return cA.getBaseDamage() + getAttack();
     }
@@ -100,22 +81,7 @@ public class Luminute : OpalScript
             return 0;
         if (attackNum == 0)
         {
-            int addon = 0;
-            for (int i = -1; i < 2; i++)
-            {
-                for (int j = -1; j < 2; j++)
-                {
-                    if (!(i == 0 && j == 0) && (i == 0 || j == 0))
-                    {
-                        if (getPos().x + i < 10 && getPos().x + i > -1 && getPos().z + j < 10 && getPos().z + j > -1 && boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer != null)
-                        {
-                            if (boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer.getSpeed() < getSpeed())
-                                addon += 6;
-                        }
-                    }
-                }
-            }
-            return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense() + addon;
+            return 0;
         }
         else if (attackNum == 1)
         {

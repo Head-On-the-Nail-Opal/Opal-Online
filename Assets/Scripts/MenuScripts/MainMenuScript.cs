@@ -1803,7 +1803,6 @@ public class MainMenuScript : MonoBehaviour {
                         temp.setFromSave(name);
                         opals.Add(temp);
                     }
-
                 }
             }
             teams.Add(opals);

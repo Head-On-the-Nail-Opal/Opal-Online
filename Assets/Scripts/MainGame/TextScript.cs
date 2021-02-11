@@ -528,7 +528,7 @@ public class TextScript : MonoBehaviour {
         {
             theyWon.text = "Oh no a tie! Better play again!!!\n Press ESCAPE or START BUTTON to go the Main Menu";
             theyWon.color = Color.green;
-            winBarrier.localPosition = new Vector3(0, 400, 0);
+            winBarrier.localPosition = new Vector3(0, 0, 0);
             return;
         }
         theyWon.text = "Congrats!\n " + whoWon + " Team won!!!!\n Press ESCAPE or START BUTTON to go the Main Menu";
@@ -547,7 +547,7 @@ public class TextScript : MonoBehaviour {
         {
             theyWon.color = new Color(1, 0.5f, 0);
         }
-        winBarrier.localPosition = new Vector3(0,400,0);
+        winBarrier.localPosition = new Vector3(0,0,0);
     }
 
     public IEnumerator displayRoundNum(int round)

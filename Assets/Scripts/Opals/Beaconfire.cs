@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Crystallite : OpalScript
+public class Beaconfire : OpalScript
 {
     override public void setOpal(string pl)
     {
@@ -10,9 +10,9 @@ public class Crystallite : OpalScript
         maxHealth = health;
         attack = 0;
         defense = 4;
-        speed = 3;
+        speed = 2;
         priority = 0;
-        myName = "Crystallite";
+        myName = "Beaconfire";
         transform.localScale = new Vector3(0.2f,0.2f,1) * 0.9f;
         offsetX = 0;
         offsetY = 0.1f;
@@ -26,57 +26,57 @@ public class Crystallite : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Cleansing Flame", 0, 4, 0, "Burn all adjacent targets. Remove all of their stat changes.", 2);
-        Attacks[1] = new Attack("World Burn", 0, 4, 0, "Replace all special tiles on adjacent tiles and under Crystallite with Flame tiles. Ignores tile priority.", 2);
-        Attacks[2] = new Attack("Healing Heat", 0, 4, 0, "Heal all targets standing on Flames on adjacent tiles by 12 health. If they are not standing on Flame then set it to Flame", 2);
-        Attacks[3] = new Attack("Fired Up", 0, 1, 0, "Gain +5 defense and +3 speed for 1 turn.");
+        Attacks[0] = new Attack("Blaze Rage", 0, 0, 0, "At the end of your turn, adjacent Opals standing on flame gain +4 attack");
+        Attacks[1] = new Attack("World Burn", 0, 1, 0, "Light fire on all tiles surrounding Beaconfire.");
+        Attacks[2] = new Attack("Healing Heat", 1, 4, 0, "Heal all Opals in an area by 4. If they stand on flame then overheal.",1);
+        Attacks[3] = new Attack("Fired Up", 1, 1, 0, "Give an Opal +2 attack and gain +1 speed.");
         type1 = "Fire";
         type2 = "Light";
         og = true;
     }
 
+    public override void onEnd()
+    {
+        foreach (TileScript t in getSurroundingTiles(true))
+        {
+            if(t.type == "Fire" && t.currentPlayer != null)
+            {
+                t.currentPlayer.doTempBuff(0, -1, 4);
+            }
+        }
+    }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
     {
         Attack cA = Attacks[attackNum];
         if (attackNum == 0) //Cleansing Flame
         {
-            if (target == this)
-            {
-                return 0;
-            }
-            target.setBurning(true);
-            target.clearBuffs();
             return 0;
         }
         else if (attackNum == 1) //World Burn
         {
-            if (target.getCurrentTile().type != "Grass")
+            foreach (TileScript t in getSurroundingTiles(false))
             {
-                getBoard().setTile((int)target.getPos().x, (int)target.getPos().z, "Fire", true);
+                boardScript.setTile(t, "Fire", false);
             }
             return 0;
         }
         else if (attackNum == 2) //Healing Heat
         {
-            if(target == this)
+            if(target.getCurrentTile() != null && target.getCurrentTile().type == "Fire")
             {
-                return 0;
-            }
-            if(target.getCurrentTile().type == "Fire")
-            {
-                target.doHeal(12, false);
+                doHeal(4, true);
             }
             else
             {
-                getBoard().setTile((int)target.getPos().x, (int)target.getPos().z, "Fire", false);
+                doHeal(4, false);
             }
             return 0;
         }
         else if (attackNum == 3)
         {
-            doTempBuff(1, 2, 5);
-            doTempBuff(2, 2, 3);
+            doTempBuff(2, -1, 1);
+           target.doTempBuff(0, -1, 2);
         }
         return cA.getBaseDamage() + getAttack();
     }

@@ -29,7 +29,7 @@ public class Shineode : OpalScript
         Attacks[0] = new Attack("Shatter Geode", 3, 1, 0, "Destroy a boulder. Deal damage based on its defense to adjacent Opals.");
         Attacks[1] = new Attack("Rock Drop", 4, 1, 0, "Place 3 boulders. They share your defense value.");
         Attacks[1].setUses(3);
-        Attacks[2] = new Attack("Mineral Health", 2, 1, 0, "Heal a target by 7. If they're next to a boulder overheal.");
+        Attacks[2] = new Attack("Mineral Health", 2, 1, 0, "Heal a target by 5. If they're next to a boulder overheal.");
         Attacks[3] = new Attack("Rocky Fortitude", 0, 1, 0, "Surrounding Opals and boulders, and Shineode, gain +2 defense.");
         type1 = "Ground";
         type2 = "Light";
@@ -68,7 +68,7 @@ public class Shineode : OpalScript
                     nextTo = true;
                 }
             }
-            target.doHeal(7, nextTo);
+            target.doHeal(5, nextTo);
             return 0;
         }
         else if (attackNum == 3)

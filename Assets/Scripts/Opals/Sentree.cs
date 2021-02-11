@@ -41,12 +41,12 @@ public class Sentree : OpalScript
         Attack cA = Attacks[attackNum];
         if (attackNum == 0) //Canopy
         {
-            boardScript.setTile((int)target.getPos().x, (int)target.getPos().z, "Growth", false);
             if (target.getPos() != getPos())
             {
                 target.doTempBuff(0, -1, 1);
                 target.doTempBuff(1, -1, 2);
             }
+            boardScript.setTile((int)target.getPos().x, (int)target.getPos().z, "Growth", false);
             return 0;
         }
         else if (attackNum == 1) //Nature Call

@@ -1956,6 +1956,12 @@ abstract public class OpalScript : MonoBehaviour {
         handleTempBuffs(false);
     }
 
+    public void clearAllBuffs()
+    {
+        buffs = new List<TempBuff>();
+        handleTempBuffs(false);
+    }
+
     public TempBuff doTempBuff(int ts, int tl, int a, bool effect)
     {
         if (a > 0)

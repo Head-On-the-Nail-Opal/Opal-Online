@@ -250,7 +250,11 @@ public class TileScript : MonoBehaviour {
                 int xRand = Random.Range(1, 3);
                 int zRand = Random.Range(1, 3);
                 temp.transform.localPosition = new Vector3(0.42f, 0.72f, -0.42f);
-                temp.transform.localScale = new Vector3(0.2f, 0.2f, 0);
+                temp.transform.localScale = new Vector3(0.2f, 0.1f, 0);
+                if(natureNum == 3)
+                {
+                    temp.transform.localScale = new Vector3(0.15f, 0.075f, 0);
+                }
                 if (Random.Range(0, 2) == 0)
                     temp.GetComponent<SpriteRenderer>().flipX = true;
                 onMe = temp;

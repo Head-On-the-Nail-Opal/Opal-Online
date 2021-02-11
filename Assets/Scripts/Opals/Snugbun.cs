@@ -62,7 +62,7 @@ public class Snugbun : OpalScript
         int num = 0;
         foreach (TileScript t in friends)
         {
-            if (t.currentPlayer != null)
+            if (t.currentPlayer != null && t.currentPlayer.getMyName() != "Boulder")
             {
                 num++;
             }
@@ -81,7 +81,7 @@ public class Snugbun : OpalScript
         int num = 0;
         foreach (TileScript t in friends)
         {
-            if (t.currentPlayer != null)
+            if (t.currentPlayer != null && t.currentPlayer.getMyName() != "Boulder")
             {
                 num++;
             }
