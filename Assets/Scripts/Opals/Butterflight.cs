@@ -6,6 +6,8 @@ public class Butterflight : OpalScript
 {
 
     private int useNum = 0;
+    private bool xorz;
+    private bool sign;
     private OpalScript pushOpal;
 
     override public void setOpal(string pl)
@@ -32,7 +34,7 @@ public class Butterflight : OpalScript
         }
         Attacks[0] = new Attack("Pollinate", 1, 1, 0, "<Free Ability>/n Lose -2 defense and heal an Opal 4 health");
         Attacks[0].setFreeAction(true);
-        Attacks[1] = new Attack("Breeze", 4, 1, 0, "Select a target Opal. Then choose a direction to push them 4 tiles.");
+        Attacks[1] = new Attack("Breeze", 3, 1, 0, "Select a target Opal. Then choose a direction to push them 4 tiles.");
         Attacks[1].setUses(2);
         Attacks[2] = new Attack("Wind Shield", 0, 1, 0, "Gain +3 defense and Lift.");
         Attacks[3] = new Attack("Sprint",1,1,0, "Buff a target's speed by your defense for 1 turn. They gain Lift.");
@@ -45,6 +47,7 @@ public class Butterflight : OpalScript
     public override void onStart()
     {
         useNum = 0;
+        Attacks[1].setRange(3);
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -65,7 +68,38 @@ public class Butterflight : OpalScript
             }
             else
             {
-                pushOpal.nudge(4, true,true);
+                if (target.getPos().x == getPos().x)
+                {
+                    xorz = false;
+                }
+                else
+                {
+                    xorz = true;
+                }
+
+                if (xorz)
+                {
+                    if (target.getPos().x > getPos().x)
+                    {
+                        sign = true;
+                    }
+                    else
+                    {
+                        sign = false;
+                    }
+                }
+                else
+                {
+                    if (target.getPos().z > getPos().z)
+                    {
+                        sign = true;
+                    }
+                    else
+                    {
+                        sign = false;
+                    }
+                }
+                pushOpal.nudge(4, xorz,sign);
                 useNum = 0;
             }
             return 0;
@@ -95,7 +129,38 @@ public class Butterflight : OpalScript
         {
             if(useNum == 1)
             {
-                pushOpal.nudge(4, true, true);
+                if(target.getPos().x == getPos().x)
+                {
+                    xorz = false;
+                }
+                else
+                {
+                    xorz = true;
+                }
+
+                if (xorz)
+                {
+                    if (target.getPos().x > getPos().x)
+                    {
+                        sign = true;
+                    }
+                    else
+                    {
+                        sign = false;
+                    }
+                }
+                else
+                {
+                    if (target.getPos().z > getPos().z)
+                    {
+                        sign = true;
+                    }
+                    else
+                    {
+                        sign = false;
+                    }
+                }
+                pushOpal.nudge(4, xorz, sign);
                 useNum = 0;
             }
         }
@@ -127,5 +192,16 @@ public class Butterflight : OpalScript
             return 0;
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+    }
+
+    public override int checkCanAttack(TileScript target, int attackNum)
+    {
+        if (attackNum == 1)
+            return 0;
+        else if(target.currentPlayer != null)
+        {
+            return 0;
+        }
+        return -1;
     }
 }

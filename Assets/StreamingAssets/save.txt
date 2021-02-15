@@ -3,7 +3,7 @@ Ambush|Cloak of Whispers|Risk-Taker,Sentree|Metal Scrap|Cautious,Terradactyl|Pot
 Snugbun|Suffering Crown|Pessimistic,KnightLite|Comfortable Padding|Risk-Taker,Prismin|Lightweight Fluid|Optimistic,Shineode|Defense Orb|Worried,
 Chasmcrawler|Metal Scrap|Tactical,Wobblestone|Taunting Mask|Risk-Taker,Terradactyl|Dripping Candle|Risk-Taker,Oremordilla|Whetstone|Worried,
 Cottonmaw|Jade Figure|Risk-Taker,Prismin|Lightweight Fluid|Optimistic,Meadowebb|Jasper Figure|Tactical,Sentree|Metal Scrap|Cautious,
-Diamite|Makeshift Shield|Impatient,Duplimorph|Lightweight Fluid|Risk-Taker,Hopscure|Cloak of Whispers|Impatient,Wingnition|Grieving Shrimp|Worried,
+Diamite|Makeshift Shield|Impatient,Butterflight||Straight-Edge,Hopscure|Cloak of Whispers|Impatient,Wingnition|Grieving Shrimp|Worried,
 endTeams
 
 endOpals
