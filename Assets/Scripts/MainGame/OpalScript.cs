@@ -1033,7 +1033,7 @@ abstract public class OpalScript : MonoBehaviour {
         }
         healStatusEffects();
         dead = true;
-        if(transform.position.x != -100)
+        if(transform.position.x != -100 && transform.position.y < 1)
             boardScript.tileGrid[(int)getPos().x, (int)getPos().z].currentPlayer = null;
         transform.position = new Vector3(-100, -100, -100);
     }

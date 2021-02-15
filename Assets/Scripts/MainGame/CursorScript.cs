@@ -1210,40 +1210,68 @@ public class CursorScript : MonoBehaviour {
         {
             PlayerPrefs.SetString("CurrentMatch", "none");
             ts.doWin("Blue");
+            List<OpalScript> winningTeam = new List<OpalScript>();
+            foreach(OpalScript o in boardScript.gameOpals)
+            {
+                if (o.getTeam() == "Blue")
+                    winningTeam.Add(o);
+            }
+            cheeringOpals(winningTeam);
             gameOver = true;
             foreach (OpalScript o in boardScript.gameOpals)
             {
-                StartCoroutine(o.dancer());
+                //StartCoroutine(o.dancer());
             }
         }
         else if(blueAlive + greenAlive + orangeAlive == 0 && redAlive > 0)
         {
             PlayerPrefs.SetString("CurrentMatch", "none");
             ts.doWin("Red");
+            List<OpalScript> winningTeam = new List<OpalScript>();
+            foreach (OpalScript o in boardScript.gameOpals)
+            {
+                if (o.getTeam() == "Red")
+                    winningTeam.Add(o);
+            }
+            cheeringOpals(winningTeam);
             gameOver = true;
             foreach (OpalScript o in boardScript.gameOpals)
             {
-                StartCoroutine(o.dancer());
+                //StartCoroutine(o.dancer());
             }
         }
         else if (blueAlive + redAlive + orangeAlive == 0 && greenAlive > 0)
         {
             PlayerPrefs.SetString("CurrentMatch", "none");
             ts.doWin("Green");
+            List<OpalScript> winningTeam = new List<OpalScript>();
+            foreach (OpalScript o in boardScript.gameOpals)
+            {
+                if (o.getTeam() == "Green")
+                    winningTeam.Add(o);
+            }
+            cheeringOpals(winningTeam);
             gameOver = true;
             foreach (OpalScript o in boardScript.gameOpals)
             {
-                StartCoroutine(o.dancer());
+                //StartCoroutine(o.dancer());
             }
         }
         else if (blueAlive + greenAlive + redAlive == 0 && orangeAlive > 0)
         {
             PlayerPrefs.SetString("CurrentMatch", "none");
             ts.doWin("Orange");
+            List<OpalScript> winningTeam = new List<OpalScript>();
+            foreach (OpalScript o in boardScript.gameOpals)
+            {
+                if (o.getTeam() == "Orange")
+                    winningTeam.Add(o);
+            }
+            cheeringOpals(winningTeam);
             gameOver = true;
             foreach (OpalScript o in boardScript.gameOpals)
             {
-                StartCoroutine(o.dancer());
+               //StartCoroutine(o.dancer());
             }
         }
         else if(redAlive + blueAlive + greenAlive + orangeAlive == 0)
@@ -1251,6 +1279,20 @@ public class CursorScript : MonoBehaviour {
             PlayerPrefs.SetString("CurrentMatch", "none");
             ts.doWin("Tie");
             gameOver = true;
+        }
+    }
+
+    private void cheeringOpals(List<OpalScript> winners)
+    {
+        int i = 0;
+        foreach(OpalScript o in winners)
+        {
+            i++;
+            o.transform.position = new Vector3(8f+i,8.5f,-3f+i);
+            o.transform.rotation = Quaternion.Euler(45,-45,0);
+            o.GetComponent<SpriteRenderer>().flipX = true;
+            if(i > winners.Count/2)
+                o.GetComponent<SpriteRenderer>().flipX = false;
         }
     }
 

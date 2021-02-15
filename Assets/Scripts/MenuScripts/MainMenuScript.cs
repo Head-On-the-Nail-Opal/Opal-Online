@@ -1797,7 +1797,7 @@ public class MainMenuScript : MonoBehaviour {
                 if (name != "\n" && name != "")
                 {
                     string[] parsed = name.Split('|');
-                    OpalScript temp = Resources.Load<OpalScript>("Prefabs/Opals/" + parsed[0]);
+                    OpalScript temp = Instantiate(Resources.Load<OpalScript>("Prefabs/Opals/" + parsed[0]));
                     if (temp != null)
                     {
                         temp.setFromSave(name);
