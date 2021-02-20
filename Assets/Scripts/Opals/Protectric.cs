@@ -26,45 +26,21 @@ public class Protectric : OpalScript
         offsetY = 0.1f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Conductor", 0, 0, 0, "<Passive>\n At the start of your turn, convert each Armor into four charge. Begin the game with 1 Armor.");
-        Attacks[1] = new Attack("Charged Disc", 4, 4, 0, "<Aftershock>\n Deal damage based on current amount of Armor. Lose 1 armor. Repeatable until Protectric is out of charge. Costs two charge.");
-        Attacks[2] = new Attack("Voltage Shield", 0, 1, 0, "<Aftershock>\n Gain +1 Armor. Repeatable until Protectric is out of charge. Costs three charge.");
-        Attacks[3] = new Attack("Reserve Power", 0, 1, 0, "Gain +1 Armor. Lose -4 defense.");
+        Attacks[0] = new Attack("Conductor", 0, 0, 0, "<Passive>\n At the start of your turn, convert each Armor into 4 charge");
+        Attacks[1] = new Attack("Charged Disc", 4, 4, 0, "<Free Ability>\n Costs 2 charge. Gain +1 attack and then deal damage.");
+        Attacks[1].setFreeAction(true);
+        Attacks[2] = new Attack("Voltage Shield", 0, 1, 0, "<Free Ability>\n Costs 3 charge. Gain +1 Armor.");
+        Attacks[2].setFreeAction(true);
+        Attacks[3] = new Attack("Reserve Power", 0, 1, 0, "Gain +1 Armor.");
         type1 = "Metal";
         type2 = "Electric";
     }
 
-    public override void onPlacement()
-    {
-        addArmor(1);
-    }
 
     public override void onStart()
     {
         doCharge(getArmor()*4);
         addArmor(-getArmor());
-        bannedAttacks.Clear();
-        attackAgain = true;
-    }
-
-    public override void prepAttack(int attackNum)
-    {
-        if (attackNum == 0)
-        {
-            attackAgain = false;
-        }
-        else if (attackNum == 1)
-        {
-            attackAgain = true;
-        }
-        else if (attackNum == 2)
-        {
-            attackAgain = true;
-        }
-        else if (attackNum == 3)
-        {
-            attackAgain = false;
-        }
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -79,41 +55,22 @@ public class Protectric : OpalScript
             if (getCharge() > 1)
             {
                 doCharge(-2);
-                boardScript.setChargeDisplay(getCharge());
-                attackAgain = true;
-                if (getCharge() <= 0)
-                {
-                    bannedAttacks.Add(attackNum);
-                }
-                if(getArmor() > 0)
-                {
-                    addArmor(-1);
-                }
-                return getArmor();
+                doTempBuff(0, -1, 1);
+                return cA.getBaseDamage() + getAttack();
             }
-            attackAgain = false;
             return 0;
         }
         else if (attackNum == 2) //Grass Cover
         {
-            if (getCharge() > 2)
+            if(getCharge() > 2)
             {
                 doCharge(-3);
-                boardScript.setChargeDisplay(getCharge());
-                attackAgain = true;
-                if (getCharge() <= 0)
-                {
-                    bannedAttacks.Add(attackNum);
-                }
                 addArmor(1);
-                return 0;
             }
-            attackAgain = false;
             return 0;
         }else if(attackNum == 3)
         {
             addArmor(1);
-            doTempBuff(1, -1, -4);
             return 0;
         }
         return cA.getBaseDamage() + getAttack();
@@ -149,7 +106,8 @@ public class Protectric : OpalScript
         }
         else if (attackNum == 1)
         {
-            return getArmor() - target.currentPlayer.getDefense();
+            return Attacks[attackNum].getBaseDamage() + getAttack() + 1 - target.currentPlayer.getDefense();
+            //return getArmor() - target.currentPlayer.getDefense();
         }
         else if (attackNum == 2)
         {
@@ -160,5 +118,22 @@ public class Protectric : OpalScript
             return 0;
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+    }
+
+    public override int checkCanAttack(TileScript target, int attackNum)
+    {
+        if (attackNum == 1 && getCharge() < 2)
+        {
+            return -1;
+        }
+        if (attackNum == 2 && getCharge() < 3)
+        {
+            return -1;
+        }
+        if (target.currentPlayer == null)
+        {
+            return -1;
+        }
+        return 1;
     }
 }

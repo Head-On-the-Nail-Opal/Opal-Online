@@ -639,7 +639,8 @@ public class TileScript : MonoBehaviour {
     public void clearTrap()
     {
         currentTrap = null;
-        DestroyImmediate(trapEffect.gameObject);
+        if(trapEffect != null)
+            DestroyImmediate(trapEffect.gameObject);
         trapEffect = null;
     }
 

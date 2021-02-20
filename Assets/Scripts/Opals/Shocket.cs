@@ -6,7 +6,7 @@ public class Shocket : OpalScript
 {
     override public void setOpal(string pl)
     {
-        health = 25;
+        health = 20;
         maxHealth = health;
         attack = 1;
         defense = 2;
@@ -27,36 +27,12 @@ public class Shocket : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Powered Up", 0, 0, 0, "<Passive>\n Whenever Shocket is buffed or debuffed, it gains charge equal to the amount of stat change.");
-        Attacks[1] = new Attack("Jolt", 4, 1, 0, "<Aftershock>\nTarget loses -1 speed for 1 turn. Repeatable until Shocket is out of charge. Costs 1 charge.");
-        Attacks[2] = new Attack("Short Circuit", 2, 4, 4, "If target is buffed then deal double damage, and Shocket gains +1 speed.");
-        Attacks[3] = new Attack("Power Trip", 3, 4, 0, "If target is buffed then Shocket gains +3 attack for 1 turn.");
+        Attacks[1] = new Attack("Jolt", 4, 4, 0, "<Free Ability>\n Costs 1 charge. Target loses -1 speed for 1 turn.");
+        Attacks[1].setFreeAction(true);
+        Attacks[2] = new Attack("Power Trip", 0, 1, 0, "Shocket gains +2 attack and defense for each adjacent buffed Opal");
+        Attacks[3] = new Attack("Short Circuit", 3, 4, 4, "If target is buffed then they lose -3 speed for 1 turn.");
         type1 = "Electric";
         type2 = "Metal";
-    }
-
-    public override void onStart()
-    {
-        bannedAttacks.Clear();
-        attackAgain = true;
-    }
-
-    public override void prepAttack(int attackNum)
-    {
-        if (attackNum == 0)
-        {
-            attackAgain = false;
-            moveAfter = false;
-        }
-        else if (attackNum == 1)
-        {
-            attackAgain = true;
-            moveAfter = false;
-        }
-        else if (attackNum == 2)
-        {
-            attackAgain = false;
-            moveAfter = false;
-        }
     }
 
     public override void onBuff(TempBuff buff)
@@ -74,41 +50,27 @@ public class Shocket : OpalScript
         }
         else if (attackNum == 1) //Seed Launch
         {
-            if (getCharge() > 0)
+            if (getCharge() > 1)
             {
                 doCharge(-1);
-                boardScript.setChargeDisplay(getCharge());
-                attackAgain = true;
-                if (getCharge() <= 0)
-                {
-                    bannedAttacks.Add(attackNum);
-                }
-                target.doTempBuff(2, 1, -1);
-                return 0;
+                target.doTempBuff(2, 1, 1);
             }
-            attackAgain = false;
             return 0;
         }
         else if (attackNum == 2) //Grass Cover
         {
-            foreach(TempBuff b in target.getBuffs())
+            foreach(TileScript t in getSurroundingTiles(true))
             {
-                if(b.getTurnlength() != 0 && b.getAmount() > 1)
+                if(t.currentPlayer != null && t.currentPlayer.isBuffed())
                 {
-                    doTempBuff(2, -1, 1);
-                    return cA.getBaseDamage() + getAttack() * 2;
+                    target.doTempBuff(0, -1, 2);
+                    target.doTempBuff(1, -1, 2);
                 }
             }
         }else if(attackNum == 3)
         {
-            foreach (TempBuff b in target.getBuffs())
-            {
-                if (b.getTurnlength() != 0 && b.getAmount() > 1)
-                {
-                    doTempBuff(3, -1, 1);
-                    return 0;
-                }
-            }
+            if(target.isBuffed())
+                target.doTempBuff(2, -1, -3);
             return 0;
         }
         return cA.getBaseDamage() + getAttack();
@@ -148,17 +110,24 @@ public class Shocket : OpalScript
         }
         else if (attackNum == 2)
         {
-            foreach (TempBuff b in target.currentPlayer.getBuffs())
-            {
-                if (b.getTurnlength() != 0 && b.getAmount() > 1)
-                {
-                    return Attacks[attackNum].getBaseDamage() + getAttack() * 2;
-                }
-            }
+            return 0;
         }else if(attackNum == 3)
         {
-            return 0;
+            
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+    }
+
+    public override int checkCanAttack(TileScript target, int attackNum)
+    {
+        if (attackNum == 1 && getCharge() < 1)
+        {
+            return -1;
+        }
+        if (target.currentPlayer == null)
+        {
+            return -1;
+        }
+        return 1;
     }
 }

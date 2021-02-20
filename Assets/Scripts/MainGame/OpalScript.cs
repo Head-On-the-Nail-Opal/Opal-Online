@@ -222,7 +222,10 @@ abstract public class OpalScript : MonoBehaviour {
         {
             transform.localScale *= 2;
         }
-        if (anim != null)
+        if (anim != null && myCharm != "Goreilla Suit") {
+            anim.CrossFade("Goreilla", 0);
+        }
+        else if(anim != null)
         {
             anim.CrossFade(myName + skin, 0);
         }
@@ -955,6 +958,89 @@ abstract public class OpalScript : MonoBehaviour {
             poisonTimer = 3;
     }
 
+    public Vector3 reduce(int amount)
+    {
+        int attackLoss = 0;
+        int defenseLoss = 0;
+        int speedLoss = 0;
+        if(getAttack() > getAttackB())
+        {
+            int difference = getAttack() - getAttackB();
+            if(difference > amount)
+            {
+                doTempBuff(0, -1, -amount);
+                attackLoss = amount;
+            }
+            else
+            {
+                doTempBuff(0, -1, -difference);
+                attackLoss = difference;
+            }
+        }
+        if(getDefense() > getDefenseB())
+        {
+            int difference = getDefense() - getDefenseB();
+            if (difference > amount)
+            {
+                doTempBuff(1, -1, -amount);
+                defenseLoss = amount;
+            }
+            else
+            {
+                doTempBuff(1, -1, -difference);
+                defenseLoss = difference;
+            }
+        }
+        if(getSpeed() > getSpeedB())
+        {
+            int difference = getSpeed() - getSpeedB();
+            if (difference > amount)
+            {
+                doTempBuff(2, -1, -amount);
+                speedLoss = amount;
+            }
+            else
+            {
+                doTempBuff(2, -1, -difference);
+                speedLoss = difference;
+            }
+        }
+        return new Vector3(attackLoss, defenseLoss, speedLoss);
+    }
+
+    public void doTempBuffFromReduce(Vector3 input)
+    {
+        if(input.x > 0)
+        {
+            doTempBuff(0, -1, (int)input.x);
+        }
+        if (input.y > 0)
+        {
+            doTempBuff(1, -1, (int)input.y);
+        }
+        if (input.z > 0)
+        {
+            doTempBuff(2, -1, (int)input.z);
+        }
+    }
+
+    public bool isBuffed()
+    {
+        if(getAttack() > getAttackB())
+        {
+            return true;
+        }
+        if (getDefense() > getDefenseB())
+        {
+            return true;
+        }
+        if (getSpeed() > getSpeedB())
+        {
+            return true;
+        }
+        return false;
+    }
+
     public bool getAttackAgain()
     {
         return attackAgain;
@@ -1027,15 +1113,20 @@ abstract public class OpalScript : MonoBehaviour {
         float shrink = 1f;
         for (int i = 0; i < 20; i++)
         {
+            if (boardScript.getGameWon())
+                break;
             transform.localScale = transform.localScale * shrink;
             shrink -= 0.05f;
             yield return new WaitForSeconds(0.05f);
         }
-        healStatusEffects();
-        dead = true;
-        if(transform.position.x != -100 && transform.position.y < 1)
-            boardScript.tileGrid[(int)getPos().x, (int)getPos().z].currentPlayer = null;
-        transform.position = new Vector3(-100, -100, -100);
+        if (!boardScript.getGameWon())
+        {
+            healStatusEffects();
+            dead = true;
+            if (transform.position.x != -100 && transform.position.y < 1)
+                boardScript.tileGrid[(int)getPos().x, (int)getPos().z].currentPlayer = null;
+            transform.position = new Vector3(-100, -100, -100);
+        }
     }
 
     public IEnumerator spinSpot()

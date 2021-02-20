@@ -69,7 +69,7 @@ public class Wingnition : OpalScript
         else if (attackNum == 1) //Insight
         {
             target.doTempBuff(2, 1, 3);
-            target.doHeal(1, false);
+            target.doHeal(5, false);
             target.setLifted(true);
             return 0;
         }
@@ -115,7 +115,7 @@ public class Wingnition : OpalScript
                 target.nudge(5, false, true);
             }
             target.doTempBuff(0, -1, 4);
-            target.doHeal(5, false);
+            //target.doHeal(5, false);
             target.setLifted(true);
             return 0;
         }

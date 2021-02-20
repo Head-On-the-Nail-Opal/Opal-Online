@@ -1288,8 +1288,12 @@ public class CursorScript : MonoBehaviour {
         foreach(OpalScript o in winners)
         {
             i++;
-            o.transform.position = new Vector3(8f+i,8.5f,-3f+i);
-            o.transform.rotation = Quaternion.Euler(45,-45,0);
+            o.transform.position = new Vector3(8f+i*3-5,8f,-3f+i*3-5);
+            o.transform.rotation = Quaternion.Euler(35,-45,0);
+            o.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+            o.setOpal(o.getTeam());
+            o.transform.localScale *= 3;
+            boardScript.setGameWon(true);
             o.GetComponent<SpriteRenderer>().flipX = true;
             if(i > winners.Count/2)
                 o.GetComponent<SpriteRenderer>().flipX = false;

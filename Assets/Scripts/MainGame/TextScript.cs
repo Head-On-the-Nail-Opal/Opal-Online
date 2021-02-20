@@ -375,6 +375,8 @@ public class TextScript : MonoBehaviour {
 
     private void displayScreen(string player, bool current)
     {
+        if (player == null)
+            return;
         if (player.Equals("Red"))
         {
             if (current)
