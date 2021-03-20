@@ -1,5 +1,5 @@
 Please don't change this, it will be encrypted eventually.
-Ambush|Cloak of Whispers|Risk-Taker,
+Ambush|Cloak of Whispers|Risk-Taker,Charayde||Straight-Edge,
 Excremite||Straight-Edge,Shineode||Straight-Edge,Tortquoise||Straight-Edge,Wobblestone||Straight-Edge,
 Wingnition||Straight-Edge,Hopscure||Straight-Edge,Diamite||Straight-Edge,Duplimorph||Straight-Edge,
 endTeams

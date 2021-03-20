@@ -1,185 +1,128 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class ConnectedTile : MonoBehaviour
 {
-    public List<Sprite> connectedTileSprites = new List<Sprite>();
+    private Sprite[] connectedTileSprites;
     private SpriteRenderer changeSpriteRenderer;
+    private List<List<int>> waterTileGroups = new List<List<int>>();
+    private List<List<int>> grassTileGroups = new List<List<int>>();
+
     // Start is called before the first frame update
     void Awake()
     {
         changeSpriteRenderer = GetComponent<SpriteRenderer>();
-        sortSprites();
-    }
+        connectedTileSprites = Resources.LoadAll<Sprite>("Sprites/Water_Tiles");
 
-    private void sortSprites()
-    {
+        //Top left water sprites
+        waterTileGroups.Add(new List<int>() { 4, 8, 9, 10, 23, 29, 31, 34, 35, 45, 46 });
 
+        //Top water sprites
+        waterTileGroups.Add(new List<int>() { 0, 1, 2, 3, 5, 6, 7, 28, 36, 37, 38, 39, 40 });
+
+        //Top right water sprites
+        waterTileGroups.Add(new List<int>() { 2, 9, 10, 11, 16, 20, 21, 22, 29, 30, 35, 41, 42, 46 });
+
+        //Left water sprites
+        waterTileGroups.Add(new List<int>() { 0, 3, 12, 15, 16, 24, 27, 28, 36, 39, 41, 42, 43 });
+
+        //Right water sprites
+        waterTileGroups.Add(new List<int>() { 2, 3, 4, 14, 15, 17, 18, 19, 26, 27, 38, 39, 40 });
+
+        //Bottom left water sprites
+        waterTileGroups.Add(new List<int>() { 5, 7, 11, 17, 18, 22, 33, 34, 35, 40, 44, 45, 46 });
+
+        //Bottom water sprites
+        waterTileGroups.Add(new List<int>() { 4, 16, 24, 25, 26, 27, 29, 30, 31, 36, 37, 38, 39 });
+
+        //Bottom right water sprites
+        waterTileGroups.Add(new List<int>() { 5, 6, 10, 21, 22, 23, 28, 32, 33, 34, 35, 41, 43 });
+
+        //Top left grass sprites
+        grassTileGroups.Add(new List<int>() { 13, 14, 18, 20, 21, 22, 25, 26, 30, 32, 33, 44, 45 });
+
+        //Top grass sprites
+        grassTileGroups.Add(new List<int>() { 4, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 29, 30, 31, 32, 33, 34, 41, 42, 43, 44, 45, 46 });
+
+        //Top right grass sprites
+        grassTileGroups.Add(new List<int>() { 8, 12, 13, 23, 24, 25, 31, 32, 33, 34, 43, 44, 45 });
+
+        //Left grass sprites
+        grassTileGroups.Add(new List<int>() { 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 17, 18, 19, 20, 21, 22, 23, 25, 26, 29, 30, 31, 32, 33, 34, 35, 37, 38, 40, 44, 45, 46 });
+
+        //Right grass sprites
+        grassTileGroups.Add(new List<int>() { 0, 1, 5, 6, 7, 8, 9, 10, 11, 12, 13, 16, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 41, 42, 43, 44, 45, 46 });
+
+        //Bottom left grass sprites
+        grassTileGroups.Add(new List<int>() { 1, 2, 6, 8, 9, 10, 13, 14, 19, 20, 21, 23, 32 });
+
+        //Bottom grass sprites
+        grassTileGroups.Add(new List<int>() { 0, 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21, 22, 23, 28, 32, 33, 34, 35, 40, 41, 42, 43, 44, 45, 46 });
+
+        //Bottom right grass sprites
+        grassTileGroups.Add(new List<int>() { 0, 1, 7, 8, 9, 11, 13, 20, 42, 44, 45, 46 });
     }
 
     public void changeSprite(string code) //code is format 111141111
     {
-        int easy = tryEasy(code);
-        if(easy == -1)
+        List<int> possibleTiles = new List<int>();
+        for (int i = 0; i < 47; i++)
         {
-            tryHard(int.Parse(code));
-            return;
-        }
-        changeSpriteRenderer.sprite = connectedTileSprites[easy];
-    }
-
-    private int tryEasy(string code)
-    {
-        //remove corners because they don't matter in a lot of cases
-        string newCode = ""+'*'+code[1]+'*'+code[3]+code[4]+code[5]+'*'+code[7]+'*';
-        switch (newCode) {
-            case "*1*141*1*": //true
-                return 18;
-            case "*4*141*1*": //true
-                return 13;
-            case "*1*441*1*": //true
-                return 17;
-            case "*1*444*1*": //true
-                return 16;
-            case "*1*144*1*": //true
-                return 15;
-            case "*4*141*4*": //true
-                return 8;
-            case "*1*141*4*": //true
-                return 3;
+            possibleTiles.Add(i);
         }
 
-        return -1;
-    }
-
-    private void tryHard(int code)
-    {
-        if (code == 444444444)
+        code = code.Substring(0, 4) + code.Substring(5, 4);
+        for (int i = 0; i < code.Length; i++)
         {
-            changeSpriteRenderer.sprite = connectedTileSprites[6];
+            if (code.Substring(i, 1).Equals("4"))
+            {
+                foreach (int tile in waterTileGroups[i])
+                {
+                    if (possibleTiles.Contains(tile))
+                    {
+                        possibleTiles.Remove(tile);
+                    }
+                }
+            }
+
+            if (code.Substring(i, 1).Equals("1"))
+            {
+                foreach (int tile in grassTileGroups[i])
+                {
+                    if (possibleTiles.Contains(tile))
+                    {
+                        possibleTiles.Remove(tile);
+                    }
+                }
+            }
+
+            //Debug.Log("Possible tiles(step " + i + "): " + debugToString(possibleTiles));
         }
-        else if (code == 441441111)
+
+        if (possibleTiles.Count > 0)
+        {
+            changeSpriteRenderer.sprite = connectedTileSprites[possibleTiles[0]];
+        } else
         {
             changeSpriteRenderer.sprite = connectedTileSprites[0];
+            Debug.Log("Something went wrong with water tile sprite selection! The problem tile had the following code: " + code);
         }
-        else if (code == 144144111)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[2];
-        }
-        else if (code == 111441441)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[10];
-        }
-        else if (code == 111144144)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[12];
-        }
-        else if (code == 144144144)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[7];
-        }
-        else if (code == 441441441)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[5];
-        }
-        else if (code == 111444444)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[11];
-        }
-        else if (code == 444444111)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[1];
-        }
-        else if (code == 141141111)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[3];
-        }
-        else if (code == 141141444)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[8];
-        }
-        else if (code == 444141141)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[8];
-        }
-        else if (code == 111141141)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[13];
-        }
-        else if (code == 141141141)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[8];
-        }
-        else if (code == 141444141)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[23];
-        }
-        else if (code == 111141444)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[13];
-        }
-        else if (code == 444141111)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[3];
-        }
-        else if (code == 411441411)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[15];
-        }
-        else if (code == 114144114)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[17];
-        }
-        else if (code == 111441111)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[15];
-        }
-        else if (code == 111144111)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[17];
-        }
-        else if (code == 111444111)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[16];
-        }
-        else if (code == 411441111)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[15];
-        }
-        else if (code == 114144111)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[17];
-        }
-        else if (code == 141444111)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[0];
-        }
-        else if (code == 441141111)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[3];
-        }
-        else if (code == 141441141)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[5];
-        }
-        else if (code == 111441411)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[13];
-        }
-
-        else if (code == 111411411)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[11];
-        }
-        else if (code == 111444141)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[15];
-        }
-        else if (code == 111144114)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[17];
-        }
+        
     }
 
+    private string debugToString(List<int> nums)
+    {
+        string temp = "[ ";
+
+        for (int i = 0; i < nums.Count - 1; i++)
+        {
+            temp += nums[i] + ", ";
+        }
+
+        temp += nums[nums.Count - 1] + " ]";
+
+        return temp;
+    }
 }

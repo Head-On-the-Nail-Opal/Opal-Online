@@ -33,14 +33,6 @@ public class LobbyControl : MonoBehaviourPunCallbacks
         lobbyObjects.SetActive(false);
         createRoomObjects.SetActive(false);
         joinRoomObjects.SetActive(false);
-        if (!PlayerPrefs.GetString("CurrentMatch").Equals("none") && !PlayerPrefs.GetString("CurrentMatch", "").Equals(""))
-        {
-            rejoinGameButton.SetActive(true);
-        }
-        else
-        {
-            rejoinGameButton.SetActive(false);
-        }
         PhotonNetwork.JoinLobby();
     }
 
@@ -70,6 +62,12 @@ public class LobbyControl : MonoBehaviourPunCallbacks
             PhotonNetwork.LeaveRoom();
             PhotonNetwork.LoadLevel("MainMenu");
         }
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        PlayerPrefs.SetString("CurrentMatch", "none");
+        rejoinGameButton.SetActive(false);
     }
 
     public void openRoomCreateMenu()
@@ -174,6 +172,19 @@ public class LobbyControl : MonoBehaviourPunCallbacks
         if (joinRoomObjects.activeInHierarchy)
         {
             openJoinRoomMenu();
+        }
+    }
+
+    public override void OnJoinedLobby()
+    {
+        if (!PlayerPrefs.GetString("CurrentMatch").Equals("none") && !PlayerPrefs.GetString("CurrentMatch", "").Equals(""))
+        {
+            rejoinGameButton.SetActive(true);
+            PhotonNetwork.JoinRoom(PlayerPrefs.GetString("CurrentMatch"));
+        }
+        else
+        {
+            rejoinGameButton.SetActive(false);
         }
     }
 }
