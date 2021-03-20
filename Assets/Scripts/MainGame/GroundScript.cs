@@ -658,6 +658,11 @@ public class GroundScript : MonoBehaviour {
             return null;
         }
         TileScript replaced = tileGrid[x, y];
+        bool wasFlood = false;
+        if(replaced.type == "Flood")
+        {
+            wasFlood = true;
+        }
         OpalScript standing = replaced.getCurrentOpal();
         if(standing != null)
             print(standing.getMyName());
@@ -797,7 +802,7 @@ public class GroundScript : MonoBehaviour {
                 tempTile.standingOn(standing);
             }
         }
-        if(tileGrid[x,y].type == "Flood")
+        if(tileGrid[x,y].type == "Flood" || wasFlood)
         {
             
             List<TileScript> output = new List<TileScript>();

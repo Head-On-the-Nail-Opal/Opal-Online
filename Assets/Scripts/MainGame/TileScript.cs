@@ -764,6 +764,8 @@ public class TileScript : MonoBehaviour {
 
     public void determineShape()
     {
+        if (type != "Flood")
+            return;
         string shape = "";
         int dec = 1;
         for (int i = -1; i < 2; i++)
