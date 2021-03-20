@@ -20,9 +20,9 @@ public class ItemDescriptions : MonoBehaviour
         items.Add("Lightweight Fluid,Heal +2 health at the start of each turn. If lifted then overheal.");
         items.Add("Cloak of Whispers,Gain +1 speed. Whenever you take damage lose -2 defense.");
         items.Add("Balloon of Light,Gain +1 speed while lifted");
-        items.Add("Metal Scrap,If you didn't move on your turn then gain +1 armor");
+        //items.Add("Metal Scrap,If you didn't move on your turn then gain +1 armor");
         items.Add("Death Wish,Lose -2 attack and defense.");
-        items.Add("Insect Husk,Whenever you are burned instead you are poisoned");
+        items.Add("Insect Husk,Whenever you are burned instead you are poisoned, and vice versa");
         items.Add("Comfortable Padding,Whenever you gain armor also gain +2 attack. Whenever you lose armor lose -2 attack.");
         items.Add("Broken Doll,When taking damage from an ally gain +2 speed for 1 turn.");
         items.Add("Potion of Gratitude,After taking damage for the first time heal by 10 health.");
@@ -36,7 +36,7 @@ public class ItemDescriptions : MonoBehaviour
         items.Add("Golden Figure,Whenever you take damage heal by 1 health."); 
         items.Add("Azurite Figure, At the start of your turn place a Flood at your feet"); 
         items.Add("Garnet Figure, When you take damage the attacker's current tile turns to flame."); 
-        items.Add("Jasper Figure, All healing is overheal."); // Potential LEGENDARY
+        items.Add("Jasper Figure, All incoming healing is overheal."); // Potential LEGENDARY
         items.Add("Juniper Necklace, At the start of the game gain +1 attack defense and speed for each void type ally."); //Potential LEGENDARY
         items.Add("Dripping Candle,At the start of your turn burn adjacent Opals."); 
         items.Add("Whetstone,When you end your turn next to a Boulder you and it gain +2 defense.");

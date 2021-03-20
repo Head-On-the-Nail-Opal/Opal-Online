@@ -34,7 +34,7 @@ public class Duplimorph : OpalScript
             GetComponent<SpriteRenderer>().flipX = false;
         }
         Attacks[0] = new Attack("Duplicate", 1, 0, 0, "Lose 7 health and create a Duplimorph clone");
-        Attacks[1] = new Attack("Insight", 0, 1, 0, "Gain +2 attack and +2 defense and heal by 2. Can heal over max health.");
+        Attacks[1] = new Attack("Insight", 0, 1, 0, "Gain +2 attack and +2 defense and overheal by 2.");
         Attacks[2] = new Attack("Spectral Lunge", 1, 1, 0, "Deal 0 damage. Ignores defense. Die.");
         Attacks[3] = new Attack("Bolster", 1, 1, 0, "<Free Ability>\n Take 5 damage. Target gains +2 attack and defense.");
         Attacks[3].setFreeAction(true);
@@ -83,6 +83,7 @@ public class Duplimorph : OpalScript
                 OpalScript opalOne = spawnOplet(duplimorphPrefab, target);
                 
                 opalOne.setHealth(this.health);
+                opalOne.setDetails(this);
                 List<TempBuff> temp = getBuffs();
                 foreach (TempBuff t in temp)
                 {

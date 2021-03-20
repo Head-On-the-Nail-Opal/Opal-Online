@@ -28,7 +28,7 @@ public class Luminute : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Distracted", 0, 0, 0, "Every other turn Luminute will be unable to act");
+        Attacks[0] = new Attack("Distracted", 0, 0, 0, "<Passive>\nEvery other turn Luminute will be unable to act");
         Attacks[1] = new Attack("Overgrowth", 3, 1, 0, "Give an Opal +2 attack and defense. Place a growth under them. Has 2 uses.");
         Attacks[1].setUses(2);
         Attacks[2] = new Attack("Pretty Orb", 2, 1, 0, "Targets lose their next turn.", 1);
@@ -68,7 +68,7 @@ public class Luminute : OpalScript
             return 0;
         }else if(attackNum == 3)
         {
-            target.doHeal(10, true);
+            target.doHeal(15, true);
             target.doTempBuff(2, 1, -4);
             return 0;
         }

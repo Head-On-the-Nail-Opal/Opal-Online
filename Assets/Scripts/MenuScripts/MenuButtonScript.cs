@@ -74,7 +74,7 @@ public class MenuButtonScript : MonoBehaviour {
             mainCam.transform.position = target;
         }else if(purpose == "personality")
         {
-            main.setNextPersonality();
+            
         }
         else if (purpose == "items")
         {
@@ -180,6 +180,10 @@ public class MenuButtonScript : MonoBehaviour {
             else if (purpose == "personality")
             {
                 transform.GetComponent<Text>().color = new Color(1f, 0f, 0f);
+                if (Input.GetMouseButtonDown(0))
+                    main.setNextPersonality(false);
+                else if (Input.GetMouseButtonDown(1))
+                    main.setNextPersonality(true);
             }
         }
     }

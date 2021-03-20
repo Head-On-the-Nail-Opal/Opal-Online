@@ -1282,6 +1282,8 @@ public class MainMenuScript : MonoBehaviour {
         {
             return;
         }
+        if (temp == null)
+            return;
         if (temp.getCharm() != null)
         {
             bannedCharms.Remove(temp.getCharm());
@@ -1667,17 +1669,31 @@ public class MainMenuScript : MonoBehaviour {
 
     }
 
-    public void setNextPersonality()
+    public void setNextPersonality(bool reverse)
     {
-        personalityNum++;
-        if(personalityNum >= personalities.Count)
+        print("du hello");
+        if (!reverse)
         {
-            personalityNum = 0;
+            personalityNum++;
+            if (personalityNum >= personalities.Count)
+            {
+                personalityNum = 0;
+            }
+        }
+        else
+        {
+            personalityNum--;
+            if (personalityNum < 0)
+            {
+                personalityNum = personalities.Count-1;
+            }
         }
         string[] temp = personalities[personalityNum].Split(';');
         string pName = temp[0];
         string stats = temp[1];
         personalityTracker.text = "Current Personality\n" + pName + "\n" + getPersonalityStats(pName);
+        if (viewedOpal == null)
+            return;
         viewedOpal.setPersonality(pName);
     }
 

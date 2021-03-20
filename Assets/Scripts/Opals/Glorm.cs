@@ -52,7 +52,7 @@ public class Glorm : OpalScript
             if (this.getHealth() > this.getMaxHealth())
             {
                 int temp = getHealth() - getMaxHealth();
-                takeDamage(temp, false, true);
+                health = maxHealth;
                 return temp + getAttack();
             }
             return 0;

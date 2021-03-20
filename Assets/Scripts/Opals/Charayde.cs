@@ -50,10 +50,10 @@ public class Charayde : OpalScript
         }
     }
 
-    public override void onMove(PathScript p)
+    public override void onMove(int x, int y)
     {
-        boardScript.setTile((int)p.getPos().x, (int)p.getPos().z, "Flood", false);
-        currentTile = boardScript.tileGrid[(int)p.getPos().x, (int)p.getPos().z];
+        boardScript.setTile(x, y, "Flood", false);
+        currentTile = boardScript.tileGrid[x, y];
         //boardScript.tileGrid[(int)p.getPos().x, (int)p.getPos().z].standingOn(null);
     }
 

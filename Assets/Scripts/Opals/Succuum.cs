@@ -105,18 +105,11 @@ public class Succuum : OpalScript {
         else if(attackNum == 2) //Deep Breathing
         {
             doTempBuff(0, 2, 3);
-            for(int i = -1; i < 2; i++)
+            foreach(TileScript t in getSurroundingTiles(false))
             {
-                for(int j = -1; j < 2; j++)
-                {
-                    
-                    if(boardScript.tileGrid[(int)target.getPos().x + i, (int)target.getPos().z + j].currentPlayer != null)
-                    {
-                        boardScript.tileGrid[(int)target.getPos().x + i, (int)target.getPos().z + j].currentPlayer.setLifted(true);
-                    }
-                    getBoard().setTile((int)target.getPos().x + i, (int)target.getPos().z + j, "Flood", false);
-                }
+                boardScript.setTile(t, "Flood", false);
             }
+            boardScript.setTile(this, "Flood", false);
             return 0;
         }
         else if (attackNum == 3)

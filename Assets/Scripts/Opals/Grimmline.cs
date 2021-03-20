@@ -6,7 +6,7 @@ public class Grimmline : OpalScript
 {
     override public void setOpal(string pl)
     {
-        health = 1;
+        health = 20;
         maxHealth = health;
         attack = 5;
         defense = 2;
@@ -26,12 +26,12 @@ public class Grimmline : OpalScript
         offsetY = 0f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("", 3, 4, 0, "<Free Ability>\nCosts 2 charge. Reduce the target by 2 and gain the stat loss. Steal up to 1 charge.");
+        Attacks[0] = new Attack("Power Sap", 3, 4, 0, "<Free Ability>\nCosts 2 charge. Reduce the target by 2 and gain the stat loss. Steal up to 1 charge.");
         Attacks[0].setFreeAction(true);
-        Attacks[1] = new Attack("", 2, 4, 2, "<Free Ability>\nCosts 1 charge. Steal up to 2 charge and then deal damage.");
+        Attacks[1] = new Attack("Thieving Swipe", 2, 4, 2, "<Free Ability>\nCosts 1 charge. Steal up to 2 charge and then deal damage.");
         Attacks[1].setFreeAction(true);
-        Attacks[2] = new Attack("", 0, 1, 0, "Gain +1 charge, +1 attack, and +1 speed.");
-        Attacks[3] = new Attack("", 2, 4, 100, "Costs 10 charge. Deal 100 damage.");
+        Attacks[2] = new Attack("Plot Demise", 0, 1, 0, "Gain +1 charge, +1 attack, and +1 speed.");
+        Attacks[3] = new Attack("Incoming Doom", 2, 4, 100, "Costs 10 charge. Deal 100 damage.");
         type1 = "Electric";
         type2 = "Dark";
     }

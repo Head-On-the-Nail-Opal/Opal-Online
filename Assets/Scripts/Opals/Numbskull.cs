@@ -67,7 +67,7 @@ public class Numbskull : OpalScript
         }
         else if (attackNum == 1) //Seed Launch
         {
-
+            takeDamageBelowArmor(health, false, true);
         }
         else if (attackNum == 2) //Grass Cover
         {

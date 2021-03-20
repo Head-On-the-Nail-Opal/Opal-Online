@@ -76,6 +76,8 @@ abstract public class OpalScript : MonoBehaviour {
     private Vector3 startTile;
     private bool takenDamage = false;
 
+    private Vector3 coordinates = new Vector3();
+
     private void Awake()
     {
         GameObject board = GameObject.Find("Main Camera");
@@ -541,6 +543,7 @@ abstract public class OpalScript : MonoBehaviour {
     public void setPos(int x, int y)
     {
         transform.position = new Vector3(x + offsetX, 0.5f + offsetY, y + offsetZ);
+        coordinates = new Vector3(x, 0.5f + offsetY, y);
         if (mySpot != null)
         {
             showSpot(true);
@@ -551,7 +554,8 @@ abstract public class OpalScript : MonoBehaviour {
 
     public Vector3 getPos()
     {
-        return new Vector3(transform.position.x - offsetX, transform.position.y - offsetY, transform.position.z - offsetZ);
+        return coordinates;
+        //return new Vector3(transform.position.x - offsetX, transform.position.y - offsetY, transform.position.z - offsetZ);
     }
 
     public void setMyTurn(bool what)
@@ -566,26 +570,27 @@ abstract public class OpalScript : MonoBehaviour {
         {
             output += doMove((int)paths[paths.Count - 1].getPos().x, (int)paths[paths.Count - 1].getPos().z, totalDist);
             onMove(paths[paths.Count -1]);
-            return output;
+            return paths.Count-1;
         }
-        for(int i = 0; i < paths.Count; i++)
+        StartCoroutine(moveAnimate((int)paths[0].getPos().x,(int)paths[0].getPos().z,totalDist, paths));
+        for (int i = 0; i < paths.Count; i++)
         {
             if (getBoard().tileGrid[(int)paths[i].getPos().x, (int)paths[i].getPos().z].getTrap() != null && getBoard().tileGrid[(int)paths[i].getPos().x, (int)paths[i].getPos().z].getTrap() != "PortalOut")
             {
                 
-                output += doMove((int)paths[i].getPos().x, (int)paths[i].getPos().z, totalDist);
+                //output += doMove((int)paths[i].getPos().x, (int)paths[i].getPos().z, totalDist);
                 if (getBoard().tileGrid[(int)paths[i].getPos().x, (int)paths[i].getPos().z].getTrap() != "PortalIn" && getBoard().tileGrid[(int)paths[i].getPos().x, (int)paths[i].getPos().z].getTrap() != null)
                 {
                     //print(getBoard().tileGrid[(int)paths[i].getPos().x, (int)paths[i].getPos().z].getTrap());
                     getBoard().tileGrid[(int)paths[i].getPos().x, (int)paths[i].getPos().z].standingOn(this);
                 }
-                onMove(paths[i]);
+                //onMove(paths[i]);
                 return i;
             }
-            output += doMove((int)paths[i].getPos().x, (int)paths[i].getPos().z, totalDist);
-            onMove(paths[i]);
+            //output += doMove((int)paths[i].getPos().x, (int)paths[i].getPos().z, totalDist);
+            //onMove(paths[i]);
         }
-        return output;
+        return paths.Count-1;
     }
 
     public void pushAway(int d, OpalScript target)
@@ -629,18 +634,183 @@ abstract public class OpalScript : MonoBehaviour {
 
     public int doMove(int x, int y, int totalDist)
     {
+        StartCoroutine(moveAnimate(x,y,totalDist, null));
+        return 1;
+    }
+
+    public IEnumerator moveAnimate(int x, int y, int totalDist, List<PathScript> paths)
+    {
+        boardScript.getMyCursor().setAnimating(true);
+        bool adj = false;
+        List<Vector2> tilesTravelled = new List<Vector2>();
+        if (paths != null)
+        {
+            foreach (PathScript p in paths)
+            {
+                tilesTravelled.Add(new Vector2(p.getPos().x, p.getPos().z));
+            }
+            foreach (Vector2 v in tilesTravelled)
+            {
+                //print(j+" out of "+paths.Count);
+                TileScript targetTile = new TileScript();
+                x = (int)v.x;
+                y = (int)v.y;
+                foreach (TileScript t in getSurroundingTiles(true))
+                {
+                    if (t == boardScript.tileGrid[x, y])
+                    {
+                        adj = true;
+                        targetTile = boardScript.tileGrid[x, y];
+                    }
+                }
+                if (adj)
+                {
+                    int xVel = 0;
+                    int yVel = 0;
+                    if (currentTile.getPos().x < targetTile.getPos().x)
+                    {
+                        GetComponent<SpriteRenderer>().flipX = true;
+                        xVel = 1;
+                    }
+                    else if (currentTile.getPos().x > targetTile.getPos().x)
+                    {
+                        GetComponent<SpriteRenderer>().flipX = false;
+                        xVel = -1;
+                    }
+                    else if (currentTile.getPos().z < targetTile.getPos().z)
+                    {
+                        GetComponent<SpriteRenderer>().flipX = true;
+                        yVel = 1;
+                    }
+                    else if (currentTile.getPos().z > targetTile.getPos().z)
+                    {
+                        GetComponent<SpriteRenderer>().flipX = false;
+                        yVel = -1;
+                    }
+                    for (int i = 0; i < 10; i++)
+                    {
+                        float waddle = transform.position.y * 1f;
+                        if (i == 2)
+                        {
+                            waddle += 0.1f;
+                        }
+                        else if (i == 6)
+                        {
+                            waddle -= 0.1f;
+                        }
+                        transform.position = new Vector3(transform.position.x + xVel * 0.1f, waddle, transform.position.z + yVel * 0.1f);
+                        yield return new WaitForFixedUpdate();
+                    }
+                }
+                bool trap = false;
+                if(boardScript.tileGrid[x,y].getTrap() != null)
+                {
+                    trap = true;
+                }
+                teleport(x, y, totalDist);
+                if (trap)
+                    break;
+            }
+        }
+        else
+        {
+            TileScript targetTile = new TileScript();
+            foreach (TileScript t in getSurroundingTiles(true))
+            {
+                if (t == boardScript.tileGrid[x, y])
+                {
+                    adj = true;
+                    targetTile = boardScript.tileGrid[x, y];
+                }
+            }
+            if (adj)
+            {
+                int xVel = 0;
+                int yVel = 0;
+                if (currentTile.getPos().x < targetTile.getPos().x)
+                {
+                    GetComponent<SpriteRenderer>().flipX = true;
+                    xVel = 1;
+                }
+                else if (currentTile.getPos().x > targetTile.getPos().x)
+                {
+                    GetComponent<SpriteRenderer>().flipX = false;
+                    xVel = -1;
+                }
+                else if (currentTile.getPos().z < targetTile.getPos().z)
+                {
+                    GetComponent<SpriteRenderer>().flipX = true;
+                    yVel = 1;
+                }
+                else if (currentTile.getPos().z > targetTile.getPos().z)
+                {
+                    GetComponent<SpriteRenderer>().flipX = false;
+                    yVel = -1;
+                }
+                for (int i = 0; i < 10; i++)
+                {
+                    float waddle = transform.position.y * 1f;
+                    if (i == 2)
+                    {
+                        waddle += 0.1f;
+                    }
+                    else if(i == 6)
+                    {
+                        waddle -= 0.1f;
+                    }
+                    transform.position = new Vector3(transform.position.x + xVel * 0.1f, waddle, transform.position.z + yVel * 0.1f);
+                    yield return new WaitForFixedUpdate();
+                }
+            }
+            teleport(x, y, totalDist);
+        }
+        boardScript.getMyCursor().setAnimating(false);
+    }
+
+    public IEnumerator nudgeAnim(int dist, bool xorz, bool sign) //true for x, false for z
+    {
+        int flip = 1;
+        if (!sign)
+        {
+            flip *= -1;
+        }
+        for (int i = 0; i< dist; i++)
+        {
+            int xVel = 0;
+            int zVel = 0;
+            if (xorz)
+            {
+                xVel = flip;
+            }
+            else
+            {
+                zVel = flip;
+            }
+            while (boardScript.getMyCursor().getAnimating())
+            {
+                yield return new WaitForFixedUpdate();
+            }
+            if (getPos().x + xVel > -1 && getPos().x + xVel < 10 && getPos().z + zVel > -1 && getPos().z + zVel < 10 && !boardScript.tileGrid[(int)getPos().x + xVel, (int)getPos().z + zVel].getImpassable() && boardScript.tileGrid[(int)getPos().x + xVel, (int)getPos().z + zVel].currentPlayer == null)
+                doMove((int)getPos().x + xVel, (int)getPos().z + zVel, 1);
+            yield return new WaitForFixedUpdate();
+        }
+    }
+
+    public int teleport(int x, int y, int totalDist)
+    {
         if (x > -1 && x < 10 && y > -1 && y < 10 && !boardScript.tileGrid[x, y].getImpassable() && boardScript.tileGrid[x, y].currentPlayer == null)
         {
             Vector3 lastPos = getPos();
-            if(currentTile != null)
+            if (currentTile != null)
                 currentTile.standingOn(null);
-            transform.position = new Vector3(x + offsetX, lastPos.y + offsetY, y + offsetZ);
-            if(myTurn)
+            transform.position = new Vector3(x + offsetX, lastPos.y, y + offsetZ);
+            coordinates = new Vector3(x, lastPos.y, y);
+            if (myTurn)
                 boardScript.spotlight.transform.position = new Vector3(x, 2, y);
             currentTile = boardScript.tileGrid[(int)(getPos().x), (int)(getPos().z)];
             if (currentTile != lastTile)
             {
-                if(lastTile != null)
+                if (lastTile != null)
                     lastTile.standingOn(null);
                 currentTile.standingOn(this);
                 if (this.getDead())
@@ -837,11 +1007,16 @@ abstract public class OpalScript : MonoBehaviour {
         return liftTimer;
     }
 
-    public void setBurning(bool newburn)
+    public void setBurning(bool np)
     {
-        if(myCharm == "InsectHusk")
+        setBurning(np, true);
+    }
+
+    public void setBurning(bool newburn, bool insect)
+    {
+        if(newburn && myCharm == "Insect Husk" && insect)
         {
-            setPoison(true);
+            setPoison(true, false);
             charmRevealed = true;
             return;
         }
@@ -914,8 +1089,19 @@ abstract public class OpalScript : MonoBehaviour {
         return poisoned;
     }
 
-    public void setPoison(bool newpoison)
+    public void setPoison(bool np)
     {
+        setPoison(np, true);
+    }
+
+    public void setPoison(bool newpoison, bool insect)
+    {
+        if (newpoison && myCharm == "Insect Husk" && insect)
+        {
+            setBurning(true, false);
+            charmRevealed = true;
+            return;
+        }
         if ((type1 != "Plague" && type2 != "Plague"))
         {
             if (newpoison && !poisoned && currentTile != null && !(currentTile.type == "Growth"))
@@ -1126,6 +1312,7 @@ abstract public class OpalScript : MonoBehaviour {
             if (transform.position.x != -100 && transform.position.y < 1)
                 boardScript.tileGrid[(int)getPos().x, (int)getPos().z].currentPlayer = null;
             transform.position = new Vector3(-100, -100, -100);
+            coordinates = new Vector3(-100, -100, -100);
         }
     }
 
@@ -1141,19 +1328,35 @@ abstract public class OpalScript : MonoBehaviour {
 
     public IEnumerator yowch()
     {
+        int dir = 1;
+        if (!GetComponent<SpriteRenderer>().flipX)
+        {
+            dir = -1;
+        }
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         if(sr != null)
         {
-            sr.color = new Color(1, 0, 0);
+            sr.color = new Color(1, 1, 1);
         }
-        transform.RotateAround(new Vector3(transform.position.x, transform.position.y-1, transform.position.z), Vector3.up, -45);
-        for (int i = 0; i < 20; i++)
+
+        for (int i = 0; i < 3; i++)
         {
-            yield return new WaitForSeconds(0.05f);
+            transform.RotateAround(new Vector3(transform.position.x, transform.position.y - 1, transform.position.z), Vector3.up, -15 * dir);
+            yield return new WaitForFixedUpdate();
+        }
+        
+        for (int i = 0; i < 10; i++)
+        {
+            yield return new WaitForFixedUpdate();
+        }
+        for (int i = 0; i < 9; i++)
+        {
+            transform.RotateAround(new Vector3(transform.position.x, transform.position.y - 1, transform.position.z), Vector3.up, 5 * dir);
+            yield return new WaitForFixedUpdate();
         }
         if (sr != null)
         {
-            sr.color = new Color(0, 0, 0);
+            sr.color = new Color(1, 1, 1);
         }
     }
 
@@ -1251,6 +1454,7 @@ abstract public class OpalScript : MonoBehaviour {
             barriarraySurrounding().takeDamage(dam, mod, effect);
             return;
         }
+        StartCoroutine(yowch());
         if(!mod)
         {
             this.health -= dam;
@@ -1282,7 +1486,7 @@ abstract public class OpalScript : MonoBehaviour {
             if (currentTile != null)
                 temp.standingOn(null);
             onDeathTile(temp);
-            if (boardScript.getMyCursor().getCurrentOpal() != null && boardScript.getMyCursor().getCurrentOpal().getMyName() == "Numbskull" && boardScript.getMyCursor().getCurrentOpal().getTeam() != getTeam())
+            if (boardScript.getMyCursor().getCurrentOpal() != null && boardScript.getMyCursor().getCurrentOpal().getMyName() == "Numbskull" && boardScript.getMyCursor().getCurrentOpal().getTeam() != getTeam() && name != "Boulder")
             {
                 boardScript.getMyCursor().getCurrentOpal().spawnOplet(spiritchPrefab, boardScript.tileGrid[(int)getPos().x, (int)getPos().z]);
             }
@@ -1345,6 +1549,96 @@ abstract public class OpalScript : MonoBehaviour {
         onDamage(dam);
     }
 
+    public IEnumerator doAttackAnim(OpalScript target, CursorScript cursor, int attackNum, Projectile currentProj)
+    {
+        TileScript myTile = currentTile;
+        if(target != null && target.getCurrentTile().getPos().x <= currentTile.getPos().x && target.getCurrentTile().getPos().z <= currentTile.getPos().z)
+        {
+            GetComponent<SpriteRenderer>().flipX = false;
+            target.GetComponent<SpriteRenderer>().flipX = true;
+        }
+        else if(target != null)
+        {
+            GetComponent<SpriteRenderer>().flipX = true;
+            target.GetComponent<SpriteRenderer>().flipX = false;
+        }
+        int dir = 1;
+        float speed = 0.1f;
+        if (!GetComponent<SpriteRenderer>().flipX)
+        {
+            dir = -1;
+        }
+        for(int i = 0; i < 5; i++)
+        {
+            transform.position = new Vector3(transform.position.x-dir*speed,transform.position.y,transform.position.z);
+            yield return new WaitForFixedUpdate();
+        }
+        for (int i = 0; i < 10; i++)
+        {
+            transform.position = new Vector3(transform.position.x + dir * speed, transform.position.y, transform.position.z);
+            yield return new WaitForFixedUpdate();
+        }
+        doAttack(target, cursor, attackNum, currentProj);
+        for (int i = 0; i < 5; i++)
+        {
+            transform.position = new Vector3(transform.position.x - dir * speed, transform.position.y, transform.position.z);
+            yield return new WaitForFixedUpdate();
+        }
+        myTile.setCurrentOpal(this);
+    }
+
+    public IEnumerator doAttackAnim(TileScript target, CursorScript cursor, int attackNum, Projectile currentProj)
+    {
+        TileScript myTile = currentTile;
+        if (target != null && target.getPos().x <= currentTile.getPos().x && target.getPos().z <= currentTile.getPos().z)
+        {
+            GetComponent<SpriteRenderer>().flipX = false;
+        }
+        else if (target != null)
+        {
+            GetComponent<SpriteRenderer>().flipX = true;
+        }
+        int dir = 1;
+        float speed = 0.1f;
+        if (!GetComponent<SpriteRenderer>().flipX)
+        {
+            dir = -1;
+        }
+        for (int i = 0; i < 3; i++)
+        {
+            transform.position = new Vector3(transform.position.x - dir * speed, transform.position.y, transform.position.z);
+            yield return new WaitForFixedUpdate();
+        }
+        for (int i = 0; i < 6; i++)
+        {
+            transform.position = new Vector3(transform.position.x + dir * speed, transform.position.y, transform.position.z);
+            yield return new WaitForFixedUpdate();
+        }
+        doAttack(target, cursor, attackNum, currentProj);
+        for (int i = 0; i < 3; i++)
+        {
+            transform.position = new Vector3(transform.position.x - dir * speed, transform.position.y, transform.position.z);
+            yield return new WaitForFixedUpdate();
+        }
+        myTile.setCurrentOpal(this);
+    }
+
+    public void doAttack(OpalScript target, CursorScript cursor, int attackNum, Projectile currentProj)
+    {
+        Projectile tempProj = Instantiate(currentProj);
+        tempProj.setUp(getAttacks()[attackNum].getShape(), getMainType());
+        adjustProjectile(tempProj, attackNum);
+        tempProj.fire(this, target, attackNum);
+    }
+
+    public void doAttack(TileScript target, CursorScript cursor, int attackNum, Projectile currentProj)
+    {
+        Projectile tempProj = Instantiate(currentProj);
+        tempProj.setUp(getAttacks()[attackNum].getShape(), getMainType());
+        adjustProjectile(tempProj, attackNum);
+        tempProj.fire(this, target, attackNum);
+    }
+
     public OpalScript spawnOplet(OpalScript oplet, TileScript target)
     {
         minionCount = 0;
@@ -1352,7 +1646,7 @@ abstract public class OpalScript : MonoBehaviour {
         {
             if (o.GetType() == oplet.GetType() && o.getDead() != true && o.getTeam() == getTeam())
             {
-                print("du hello");
+                //print("du hello");
                 minionCount++;
             }
         }
@@ -1409,37 +1703,33 @@ abstract public class OpalScript : MonoBehaviour {
 
     public void nudge(int dist, bool xorz, bool sign) //true for x, false for z
     {
-        if (dist <= 0)
+        StartCoroutine(nudgeAnim(dist, xorz, sign));
+    }
+
+    public void onMiasma(bool on)
+    {
+        if (on)
         {
-            return;
-        }
-        int flip = 1;
-        if (!sign)
-        {
-            flip *= -1;
-        }
-        int checkMoved = 0;
-        if (xorz)
-        {
-            checkMoved = doMove((int)getPos().x + flip, (int)getPos().z, 1);
-            if (lifted)
-            {
-                checkMoved = doMove((int)getPos().x + flip, (int)getPos().z, 1);
-            }
+            defense += 2;
         }
         else
-        { 
-            checkMoved = doMove((int)getPos().x, (int)getPos().z + flip, 1);
-            if (lifted)
-            {
-                checkMoved = doMove((int)getPos().x , (int)getPos().z + flip, 1);
-            }
-        }
-        if(checkMoved == -1)
         {
-            return;
+            defense -= 2;
         }
-        nudge(dist-1, xorz, sign);
+    }
+
+    public void onGrowth(bool on)
+    {
+        if (on)
+        {
+            attack += 2;
+            defense += 2;
+        }
+        else
+        {
+            attack -= 2;
+            defense -= 2;
+        }
     }
 
     abstract public int getAttackEffect(int attackNum, OpalScript target);
@@ -1753,7 +2043,7 @@ abstract public class OpalScript : MonoBehaviour {
                 }
                 break;
             case "Death's Skull":
-                if(dam > health + defense)
+                if(dead)
                 {
                     boardScript.myCursor.getCurrentOpal().takeDamage(dam, true, true);
                     charmRevealed = true;
@@ -1943,7 +2233,8 @@ abstract public class OpalScript : MonoBehaviour {
             {
                 if (getPos().x + i < 10 && getPos().x + i > -1 && getPos().z + j < 10 && getPos().z + j > -1 && !(i == 0 && j == 0) && (!adj || (Mathf.Abs(i) != Mathf.Abs(j))))
                 {
-                    output.Add(boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j]);
+                        //print((int)getPos().x + i + ", " + ((int)getPos().z + j));
+                        output.Add(boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j]);
                 }
             }
         }

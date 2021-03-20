@@ -249,14 +249,33 @@ public class TileScript : MonoBehaviour {
                 Nature temp = Instantiate<Nature>(onMe, this.transform);
                 int xRand = Random.Range(1, 3);
                 int zRand = Random.Range(1, 3);
-                temp.transform.localPosition = new Vector3(0.42f, 0.72f, -0.42f);
+                temp.transform.localPosition = new Vector3(0.43f, 0.7f, -0.43f);
+                if(natureNum == 4)
+                    temp.transform.localPosition = new Vector3(0.48f, 0.72f, -0.48f);
                 temp.transform.localScale = new Vector3(0.2f, 0.1f, 0);
                 if(natureNum == 3)
                 {
-                    temp.transform.localScale = new Vector3(0.15f, 0.075f, 0);
+                    temp.transform.localScale = new Vector3(0.3f, 0.15f, 0);
+                    temp.transform.rotation = Quaternion.Euler(40, -45, 0);
+                    temp.transform.localPosition = new Vector3(0.44f, 0.70f, -0.44f);
                 }
+                if(natureNum == 4)
+                    temp.transform.localScale = new Vector3(0.25f, 0.125f, 0);
                 if (Random.Range(0, 2) == 0)
+                {
                     temp.GetComponent<SpriteRenderer>().flipX = true;
+                    foreach(SpriteRenderer sr in temp.GetComponentsInChildren<SpriteRenderer>())
+                    {
+                        sr.flipX = true;
+                    }
+                    if(natureNum == 0 || natureNum == 1 || natureNum == 2)
+                        temp.transform.localPosition = new Vector3(0.5f, 0.72f, -0.5f);
+                    if(natureNum == 3)
+                    {
+                        
+                        temp.transform.localPosition = new Vector3(0.44f, 0.70f, -0.44f);
+                    }
+                }
                 onMe = temp;
             }
         }
@@ -438,13 +457,15 @@ public class TileScript : MonoBehaviour {
                 impassable = false;
             if (type.Equals("Miasma") && currentPlayer != null)
             {
-                currentPlayer.doTempBuff(1, -1, -2, false);
+                //currentPlayer.doTempBuff(1, -1, -2, false);
+                currentPlayer.onMiasma(false);
                 currentPlayer.shrouded = false;
             }
             if (type.Equals("Growth") && currentPlayer != null)
             {
-                currentPlayer.doTempBuff(0, -1, -2, false);
-                currentPlayer.doTempBuff(1, -1, -2, false);
+                //currentPlayer.doTempBuff(0, -1, -2, false);
+                //currentPlayer.doTempBuff(1, -1, -2, false);
+                currentPlayer.onGrowth(false);
                 DestroyImmediate(currentEffect);
             }
         }
@@ -471,7 +492,8 @@ public class TileScript : MonoBehaviour {
                 if (!player.shrouded)
                 {
                     player.setPoison(true);
-                    player.doTempBuff(1, -1, 2, false);
+                    //player.doTempBuff(1, -1, 2, false);
+                    currentPlayer.onMiasma(true);
                     player.shrouded = true;
                 }
             }
@@ -484,8 +506,9 @@ public class TileScript : MonoBehaviour {
                     temp.transform.position = new Vector3(gridPos.x, -1f, gridPos.y);
                     currentEffect = temp;
                     player.setPoison(false);
-                    player.doTempBuff(0, -1, 2, false);
-                    player.doTempBuff(1, -1, 2, false);
+                    //player.doTempBuff(0, -1, 2, false);
+                    //player.doTempBuff(1, -1, 2, false);
+                    currentPlayer.onGrowth(true);
                 }
             }
             if(trapEffect != null && currentTrap != "PortalOut")
@@ -494,6 +517,11 @@ public class TileScript : MonoBehaviour {
                 clearTrap();
             }
         }
+    }
+
+    public void setCurrentOpal(OpalScript o)
+    {
+        currentPlayer = o;
     }
 
     public void updateTile()
@@ -518,7 +546,9 @@ public class TileScript : MonoBehaviour {
 
     public Vector3 getPos()
     {
-        return this.transform.position;
+        if(this != null && transform != null)
+         return transform.position;
+        return new Vector3(0,0,0);
     }
 
     public IEnumerator fall()

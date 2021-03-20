@@ -26,7 +26,7 @@ public class Bombat : OpalScript
             GetComponent<SpriteRenderer>().flipX = false;
         }
         offsetX = 0;
-        offsetY = -0.2f;
+        offsetY = -0.1f;
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Short Fuse", 0, 0, 0, "<Passive>\n At the end of your turn, lose 5 health.");

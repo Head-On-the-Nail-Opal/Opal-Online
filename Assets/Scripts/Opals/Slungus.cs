@@ -64,7 +64,7 @@ public class Slungus : OpalScript
             target.doTempBuff(0, -1, 1);
             target.doTempBuff(1, -1, 1);
             doTempBuff(0, -1, -1);
-            doTempBuff(0, -1, -1);
+            doTempBuff(1, -1, -1);
             boardScript.setTile(target, "Growth", false);
             boardScript.setTile(this, "Growth", false);
             return 0;

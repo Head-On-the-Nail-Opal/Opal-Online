@@ -27,7 +27,7 @@ public class Overgroink : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Ecosystem", 0, 0, 0, "<Passive>\n At the start of its turn, all surrounding Growth tiles buff Overgroink as if it were standing on them.");
-        Attacks[1] = new Attack("Boink", 2, 1, 4, "Place a Growth at your feet. Heal the damage dealt.");
+        Attacks[1] = new Attack("Boink", 2, 1, 4, "Place a Growth at your feet. Deal damage to target, then heal the damage dealt.");
         Attacks[2] = new Attack("Nurture", 0, 5, 0, "Give an Opal standing on a Growth +2 attack and +2 defense. You may use this twice.");
         Attacks[2].setUses(2);
         Attacks[3] = new Attack("Transplant", 0, 5, 0, "<Free Ability>\n Heal an Opal standing on a Growth by 2 health. Lose 2 health.");
@@ -69,7 +69,8 @@ public class Overgroink : OpalScript
         }
         else if (attackNum == 1)
         {
-            doHeal(getAttack() + cA.getBaseDamage(), false);
+            if(getAttack() + cA.getBaseDamage() - target.getDefense() > 0)
+                doHeal(getAttack() + cA.getBaseDamage() - target.getDefense(), false);
             boardScript.setTile(this, "Growth", false);
         }
         else if (attackNum == 2)

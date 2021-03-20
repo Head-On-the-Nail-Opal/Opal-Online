@@ -26,9 +26,9 @@ public class KnightLite : OpalScript
         offsetY = 0f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Divine Touch", 0, 0, 0, "<Passive>\nOn the start of its turn, KnightLite gains attack equal to it's current overheal");
+        Attacks[0] = new Attack("Divine Touch", 0, 0, 0, "<Passive>\nOn the start of its turn, KnightLite gains attack equal to its current overheal");
         Attacks[2] = new Attack("Blessing", 1, 1, 0, "Overheal a target by your current attack.");
-        Attacks[1] = new Attack("Shield of Truth", 0, 1, 0, "<Free Ability>\nLose 5 health and gain an Armor");
+        Attacks[1] = new Attack("Shield of Truth", 0, 1, 0, "<Free Ability>\nLose 6 health below your Armor and gain an Armor");
         Attacks[1].setFreeAction(true);
         Attacks[3] = new Attack("Sword of Honor", 1, 1, 10, "Lose -1 armor. If no armor, then this attack does nothing. Overheal self by 6.");
         type1 = "Light";
@@ -50,7 +50,7 @@ public class KnightLite : OpalScript
         }
         else if (attackNum == 1)
         {
-            takeDamageBelowArmor(5, false, true);
+            takeDamageBelowArmor(6, false, true);
             addArmor(1);
             return 0;
         }

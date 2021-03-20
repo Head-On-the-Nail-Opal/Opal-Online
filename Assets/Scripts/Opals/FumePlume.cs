@@ -164,7 +164,7 @@ public class FumePlume : OpalScript
 
     public override int checkCanAttack(TileScript target, int attackNum)
     {
-        if (attackNum == 3)
+        if (attackNum == 3 && currentTile != null && (currentTile.type == "Fire" || currentTile.type == "Miasma"))
         {
             return 0;
         }

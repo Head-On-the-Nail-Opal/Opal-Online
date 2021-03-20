@@ -63,7 +63,7 @@ public class Scorpirad : OpalScript
         }
         else if (attackNum == 1)
         {
-            if(target.getAttack() > 0)
+            if(target.getAttack() < 0)
             {
                 doTempBuff(0, -1, -target.getAttack());
             }

@@ -294,6 +294,7 @@ public class GroundScript : MonoBehaviour {
             OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + o.GetType()));
             temp.setDetails(o);
             temp.GetComponent<SpriteRenderer>().flipX = false;
+            temp.transform.rotation = Quaternion.Euler(40,-45,0);
             temp.setOpal("Blue");
             //temp.setPersonality(o.getPersonality());
             temp.setPos(-100, -100);
@@ -311,6 +312,7 @@ public class GroundScript : MonoBehaviour {
             temp.GetComponent<SpriteRenderer>().flipX = true;
             temp.setOpal("Red");
             temp.setDetails(o);
+            temp.transform.rotation = Quaternion.Euler(40, -45, 0);
             //temp.setPersonality(o.getPersonality());
             temp.setPos(-100, -100);
             p1Opals.Add(temp);
@@ -325,6 +327,7 @@ public class GroundScript : MonoBehaviour {
         {
             OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + o.GetType()));
             temp.GetComponent<SpriteRenderer>().flipX = false;
+            temp.transform.rotation = Quaternion.Euler(40, -45, 0);
             temp.setOpal("Green");
             temp.setDetails(o);
             // temp.setPersonality(o.getPersonality());
@@ -341,6 +344,7 @@ public class GroundScript : MonoBehaviour {
         {
             OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + o.GetType()));
             temp.GetComponent<SpriteRenderer>().flipX = false;
+            temp.transform.rotation = Quaternion.Euler(40, -45, 0);
             temp.setOpal("Orange");
             temp.setDetails(o);
             // temp.setPersonality(o.getPersonality());

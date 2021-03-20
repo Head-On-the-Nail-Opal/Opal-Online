@@ -32,7 +32,7 @@ public class Butterflight : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Pollinate", 1, 1, 0, "<Free Ability>/n Lose -2 defense and heal an Opal 4 health");
+        Attacks[0] = new Attack("Pollinate", 1, 1, 0, "<Free Ability>\n Lose -2 defense and heal an Opal 4 health");
         Attacks[0].setFreeAction(true);
         Attacks[1] = new Attack("Breeze", 3, 1, 0, "Select a target Opal. Then choose a direction to push them 4 tiles.");
         Attacks[1].setUses(2);

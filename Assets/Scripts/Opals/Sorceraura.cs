@@ -30,28 +30,12 @@ public class Sorceraura : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Energetic Blast", 4, 4, 0, "Heal Opals in area by your attack. If your attack is negative, deal damage instead. Halve your attack.", 1);
+        Attacks[0] = new Attack("Energetic Blast", 4, 4, 0, "Heal Opals in an area by your attack. If your attack is negative, deal damage instead.", 1);
         Attacks[1] = new Attack("Trick", 1, 1, 0, "Gain +3 attack. Target loses -3 attack.");
-        Attacks[2] = new Attack("Slight of Hand", 1, 1, 0, "Multipy your attack by -1 and then buff another Opal's attack by your attack.");
+        Attacks[2] = new Attack("Sleight of Hand", 1, 1, 0, "Invert your attack stat. Buff target by your new attack stat.");
         Attacks[3] = new Attack("Turnaround", 2, 1, 0, "Damage an Opal by their attack stat.");
         type1 = "Light";
         type2 = "Dark";
-    }
-
-    public override void onStart()
-    {
-        alreadyTrigger = false;
-    }
-
-    public override void onMove(int distanceMoved)
-    {
-        
-    }
-
-    public override void prepAttack(int attackNum)
-    {
-        base.prepAttack(attackNum);
-        myAttack = getAttack();
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -59,18 +43,15 @@ public class Sorceraura : OpalScript
         Attack cA = Attacks[attackNum];
         if (attackNum == 0) //Balance
         {
-            if (target.getMyName() != getMyName())
+            if (target == this)
+                return 0;
+            if(getAttack() < 0)
             {
-                if (!alreadyTrigger)
-                    setTempBuff(0, -1, myAttack / 2);
-                alreadyTrigger = true;
-                if (myAttack < 0)
-                    return cA.getBaseDamage() - myAttack;
-                else
-                {
-                    target.doHeal(myAttack, false);
-                    return 0;
-                }
+                return getAttack();
+            }
+            else
+            {
+                target.doHeal(getAttack(), false);
             }
             return 0;
         }
@@ -82,7 +63,17 @@ public class Sorceraura : OpalScript
         }
         else if (attackNum == 2) //Shift
         {
-            setTempBuff(0, -1, getAttack() * -1);
+            List<TempBuff> newBuffs = new List<TempBuff>();
+            foreach (TempBuff t in buffs)
+            {
+                if(t.getTurnlength() != 0)
+                    newBuffs.Add(new TempBuff(t.getTargetStat(), t.getTurnlength(), t.getAmount() * -1));
+            }
+            clearAllBuffs();
+            foreach(TempBuff t in newBuffs)
+            {
+                doTempBuff(t.getTargetStat(), t.getTurnlength(), t.getAmount());
+            }
             target.doTempBuff(0, -1, getAttack());
             return 0;
         }

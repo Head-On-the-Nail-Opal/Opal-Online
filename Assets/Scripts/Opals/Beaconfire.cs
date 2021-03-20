@@ -26,7 +26,7 @@ public class Beaconfire : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Blaze Rage", 0, 0, 0, "At the end of your turn, adjacent Opals standing on flame gain +4 attack");
+        Attacks[0] = new Attack("Blaze Rage", 0, 0, 0, "<Passive>\nAt the end of your turn, adjacent Opals standing on flame gain +4 attack");
         Attacks[1] = new Attack("World Burn", 0, 1, 0, "Light fire on all tiles surrounding Beaconfire.");
         Attacks[2] = new Attack("Healing Heat", 1, 4, 0, "Heal all Opals in an area by 4. If they stand on flame then overheal.",1);
         Attacks[3] = new Attack("Fired Up", 1, 1, 0, "Give an Opal +2 attack and gain +1 speed.");
@@ -65,17 +65,17 @@ public class Beaconfire : OpalScript
         {
             if(target.getCurrentTile() != null && target.getCurrentTile().type == "Fire")
             {
-                doHeal(4, true);
+                target.doHeal(4, true);
             }
             else
             {
-                doHeal(4, false);
+                target.doHeal(4, false);
             }
             return 0;
         }
         else if (attackNum == 3)
         {
-            doTempBuff(2, -1, 1);
+           target.doTempBuff(2, -1, 1);
            target.doTempBuff(0, -1, 2);
         }
         return cA.getBaseDamage() + getAttack();

@@ -31,7 +31,7 @@ public class Beamrider : OpalScript
         Attacks[0] = new Attack("Energy Blast", 1, 6, 0, "Deal 0 damage to all targets in a line. Ignores line of sight.");
         Attacks[1] = new Attack("Warming Up", 0, 1, 0, "Gain +3 attack.");
         Attacks[2] = new Attack("Reboot", 0, 1, 0, "Gain +5 attack and +2 speed for 1 turn.");
-        Attacks[3] = new Attack("Big Red Button", 1, 6, 0, "Deal 0 damage to all targets in a line. Ignores line of sight. Double bonuses from attack, set attack to 0");
+        Attacks[3] = new Attack("Big Red Button", 1, 6, 0, "Deal 0 damage to all targets in a line. Ignores line of sight. Double bonuses from attack, then remove all stat bonuses");
         type1 = "Laser";
         type2 = "Laser";
     }
@@ -68,7 +68,7 @@ public class Beamrider : OpalScript
         else if (attackNum == 3) //
         {
             int atk = getAttack();
-            setTempBuff(0, -1, 0);
+            clearAllBuffs();
             return cA.getBaseDamage() + myAttack*2;
         }
         return cA.getBaseDamage() + getAttack();

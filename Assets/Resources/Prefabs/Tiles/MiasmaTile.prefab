@@ -121,6 +121,8 @@ MonoBehaviour:
   grass2: {fileID: 2100000, guid: d5abf0dee46704e40b87412cff1fa2be, type: 2}
   type: Miasma
   GrowthEffect: {fileID: 0}
+  connectedTileSprites: []
+  changeTexture: {fileID: 0}
   currentPlayer: {fileID: 0}
   currentEffect: {fileID: 0}
 --- !u!1 &82568020365002351

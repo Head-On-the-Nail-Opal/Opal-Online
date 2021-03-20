@@ -63,6 +63,7 @@ public class Groth : OpalScript
         {
             target.doTempBuff(0, 1, 5);
             target.doTempBuff(1, 1, 5);
+            return 0;
         }
         else if (attackNum == 2)
         {
@@ -115,7 +116,7 @@ public class Groth : OpalScript
         }
         else if (attackNum == 3)
         {
-            return meditationTurn * 3 + getAttack();
+            return meditationTurn * 3 + getAttack() - target.currentPlayer.getDefense();
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
     }

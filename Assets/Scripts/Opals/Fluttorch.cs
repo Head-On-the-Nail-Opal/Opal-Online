@@ -44,12 +44,12 @@ public class Fluttorch : OpalScript
         cinderWing = false;
     }
 
-    public override void onMove(PathScript p)
+    public override void onMove(int x, int y)
     {
         if (cinderWing)
         {
-            boardScript.setTile((int)p.getPos().x, (int)p.getPos().z, "Fire", false);
-            currentTile = boardScript.tileGrid[(int)p.getPos().x, (int)p.getPos().z];
+            boardScript.setTile(x,y, "Fire", false);
+            currentTile = boardScript.tileGrid[x,y];
         }
         //boardScript.tileGrid[(int)p.getPos().x, (int)p.getPos().z].standingOn(null);
     }

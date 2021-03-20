@@ -83,12 +83,12 @@ public class Barriarray : OpalScript
             int i = 0;
             foreach(TileScript t in getSurroundingTiles(false))
             {
-                if(t.getCurrentOpal() != null)
+                if(t.getCurrentOpal() != null && t.getCurrentOpal().getHealth() >= t.getCurrentOpal().getMaxHealth())
                 {
                     i++;
                 }
-                doHeal(4*i, false);
             }
+            doHeal(4 * i, false);
             return 0;
         }
         else if (attackNum == 3)

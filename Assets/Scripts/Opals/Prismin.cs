@@ -51,6 +51,7 @@ public class Prismin : OpalScript
                 if(t.getTurnlength() != 0)
                     doTempBuff(t.getTargetStat(), t.getTurnlength(),t.getAmount());
             }
+            takeDamage(15, false, true);
             return 0;
         }
         else if (attackNum == 1) //Restore
@@ -79,7 +80,7 @@ public class Prismin : OpalScript
                 {
                     doTempBuff(t.getTargetStat(), t.getTurnlength(), t.getAmount());
                 }
-                takeDamage(15, false, true);
+                
             }
             return 0;
         }

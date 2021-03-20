@@ -173,7 +173,15 @@ public class Projectile : MonoBehaviour{
 
     private IEnumerator shoot(OpalScript from, OpalScript target, int attackNum)
     {
-        
+        float speed = 1;
+        foreach (TileScript t in from.getSurroundingTiles(true))
+        {
+            if(t.currentPlayer == target)
+            {
+                shape = 0;
+                speed = 5;
+            }
+        }
         Vector3 mine = transform.position;
         Vector3 theirs = target.getPos();
         float xdiff = mine.x - theirs.x;
@@ -181,8 +189,8 @@ public class Projectile : MonoBehaviour{
         int i = 0;
         while (transform.position.x < theirs.x - 0.1f || transform.position.z < theirs.z -0.1f || transform.position.x > theirs.x  + 0.1f|| transform.position.z > theirs.z + 0.1f)
         {
-            mine.x -= xdiff/30;
-            mine.z -= zdiff/30;
+            mine.x -= xdiff/30 *speed;
+            mine.z -= zdiff/30 *speed;
             if(shape == 1 || shape == 5)
             {
                 mine.y += 0.01f * (12-i);

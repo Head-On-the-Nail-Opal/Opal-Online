@@ -58,7 +58,8 @@ public class Spillarc : OpalScript
         }
         else if (attackNum == 2) //Soak
         {
-
+            if (target.getCurrentTile() != null && target.getCurrentTile().type != "Flood")
+                boardScript.setTile(target, "Flood", false);
         }
         else if (attackNum == 3) //Encolour
         {

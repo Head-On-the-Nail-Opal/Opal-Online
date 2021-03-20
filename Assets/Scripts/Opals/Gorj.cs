@@ -44,11 +44,11 @@ public class Gorj : OpalScript
             List<TileScript> temps = new List<TileScript>();
             foreach (OpalScript o in victims)
             {
-                print(o.name);
+                //print(o.name);
                 if(o.getHealth() >= 0) {
                     foreach (TileScript t in getSurroundingTiles(false))
                     {
-                        print(t.type);
+                       // print(t.type);
                         if (!t.getImpassable() && t.currentPlayer == null && !temps.Contains(t))
                         {
                             temps.Add(t);
@@ -61,6 +61,7 @@ public class Gorj : OpalScript
                     transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.9f;
                 }
             }
+            victims.Clear();
         }
     }
 
@@ -77,14 +78,15 @@ public class Gorj : OpalScript
             target.setDead();
             //if(target.getCurrentTile() != null)
             target.getCurrentTile().standingOn(null);
-            target.transform.position = new Vector3(-100, -100, -100);
+            target.setPos(-100,-100);
             setTempBuff(2, -1, 2);
             transform.localScale *= 1.3f;
             return 0;
         }
         else if (attackNum == 2)
         {
-            doTempBuff(0, -1, 3);
+            List<OpalScript> deadOpals = new List<OpalScript>();
+            doTempBuff(1, -1, 3);
             if(victims.Count != 0)
             {
                 foreach (OpalScript o in victims)
@@ -93,17 +95,24 @@ public class Gorj : OpalScript
                     if(o.getHealth() <= 0)
                     {
                         transform.localScale /= 1.3f;
+                        deadOpals.Add(o);
                     }
                 }
             }
+            foreach(OpalScript o in deadOpals)
+            {
+                victims.Remove(o);
+            }
+            deadOpals.Clear();
             return 0;
         }
         else if (attackNum == 3)
         {
             if (currentTile.type == "Fire")
             {
-                takeBurnDamage(false);
-                foreach(OpalScript o in victims)
+                //takeBurnDamage(false);
+                doTempBuff(1, -1, -2);
+                foreach (OpalScript o in victims)
                 {
                     o.takeDamage(10, false, false);
                 }
@@ -118,7 +127,7 @@ public class Gorj : OpalScript
                 doTempBuff(0, -1, 2);
                 doTempBuff(1, -1, 2);
             }
-            else if(currentTile.type == "Miasma")
+            else if (currentTile.type == "Miasma")
             {
                 foreach (OpalScript o in victims)
                 {
@@ -128,7 +137,7 @@ public class Gorj : OpalScript
                 doTempBuff(0, -1, -1);
                 doTempBuff(1, -1, -1);
             }
-            else if(currentTile.type == "Flood")
+            else if (currentTile.type == "Flood")
             {
                 foreach (OpalScript o in victims)
                 {
@@ -137,6 +146,7 @@ public class Gorj : OpalScript
                 doHeal(5, false);
             }
             boardScript.setTile(currentTile, "Grass", true);
+            healStatusEffects();
             return 0;
         }
         return cA.getBaseDamage() + getAttack();
