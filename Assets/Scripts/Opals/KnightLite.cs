@@ -12,7 +12,7 @@ public class KnightLite : OpalScript
         defense = 3;
         speed = 2;
         priority = 7;
-        myName = "KnightLight";
+        myName = "KnightLite";
         transform.localScale = new Vector3(3.5f, 3.5f, 1);
         if (pl == "Red" || pl == "Green")
         {
@@ -30,7 +30,7 @@ public class KnightLite : OpalScript
         Attacks[2] = new Attack("Blessing", 1, 1, 0, "Overheal a target by your current attack.");
         Attacks[1] = new Attack("Shield of Truth", 0, 1, 0, "<Free Ability>\nLose 5 health and gain an Armor");
         Attacks[1].setFreeAction(true);
-        Attacks[3] = new Attack("Sword of Honor", 1, 1, 10, "Lose -1 armor. Overheal self by 6.");
+        Attacks[3] = new Attack("Sword of Honor", 1, 1, 10, "Lose -1 armor. If no armor, then this attack does nothing. Overheal self by 6.");
         type1 = "Light";
         type2 = "Metal";
     }
@@ -61,6 +61,10 @@ public class KnightLite : OpalScript
         }
         else if (attackNum == 3)
         {
+            if(getArmor() < 1)
+            {
+                return 0;
+            }
             addArmor(-1);
             doHeal(5, true);
         }

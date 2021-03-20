@@ -5,9 +5,14 @@ using UnityEngine;
 public class Butterflight : OpalScript
 {
 
+    private int useNum = 0;
+    private bool xorz;
+    private bool sign;
+    private OpalScript pushOpal;
+
     override public void setOpal(string pl)
     {
-        health = 30;
+        health = 20;
         maxHealth = health;
         attack = 1;
         defense = 2;
@@ -27,14 +32,22 @@ public class Butterflight : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Pollinate", 1, 1, 0, "Buff a target's attack and defense by your attack stat, and heal them by your attack stat. Lose the amount of health you healed.");
-        Attacks[1] = new Attack("Whirlwind", 0, 1, 0, "Gain +1 attack and 2 health for each adjacent Opal. Push them each three tiles away.");
-        Attacks[2] = new Attack("Breeze", 1, 1, 0, "Buff a target's speed by your attack stat for 1 turn, and cure any status effects on yourself and them.");
-        Attacks[3] = new Attack("Dwindle",1,1,0,"<Free Ability>\n Push a target away from you by 1 tile.");
+        Attacks[0] = new Attack("Pollinate", 1, 1, 0, "<Free Ability>/n Lose -2 defense and heal an Opal 4 health");
+        Attacks[0].setFreeAction(true);
+        Attacks[1] = new Attack("Breeze", 3, 1, 0, "Select a target Opal. Then choose a direction to push them 4 tiles.");
+        Attacks[1].setUses(2);
+        Attacks[2] = new Attack("Wind Shield", 0, 1, 0, "Gain +3 defense and Lift.");
+        Attacks[3] = new Attack("Sprint",1,1,0, "Buff a target's speed by your defense for 1 turn. They gain Lift.");
         Attacks[3].setFreeAction(true);
         type1 = "Air";
         type2 = "Light";
         og = true;
+    }
+
+    public override void onStart()
+    {
+        useNum = 0;
+        Attacks[1].setRange(3);
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -42,49 +55,65 @@ public class Butterflight : OpalScript
         Attack cA = Attacks[attackNum];
         if (attackNum == 0) //Pollinate
         {
-            target.doTempBuff(0, -1, getAttack());
-            target.doTempBuff(1, -1, getAttack());
-            int findHeal = target.getHealth();
-            target.doHeal(getAttack(), false);
-            findHeal = target.getHealth() - findHeal;
-            takeDamage(findHeal, false, true);
+            target.doHeal(4, false);
             return 0;
         }
         else if (attackNum == 1) //Whirlwind
         {
-            for(int i = -1; i < 2; i++)
+           if(useNum == 0)
             {
-                for(int j = -1; j < 2; j++)
+                useNum = 1;
+                Attacks[1].setRange(1);
+                pushOpal = target;
+            }
+            else
+            {
+                if (target.getPos().x == getPos().x)
                 {
-                    if(!(i == 0 && j == 0) && (i == 0 || j == 0))
+                    xorz = false;
+                }
+                else
+                {
+                    xorz = true;
+                }
+
+                if (xorz)
+                {
+                    if (target.getPos().x > getPos().x)
                     {
-                        if(getPos().x + i < 10 && getPos().x + i > -1 && getPos().z + j < 10 && getPos().z + j > -1 && boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer != null)
-                        {
-                            doTempBuff(0, -1, 1);
-                            doHeal(2, false);
-                            if(i == 0 && j == -1)
-                                boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer.nudge(3, false, false);
-                            if (i == 0 && j == 1)
-                                boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer.nudge(3, false, true);
-                            if (i == 1 && j == 0)
-                                boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer.nudge(3, true, true);
-                            if (i == -1 && j == 0)
-                                boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer.nudge(3, true, false);
-                        }
+                        sign = true;
+                    }
+                    else
+                    {
+                        sign = false;
                     }
                 }
+                else
+                {
+                    if (target.getPos().z > getPos().z)
+                    {
+                        sign = true;
+                    }
+                    else
+                    {
+                        sign = false;
+                    }
+                }
+                pushOpal.nudge(4, xorz,sign);
+                useNum = 0;
             }
             return 0;
         }
         else if (attackNum == 2) //Refreshing Breeze
         {
-            target.doTempBuff(2, 1, getAttack());
-            target.healStatusEffects();
-            healStatusEffects();
+            doTempBuff(1, -1, 3);
+            setLifted(true);
             return 0;
         }else if(attackNum == 3)
         {
-            pushAway(1, target);
+            target.doTempBuff(2, 1, getDefense());
+            target.setLifted(true);
+            return 0;
         }
         return cA.getBaseDamage() + getAttack();
     }
@@ -98,7 +127,42 @@ public class Butterflight : OpalScript
         }
         else if (attackNum == 1) //
         {
+            if(useNum == 1)
+            {
+                if(target.getPos().x == getPos().x)
+                {
+                    xorz = false;
+                }
+                else
+                {
+                    xorz = true;
+                }
 
+                if (xorz)
+                {
+                    if (target.getPos().x > getPos().x)
+                    {
+                        sign = true;
+                    }
+                    else
+                    {
+                        sign = false;
+                    }
+                }
+                else
+                {
+                    if (target.getPos().z > getPos().z)
+                    {
+                        sign = true;
+                    }
+                    else
+                    {
+                        sign = false;
+                    }
+                }
+                pushOpal.nudge(4, xorz, sign);
+                useNum = 0;
+            }
         }
         else if (attackNum == 2) //
         {
@@ -128,5 +192,16 @@ public class Butterflight : OpalScript
             return 0;
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+    }
+
+    public override int checkCanAttack(TileScript target, int attackNum)
+    {
+        if (attackNum == 1)
+            return 0;
+        else if(target.currentPlayer != null)
+        {
+            return 0;
+        }
+        return -1;
     }
 }

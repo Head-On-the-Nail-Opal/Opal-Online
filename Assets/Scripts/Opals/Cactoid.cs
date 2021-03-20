@@ -26,34 +26,14 @@ public class Cactoid : OpalScript
         offsetY = -0.1f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Enriched Soil", 0, 1, 0, "Gain +2 charge for each adjacent Opal");
-        Attacks[1] = new Attack("Propagate", 3, 1, 0, "<Aftershock>\n Costs 1 charge. Place a Growth tile. Repeatable while Cactoid has charge. Doesn't need to target an Opal.");
-        Attacks[2] = new Attack("Needles", 0, 5, 12, "Costs 2 charge. Deal 12 damage to an Opal standing next to a Growth tile. They lose -3 speed for their next turn.");
-        Attacks[3] = new Attack("Power Spike", 4, 4, 0, "Costs all charge. Deal twice damage of the charge amount.");
+        Attacks[0] = new Attack("Propogate", 4, 1, 0, "<Free Ability>\n Costs 1 charge. Place a Growth.");
+        Attacks[0].setFreeAction(true);
+        Attacks[1] = new Attack("Needles", 0, 1, 6, "<Free Ability>\n Costs 2 charge. Surrounding Opals take 6 damage.");
+        Attacks[1].setFreeAction(true);
+        Attacks[2] = new Attack("Power Spike", 0, 5, 0, "Give an Opal standing on a Growth +2 attack and +2 charge.");
+        Attacks[3] = new Attack("Enriched Soil", 0, 1, 0, "Gain +2 charge if Cactoid is standing on Growth. Otherwise gain +1.");
         type1 = "Grass";
         type2 = "Electric";
-    }
-
-    public override void onStart()
-    {
-        bannedAttacks.Clear();
-        attackAgain = true;
-    }
-
-    public override void prepAttack(int attackNum)
-    {
-        if(attackNum == 0)
-        {
-            attackAgain = false;
-        }
-        else if(attackNum == 1)
-        {
-            attackAgain = true;
-        }
-        else if (attackNum == 2)
-        {
-            attackAgain = false;
-        }
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -61,57 +41,41 @@ public class Cactoid : OpalScript
         Attack cA = Attacks[attackNum];
         if (attackNum == 0) //Enriched Soil
         {
-            attackAgain = false;
-            for (int i = -1; i < 2; i++)
-            {
-                for (int j = -1; j < 2; j++)
-                {
-                    if (!(i == 0 && j == 0) && (i == 0 || j == 0))
-                    {
-                        if (getPos().x + i < 10 && getPos().x + i > -1 && getPos().z + j < 10 && getPos().z + j > -1 && boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer != null)
-                        {
-                            doCharge(2);
-                        }
-                    }
-                }
-            }
-            boardScript.setChargeDisplay(getCharge());
-        }
-        else if (attackNum == 1) //Propagate
-        {
             if (getCharge() > 0)
             {
                 doCharge(-1);
-                boardScript.setChargeDisplay(getCharge());
-                attackAgain = true;
-                if (getCharge() <= 0)
-                {
-                    bannedAttacks.Add(attackNum);
-                }
-                getBoard().setTile((int)target.getPos().x, (int)target.getPos().z, "Growth", false);
-                return 0;
+                boardScript.setTile(target, "Growth", false);
             }
-            attackAgain = false;
+            return 0;
+        }
+        else if (attackNum == 1) //Propagate
+        {
+            if (getCharge() > 1)
+            {
+                doCharge(-2);
+                foreach (TileScript t in getSurroundingTiles(false))
+                {
+                    if (t.currentPlayer != null)
+                    {
+                        t.currentPlayer.takeDamage(6 + getAttack(), true, true);
+                    }
+                }
+            }
             return 0;
         }
         else if (attackNum == 2) //Needles
         {
-            if (getCharge() > 1 && target.getCurrentTile().type != "Growth")
-            {
-                doCharge(-2);
-                boardScript.setChargeDisplay(getCharge());
-                target.doTempBuff(2, 1, -3);
-                attackAgain = false;
-                bannedAttacks.Add(attackNum);
-                return cA.getBaseDamage() + getAttack();
-            }
+            target.doCharge(2);
+            target.doTempBuff(0, -1, 2);
             return 0;
         }else if(attackNum == 3)
         {
-            int dam = getCharge();
-            doCharge(getCharge());
-            boardScript.setChargeDisplay(getCharge());
-            return dam*2 + getAttack();
+            if (currentTile != null && currentTile.type == "Growth")
+            {
+                doCharge(2);
+            }
+            else
+                doCharge(1);
         }
         return cA.getBaseDamage() + getAttack();
     }
@@ -121,23 +85,16 @@ public class Cactoid : OpalScript
         Attack cA = Attacks[attackNum];
         if (attackNum == 0) //Enriched Soil
         {
-
-        }
-        else if (attackNum == 1) //Propagate
-        {
             if (getCharge() > 0)
             {
                 doCharge(-1);
-                boardScript.setChargeDisplay(getCharge());
-                attackAgain = true;
-                if (getCharge() <= 0)
-                {
-                    bannedAttacks.Add(attackNum);
-                }
-                getBoard().setTile((int)target.getPos().x, (int)target.getPos().z, "Growth", false);
-                return 0;
+                boardScript.setTile(target, "Growth", false);
             }
-            attackAgain = false;
+            return 0;
+        }
+        else if (attackNum == 1) //Propagate
+        {
+            
             return 0;
         }
         else if (attackNum == 2) //Needles
@@ -153,7 +110,7 @@ public class Cactoid : OpalScript
             return 0;
         if (attackNum == 0)
         {
-            return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+            return 0;
         }
         else if (attackNum == 1)
         {
@@ -161,28 +118,32 @@ public class Cactoid : OpalScript
         }
         else if (attackNum == 2)
         {
-            if(target.type == "Growth")
-            {
-                return 0;
-            }
-            return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+            return 0;
         }else if(attackNum == 3)
         {
-            return getCharge() * 2 + getAttack() - target.currentPlayer.getDefense();
+            return 0;
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
     }
 
     public override int checkCanAttack(TileScript target, int attackNum)
     {
-        if (attackNum == 1)
+        if (attackNum == 0 && getCharge() < 1)
         {
-            return 0;
+            return -1;
         }
-        if (target.currentPlayer != null)
+        else if(attackNum == 0)
         {
-            return 0;
+            return 1;
         }
-        return -1;
+        if (attackNum == 1 && getCharge() < 2)
+        {
+            return -1;
+        }
+        if (target.currentPlayer == null)
+        {
+            return -1;
+        }
+        return 1;
     }
 }

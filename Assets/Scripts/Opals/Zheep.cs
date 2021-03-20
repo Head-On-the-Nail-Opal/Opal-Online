@@ -11,7 +11,7 @@ public class Zheep : OpalScript
 
     override public void setOpal(string pl)
     {
-        health = 30;
+        health = 25;
         maxHealth = health;
         attack = 2;
         defense = 2;
@@ -36,32 +36,15 @@ public class Zheep : OpalScript
         {
             cs = GameObject.Find("Cursor(Clone)").GetComponent<CursorScript>();
         }
-        Attacks[0] = new Attack("Stored Charge", 0, 0, 0, "<Passive>\n When Zheep takes damage the attacker is dealt damage equal to Zheep's charge. Zheep loses a charge.");
-        Attacks[1] = new Attack("Discharge", 3, 4, 1, "Costs 2 charge. Gain +1 attack for the amount of damage dealt by Stored Charge last turn (0). Then deal 1 damage.");
-        Attacks[2] = new Attack("Static", 0, 1, 0, "Gain +1 charge for the distance moved this turn.");
+        Attacks[0] = new Attack("Static Shock", 0, 0, 0, "<Passive>\n When Zheep takes damage the attacker is dealt damage equal to Zheep's charge. Zheep loses 1 charge.");
+        Attacks[1] = new Attack("Discharge", 2, 4, 0, "Costs 2 charge. Deal damage equal to your current amount of charge (plus your attack stat).");
+        Attacks[2] = new Attack("Rough Wool", 0, 1, 0, "Gain +2 charge and +2 defense.");
         Attacks[3] = new Attack("Steel Wool", 0, 1, 0, "Costs 3 charge. Gain +1 armor.");
         type1 = "Electric";
         type2 = "Metal";
         chrg = Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/ChargedUp");
     }
 
-    public override void onStart()
-    {
-        cs = GameObject.Find("Cursor(Clone)").GetComponent<CursorScript>();
-        currentMove = 0;
-        Attacks[1] = new Attack("Discharge", 3, 4, 1, "Costs 2 charge. Gain +1 attack for the amount of damage dealt by Stored Charge last turn ("+ currentStored + "). Then deal 1 damage.");
-        Attacks[2] = new Attack("Static", 0, 1, 0, "Gain +1 charge for the distance moved this turn.");
-    }
-
-    public override void onMove(PathScript p)
-    {
-
-    }
-
-    public override void onEnd()
-    {
-        currentStored = 0;
-    }
 
 
     public override void onDamage(int dam)
@@ -71,7 +54,6 @@ public class Zheep : OpalScript
             if (cs.getCurrentOpal() != this)
             {
                 cs.getCurrentOpal().takeDamage(getCharge(), false, true);
-                currentStored += getCharge();
             }
             Instantiate<ParticleSystem>(chrg, this.transform);
             doCharge(-1);
@@ -87,29 +69,26 @@ public class Zheep : OpalScript
         }
         else if (attackNum == 1) //Discharge
         {
-            if (getCharge() > 1)
+            if(getCharge() > 1)
             {
                 doCharge(-2);
-                boardScript.setChargeDisplay(getCharge());
-                doTempBuff(0, -1, currentStored);
-                return cA.getBaseDamage() + getAttack();
+                return getCharge() + getAttack();
             }
             return 0;
         }
         else if (attackNum == 2) //Static
         {
-            doCharge(getSpeed() - cs.getDistance());
-            boardScript.setChargeDisplay(getCharge());
-
+            doCharge(2);
+            doTempBuff(1, -1, 2);
             return 0;
         }else if(attackNum == 3)
         {
-            if(getCharge() > 2)
+            if (getCharge() > 2)
             {
                 doCharge(-3);
-                boardScript.setChargeDisplay(getCharge());
                 addArmor(1);
             }
+            return 0;
         }
         return cA.getBaseDamage() + getAttack();
     }
@@ -142,12 +121,33 @@ public class Zheep : OpalScript
         }
         else if (attackNum == 1)
         {
-            return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense() + currentStored;
+            return getCharge() + getAttack() - target.currentPlayer.getDefense();
         }
         else if (attackNum == 2)
         {
             return 0;
         }
+        else if (attackNum == 3)
+        {
+            return 0;
+        }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+    }
+
+    public override int checkCanAttack(TileScript target, int attackNum)
+    {
+        if (attackNum == 1 && getCharge() < 2)
+        {
+            return -1;
+        }
+        if (attackNum == 3 && getCharge() < 3)
+        {
+            return -1;
+        }
+        if (target.currentPlayer == null)
+        {
+            return -1;
+        }
+        return 1;
     }
 }

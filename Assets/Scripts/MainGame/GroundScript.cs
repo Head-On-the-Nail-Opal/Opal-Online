@@ -92,6 +92,8 @@ public class GroundScript : MonoBehaviour {
     private OpalScript boulder;
     private OpalScript boulder2;
 
+    private bool gameWon = false;
+
     private void Awake()
     {
         me = this;
@@ -269,6 +271,16 @@ public class GroundScript : MonoBehaviour {
     public int getOnlineTeam()
     {
         return onlinePlayerNum;
+    }
+
+    public void setGameWon(bool input)
+    {
+        gameWon = input;
+    }
+
+    public bool getGameWon()
+    {
+        return gameWon;
     }
 
     private void setTheRestUp()
@@ -909,6 +921,8 @@ public class GroundScript : MonoBehaviour {
         }
         foreach (OpalScript o in gameOpals)
         {
+            if (gameWon)
+                return;
             if (!o.getDead() && !alreadyMoved.Contains(o.getID())) 
             {
                 OpalScript temp = Instantiate<OpalScript>(o, myCanvas.transform);

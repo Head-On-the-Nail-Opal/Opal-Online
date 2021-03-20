@@ -104,9 +104,7 @@ public class MenuButtonScript : MonoBehaviour {
             Application.Quit();
         }else if (purpose == "setup")
         {
-            mainCam.transform.position = target;
-            main.menuState = setMenuState;
-            main.setTeamDisplays();
+            main.startLocalGame();
         }else if(purpose == "setup2")
         {
             main.startMultiplayerGame();
@@ -117,7 +115,7 @@ public class MenuButtonScript : MonoBehaviour {
         }
         else if (purpose == "incTeam")
         {
-            print("du hello");
+            //print("du hello");
             main.incTeamNum();
         }
         else if (purpose == "decTeam")

@@ -15,6 +15,7 @@ public class MainMenuScript : MonoBehaviour {
     private List<List<OpalScript>> teams = new List<List<OpalScript>>();
     private List<OpalTeam> displayTeams = new List<OpalTeam>();
     private List<OpalScript> myOpals = new List<OpalScript>();
+    private List<List<OpalScript>> activeTeams = new List<List<OpalScript>>();
     private GlobalScript glob;
     public string currentTeam;
     public string blueController;
@@ -72,6 +73,8 @@ public class MainMenuScript : MonoBehaviour {
     public Text charmLabel;
     private OpalScript viewedOpal = null;
     private List<string> bannedCharms = new List<string>();
+    private int waiting = -1;
+    public Text chooseTeamsText;
 
     private List<string> personalities = new List<string>();
 
@@ -145,6 +148,42 @@ public class MainMenuScript : MonoBehaviour {
             if (!choose)
             {
                 populateTeams();
+            }
+        }
+
+        updateTeamsText();
+        if(waiting != -1)
+        {
+            if (waiting == 0)
+            {
+                if (activeTeams.Count > 0)
+                {
+                    doMultiplayerSettings();
+                    blueTeam = activeTeams[0];
+                    blueController = "keyboard";
+                    startGame();
+                }
+            }
+            else if (waiting == 1)
+            {
+                if (activeTeams.Count > 1)
+                {
+                    glob.setMult(false);
+                    glob.setControllers("keyboard", "keyboard", "keyboard", "keyboard");
+                    glob.setNumPlayers(activeTeams.Count);
+                    switch (activeTeams.Count) {
+                        case 2:
+                            glob.setTeams(activeTeams[0], activeTeams[1], null, null);
+                            break;
+                        case 3:
+                            glob.setTeams(activeTeams[0], activeTeams[1], activeTeams[2], null);
+                            break;
+                        case 4:
+                            glob.setTeams(activeTeams[0], activeTeams[1], activeTeams[2], activeTeams[3]);
+                            break;
+                    }
+                    UnityEngine.SceneManagement.SceneManager.LoadScene("MainGame", UnityEngine.SceneManagement.LoadSceneMode.Single);
+                }
             }
         }
 
@@ -1193,16 +1232,24 @@ public class MainMenuScript : MonoBehaviour {
         {
             items.Add(iD.getItem(i));
         }
-        float height = 30;
+        float height = 30.5f;
+        int k = 0;
+        int j = 0;
         foreach(string name in items)
         {
-            //print(name);
             ItemLabel temp = Instantiate<ItemLabel>(itemLabelPrefab);
             temp.setText(name);
             temp.setMain(this);
-            temp.transform.position = new Vector3(-5,height,-2);
+            temp.transform.position = new Vector3(-7 + j*4,height,-2);
             temp.transform.localScale /= 2;
             height -= 0.5f;
+            k++;
+            if(k >= 19)
+            {
+                j++;
+                height = 30.5f;
+                k = 0;
+            }
         }
     }
 
@@ -1393,6 +1440,11 @@ public class MainMenuScript : MonoBehaviour {
         }
     }
 
+    public int getWaiting()
+    {
+        return waiting;
+    }
+
     public void chooseOneOpal(PlateScript p)
     {
         currentTeamPlate = p;
@@ -1441,15 +1493,15 @@ public class MainMenuScript : MonoBehaviour {
             teams.Add(copy);
             temp.setMain(this, teams.Count - 1);
 
-            if (teams.Count == 0)
+            if (teams.Count == 1000)
                 temp.transform.position = new Vector3(-30, 5 - teams.Count * 1.5f, -1);
             else
-                temp.transform.position = new Vector3(-30, 4.2f - teams.Count * 1.4f, -1);
+                temp.transform.position = new Vector3(-30, 5f - teams.Count * 1.4f, -1);
 
-            if (teams.Count == 0)
+            if (teams.Count == 1000)
                 addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 5 - (teams.Count + 1) * 1.5f, addNewTeamButton.transform.position.z);
             else
-                addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 4.2f - (teams.Count + 1) * 1.4f, addNewTeamButton.transform.position.z);
+                addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 5f - (teams.Count + 1) * 1.4f, addNewTeamButton.transform.position.z);
             temp.displayTeam(copy);
             displayTeams.Add(temp);
         }
@@ -1458,15 +1510,15 @@ public class MainMenuScript : MonoBehaviour {
             bannedCharms.Clear();
             teams[currentEditorTeam] = copy;
             temp.setMain(this, currentEditorTeam);
-            if (currentEditorTeam == 1)
+            if (currentEditorTeam == 1000)
                 temp.transform.position = new Vector3(-30, 5 - (currentEditorTeam + 1) * 1.5f, -1);
             else
-                temp.transform.position = new Vector3(-30, 4.2f - (currentEditorTeam + 1) * 1.4f, -1);
+                temp.transform.position = new Vector3(-30, 5f - (currentEditorTeam + 1) * 1.4f, -1);
 
-            if (currentEditorTeam == 1)
+            if (currentEditorTeam == 1000)
                 addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 5 - (currentEditorTeam + 1) * 1.5f, addNewTeamButton.transform.position.z);
             else
-                addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 4.2f - (currentEditorTeam + 1) * 1.4f, addNewTeamButton.transform.position.z);
+                addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 5f - (currentEditorTeam + 1) * 1.4f, addNewTeamButton.transform.position.z);
 
             temp.displayTeam(copy);
             displayTeams[currentEditorTeam].selfDestruct();
@@ -1491,6 +1543,11 @@ public class MainMenuScript : MonoBehaviour {
 
     public void displayTeam(List<OpalScript> opals, int teamNum)
     {
+        if(waiting != -1)
+        {
+            activeTeams.Add(opals);
+            return;
+        }
         foreach(OpalScript o in opals)
         {
             if(o == null)
@@ -1526,10 +1583,10 @@ public class MainMenuScript : MonoBehaviour {
         teams.RemoveAt(teamNum);
         bannedCharms.Clear();
         loadTeams();
-        if (teams.Count == 0)
+        if (teams.Count == 1000)
             addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 5 - (teams.Count + 1) * 1.5f, addNewTeamButton.transform.position.z);
         else
-            addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 4.2f - (teams.Count + 1) * 1.4f, addNewTeamButton.transform.position.z);
+            addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 5f - (teams.Count + 1) * 1.4f, addNewTeamButton.transform.position.z);
         if (teams.Count < 6)
         {
             addNewTeamButton.gameObject.SetActive(true);
@@ -1635,6 +1692,26 @@ public class MainMenuScript : MonoBehaviour {
         return null;
     }
 
+    public void startLocalGame()
+    {
+        activeTeams.Clear();
+        waiting = 1;
+    }
+
+    public void updateTeamsText()
+    {
+        if(waiting == -1 && chooseTeamsText.text != "Teams")
+        {
+            chooseTeamsText.text = "Teams";
+        }else if(waiting == 0 && chooseTeamsText.text != "Choose 1 team!")
+        {
+            chooseTeamsText.text = "Choose 1 team!";
+        }else if(waiting == 1 && chooseTeamsText.text != "Choose " + (2 - activeTeams.Count) + " teams!")
+        {
+            chooseTeamsText.text = "Choose "+(2-activeTeams.Count)+" teams!";
+        }
+    }
+
     public void loadTeams()
     {
         if(displayTeams.Count > 0)
@@ -1651,30 +1728,25 @@ public class MainMenuScript : MonoBehaviour {
             List<OpalScript> teamOpals = l;
             OpalTeam temp = Instantiate<OpalTeam>(Resources.Load<OpalTeam>("Prefabs/OpalTeam"));
             temp.setMain(this, i);
-            if (i == 0)
+            if (i == 1000)
                 temp.transform.position = new Vector3(-30, 5 - (i+1) * 1.5f, -1);
             else
-                temp.transform.position = new Vector3(-30, 4.2f - (i+1) * 1.4f, -1);
+                temp.transform.position = new Vector3(-30, 5 - (i+1) * 1.4f, -1);
             temp.displayTeam(teamOpals); //this is broken
             displayTeams.Add(temp);
             i++;
         }
-        if (teams.Count == 0)
+        if (teams.Count == 100)
             addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 5 - (teams.Count + 1) * 1.5f, addNewTeamButton.transform.position.z);
         else
-            addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 4.2f - (teams.Count + 1) * 1.4f, addNewTeamButton.transform.position.z);
+            addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 5 - (teams.Count + 1) * 1.4f, addNewTeamButton.transform.position.z);
         saveData();
     }
 
     public void startMultiplayerGame()
     {
-        if (teams[0] != null)
-        {
-            doMultiplayerSettings();
-            blueTeam = teams[0];
-            blueController = "keyboard";
-            startGame();
-        }
+        activeTeams.Clear();
+        waiting = 0;
     }
 
     public void saveData()
@@ -1725,10 +1797,12 @@ public class MainMenuScript : MonoBehaviour {
                 if (name != "\n" && name != "")
                 {
                     string[] parsed = name.Split('|');
-                    OpalScript temp = Resources.Load<OpalScript>("Prefabs/Opals/" + parsed[0]);
-                    temp.setFromSave(name);
-                    opals.Add(temp);
-
+                    OpalScript temp = Instantiate(Resources.Load<OpalScript>("Prefabs/Opals/" + parsed[0]));
+                    if (temp != null)
+                    {
+                        temp.setFromSave(name);
+                        opals.Add(temp);
+                    }
                 }
             }
             teams.Add(opals);

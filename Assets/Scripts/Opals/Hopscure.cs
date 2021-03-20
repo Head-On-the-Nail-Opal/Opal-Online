@@ -28,8 +28,9 @@ public class Hopscure : OpalScript
         offsetY = -0.1f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Blink", 0, 0, 0, "<Passive>\n Hopscure teleports directly to it's destination when moving.");
-        Attacks[1] = new Attack("Warp Hop", 3, 1, 0, "Select a tile to create a portal, then select a tile to become the destination. May move after attacking.");
+        Attacks[0] = new Attack("Blink", 0, 0, 0, "<Passive>\nHopscure teleports directly to it's destination when moving.");
+        Attacks[1] = new Attack("Warp Hop", 3, 1, 0, "<Free Ability>\nSelect a tile to create a portal, then select a tile to become the destination. Lose -2 defense for 1 turn. May move after using this.");
+        Attacks[1].setFreeAction(true);
         Attacks[1].setUses(2);
         Attacks[2] = new Attack("Thump", 1, 1, 6, "Target is knocked back 2 tiles. May move after attacking.");
         Attacks[3] = new Attack("Lifted Bite", 1, 1, 4, "If target has Lift then they take double damage. Otherwise they gain Lift.");
@@ -142,6 +143,8 @@ public class Hopscure : OpalScript
                 //getBoard().setTile((int)target.getPos().x, (int)target.getPos().z, "Fire", false);
                 getBoard().protSetTrap((int)target.getPos().x, (int)target.getPos().z, "PortalOut");
                 temp.setLink(getBoard().tileGrid[(int)target.getPos().x, (int)target.getPos().z]);
+                fu = 0;
+                doTempBuff(1, 1, -2);
                 return 0;
             }
             //getBoard().setTile((int)target.getPos().x, (int)target.getPos().z, "Growth", false);

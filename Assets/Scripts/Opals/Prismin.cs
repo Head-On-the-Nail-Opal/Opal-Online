@@ -27,10 +27,10 @@ public class Prismin : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Sync", 2, 4, 0, "Switch buffs and debuffs with a target Opal");
-        Attacks[1] = new Attack("Restore", 6, 4, 0, "Remove status effects from and overheal a target 4 health, and gain +1 attack and +1 defense");
-        Attacks[2] = new Attack("Shift", 3, 4, 0, "Double all buffs and debuffs on Prismin. Switch them to target. They last 1 turn.");
-        Attacks[3] = new Attack("Enforce", 0, 1, 0, "Gain +2 attack and +2 defense. Overheal by 4.");
+        Attacks[0] = new Attack("Replicate", 0, 1, 0, "Double all buffs or debuffs on Prismin. Prismin takes 15 damage.");
+        Attacks[1] = new Attack("Balance", 1, 1, 0, "Switch buffs and debuffs with a friendly Opal.");
+        Attacks[2] = new Attack("Restore", 0, 1, 0, "Overheal Prismin by 10 health.");
+        Attacks[3] = new Attack("Support", 1, 1, 0, "Give an Opal +1 attack and defense. Overheal them by 5.");
         type1 = "Light";
         type2 = "Light";
         og = true;
@@ -41,61 +41,59 @@ public class Prismin : OpalScript
         Attack cA = Attacks[attackNum];
         if (attackNum == 0) //Balance
         {
-            List<TempBuff> temp = new List<TempBuff>();
-            List<TempBuff> temp2 = new List<TempBuff>();
-
-            foreach (TempBuff t in target.getBuffs())
+            List<TempBuff> newBuffs = new List<TempBuff>();
+            foreach(TempBuff t in buffs)
             {
-                temp.Add(new TempBuff(t.getTargetStat(), t.getTurnlength(), t.getAmount()));
+                newBuffs.Add(t);
             }
-            foreach (TempBuff t in getBuffs())
+            foreach(TempBuff t in newBuffs)
             {
-                temp2.Add(new TempBuff(t.getTargetStat(), t.getTurnlength(), t.getAmount()));
-            }
-            target.clearBuffs();
-            clearBuffs();
-            foreach (TempBuff t in temp)
-            {
-                doTempBuff(t.getTargetStat(), t.getTurnlength(), t.getAmount());
-            }
-            foreach (TempBuff t in temp2)
-            {
-                target.doTempBuff(t.getTargetStat(), t.getTurnlength(), t.getAmount());
+                if(t.getTurnlength() != 0)
+                    doTempBuff(t.getTargetStat(), t.getTurnlength(),t.getAmount());
             }
             return 0;
         }
         else if (attackNum == 1) //Restore
         {
-            target.healStatusEffects();
-            target.doHeal(4, true);
-            doTempBuff(0, -1, 1);
-            doTempBuff(1, -1, 1);
+            if(target.getTeam() == getTeam())
+            {
+                List<TempBuff> myBuffs = new List<TempBuff>();
+                List<TempBuff> tBuffs = new List<TempBuff>();
+                foreach(TempBuff t in buffs)
+                {
+                    if (t.getTurnlength() != 0)
+                        myBuffs.Add(t);
+                }
+                foreach(TempBuff t in target.getBuffs())
+                {
+                    if (t.getTurnlength() != 0)
+                        tBuffs.Add(t);
+                }
+                target.clearAllBuffs();
+                clearAllBuffs();
+                foreach (TempBuff t in myBuffs)
+                {
+                    target.doTempBuff(t.getTargetStat(), t.getTurnlength(), t.getAmount());
+                }
+                foreach(TempBuff t in tBuffs)
+                {
+                    doTempBuff(t.getTargetStat(), t.getTurnlength(), t.getAmount());
+                }
+                takeDamage(15, false, true);
+            }
             return 0;
         }
         else if (attackNum == 2) //Shift
         {
-            List<TempBuff> temp = new List<TempBuff>();
-            foreach (TempBuff t in getBuffs())
-            {
-                temp.Add(new TempBuff(t.getTargetStat(), t.getTurnlength(), t.getAmount()));
-            }
-            foreach (TempBuff t in getBuffs())
-            {
-                temp.Add(new TempBuff(t.getTargetStat(), t.getTurnlength(), t.getAmount()));
-            }
-            foreach (TempBuff t in temp)
-            {
-                target.doTempBuff(t.getTargetStat(), 1, t.getAmount());
-            }
-            clearBuffs();
-            //transform.localScale = baseSize * minSize;
+            doHeal(10, true);
             return 0;
         }
         else if(attackNum == 3)
         {
-            doTempBuff(0, -1, 2);
-            doTempBuff(1, -1, 2);
-            doHeal(4, true);
+            target.doTempBuff(0, -1, 1);
+            target.doTempBuff(1, -1, 1);
+            target.doHeal(5, true);
+            return 0;
         }
         return cA.getBaseDamage() + getAttack();
     }
