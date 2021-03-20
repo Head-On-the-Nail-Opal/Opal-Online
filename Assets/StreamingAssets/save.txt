@@ -5,6 +5,7 @@ Fluttorch||Straight-Edge,Hearthhog||Straight-Edge,Jetjinn||Straight-Edge,Snugbun
 Shineode||Straight-Edge,Wobblestone||Straight-Edge,Chasmcrawler||Straight-Edge,Excremite||Straight-Edge,
 FumePlume||Straight-Edge,
 Ambush||Straight-Edge,
+
 endTeams
 
 endOpals
