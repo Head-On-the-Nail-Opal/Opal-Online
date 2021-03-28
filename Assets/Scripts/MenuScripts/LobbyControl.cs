@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
-using System.Text.RegularExpressions;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class LobbyControl : MonoBehaviourPunCallbacks
 {
@@ -13,7 +13,6 @@ public class LobbyControl : MonoBehaviourPunCallbacks
     public GameObject lobbyObjects;
     public GameObject createRoomObjects;
     public GameObject joinRoomObjects;
-    public GameObject rejoinGameButton;
     public InputField roomNameInput;
     public InputField roomSizeInput;
     public Text roomsList;
@@ -51,10 +50,13 @@ public class LobbyControl : MonoBehaviourPunCallbacks
             usernameInput.GetComponentInChildren<InputField>().ActivateInputField();
         }
 
-        if (Input.GetMouseButton(0) && (Input.mousePosition.x < 303 || Input.mousePosition.x > 1616 || Input.mousePosition.y < 269 || Input.mousePosition.y > 806))
+        if (Input.GetMouseButton(0))
         {
-            createRoomObjects.SetActive(false);
-            joinRoomObjects.SetActive(false);
+            if (Physics.RaycastAll(Input.mousePosition, Vector3.forward).Length == 1)
+            {
+                createRoomObjects.SetActive(false);
+                joinRoomObjects.SetActive(false);
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.Escape) && username != "")
@@ -62,12 +64,6 @@ public class LobbyControl : MonoBehaviourPunCallbacks
             PhotonNetwork.LeaveRoom();
             PhotonNetwork.LoadLevel("MainMenu");
         }
-    }
-
-    public override void OnJoinRoomFailed(short returnCode, string message)
-    {
-        PlayerPrefs.SetString("CurrentMatch", "none");
-        rejoinGameButton.SetActive(false);
     }
 
     public void openRoomCreateMenu()
@@ -121,16 +117,28 @@ public class LobbyControl : MonoBehaviourPunCallbacks
     {
         if (activeRooms.Count > 0)
         {
-            glob.setUsername(username);
-            PhotonNetwork.LocalPlayer.NickName = username;
-            Debug.Log("just tried to join a room");
-            PhotonNetwork.JoinRoom(activeRooms[roomListPosition]);
+            if (activeRooms[roomListPosition].Substring(activeRooms[roomListPosition].Length - 1).Equals("*"))
+            {
+                if (PlayerPrefs.GetString("CurrentMatch").Equals(activeRooms[roomListPosition].Substring(0, activeRooms[roomListPosition].IndexOf("*"))))
+                {
+                    glob.setUsername(username);
+                    PhotonNetwork.LocalPlayer.NickName = username;
+                    Debug.Log("just tried to join a room");
+                    PhotonNetwork.JoinRoom(PlayerPrefs.GetString("CurrentMatch"));
+                }
+            } else
+            {
+                glob.setUsername(username);
+                PhotonNetwork.LocalPlayer.NickName = username;
+                Debug.Log("just tried to join a room");
+                PhotonNetwork.JoinRoom(activeRooms[roomListPosition]);
+            }
         }
     }
 
     public void createRoom()
     {
-        if (int.Parse(roomSizeInput.text) >= 1 && int.Parse(roomSizeInput.text) <= 4 && roomNameInput.text != "")
+        if (int.Parse(roomSizeInput.text) > 1 && int.Parse(roomSizeInput.text) <= 4 && roomNameInput.text != "" && roomNameInput.text.IndexOf("*") == -1)
         {
             glob.setUsername(username);
             roomName = roomNameInput.text;
@@ -138,20 +146,29 @@ public class LobbyControl : MonoBehaviourPunCallbacks
             PhotonNetwork.LocalPlayer.NickName = username;
 
             Debug.Log("tried to create room " + roomName + " with " + numberOfPlayers + " people");
-            PhotonNetwork.CreateRoom(roomName, new RoomOptions() { MaxPlayers = numberOfPlayers });
-        }
-    }
-
-    public void rejoinGame()
-    {
-        PhotonNetwork.JoinRoom(PlayerPrefs.GetString("CurrentMatch"));
-        PhotonNetwork.LoadLevel("MainGame");
+            PhotonNetwork.CreateRoom(roomName, new RoomOptions() { MaxPlayers = numberOfPlayers, CustomRoomPropertiesForLobby = new string[] { "GameActive" } });
+        } 
     }
 
     public override void OnJoinedRoom()
     {
         Debug.Log("we joined a room");
-        PhotonNetwork.LoadLevel("WaitingRoom");
+        if (PlayerPrefs.GetString("CurrentMatch").Equals(PhotonNetwork.CurrentRoom.Name))
+        {
+            PhotonNetwork.LoadLevel("MainGame");
+        } else
+        {
+            PhotonNetwork.LoadLevel("WaitingRoom");
+            PlayerPrefs.SetString("CurrentMatch", PhotonNetwork.CurrentRoom.Name);
+            Hashtable customProps = new Hashtable();
+            customProps.Add("GameActive", false);
+            PhotonNetwork.CurrentRoom.SetCustomProperties(customProps);
+        }
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        PlayerPrefs.SetString("CurrentMatch", "");
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
@@ -163,28 +180,17 @@ public class LobbyControl : MonoBehaviourPunCallbacks
         {
             if (room.PlayerCount != 0)
             {
-                Debug.Log("Open Room: " + room.Name);
-                activeRooms.Add(room.Name);
-                rooms += (room.IsOpen) ? room.Name + "(" + room.PlayerCount + "/" + room.MaxPlayers + ")\n" : room.Name + "(" + room.PlayerCount + ")\n";
+                if (room.PlayerCount!= room.MaxPlayers)
+                {
+                    activeRooms.Add(room.Name + (room.CustomProperties["GameActive"].ToString().Equals("True") ? "*" : ""));
+                }
+                rooms += (room.MaxPlayers != room.PlayerCount) ? room.Name + "(" + room.PlayerCount + "/" + room.MaxPlayers + ")" + (room.CustomProperties["GameActive"].ToString().Equals("True") ? "*\n" : "\n") : room.Name + "(" + room.PlayerCount + ")\n";
             }
         }
         roomsList.text = rooms;
         if (joinRoomObjects.activeInHierarchy)
         {
             openJoinRoomMenu();
-        }
-    }
-
-    public override void OnJoinedLobby()
-    {
-        if (!PlayerPrefs.GetString("CurrentMatch").Equals("none") && !PlayerPrefs.GetString("CurrentMatch", "").Equals(""))
-        {
-            rejoinGameButton.SetActive(true);
-            PhotonNetwork.JoinRoom(PlayerPrefs.GetString("CurrentMatch"));
-        }
-        else
-        {
-            rejoinGameButton.SetActive(false);
         }
     }
 }

@@ -95,7 +95,6 @@ public class WaitingRoomControl : MonoBehaviourPunCallbacks, IPunObservable
         if (PhotonNetwork.CurrentRoom.PlayerCount >= 2)
         {
             this.photonView.RPC("updatePlayerCount", RpcTarget.All);
-            PhotonNetwork.CurrentRoom.IsOpen = false;
             PhotonNetwork.LoadLevel("MainGame");
         }
     }

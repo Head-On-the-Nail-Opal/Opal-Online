@@ -1212,7 +1212,7 @@ public class CursorScript : MonoBehaviour {
         }
         if (redAlive + greenAlive + orangeAlive == 0 && blueAlive > 0)
         {
-            PlayerPrefs.SetString("CurrentMatch", "none");
+            PlayerPrefs.SetString("CurrentMatch", "");
             ts.doWin("Blue");
             List<OpalScript> winningTeam = new List<OpalScript>();
             foreach(OpalScript o in boardScript.gameOpals)
@@ -1229,7 +1229,7 @@ public class CursorScript : MonoBehaviour {
         }
         else if(blueAlive + greenAlive + orangeAlive == 0 && redAlive > 0)
         {
-            PlayerPrefs.SetString("CurrentMatch", "none");
+            PlayerPrefs.SetString("CurrentMatch", "");
             ts.doWin("Red");
             List<OpalScript> winningTeam = new List<OpalScript>();
             foreach (OpalScript o in boardScript.gameOpals)
@@ -1246,7 +1246,7 @@ public class CursorScript : MonoBehaviour {
         }
         else if (blueAlive + redAlive + orangeAlive == 0 && greenAlive > 0)
         {
-            PlayerPrefs.SetString("CurrentMatch", "none");
+            PlayerPrefs.SetString("CurrentMatch", "");
             ts.doWin("Green");
             List<OpalScript> winningTeam = new List<OpalScript>();
             foreach (OpalScript o in boardScript.gameOpals)
@@ -1263,7 +1263,7 @@ public class CursorScript : MonoBehaviour {
         }
         else if (blueAlive + greenAlive + redAlive == 0 && orangeAlive > 0)
         {
-            PlayerPrefs.SetString("CurrentMatch", "none");
+            PlayerPrefs.SetString("CurrentMatch", "");
             ts.doWin("Orange");
             List<OpalScript> winningTeam = new List<OpalScript>();
             foreach (OpalScript o in boardScript.gameOpals)
@@ -1280,7 +1280,7 @@ public class CursorScript : MonoBehaviour {
         }
         else if(redAlive + blueAlive + greenAlive + orangeAlive == 0)
         {
-            PlayerPrefs.SetString("CurrentMatch", "none");
+            PlayerPrefs.SetString("CurrentMatch", "");
             ts.doWin("Tie");
             gameOver = true;
         }

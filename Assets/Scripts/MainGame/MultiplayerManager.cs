@@ -6,6 +6,7 @@ using Photon.Pun;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
 {
@@ -29,7 +30,12 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
 
     public void Awake()
     {
-        
+        if (SceneManager.GetActiveScene().name.Equals("MainGame") && PhotonNetwork.CurrentRoom.CustomProperties["GameActive"].ToString().Equals("True"))
+        {
+            Debug.Log("This client just joined a game after it has already begun. We will now update the game");
+
+            //AT THIS POINT YOU GOTTA GO GRAB ALL THE COMMANDS FROM THE OWNER OF THE SERVER AND RUN THEM ON THIS INSTANCE
+        }
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -211,6 +217,10 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
         PlayerPrefs.SetString("CurrentMatch", PhotonNetwork.CurrentRoom.Name);
         boardScript = bs;
         cs = c;
+
+        Hashtable customProps = new Hashtable();
+        customProps.Add("GameActive", true);
+        PhotonNetwork.CurrentRoom.SetCustomProperties(customProps);
     }
 
     public string getTeamOne()

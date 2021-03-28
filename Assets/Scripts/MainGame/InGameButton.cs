@@ -34,7 +34,7 @@ public class InGameButton : MonoBehaviour
     {
         if (boardScript.getMult())
         {
-            PlayerPrefs.SetString("CurrentMatch", "none");
+            PlayerPrefs.SetString("CurrentMatch", "");
             PhotonNetwork.LeaveRoom();
             UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu", UnityEngine.SceneManagement.LoadSceneMode.Single);
             Cursor.visible = true;
