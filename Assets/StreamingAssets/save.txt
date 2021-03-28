@@ -3,7 +3,7 @@ Ambush||Straight-Edge,Sentree||Straight-Edge,Overgroink||Straight-Edge,Cottonmaw
 Hopscure|Spectre Essence|Pessimistic,Spiritch|Makeshift Shield|Optimistic,Wingnition|Potion of Gratitude|Straight-Edge,Butterflight|Defense Orb|Cautious,
 Fluttorch||Straight-Edge,Hearthhog||Straight-Edge,Jetjinn||Straight-Edge,Snugbun||Straight-Edge,
 Charayde||Straight-Edge,Bubbacle||Straight-Edge,Succuum||Straight-Edge,Finbow||Straight-Edge,
-FumePlume||Straight-Edge,
+FumePlume||Straight-Edge,Fragmatom||Straight-Edge,
 Ambush||Straight-Edge,
 
 endTeams

@@ -26,6 +26,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
     public InputField chatTextEnter;
     private bool typing = false;
     private string numPlayers = "2";
+    private GlobalScript glob;
+    private bool reconnecting = false;
 
 
     public void Awake()
@@ -33,8 +35,9 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
         if (SceneManager.GetActiveScene().name.Equals("MainGame") && PhotonNetwork.CurrentRoom.CustomProperties["GameActive"].ToString().Equals("True"))
         {
             Debug.Log("This client just joined a game after it has already begun. We will now update the game");
-
-            //AT THIS POINT YOU GOTTA GO GRAB ALL THE COMMANDS FROM THE OWNER OF THE SERVER AND RUN THEM ON THIS INSTANCE
+            glob = GameObject.Find("GlobalObject").GetComponent<GlobalScript>();
+            glob.setNumPlayers(PhotonNetwork.CurrentRoom.PlayerCount);
+            requestGameHistoryData();
         }
     }
 
@@ -48,7 +51,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(teamTwo);
             stream.SendNext(teamThree);
             stream.SendNext(teamFour);
-            stream.SendNext(gameHistory);
             stream.SendNext(numPlayers);
             stream.SendNext(chat);
         }
@@ -60,7 +62,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
             this.teamTwo = (string)stream.ReceiveNext();
             this.teamThree = (string)stream.ReceiveNext();
             this.teamFour = (string)stream.ReceiveNext();
-            this.gameHistory = (string)stream.ReceiveNext();
             this.numPlayers = (string)stream.ReceiveNext();
             this.chat = (string)stream.ReceiveNext();
         }
@@ -71,52 +72,12 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         Debug.LogError("Griff's Dumb Data!!!: " + data);
         string command = data;
+        gameHistory += command + '\n';
         if (boardScript.getOnlineTeam() != cs.getCurrentOnlinePlayer())
         {
             if (command != "")
             {
-                print("Received command: " + command);
-                gameHistory += command + '\n';
-                string[] parsedCommand = command.Split(',');
-                if (parsedCommand[0] == "place" && int.Parse(parsedCommand[4]) != boardScript.getOnlineTeam())
-                {
-                    if (cs.getCurrentOpal().getMyName() == parsedCommand[1])
-                    {
-                        cs.getCurrentOpal().setPos(int.Parse(parsedCommand[2]), int.Parse(parsedCommand[3]));
-                        cs.getCurrentOpal().setMyTurn(false);
-                        cs.getCurrentOpal().updateTile();
-                        cs.getCurrentOpal().getCurrentTile().standingOn(cs.getCurrentOpal());
-                        cs.nextTurn();
-                    }
-                }
-                else if (parsedCommand[0] == "move" && int.Parse(parsedCommand[2]) != boardScript.getOnlineTeam())
-                {
-                    //print("moving");
-                    List<PathScript> p = new List<PathScript>();
-                    for (int i = 3; i < parsedCommand.Count(); i++)
-                    {
-                        if (parsedCommand[i] != "")
-                        {
-                            PathScript t = Instantiate<PathScript>(Resources.Load<PathScript>("Prefabs/Path"));
-                            p.Add(t);
-                            t.setCoordinates(int.Parse(parsedCommand[i].Split('_')[0]), int.Parse(parsedCommand[i].Split('_')[1]));
-                        }
-                    }
-                    cs.doMove(p);
-                }
-                else if (parsedCommand[0] == "end" && int.Parse(parsedCommand[1]) != boardScript.getOnlineTeam())
-                {
-                    cs.pressEndTurn();
-
-                }
-                else if (parsedCommand[0] == "attack" && int.Parse(parsedCommand[1]) != boardScript.getOnlineTeam())
-                {
-                    cs.doAttack(int.Parse(parsedCommand[2]), int.Parse(parsedCommand[3]), int.Parse(parsedCommand[4]));
-                }
-                else if (parsedCommand[0] == "reset")
-                {
-
-                }
+                processCommand(command);
             }
             else
             {
@@ -164,9 +125,19 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
         gameString = data;
     }
 
-    public string getGameData()
+    [PunRPC]
+    private void requestGameHistory()
     {
-        return gameHistory;
+        this.photonView.RPC("shareGameHistory", RpcTarget.All, gameHistory);
+    }
+
+    [PunRPC]
+    private void shareGameHistory(string data)
+    {
+        if (gameHistory.Equals(""))
+        {
+            StartCoroutine(runReconnnection(data));
+        }
     }
 
     public void sendMultiplayerData(string data)
@@ -184,6 +155,11 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
     public void sendNum(int num)
     {
         this.photonView.RPC("sendNumPlayers", RpcTarget.All, num);
+    }
+
+    public void requestGameHistoryData()
+    {
+        this.photonView.RPC("requestGameHistory", RpcTarget.MasterClient);
     }
 
     [PunRPC]
@@ -253,6 +229,47 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
         return multiplayerData;
     }
 
+    private void processCommand(string command)
+    {
+        print("Received command: " + command);
+        string[] parsedCommand = command.Split(',');
+        if (parsedCommand[0] == "place" && (reconnecting || int.Parse(parsedCommand[4]) != boardScript.getOnlineTeam()))
+        {
+            if (cs.getCurrentOpal().getMyName() == parsedCommand[1])
+            {
+                cs.getCurrentOpal().setPos(int.Parse(parsedCommand[2]), int.Parse(parsedCommand[3]));
+                cs.getCurrentOpal().setMyTurn(false);
+                cs.getCurrentOpal().updateTile();
+                cs.getCurrentOpal().getCurrentTile().standingOn(cs.getCurrentOpal());
+                cs.nextTurn();
+            }
+        }
+        else if (parsedCommand[0] == "move" && (reconnecting || int.Parse(parsedCommand[2]) != boardScript.getOnlineTeam()))
+        {
+            //print("moving");
+            List<PathScript> p = new List<PathScript>();
+            for (int i = 3; i < parsedCommand.Count(); i++)
+            {
+                if (parsedCommand[i] != "")
+                {
+                    PathScript t = Instantiate<PathScript>(Resources.Load<PathScript>("Prefabs/Path"));
+                    p.Add(t);
+                    t.setCoordinates(int.Parse(parsedCommand[i].Split('_')[0]), int.Parse(parsedCommand[i].Split('_')[1]));
+                }
+            }
+            cs.doMove(p);
+        }
+        else if (parsedCommand[0] == "end" && (reconnecting || int.Parse(parsedCommand[1]) != boardScript.getOnlineTeam()))
+        {
+            cs.pressEndTurn();
+
+        }
+        else if (parsedCommand[0] == "attack" && (reconnecting || int.Parse(parsedCommand[1]) != boardScript.getOnlineTeam()))
+        {
+            cs.doAttack(int.Parse(parsedCommand[2]), int.Parse(parsedCommand[3]), int.Parse(parsedCommand[4]));
+        }
+    }
+
     void Update()
     {
         if (boardScript != null)
@@ -303,10 +320,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
                     else if (parsedCommand[0] == "attack" && int.Parse(parsedCommand[1]) != boardScript.getOnlineTeam())
                     {
                         cs.doAttack(int.Parse(parsedCommand[2]), int.Parse(parsedCommand[3]), int.Parse(parsedCommand[4]));
-                    }
-                    else if (parsedCommand[0] == "reset")
-                    {
-                        boardScript.updateFromString(boardScript.getMM().getGameData());
                     }
                 }
                 else
@@ -514,5 +527,22 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
     public void loadGame()
     {
         SceneManager.LoadScene("MainGame");
+    }
+
+    public IEnumerator runReconnnection(string data)
+    {
+        reconnecting = true;
+        gameHistory = data;
+        Debug.LogError("GAME HISTORY: \n" + gameHistory);
+        foreach (string historyCommand in gameHistory.Split('\n'))
+        {
+            if (historyCommand != "")
+            {
+                Debug.LogError("PROCESSING GAME HISTORY: " + historyCommand);
+                processCommand(historyCommand);
+                yield return new WaitForSeconds(3);
+            }
+        }
+        reconnecting = false;
     }
 }

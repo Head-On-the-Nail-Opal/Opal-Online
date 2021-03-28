@@ -80,6 +80,7 @@ public class WaitingRoomControl : MonoBehaviourPunCallbacks, IPunObservable
     {
         chat = data;
         chatTextHistory.text = chat;
+        chatKeywordCheck();
     }
 
     [PunRPC]
@@ -87,8 +88,6 @@ public class WaitingRoomControl : MonoBehaviourPunCallbacks, IPunObservable
     {
         glob.setNumPlayers(PhotonNetwork.CurrentRoom.PlayerCount);
     }
-
-
 
     public void startMatch() //needs to detect number of players
     {
@@ -108,15 +107,15 @@ public class WaitingRoomControl : MonoBehaviourPunCallbacks, IPunObservable
             int rand = Random.Range(0, 8);
             if (rand < 3)
             {
-                chat += "I've just been told that approximately " + Random.Range(100, 1000) + " people hate this person.</color>";
+                chat += "I've just been told that approximately " + Random.Range(100, 1000) + " people want to date this person.</color>";
             }
             else if (rand > 2 && rand < 5)
             {
-                chat += "I hear this person is incredibly rude.</color>";
+                chat += "I hear this person is incredibly cute.</color>";
             }
             else
             {
-                chat += "As of today, this person has kicked " + Random.Range(20, 100) + " puppies.</color>";
+                chat += "As of today, this person has hugged " + Random.Range(20, 100) + " puppies.</color>";
             }
             this.photonView.RPC("sendChatData", RpcTarget.All, chat);
             chatTextEnter.placeholder.GetComponent<Text>().text = "Press enter to chat...";
@@ -286,6 +285,14 @@ public class WaitingRoomControl : MonoBehaviourPunCallbacks, IPunObservable
                 typing = false;
                 this.photonView.RPC("sendChatData", RpcTarget.All, chat);
             }
+        }
+    }
+
+    private void chatKeywordCheck()
+    {
+        if ((chat.Split('\n')[chat.Split('\n').Length - 1]).Contains("lick"))
+        {
+            AudioSource.PlayClipAtPoint((AudioClip)Resources.Load("Sounds/lick"), new Vector3(800, 450, -10), 0.2f);
         }
     }
 }

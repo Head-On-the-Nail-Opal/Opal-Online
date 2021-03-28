@@ -203,12 +203,6 @@ public class CursorScript : MonoBehaviour {
             nextTurn();
         }
 
-        if (Input.GetKeyUp(KeyCode.Equals))
-        {
-            boardScript.updateFromString(boardScript.getMM().getGameData());
-            boardScript.getMM().sendMultiplayerData("reset,"+currentOnlinePlayer);
-        }
-
         if (Input.GetKeyDown(KeyCode.Home))
         {
             foreach(OpalScript o in boardScript.gameOpals)
