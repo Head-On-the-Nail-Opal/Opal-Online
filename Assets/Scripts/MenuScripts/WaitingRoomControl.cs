@@ -292,7 +292,7 @@ public class WaitingRoomControl : MonoBehaviourPunCallbacks, IPunObservable
     {
         if ((chat.Split('\n')[chat.Split('\n').Length - 1]).Contains("lick"))
         {
-            AudioSource.PlayClipAtPoint((AudioClip)Resources.Load("Sounds/lick"), new Vector3(800, 450, -10), 0.2f);
+            AudioSource.PlayClipAtPoint((AudioClip)Resources.Load("Sounds/lick"), new Vector3(800, 450, -10), 0.4f);
         }
     }
 }
