@@ -663,7 +663,7 @@ abstract public class OpalScript : MonoBehaviour {
                         targetTile = boardScript.tileGrid[x, y];
                     }
                 }
-                if (adj)
+                if (adj && !boardScript.getResetting())
                 {
                     int xVel = 0;
                     int yVel = 0;
@@ -723,7 +723,7 @@ abstract public class OpalScript : MonoBehaviour {
                     targetTile = boardScript.tileGrid[x, y];
                 }
             }
-            if (adj)
+            if (adj && !boardScript.getResetting())
             {
                 int xVel = 0;
                 int yVel = 0;
@@ -786,6 +786,7 @@ abstract public class OpalScript : MonoBehaviour {
             {
                 zVel = flip;
             }
+            //if(boardScript.getResetting())
             while (boardScript.getMyCursor().getAnimating())
             {
                 yield return new WaitForFixedUpdate();
@@ -1454,7 +1455,8 @@ abstract public class OpalScript : MonoBehaviour {
             barriarraySurrounding().takeDamage(dam, mod, effect);
             return;
         }
-        StartCoroutine(yowch());
+        if(!boardScript.getResetting())
+            StartCoroutine(yowch());
         if(!mod)
         {
             this.health -= dam;

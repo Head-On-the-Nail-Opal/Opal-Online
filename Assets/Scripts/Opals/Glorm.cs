@@ -61,9 +61,12 @@ public class Glorm : OpalScript
         {
             if (this.getHealth() > this.getMaxHealth())
             {
+                int currentTargetOverheal = target.getHealth() - target.getMaxHealth();
                 target.doHeal(getHealth() - getMaxHealth(), true);
                 if(target.getHealth() > target.getMaxHealth())
                 {
+                    if(currentTargetOverheal > 0)
+                        takeDamage(target.getHealth() - target.getMaxHealth() - currentTargetOverheal, false, true);
                     takeDamage(target.getHealth()-target.getMaxHealth(), false, true);
                 }
             }

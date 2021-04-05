@@ -532,6 +532,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
     public IEnumerator runReconnnection(string data)
     {
         reconnecting = true;
+        boardScript.setResetting(true);
         gameHistory = data;
         Debug.LogError("GAME HISTORY: \n" + gameHistory);
         foreach (string historyCommand in gameHistory.Split('\n'))
@@ -540,9 +541,10 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
             {
                 Debug.LogError("PROCESSING GAME HISTORY: " + historyCommand);
                 processCommand(historyCommand);
-                yield return new WaitForSeconds(3);
+                yield return new WaitForSeconds(0.1f);
             }
         }
         reconnecting = false;
+        boardScript.setResetting(false);
     }
 }

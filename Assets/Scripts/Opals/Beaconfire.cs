@@ -28,7 +28,7 @@ public class Beaconfire : OpalScript
         }
         Attacks[0] = new Attack("Blaze Rage", 0, 0, 0, "<Passive>\nAt the end of your turn, adjacent Opals standing on flame gain +4 attack");
         Attacks[1] = new Attack("World Burn", 0, 1, 0, "Light fire on all tiles surrounding Beaconfire.");
-        Attacks[2] = new Attack("Healing Heat", 1, 4, 0, "Heal all Opals in an area by 4. If they stand on flame then overheal.",1);
+        Attacks[2] = new Attack("Healing Heat", 0, 4, 0, "Heal alladjacent Opals by 4. If they stand on flame then overheal.",1);
         Attacks[3] = new Attack("Fired Up", 1, 1, 0, "Give an Opal +2 attack and gain +1 speed.");
         type1 = "Fire";
         type2 = "Light";

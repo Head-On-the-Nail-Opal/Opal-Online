@@ -26,7 +26,7 @@ public class Chardinal : OpalScript
         offsetY = 0f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Flaming Wreck", 1, 1, 5, "Push the target by 3 tiles, then place Flames on tiles adjacent to them.");
+        Attacks[0] = new Attack("Flaming Wreck", 1, 1, 5, "Place Flames adjacent to Chardinal, then push the target by 3 tiles.");
         Attacks[1] = new Attack("Searing Flap", 2, 4, 0, "Push a target by 2 tiles. Burn them. If they are Lifted, burning damage is doubled.");
         Attacks[2] = new Attack("Hot Air", 2, 4, 0, "Targets gain Lift, and the tiles they stand on turn to Flame", 1);
         Attacks[3] = new Attack("Fire Feet", 3, 4, 0, "Target gains +4 speed for 1 turn. The tile they stand on turns to Flame.");
@@ -39,11 +39,11 @@ public class Chardinal : OpalScript
         Attack cA = Attacks[attackNum];
         if (attackNum == 0)
         {
+            boardScript.setTile((int)getPos().x + 1, (int)getPos().z, "Fire", false);
+            boardScript.setTile((int)getPos().x - 1, (int)getPos().z, "Fire", false);
+            boardScript.setTile((int)getPos().x, (int)getPos().z + 1, "Fire", false);
+            boardScript.setTile((int)getPos().x, (int)getPos().z - 1, "Fire", false);
             pushAway(3, target);
-            boardScript.setTile((int)target.getPos().x + 1, (int)target.getPos().z, "Fire", false);
-            boardScript.setTile((int)target.getPos().x - 1, (int)target.getPos().z, "Fire", false);
-            boardScript.setTile((int)target.getPos().x, (int)target.getPos().z + 1, "Fire", false);
-            boardScript.setTile((int)target.getPos().x, (int)target.getPos().z - 1, "Fire", false);
         }
         else if (attackNum == 1)
         {

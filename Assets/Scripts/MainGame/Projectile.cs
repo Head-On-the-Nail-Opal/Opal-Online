@@ -225,8 +225,7 @@ public class Projectile : MonoBehaviour{
     }
 
     private IEnumerator shootTile(OpalScript from, TileScript target, int attackNum)
-    {
-        
+    { 
         Vector3 mine = transform.position;
         Vector3 theirs = target.getPos();
         float xdiff = mine.x - theirs.x;

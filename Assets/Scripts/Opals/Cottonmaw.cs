@@ -105,7 +105,7 @@ public class Cottonmaw : OpalScript
         }
         else if (attackNum == 3) //Seed Launch
         {
-            boardScript.setTile(target, "Miasma", true);
+            boardScript.setTile(target, "Growth", true);
             return 0;
         }
         return cA.getBaseDamage() + getAttack();
