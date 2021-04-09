@@ -487,6 +487,11 @@ public class GroundScript : MonoBehaviour {
     }
     
 
+    public void setUpGlob()
+    {
+        glob.setFinishedGame(true); 
+    }
+
     public PathScript getPath(int x, int z)
     {
         foreach(PathScript p in paths)

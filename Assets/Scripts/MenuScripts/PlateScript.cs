@@ -23,15 +23,17 @@ public class PlateScript : MonoBehaviour {
 
     public void setPlate(OpalScript opal, float x, float y)
     {
-        myOpal = opal;
-        OpalScript opalOne = Instantiate<OpalScript>(opal);
-        specificOpal = opalOne;
-        opalOne.setOpal(null);
-        //opalOne.setVariant("1");
         transform.position = new Vector3(x, y, -1);
-        opalOne.transform.position = new Vector3(transform.position.x, transform.position.y - 0.8f, -2.5f);
-        opalOne.transform.localScale *= 1.2f;
-        opalOne.transform.rotation = Quaternion.Euler(0, 0, 0);
+        if (opal != null)
+        {
+            myOpal = opal;
+            OpalScript opalOne = Instantiate<OpalScript>(opal);
+            specificOpal = opalOne;
+            opalOne.setOpal(null);
+            opalOne.transform.position = new Vector3(transform.position.x, transform.position.y - 0.8f, -2.5f);
+            opalOne.transform.localScale *= 1.2f;
+            opalOne.transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
     }
 
     public void setPlate(OpalScript opal)

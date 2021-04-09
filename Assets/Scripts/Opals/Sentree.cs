@@ -41,6 +41,7 @@ public class Sentree : OpalScript
         Attack cA = Attacks[attackNum];
         if (attackNum == 0) //Canopy
         {
+            
             if (target.getPos() != getPos())
             {
                 target.doTempBuff(0, -1, 1);

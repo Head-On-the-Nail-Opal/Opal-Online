@@ -1822,6 +1822,10 @@ abstract public class OpalScript : MonoBehaviour {
         {
             return;
         }
+        if(currentTile.currentPlayer == null)
+        {
+            currentTile.setCurrentOpal(this);
+        }
         moveAfter = false;
         if (burning)
         {

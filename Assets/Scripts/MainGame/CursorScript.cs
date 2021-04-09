@@ -200,6 +200,7 @@ public class CursorScript : MonoBehaviour {
                 lastCommand = "end," + currentOnlinePlayer+","+selectedPlayer.getMyName();
             }
             selectedPlayer.setMyTurn(false);
+            followup = false;
             nextTurn();
         }
 
@@ -1305,6 +1306,10 @@ public class CursorScript : MonoBehaviour {
             PlayerPrefs.SetString("CurrentMatch", "");
             ts.doWin("Tie");
             gameOver = true;
+        }
+        if (gameOver)
+        {
+            boardScript.setUpGlob();
         }
     }
 

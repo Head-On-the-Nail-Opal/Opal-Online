@@ -20,6 +20,8 @@ public class GlobalScript : MonoBehaviour {
 
     private bool multiplayer = false;
     private int numPlayers = -1;
+
+    private bool finishedGame = false;
     // Use this for initialization
     void Awake () {
 		if(Instance == null)
@@ -150,6 +152,16 @@ public class GlobalScript : MonoBehaviour {
     public void setUsername(string name)
     {
         username = name;
+    }
+
+    public void setFinishedGame(bool input)
+    {
+        finishedGame = input;
+    }
+
+    public bool getFinishedGame()
+    {
+        return finishedGame;
     }
 
     // Update is called once per frame

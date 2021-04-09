@@ -95,25 +95,7 @@ public class MainMenuScript : MonoBehaviour {
         save = Resources.Load<TextAsset>("Assets/save.txt");
         createTeamButton.gameObject.SetActive(false);
         lPage.SetActive(false);
-        float x = 20;
-        float y = 19;
-        int i = 0;
-        int offset = 0;
-        maxOpalPage = Mathf.CeilToInt(allOpals.Length / 25f);
-        for (int j = 0 + offset; j < 25 + offset; j++)
-        {
-            PlateScript tempP = Instantiate<PlateScript>(platePrefab);
-            tempP.setPlate(allOpals[j], x, y);
-            x += 1.6f;
-            i++;
-            if (i == 5)
-            {
-                x = 20;
-                y -= 1.6f;
-                i = 0;
-            }
-            displayOpals.Add(tempP);
-        }
+        populateOpalScreen();
         setUpItems();
         setupTeamDisplay();
         startButton.transform.position = new Vector3(-100, -100, -100);
@@ -131,6 +113,11 @@ public class MainMenuScript : MonoBehaviour {
         currentText.color = Color.blue;
         loadPersonalities();
         loadData();
+        if(glob.getFinishedGame() == true)
+        {
+            addNewOpal();
+            glob.setFinishedGame(false); 
+        }
         //loadTeams();
     }
 
@@ -185,6 +172,19 @@ public class MainMenuScript : MonoBehaviour {
                     UnityEngine.SceneManagement.SceneManager.LoadScene("MainGame", UnityEngine.SceneManagement.LoadSceneMode.Single);
                 }
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Equals))
+        {
+            addNewOpal();
+        }
+        if (Input.GetKeyDown(KeyCode.Minus))
+        {
+            wipeOpals();
+        }
+        if (Input.GetKeyDown(KeyCode.Delete))
+        {
+            refillOpals();
         }
 
         if (Input.GetButtonDown("button 0"))
@@ -817,7 +817,11 @@ public class MainMenuScript : MonoBehaviour {
                 foreach (PlateScript p in teamEditor)
                 {
                     if (p.getOpal() != null && p.getOpal().getMyName() == selectionDisplay.getCurrentOpal().getMyName())
+                    {
+                        currentTeamPlate = p;
+                        mainCam.transform.position = new Vector3(0, 15, -10);
                         return;
+                    }
                 }
                 currentTeamPlate.setPlate(selectionDisplay.getCurrentOpal());
                 currentTeamPlate = null;
@@ -1765,6 +1769,107 @@ public class MainMenuScript : MonoBehaviour {
         waiting = 0;
     }
 
+    private void populateOpalScreen()
+    {
+        /**
+        foreach(PlateScript p in displayOpals)
+        {
+            Destroy(p.gameObject);
+        }
+        displayOpals.Clear();
+        float x = 20;
+        float y = 19;
+        int i = 0;
+        int offset = 0;
+        maxOpalPage = Mathf.CeilToInt(allOpals.Length / 25f);
+        for (int j = 0 + offset; j < 25 + offset; j++)
+        {
+            PlateScript tempP = Instantiate<PlateScript>(platePrefab);
+            tempP.setPlate(allOpals[j], x, y);
+            x += 1.6f;
+            i++;
+            if (i == 5)
+            {
+                x = 20;
+                y -= 1.6f;
+                i = 0;
+            }
+            displayOpals.Add(tempP);
+        }*/
+
+        foreach (PlateScript p in displayOpals)
+        {
+            p.clearPlate();
+            Destroy(p.gameObject);
+        }
+        displayOpals.Clear();
+        float x = 20;
+        float y = 19;
+        int i = 0;
+        int offset = 0;
+        maxOpalPage = Mathf.CeilToInt(myOpals.Count / 25f);
+        for (int j = 0 + offset; j < 25 + offset; j++)
+        {
+            PlateScript tempP = Instantiate<PlateScript>(platePrefab);
+            if(j < myOpals.Count)
+                tempP.setPlate(myOpals[j], x, y);
+            else
+                tempP.setPlate(null, x, y);
+            x += 1.6f;
+            i++;
+            if (i == 5)
+            {
+                x = 20;
+                y -= 1.6f;
+                i = 0;
+            }
+            displayOpals.Add(tempP);
+        }
+    }
+
+    public OpalScript pickNewOpal(bool rand)
+    {
+        if (myOpals.Count == allOpals.Length)
+            return null;
+        List<OpalScript> newOpals = new List<OpalScript>();
+        foreach(OpalScript o in allOpals)
+        {
+            if (!myOpals.Contains(o))
+            {
+                newOpals.Add(o);
+            }
+        }
+        return newOpals[Random.Range(0, newOpals.Count)];
+    }
+
+    public void addNewOpal()
+    {
+        OpalScript add = pickNewOpal(true);
+        if (add == null)
+            return;
+        myOpals.Add(add);
+        populateOpalScreen();
+        saveData();
+    }
+
+    public void wipeOpals()
+    {
+        myOpals.Clear();
+        populateOpalScreen();
+        saveData();
+    }
+
+    public void refillOpals()
+    {
+        wipeOpals();
+        foreach(OpalScript o in allOpals)
+        {
+            myOpals.Add(o);
+        }
+        populateOpalScreen();
+        saveData();
+    }
+
     public void saveData()
     {
         string path = "/StreamingAssets/save.txt";
@@ -1786,8 +1891,9 @@ public class MainMenuScript : MonoBehaviour {
                 writer.Write("endTeams\n");
                 foreach (OpalScript o in myOpals)
                 {
+                    //print("du hello");
                     o.setOpal(null);
-                    writer.Write(o.saveOpal() + ",");
+                    writer.Write(o.getMyName() + ",");
                 }
                 writer.Write("\n");
                 writer.Write("endOpals\n");
@@ -1824,20 +1930,31 @@ public class MainMenuScript : MonoBehaviour {
             teams.Add(opals);
             reid = reader.ReadLine();
         }
-        /*while(reid != "endOpals")
+        while(reid != "endOpals")
         {
             string[] opalNames = reid.Split(',');
             foreach (string name in opalNames)
             {
-                if (name != "\n" && name != "")
+                if (name != "\n" && name != "" && name != "endTeams")
                 {
+                    //print("name: |"+name+"|");
                     myOpals.Add(Resources.Load<OpalScript>("Prefabs/Opals/" + name));
                 }
             }
 
             reid = reader.ReadLine();
-        }*/
+        }
+        if(myOpals.Count == 0)
+        {
+            myOpals.Add(pickNewOpal(false));
+            myOpals.Add(pickNewOpal(false));
+            myOpals.Add(pickNewOpal(false));
+            myOpals.Add(pickNewOpal(false));
+            myOpals.Add(pickNewOpal(false));
+            myOpals.Add(pickNewOpal(false));
+        }
         reader.Close();
         loadTeams();
+        populateOpalScreen();
     }
 }

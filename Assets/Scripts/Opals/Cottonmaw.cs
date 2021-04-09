@@ -26,7 +26,7 @@ public class Cottonmaw : OpalScript
         offsetY = 0f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Absorbent", 0, 0, 0, "<Passive>\n All incoming stat changes are doubled if Cottonmaw is standing on a Growth. At the start of your turn remove the Growth.");
+        Attacks[0] = new Attack("Absorbent", 0, 0, 0, "<Passive>\n All incoming stat changes are doubled if Cottonmaw is standing on a Growth, then remove the Growth");
         Attacks[1] = new Attack("Triple Snap", 1, 4, 1, "Deal 1 damage 3 times.");
         Attacks[1].setUses(3);
         Attacks[2] = new Attack("Harvest", 0, 1, 0, "If standing on a Growth then heal 4 health, and place Growths on adjacent tiles.");
@@ -40,7 +40,7 @@ public class Cottonmaw : OpalScript
     {
         if (currentTile != null && currentTile.type == "Growth")
         {
-            boardScript.setTile(this, "Grass", true);
+            //boardScript.setTile(this, "Grass", true);
         }
     }
 
@@ -51,6 +51,11 @@ public class Cottonmaw : OpalScript
         {
             buffs.Add(buff);
             handleTempBuffs(false);
+        }
+
+        if (currentTile != null && currentTile.type == "Growth")
+        {
+            boardScript.setTile(this, "Grass", true);
         }
     }
 

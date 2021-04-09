@@ -27,37 +27,18 @@ public class Teslamp : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Grounded", 0, 1, 0, "<Free Ability>\n Clear the tile at your feet and gain +2 charge. If there is no tile effect, this has no effect.");
+        Attacks[0] = new Attack("Grounded", 0, 1, 0, "<Free Ability>\nClear the tile at your feet and gain +2 charge. If there is no tile effect, this has no effect.");
         Attacks[0].setFreeAction(true);
-        Attacks[1] = new Attack("Shine", 4, 1, 0, "<Aftershock>\nClear a tile effect. Repeatable until Teslamp is out of charge. Targets heal all status effects. Costs 1 charge.");
-        Attacks[2] = new Attack("Spotlight", 2, 1, 0, "<Aftershock>\nGive a target +1 attack and +1 defense. Repeatable until Teslamp is out of charge. Costs 2 charge.");
+        Attacks[1] = new Attack("Shine", 4, 1, 0, "<Free Ability>\nCosts 1 charge. Clear a tile effect. Repeatable until Teslamp is out of charge. Targets heal all status effects.");
+        Attacks[1].setFreeAction(true);
+        Attacks[2] = new Attack("Spotlight", 2, 1, 0, "<Free Ability>\nCosts 2 charge. Give a target +1 attack and +1 defense. Repeatable until Teslamp is out of charge.");
+        Attacks[2].setFreeAction(true);
         Attacks[3] = new Attack("Burnout", 0, 1, 0, "Clear all status effects from Teslamp. Gain +1 charge for each.");
         type1 = "Light";
         type2 = "Electric";
         og = true;
     }
 
-    public override void onStart()
-    {
-        bannedAttacks.Clear();
-        attackAgain = true;
-    }
-
-    public override void prepAttack(int attackNum)
-    {
-        if (attackNum == 0)
-        {
-            attackAgain = false;
-        }
-        else if (attackNum == 1)
-        {
-            attackAgain = true;
-        }
-        else if (attackNum == 2)
-        {
-            attackAgain = true;
-        }
-    }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
     {
@@ -77,17 +58,10 @@ public class Teslamp : OpalScript
             if (getCharge() > 0)
             {
                 doCharge(-1);
-                boardScript.setChargeDisplay(getCharge());
-                attackAgain = true;
-                if (getCharge() <= 0)
-                {
-                    bannedAttacks.Add(attackNum);
-                }
                 target.healStatusEffects();
                 boardScript.setTile((int)target.getPos().x, (int)target.getPos().z, "Grass", true);
                 return 0;
             }
-            attackAgain = false;
             return 0;
         }
         else if (attackNum == 2) //
@@ -95,17 +69,10 @@ public class Teslamp : OpalScript
             if (getCharge() > 1)
             {
                 doCharge(-2);
-                boardScript.setChargeDisplay(getCharge());
-                attackAgain = true;
-                if (getCharge() <= 0)
-                {
-                    bannedAttacks.Add(attackNum);
-                }
                 target.doTempBuff(0, -1, 1);
                 target.doTempBuff(1, -1, 1);
                 return 0;
             }
-            attackAgain = false;
             return 0;
         }
         else if (attackNum == 3)
@@ -142,12 +109,6 @@ public class Teslamp : OpalScript
             if (getCharge() > 0)
             {
                 doCharge(-1);
-                boardScript.setChargeDisplay(getCharge());
-                attackAgain = true;
-                if (getCharge() <= 0)
-                {
-                    bannedAttacks.Add(attackNum);
-                }
                 boardScript.setTile((int)target.getPos().x, (int)target.getPos().z, "Grass", true);
                 return 0;
             }
@@ -186,7 +147,11 @@ public class Teslamp : OpalScript
 
     public override int checkCanAttack(TileScript target, int attackNum)
     {
-        if (attackNum == 1)
+        if (attackNum == 1 && getCharge() > 0)
+        {
+            return 0;
+        }
+        if(attackNum == 2 && getCharge() > 1 && target.currentPlayer != null)
         {
             return 0;
         }
