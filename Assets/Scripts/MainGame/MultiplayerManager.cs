@@ -142,7 +142,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
             StartCoroutine(runReconnnection(data));
         } else if (!gameHistory.Equals(data))
         {
-            Debug.LogError("YOUR CLIENT IS DISCONNECTED FROM AT LEAST ONE OTHER CLIENT");
+            Debug.LogError("YOUR CLIENT IS DISCONNECTED FROM THE CLIENT THAT JUST ENDED THEIR TURN");
             //PICK UP HERE FOR ACTING ON THE DISCONNECTION STUFF
         }
     }
@@ -171,7 +171,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
 
     public void verifyNoDisconnection()
     {
-        this.photonView.RPC("requestGameHistory", RpcTarget.All);
+        this.photonView.RPC("shareGameHistory", RpcTarget.MasterClient, gameHistory);
     }
 
     [PunRPC]
@@ -558,7 +558,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
             {
                 Debug.LogError("PROCESSING GAME HISTORY: " + historyCommand);
                 processCommand(historyCommand);
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.5f);
             }
         }
         reconnecting = false;
