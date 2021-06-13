@@ -1011,9 +1011,9 @@ public class CursorScript : MonoBehaviour {
         nextTurn();
     }
 
-    public void killOpal()
+    public void adjustOpal()
     {
-        selectedPlayer.takeDamage(100, true, true);
+        selectedPlayer.addArmor(1);
     }
 
     public void updateCurrent(int id)
