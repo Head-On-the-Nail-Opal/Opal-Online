@@ -288,7 +288,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
         }
         else if (parsedCommand[0] == "THIS IS A DISRUPTION TO THE GAME HISTORY")
         {
-            cs.killOpal();
+            cs.adjustOpal();
         }
     }
 
