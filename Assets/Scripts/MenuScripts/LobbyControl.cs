@@ -144,6 +144,7 @@ public class LobbyControl : MonoBehaviourPunCallbacks
             roomName = roomNameInput.text;
             numberOfPlayers = (byte)int.Parse(roomSizeInput.text);
             PhotonNetwork.LocalPlayer.NickName = username;
+            PlayerPrefs.SetString("CurrentMatch", "");
 
             Debug.Log("tried to create room " + roomName + " with " + numberOfPlayers + " people");
             PhotonNetwork.CreateRoom(roomName, new RoomOptions() { MaxPlayers = numberOfPlayers, CustomRoomPropertiesForLobby = new string[] { "GameActive" } });

@@ -13,6 +13,7 @@ public class CursorScript : MonoBehaviour {
 
     private GroundScript boardScript;
     private TextScript ts;
+    private MultiplayerManager MM;
 
 
     private PathScript originPath;
@@ -60,6 +61,7 @@ public class CursorScript : MonoBehaviour {
         GameObject board = GameObject.Find("Main Camera");
         ts = GameObject.Find("Canvas").GetComponent<TextScript>();
         reticle = GameObject.Find("Reticle").GetComponent<ReticleScript>();
+        MM = GameObject.Find("MultiplayerManager").GetComponent<MultiplayerManager>();
         boardScript = board.GetComponent<GroundScript>();
         currentTurn = 0;
         boardScript.updateTurnOrder(currentTurn);
@@ -693,6 +695,7 @@ public class CursorScript : MonoBehaviour {
 
     public void nextTurn()
     {
+        MM.verifyNoDisconnection();
         selectedPlayer.setMyTurn(false);
         foreach (OpalScript o in boardScript.gameOpals)
         {
@@ -1522,7 +1525,10 @@ public class CursorScript : MonoBehaviour {
         }
         else if (boardScript.tileGrid[(int)end.x + 1, (int)end.y].getImpassable() && boardScript.tileGrid[(int)end.x - 1, (int)end.y].getImpassable() && boardScript.tileGrid[(int)end.x, (int)end.y - 1].getImpassable() && boardScript.tileGrid[(int)end.x, (int)end.y + 1].getImpassable())
         {
-            return new List<Vector2>();
+            if (!(selectedPlayer.getPos().x == end.x + 1 && selectedPlayer.getPos().z == end.y) && !(selectedPlayer.getPos().x == end.x - 1 && selectedPlayer.getPos().z == end.y) && !(selectedPlayer.getPos().x == end.x && selectedPlayer.getPos().z == end.y + 1) && !(selectedPlayer.getPos().x == end.x && selectedPlayer.getPos().z == end.y - 1))
+            {
+                return new List<Vector2>();
+            }
         }
 
         PathingNode startNode = new PathingNode(null, start);

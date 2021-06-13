@@ -32,12 +32,15 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
 
     public void Awake()
     {
-        if (SceneManager.GetActiveScene().name.Equals("MainGame") && PhotonNetwork.CurrentRoom.CustomProperties["GameActive"].ToString().Equals("True"))
+        if (SceneManager.GetActiveScene().name.Equals("MainGame"))
         {
-            Debug.Log("This client just joined a game after it has already begun. We will now update the game");
             glob = GameObject.Find("GlobalObject").GetComponent<GlobalScript>();
-            glob.setNumPlayers(PhotonNetwork.CurrentRoom.PlayerCount);
-            requestGameHistoryData();
+            if (glob.getMult() && PhotonNetwork.CurrentRoom.CustomProperties["GameActive"].ToString().Equals("True"))
+            {
+                Debug.Log("This client just joined a game after it has already begun. We will now update the game");
+                glob.setNumPlayers(PhotonNetwork.CurrentRoom.PlayerCount);
+                requestGameHistoryData();
+            }
         }
     }
 
@@ -137,6 +140,10 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
         if (gameHistory.Equals(""))
         {
             StartCoroutine(runReconnnection(data));
+        } else if (!gameHistory.Equals(data))
+        {
+            Debug.LogError("YOUR CLIENT IS DISCONNECTED FROM AT LEAST ONE OTHER CLIENT");
+            //PICK UP HERE FOR ACTING ON THE DISCONNECTION STUFF
         }
     }
 
@@ -160,6 +167,11 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
     public void requestGameHistoryData()
     {
         this.photonView.RPC("requestGameHistory", RpcTarget.MasterClient);
+    }
+
+    public void verifyNoDisconnection()
+    {
+        this.photonView.RPC("requestGameHistory", RpcTarget.All);
     }
 
     [PunRPC]
@@ -272,6 +284,11 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
 
     void Update()
     {
+        if (Input.GetKeyUp(KeyCode.H))
+        {
+            gameHistory += "THIS IS A DISRUPTION TO THE GAME HISTORY\n";
+            Debug.Log("Just added fake game history item");
+        }
         if (boardScript != null)
         {
             if (boardScript.getMult() == false)
