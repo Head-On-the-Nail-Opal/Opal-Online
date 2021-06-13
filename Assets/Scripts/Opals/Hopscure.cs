@@ -144,7 +144,7 @@ public class Hopscure : OpalScript
                 getBoard().protSetTrap((int)target.getPos().x, (int)target.getPos().z, "PortalOut");
                 temp.setLink(getBoard().tileGrid[(int)target.getPos().x, (int)target.getPos().z]);
                 fu = 0;
-                doTempBuff(1, 1, -2);
+                doTempBuff(1, 2, -2);
                 return 0;
             }
             //getBoard().setTile((int)target.getPos().x, (int)target.getPos().z, "Growth", false);

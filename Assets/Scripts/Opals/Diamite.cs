@@ -80,7 +80,6 @@ public class Diamite : OpalScript
             target.doTempBuff(0, -1, -2);
             doTempBuff(2, -1, 1);
             oofed.Add(target);
-            return 0;
         }
         else if (attackNum == 2) //Grass Cover
         {

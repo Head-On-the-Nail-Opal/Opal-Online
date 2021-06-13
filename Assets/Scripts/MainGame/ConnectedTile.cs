@@ -104,12 +104,13 @@ public class ConnectedTile : MonoBehaviour
         if (possibleTiles.Count > 0)
         {
             changeSpriteRenderer.sprite = connectedTileSprites[possibleTiles[0]];
-        } else
+        }
+        else
         {
             changeSpriteRenderer.sprite = connectedTileSprites[0];
             Debug.Log("Something went wrong with water tile sprite selection! The problem tile had the following code: " + code);
         }
-        
+
     }
 
     private string debugToString(List<int> nums)

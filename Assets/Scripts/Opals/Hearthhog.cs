@@ -30,7 +30,7 @@ public class Hearthhog : OpalScript {
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Incendiary", 0, 0, 0, "<Passive>\nGain a temporary +1 attack for each fire tile underfoot and on surrounding tiles.");
-        Attacks[1] = new Attack("Inferno", 2, 4, 6, "Deal damage and light target tile on fire. If you are standing on fire also affect tiles adjacent to target. Doesn't need to target an Opal.");
+        Attacks[1] = new Attack("Inferno", 3, 4, 6, "Deal damage and light target tile on fire. If you are standing on fire also affect tiles adjacent to target. Doesn't need to target an Opal.");
         Attacks[2] = new Attack("Ignite", 0, 1, 0, "Ignite the tile at your feet. If you are standing on fire then light all adjacent tiles.");
         Attacks[3] = new Attack("Flame Shield", 0, 1, 0, "Gain +1 defense for each point of attack you have, for 1 turn.");
         type1 = "Fire";

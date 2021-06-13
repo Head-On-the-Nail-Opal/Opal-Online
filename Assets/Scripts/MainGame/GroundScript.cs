@@ -93,6 +93,7 @@ public class GroundScript : MonoBehaviour {
     private OpalScript boulder2;
 
     private bool gameWon = false;
+    private bool resetting = false;
 
     private void Awake()
     {
@@ -281,6 +282,16 @@ public class GroundScript : MonoBehaviour {
     public bool getGameWon()
     {
         return gameWon;
+    }
+
+    public void setResetting(bool input)
+    {
+        resetting = input;
+    }
+
+    public bool getResetting()
+    {
+        return resetting;
     }
 
     private void setTheRestUp()
@@ -475,6 +486,11 @@ public class GroundScript : MonoBehaviour {
         }
     }
     
+
+    public void setUpGlob()
+    {
+        glob.setFinishedGame(true); 
+    }
 
     public PathScript getPath(int x, int z)
     {

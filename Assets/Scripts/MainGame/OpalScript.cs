@@ -642,6 +642,7 @@ abstract public class OpalScript : MonoBehaviour {
     {
         boardScript.getMyCursor().setAnimating(true);
         bool adj = false;
+        int tile = 0;
         List<Vector2> tilesTravelled = new List<Vector2>();
         if (paths != null)
         {
@@ -663,7 +664,7 @@ abstract public class OpalScript : MonoBehaviour {
                         targetTile = boardScript.tileGrid[x, y];
                     }
                 }
-                if (adj)
+                if (adj && !boardScript.getResetting())
                 {
                     int xVel = 0;
                     int yVel = 0;
@@ -708,8 +709,13 @@ abstract public class OpalScript : MonoBehaviour {
                     trap = true;
                 }
                 teleport(x, y, totalDist);
-                if (trap)
+                if (trap && tile != 0)
+                {
+                    if (currentTile != null)
+                        currentTile.setCurrentOpal(this);
                     break;
+                }
+                tile++;
             }
         }
         else
@@ -723,7 +729,7 @@ abstract public class OpalScript : MonoBehaviour {
                     targetTile = boardScript.tileGrid[x, y];
                 }
             }
-            if (adj)
+            if (adj && !boardScript.getResetting())
             {
                 int xVel = 0;
                 int yVel = 0;
@@ -786,6 +792,7 @@ abstract public class OpalScript : MonoBehaviour {
             {
                 zVel = flip;
             }
+            //if(boardScript.getResetting())
             while (boardScript.getMyCursor().getAnimating())
             {
                 yield return new WaitForFixedUpdate();
@@ -1052,7 +1059,7 @@ abstract public class OpalScript : MonoBehaviour {
             {
                 onStatusCondition(false, false, true);
                 currentLift = Instantiate<ParticleSystem>(liftedParticle, this.transform);
-                liftTimer = 2;
+                liftTimer = 3;
                 if(myCharm == "Balloon of Light")
                 {
                     doTempBuff(2, -1, 1);
@@ -1454,7 +1461,8 @@ abstract public class OpalScript : MonoBehaviour {
             barriarraySurrounding().takeDamage(dam, mod, effect);
             return;
         }
-        StartCoroutine(yowch());
+        if(!boardScript.getResetting())
+            StartCoroutine(yowch());
         if(!mod)
         {
             this.health -= dam;
@@ -1819,6 +1827,10 @@ abstract public class OpalScript : MonoBehaviour {
         if(currentTile == null)
         {
             return;
+        }
+        if(currentTile.currentPlayer == null)
+        {
+            currentTile.setCurrentOpal(this);
         }
         moveAfter = false;
         if (burning)

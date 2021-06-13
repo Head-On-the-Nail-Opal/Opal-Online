@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Experiment42 : OpalScript
 {
-    int currentUpgrade = 1;
+    int currentUpgrade = 2;
     //(10, 0, 0, 3, "Experiment42", 0.7f, 0, 0, 0, "Blue", "Metal", "Plague");
     override public void setOpal(string pl)
     {
@@ -28,10 +28,10 @@ public class Experiment42 : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Upgrade", 1, 1, 6, "<Incremental>\nGain +1 attack and +1 defense. Snappy.");
+        Attacks[0] = new Attack("Upgrade", 1, 1, 6, "Gain +2 attack and +2 defense. If this was your previous attack too, gain +3 attack and +3 defense instead.");
         Attacks[1] = new Attack("Optimize", 0, 1, 0, "Gain +2 attack and +3 speed for the next turn, and spawn a miasma under your feet.");
         Attacks[2] = new Attack("Sick Shot", 2, 4, 3, "Deal 3 damage and poison target. If target is already poisoned, gain +4 attack.");
-        Attacks[3] = new Attack("Influx",1,1,0,"Remove a poison from a target and gain +1 armor.");
+        Attacks[3] = new Attack("Influx",1,1,0,"Remove a poison from a target, or a miasma from underfoot, and gain +1 armor.");
         type1 = "Metal";
         type2 = "Plague";
         og = true;
@@ -44,15 +44,15 @@ public class Experiment42 : OpalScript
         {
             doTempBuff(0, -1, currentUpgrade);
             doTempBuff(1, -1, currentUpgrade);
-            currentUpgrade++;
-            Attacks[0] = new Attack("Upgrade", 1, 1, 6, "<Incremental>\nGain +"+currentUpgrade+" attack and +"+currentUpgrade+" defense. Snappy.");
-            return cA.getBaseDamage() + getAttack() -(currentUpgrade- 1);
+            currentUpgrade = 3;
+            return cA.getBaseDamage() + getAttack() -(currentUpgrade);
         }
         else if (attackNum == 1) //Optimize
         {
             doTempBuff(2, 2, 3);
             doTempBuff(0, 2, 2);
             getBoard().setTile((int)getPos().x, (int)getPos().z, "Miasma", false);
+            currentUpgrade = 2;
             return cA.getBaseDamage() - getAttack();
         }
         else if (attackNum == 2) //Sick Shot
@@ -60,6 +60,7 @@ public class Experiment42 : OpalScript
             if (target.getPoison())
             {
                 doTempBuff(0, -1, 4);
+                currentUpgrade = 2;
                 return cA.getBaseDamage() + getAttack() - 4;
             }
             target.setPoison(true);
@@ -71,6 +72,12 @@ public class Experiment42 : OpalScript
                 target.setPoison(false);
                 addArmor(1);
             }
+            if(currentTile != null && currentTile.type == "Miasma")
+            {
+                addArmor(1);
+                boardScript.setTile(this, "Grass", true);
+            }
+            currentUpgrade = 2;
         }
         return cA.getBaseDamage() + getAttack();
     }

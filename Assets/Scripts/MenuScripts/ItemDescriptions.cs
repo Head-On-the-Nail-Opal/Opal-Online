@@ -22,7 +22,7 @@ public class ItemDescriptions : MonoBehaviour
         items.Add("Balloon of Light,Gain +1 speed while lifted");
         //items.Add("Metal Scrap,If you didn't move on your turn then gain +1 armor");
         items.Add("Death Wish,Lose -2 attack and defense.");
-        items.Add("Insect Husk,Whenever you are burned instead you are poisoned, and vice versa");
+        items.Add("Insect Husk,Whenever you are burned instead you are poisoned and vice versa");
         items.Add("Comfortable Padding,Whenever you gain armor also gain +2 attack. Whenever you lose armor lose -2 attack.");
         items.Add("Broken Doll,When taking damage from an ally gain +2 speed for 1 turn.");
         items.Add("Potion of Gratitude,After taking damage for the first time heal by 10 health.");

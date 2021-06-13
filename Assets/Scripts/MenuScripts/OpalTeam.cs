@@ -44,12 +44,12 @@ public class OpalTeam : MonoBehaviour
             OpalScript opalOne = Instantiate<OpalScript>(o);
             opalOne.setOpal(null);
             opalOne.setDetails(o);
-            opalOne.transform.position = new Vector3(transform.position.x + (i * (4f / input.Count) - 3), transform.position.y, -2.5f + i*0.0001f);
+            opalOne.transform.position = new Vector3(transform.position.x + (i * (2f / input.Count) - 3), transform.position.y, -2.5f + i*0.0001f);
             opalOne.transform.localScale *= 1f;
             opalOne.transform.rotation = Quaternion.Euler(0, 0, 0);
             opals.Add(opalOne);
             GameObject background = Instantiate<GameObject>(backgroundMat);
-            background.transform.localPosition = new Vector3(transform.position.x + (i * (4f / input.Count) - 3), transform.position.y, -1.5f);
+            background.transform.localPosition = new Vector3(transform.position.x + (i * (2f / input.Count) - 3), transform.position.y, -1.5f);
             background.transform.localScale *= 1.2f;
             backgrounds.Add(background);
             i++;

@@ -193,7 +193,7 @@ public class CursorScript : MonoBehaviour {
         }
 
         //End Turn
-        if ((!followup && ((Input.GetKeyDown(KeyCode.Return) && currentController == "keyboard") || ((currentController == "joystick 1" || currentController == "joystick 2" || currentController == "joystick 3" || currentController == "joystick 4") && Input.GetButtonUp("RBump" + addon)))) && (!boardScript.getMult() || boardScript.getOnlineTeam() == currentOnlinePlayer))
+        if ((((Input.GetKeyDown(KeyCode.Return) && currentController == "keyboard") || ((currentController == "joystick 1" || currentController == "joystick 2" || currentController == "joystick 3" || currentController == "joystick 4") && Input.GetButtonUp("RBump" + addon)))) && (!boardScript.getMult() || boardScript.getOnlineTeam() == currentOnlinePlayer))
         {
             if (boardScript.getMult())
             {
@@ -202,6 +202,7 @@ public class CursorScript : MonoBehaviour {
                 lastCommand = "end," + currentOnlinePlayer+","+selectedPlayer.getMyName();
             }
             selectedPlayer.setMyTurn(false);
+            followup = false;
             nextTurn();
         }
 
@@ -541,7 +542,8 @@ public class CursorScript : MonoBehaviour {
                                 boardScript.getMM().sendMultiplayerData("attack," + currentOnlinePlayer + "," + t.getTile().getPos().x + "," + t.getTile().getPos().z + "," + attacking);
                                 lastCommand = "attack," + currentOnlinePlayer + "," + t.getTile().getPos().x + "," + t.getTile().getPos().z + "," + attacking;
                             }
-                            StartCoroutine(selectedPlayer.doAttackAnim(target, this, attacking, currentProj));
+                            if(!boardScript.getResetting())
+                                StartCoroutine(selectedPlayer.doAttackAnim(target, this, attacking, currentProj));
                             //Projectile tempProj = Instantiate(currentProj);
                             //tempProj.setUp(selectedPlayer.getAttacks()[attacking].getShape(),  selectedPlayer.getMainType());
                             //selectedPlayer.adjustProjectile(tempProj, attacking);
@@ -563,7 +565,8 @@ public class CursorScript : MonoBehaviour {
                                 boardScript.getMM().sendMultiplayerData("attack," + currentOnlinePlayer + "," + t.getTile().getPos().x + "," + t.getTile().getPos().z + "," + attacking);
                                 lastCommand = "attack," + currentOnlinePlayer + "," + t.getTile().getPos().x + "," + t.getTile().getPos().z + "," + attacking;
                             }
-                            StartCoroutine(selectedPlayer.doAttackAnim(t.getTile(), this, attacking, currentProj));
+                            if (!boardScript.getResetting())
+                                StartCoroutine(selectedPlayer.doAttackAnim(t.getTile(), this, attacking, currentProj));
                             //Projectile tempProj = Instantiate(currentProj);
                             //tempProj.setUp(selectedPlayer.getAttacks()[attacking].getShape(), selectedPlayer.getMainType());
                             //selectedPlayer.adjustProjectile(tempProj, attacking);
@@ -938,6 +941,19 @@ public class CursorScript : MonoBehaviour {
 
     public void doAttack(int x, int y, int at)
     {
+        if (boardScript.getResetting())
+        {
+            selectedPlayer.prepAttack(at);
+            if (boardScript.tileGrid[x, y].currentPlayer != null)
+            {
+                boardScript.tileGrid[x, y].currentPlayer.takeDamage(selectedPlayer.getAttackEffect(at, boardScript.tileGrid[x, y].currentPlayer), true, true);
+            }
+            else
+            {
+                selectedPlayer.getAttackEffect(at, boardScript.tileGrid[x, y]);
+            }
+            return;
+        }
         selectedPlayer.prepAttack(at);
         Projectile tempProj = Instantiate(currentProj);
         tempProj.setUp(selectedPlayer.getAttacks()[at].getShape(), selectedPlayer.getMainType());
@@ -958,6 +974,19 @@ public class CursorScript : MonoBehaviour {
 
     public void doAttack(int x, int y, int at, OpalScript updatedPlayer)
     {
+        if (boardScript.getResetting())
+        {
+            selectedPlayer.prepAttack(at);
+            if (boardScript.tileGrid[x, y].currentPlayer != null)
+            {
+                boardScript.tileGrid[x, y].currentPlayer.takeDamage(selectedPlayer.getAttackEffect(at, boardScript.tileGrid[x, y].currentPlayer), true, true);
+            }
+            else
+            {
+                selectedPlayer.getAttackEffect(at, boardScript.tileGrid[x, y]);
+            }
+            return;
+        }
         updatedPlayer.prepAttack(at);
         Projectile tempProj = Instantiate(currentProj);
         tempProj.setUp(updatedPlayer.getAttacks()[at].getShape(), updatedPlayer.getMainType());
@@ -1280,6 +1309,10 @@ public class CursorScript : MonoBehaviour {
             PlayerPrefs.SetString("CurrentMatch", "");
             ts.doWin("Tie");
             gameOver = true;
+        }
+        if (gameOver)
+        {
+            boardScript.setUpGlob();
         }
     }
 

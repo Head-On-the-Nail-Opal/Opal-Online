@@ -28,7 +28,7 @@ public class Terradactyl : OpalScript
             GetComponent<SpriteRenderer>().flipX = false;
         }
         Attacks[0] = new Attack("Favorable Terrain", 0, 0, 0, "<Passive>\nGain +1 speed (for 1 turn) for each Boulder you start your turn surrounded by.");
-        Attacks[1] = new Attack("Catapult", 6, 1, 0, "Break an adjacent Boulder. Deal damage to an Opal within 6 tiles based on that Boulder's defense. Place Boulders adjacent to them with the same defense.");
+        Attacks[1] = new Attack("Catapult", 4, 1, 0, "Break an adjacent Boulder. Deal damage to an Opal within 4 tiles based on that Boulder's defense. Place Boulders adjacent to them with the same defense.");
         Attacks[1].setUses(2);
         Attacks[2] = new Attack("Rock Stack", 3, 1, 0, "Place a Boulder. It gains +5 defense for each Boulder adjacent to it on placement.");
         Attacks[3] = new Attack("Heavy Flight", 5, 1, 0, "Fly to a tile. Leave a boulder where you left with +5 defense.");
