@@ -286,9 +286,9 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
         {
             cs.doAttack(int.Parse(parsedCommand[2]), int.Parse(parsedCommand[3]), int.Parse(parsedCommand[4]));
         }
-        else if (parsedCommand[0] == "THIS IS A DISRUPTION TO THE GAME HISTORY")
+        else if (parsedCommand[0] == "reconnectTest")
         {
-            cs.adjustOpal();
+            cs.killOpal();
         }
     }
 
@@ -296,7 +296,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (Input.GetKeyUp(KeyCode.H))
         {
-            sendData("THIS IS A DISRUPTION TO THE GAME HISTORY");
+            sendData("reconnectTest, 0, 0");
             Debug.Log("Just added fake game history item");
         }
         if (boardScript != null)
