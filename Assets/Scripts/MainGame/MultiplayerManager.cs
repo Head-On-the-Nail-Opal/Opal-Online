@@ -143,7 +143,10 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
         } else if (!gameHistory.Equals(data))
         {
             Debug.LogError("YOUR CLIENT IS DISCONNECTED FROM THE CLIENT THAT JUST ENDED THEIR TURN");
-            //PICK UP HERE FOR ACTING ON THE DISCONNECTION STUFF
+            if ()
+            {
+
+            }
         }
     }
 
@@ -280,13 +283,17 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
         {
             cs.doAttack(int.Parse(parsedCommand[2]), int.Parse(parsedCommand[3]), int.Parse(parsedCommand[4]));
         }
+        else if (parsedCommand[0] == "THIS IS A DISRUPTION TO THE GAME HISTORY")
+        {
+            cs.killOpal();
+        }
     }
 
     void Update()
     {
         if (Input.GetKeyUp(KeyCode.H))
         {
-            gameHistory += "THIS IS A DISRUPTION TO THE GAME HISTORY\n";
+            sendData("THIS IS A DISRUPTION TO THE GAME HISTORY");
             Debug.Log("Just added fake game history item");
         }
         if (boardScript != null)

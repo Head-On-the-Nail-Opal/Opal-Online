@@ -1011,6 +1011,11 @@ public class CursorScript : MonoBehaviour {
         nextTurn();
     }
 
+    public void killOpal()
+    {
+        selectedPlayer.takeDamage(100, true, true);
+    }
+
     public void updateCurrent(int id)
     {
         foreach(OpalScript o in boardScript.gameOpals)
