@@ -66,12 +66,14 @@ public class Shocket : OpalScript
                     target.doTempBuff(0, -1, 2);
                     target.doTempBuff(1, -1, 2);
                 }
+
             }
-        }else if(attackNum == 3)
+            return 0;
+        }
+        else if(attackNum == 3)
         {
             if(target.isBuffed())
                 target.doTempBuff(2, -1, -3);
-            return 0;
         }
         return cA.getBaseDamage() + getAttack();
     }

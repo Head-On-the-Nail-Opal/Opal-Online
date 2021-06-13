@@ -642,6 +642,7 @@ abstract public class OpalScript : MonoBehaviour {
     {
         boardScript.getMyCursor().setAnimating(true);
         bool adj = false;
+        int tile = 0;
         List<Vector2> tilesTravelled = new List<Vector2>();
         if (paths != null)
         {
@@ -708,8 +709,13 @@ abstract public class OpalScript : MonoBehaviour {
                     trap = true;
                 }
                 teleport(x, y, totalDist);
-                if (trap)
+                if (trap && tile != 0)
+                {
+                    if (currentTile != null)
+                        currentTile.setCurrentOpal(this);
                     break;
+                }
+                tile++;
             }
         }
         else
@@ -1053,7 +1059,7 @@ abstract public class OpalScript : MonoBehaviour {
             {
                 onStatusCondition(false, false, true);
                 currentLift = Instantiate<ParticleSystem>(liftedParticle, this.transform);
-                liftTimer = 2;
+                liftTimer = 3;
                 if(myCharm == "Balloon of Light")
                 {
                     doTempBuff(2, -1, 1);
