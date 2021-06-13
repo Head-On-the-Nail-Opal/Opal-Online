@@ -143,9 +143,12 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
         } else if (!gameHistory.Equals(data))
         {
             Debug.LogError("YOUR CLIENT IS DISCONNECTED FROM THE CLIENT THAT JUST ENDED THEIR TURN");
-            if ()
+            if (data.Length >= gameHistory.Length)
             {
-
+                Debug.LogError("THE CLIENT THAT JUST ENDED THEIR TURN HAS THE LONGER GAME HISTORY");
+            } else
+            {
+                Debug.LogError("THE MASTER CLIENT HAS THE LONGER GAME HISTORY");
             }
         }
     }
