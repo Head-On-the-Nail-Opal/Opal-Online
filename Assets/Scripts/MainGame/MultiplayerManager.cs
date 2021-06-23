@@ -161,7 +161,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
                     if (!gameHistory.Contains(command))
                     {
                         Debug.Log("MISSING COMMAND: " + command);
-                        this.photonView.RPC("updateGameHistory", RpcTarget.All, command, actorNumber);
+                        this.photonView.RPC("updateGameHistory", RpcTarget.All, command, PhotonNetwork.MasterClient.ActorNumber);
                     }
                 }
             } else
