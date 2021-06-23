@@ -308,13 +308,13 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
             cs.pressEndTurn();
 
         }
-        else if (parsedCommand[0] == "attack" && (reconnecting || int.Parse(parsedCommand[1]) != boardScript.getOnlineTeam()))
+        //else if (parsedCommand[0] == "attack" && (reconnecting || int.Parse(parsedCommand[1]) != boardScript.getOnlineTeam()))
+        //{
+        //    cs.doAttack(int.Parse(parsedCommand[2]), int.Parse(parsedCommand[3]), int.Parse(parsedCommand[4]));
+        //}
+        else if (parsedCommand[0] == "attack")
         {
             cs.doAttack(int.Parse(parsedCommand[2]), int.Parse(parsedCommand[3]), int.Parse(parsedCommand[4]));
-        }
-        else if (parsedCommand[0] == "reconnectTest")
-        {
-            cs.killOpal();
         }
     }
 
