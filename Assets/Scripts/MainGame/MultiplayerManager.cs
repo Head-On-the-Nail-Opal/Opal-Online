@@ -131,24 +131,50 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     private void requestGameHistory()
     {
-        this.photonView.RPC("shareGameHistory", RpcTarget.All, gameHistory);
+        this.photonView.RPC("shareGameHistory", RpcTarget.All, gameHistory, -1);
     }
 
     [PunRPC]
-    private void shareGameHistory(string data)
+    private void updateGameHistory(string command, int actorNumber)
+    {
+        if (command != "" && PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
+        {
+            gameHistory += command + '\n';
+            processCommand(command);
+        }
+    }
+
+    [PunRPC]
+    private void shareGameHistory(string data, int actorNumber)
     {
         if (gameHistory.Equals(""))
         {
-            StartCoroutine(runReconnnection(data));
+            StartCoroutine(runReconnection(data));
         } else if (!gameHistory.Equals(data))
         {
-            Debug.LogError("YOUR CLIENT IS DISCONNECTED FROM THE CLIENT THAT JUST ENDED THEIR TURN");
+            Debug.LogError("THE MASTER CLIENT (YOU) IS DISCONNECTED FROM THE CLIENT THAT JUST ENDED THEIR TURN");
             if (data.Length >= gameHistory.Length)
             {
-                Debug.LogError("THE CLIENT THAT JUST ENDED THEIR TURN HAS THE LONGER GAME HISTORY");
+                Debug.Log("THE CLIENT THAT JUST ENDED THEIR TURN HAS THE LONGER GAME HISTORY");
+                foreach (string command in data.Split('\n'))
+                {
+                    if (!gameHistory.Contains(command))
+                    {
+                        Debug.Log("MISSING COMMAND: " + command);
+                        this.photonView.RPC("updateGameHistory", RpcTarget.All, command, actorNumber);
+                    }
+                }
             } else
             {
-                Debug.LogError("THE MASTER CLIENT HAS THE LONGER GAME HISTORY");
+                Debug.Log("THE MASTER CLIENT HAS THE LONGER GAME HISTORY");
+                foreach (string command in gameHistory.Split('\n'))
+                {
+                    if (!data.Contains(command))
+                    {
+                        Debug.Log("MISSING COMMAND: " + command);
+                        this.photonView.RPC("updateGameHistory", RpcTarget.All, command, actorNumber);
+                    }
+                }
             }
         }
     }
@@ -177,7 +203,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
 
     public void verifyNoDisconnection()
     {
-        this.photonView.RPC("shareGameHistory", RpcTarget.MasterClient, gameHistory);
+        this.photonView.RPC("shareGameHistory", RpcTarget.MasterClient, gameHistory, PhotonNetwork.LocalPlayer.ActorNumber);
     }
 
     [PunRPC]
@@ -296,7 +322,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (Input.GetKeyUp(KeyCode.H))
         {
-            sendData("reconnectTest, 0, 0");
+            gameHistory += "reconnectTest, 0, 0" + '\n';
+            processCommand("reconnectTest, 0, 0");
             Debug.Log("Just added fake game history item");
         }
         if (boardScript != null)
@@ -556,7 +583,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
         SceneManager.LoadScene("MainGame");
     }
 
-    public IEnumerator runReconnnection(string data)
+    public IEnumerator runReconnection(string data)
     {
         reconnecting = true;
         boardScript.setResetting(true);
