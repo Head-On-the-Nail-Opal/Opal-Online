@@ -7,7 +7,7 @@ using UnityEngine;
 public class Player : MonoBehaviour {
     private string controller = "keyboard";
     private Rigidbody2D rigidbody2D;
-    private float speedMod = 15;
+    private float speedMod = 8.3f;
     private SpriteRenderer sr;
     private Animator anim;
     private ParticleSystem wet;
@@ -22,6 +22,14 @@ public class Player : MonoBehaviour {
     public CatchGame cg;
     private bool canMove = true;
     public List<Shop> AllShops;
+    private string currentKey = "";
+    private bool moving = false;
+    private bool keepMoving = false;
+    private bool running = false;
+    private string buffer = "";
+    private Dictionary<string, bool> getPassable;
+    private TileCode[,] fullMap;
+    private Vector2 currentGridPos;
 
     // Use this for initialization
     void Start () {
@@ -58,57 +66,21 @@ public class Player : MonoBehaviour {
             }
             int upSpeed = 0;
             int rightSpeed = 0;
-           if (Input.GetKey(KeyCode.W))
-           {
-                upSpeed = 1;
-                anim.CrossFade("BBIdle", 0);
-                aim.transform.localRotation = Quaternion.Euler(0,0,180);
-            }
-            else if (Input.GetKey(KeyCode.S))
-            {
-                upSpeed = -1;
-                anim.CrossFade("FBIdle", 0);
-                aim.transform.localRotation = Quaternion.Euler(0, 0, 0);
-            }
-            if (Input.GetKey(KeyCode.D))
-            {
-                rightSpeed = 1;
-                //sr.flipX = true;
-                aim.transform.localRotation = Quaternion.Euler(0, 0, 90);
-                if (upSpeed == 0)
-                    anim.CrossFade("RBIdle", 0);
-                else
-                    aim.transform.localRotation = Quaternion.Euler(0, 0, 90 + upSpeed * 45);
-
-            }
-            else if (Input.GetKey(KeyCode.A))
-            {
-                rightSpeed = -1;
-                //sr.flipX = false;
-                aim.transform.localRotation = Quaternion.Euler(0, 0, 270);
-                if (upSpeed == 0)
-                    anim.CrossFade("LBIdle", 0);
-                else
-                    aim.transform.localRotation = Quaternion.Euler(0, 0, -90 - upSpeed * 45);
-
-            }
-            if (Input.GetKey(KeyCode.LeftShift))
-            {
-                rightSpeed *= 2;
-                upSpeed *= 2;
-            }
+            processInputs();
             if (Input.GetKeyDown(KeyCode.LeftShift))
             {
                 anim.speed *= 2;
+                running = true;
             }else if (Input.GetKeyUp(KeyCode.LeftShift))
             {
                 anim.speed /= 2;
+                running = false;
             }if (Input.GetKeyDown(KeyCode.E))
             {
                 ps.setClickType("default");
                 if (!inv)
                 {
-                    ps.transform.position = new Vector3(transform.position.x, transform.position.y, 10);
+                    ps.transform.position = new Vector3(transform.position.x, transform.position.y, 0);
                     
                     ps.activate(true);
                     inv = true;
@@ -142,12 +114,142 @@ public class Player : MonoBehaviour {
             }
             if (!inv)
             {
-                rigidbody2D.velocity = new Vector2(rightSpeed * speedMod, upSpeed * speedMod);
+                if (currentKey != "" && !moving)
+                    StartCoroutine(move());
             }
             else
                 rigidbody2D.velocity = new Vector2(0 * speedMod, 0 * speedMod);
         }	
 	}
+
+    private void processInputs()
+    {
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            keepMoving = false;
+            currentKey = "W";
+            if (moving)
+                buffer = "W";
+        }
+        else if (Input.GetKeyDown(KeyCode.S))
+        {
+            keepMoving = false;
+            currentKey = "S";
+            if (moving)
+                buffer = "S";
+        }
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            keepMoving = false;
+            currentKey = "D";
+            if (moving)
+                buffer = "D";
+        }
+        else if (Input.GetKeyDown(KeyCode.A))
+        {
+            keepMoving = false;
+            currentKey = "A";
+            if (moving)
+                buffer = "A";
+        }
+        if(currentKey != "")
+        {
+            if (Input.GetKey(KeyCode.W) && currentKey == "W" || Input.GetKey(KeyCode.A) && currentKey == "A" || Input.GetKey(KeyCode.S) && currentKey == "S" || Input.GetKey(KeyCode.D) && currentKey == "D")
+            {
+                keepMoving = true;
+            }
+            else
+            {
+                if (Input.GetKey(KeyCode.W))
+                {
+                    currentKey = "W";
+                    keepMoving = true;
+                }
+                else if (Input.GetKey(KeyCode.A))
+                {
+                    currentKey = "A";
+                    keepMoving = true;
+                }
+                else if (Input.GetKey(KeyCode.S))
+                {
+                    currentKey = "S";
+                    keepMoving = true;
+                }
+                else if (Input.GetKey(KeyCode.D))
+                {
+                    currentKey = "D";
+                    keepMoving = true;
+                }
+                else
+                {
+                    currentKey = "";
+                    keepMoving = false;
+                }
+            }
+        }
+    }
+
+    public IEnumerator move()
+    {
+        moving = true;
+        float steps = 10;
+        if (running)
+            steps = 6;
+        string thisStep = currentKey;
+        for(int i = 0; i < steps; i++)
+        {
+            if (thisStep == "D")
+            {
+                aim.transform.localRotation = Quaternion.Euler(0, 0, -270);
+                anim.CrossFade("RBIdle", 0);
+                if (!getPassable[fullMap[(int)currentGridPos.x+1, (int)currentGridPos.y].getCode()] && i == 0)
+                {
+                    break;
+                }
+                transform.position = new Vector2((1 * speedMod) / steps + transform.position.x, transform.position.y);
+            }
+            else if (thisStep == "A")
+            {
+                aim.transform.localRotation = Quaternion.Euler(0, 0, 270);
+                anim.CrossFade("LBIdle", 0);
+                if (!getPassable[fullMap[(int)currentGridPos.x-1, (int)currentGridPos.y].getCode()] && i == 0)
+                {
+                    break;
+                }
+                transform.position = new Vector2((-1 * speedMod) / steps + transform.position.x, transform.position.y);
+            }
+            else if (thisStep == "S")
+            {
+                anim.CrossFade("FBIdle", 0);
+                aim.transform.localRotation = Quaternion.Euler(0, 0, 0);
+                if (!getPassable[fullMap[(int)currentGridPos.x, (int)currentGridPos.y + 1].getCode()] && i == 0)
+                {
+                    break;
+                }
+                transform.position = new Vector2(transform.position.x, (-1 * speedMod) / steps + transform.position.y);
+            }
+            else if (thisStep == "W")
+            {
+                anim.CrossFade("BBIdle", 0);
+                aim.transform.localRotation = Quaternion.Euler(0, 0, 180);
+                if (!getPassable[fullMap[(int)currentGridPos.x,(int)currentGridPos.y-1].getCode()] && i == 0)
+                {
+                    break;
+                }
+                transform.position = new Vector2(transform.position.x, (1 * speedMod) / steps + transform.position.y);
+            }
+            yield return new WaitForSeconds(0.00001f);
+        }
+        if(!keepMoving)
+            currentKey = "";
+        moving = false;
+        if (buffer != "")
+        {
+            currentKey = buffer;
+            buffer = "";
+            StartCoroutine(move());
+        }
+    }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -294,7 +396,6 @@ public class Player : MonoBehaviour {
         float x = float.Parse(posArray[0]);
         float y = float.Parse(posArray[1]);
         transform.position = new Vector3(x, y, transform.position.z);
-
         int i = 0;
         read = reader.ReadLine();
         if (reader.EndOfStream)
@@ -354,6 +455,22 @@ public class Player : MonoBehaviour {
     public void addItem(Item i)
     {
         ps.addItem(i);
+    }
+
+    public void sendMapPosition(Vector2 pos)
+    {
+        currentGridPos = pos;
+        //print(fullMap[(int)pos.x, (int)pos.y].getCode());
+    }
+
+    public void sendMap(TileCode[,] cS)
+    {
+        fullMap = cS;
+    }
+
+    public void sendBumpCodes(Dictionary<string,bool> b)
+    {
+        getPassable = b;
     }
 
 }

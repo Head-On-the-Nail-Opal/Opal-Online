@@ -72,6 +72,7 @@ public class BuildWorld : MonoBehaviour
             { "S", false },
             { "C", true},
             {"O", false } };
+        pl.sendBumpCodes(getPassable);
         build();
         createWalls();
         createEncounterAreas();
@@ -172,6 +173,7 @@ public class BuildWorld : MonoBehaviour
             }
             i++;
         }
+        pl.sendMap(checkStanding);
     }
 
     private void createWalls()
@@ -251,6 +253,7 @@ public class BuildWorld : MonoBehaviour
         int xpos = (int)(((int)(pl.transform.position.x) / tilesize) + 0.5f);
         int ypos = (int)(((int)(pl.transform.position.y) / tilesize) - 1.5f);
         currentTile = checkStanding[xpos,(int) (mapSize.y - ypos)];
+        pl.sendMapPosition(new Vector2(xpos, (int)(mapSize.y - ypos)));
         //print(currentTile.getCode());
         //print(xpos + " and "+ ypos);
     }
