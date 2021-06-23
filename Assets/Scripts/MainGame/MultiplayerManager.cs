@@ -322,8 +322,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (Input.GetKeyUp(KeyCode.H))
         {
-            gameHistory += "reconnectTest, 0, 0" + '\n';
-            processCommand("reconnectTest, 0, 0");
+            gameHistory += "attack,1,6,5,0" + '\n';
+            processCommand("attack,1,6,5,0");
             Debug.Log("Just added fake game history item");
         }
         if (boardScript != null)
