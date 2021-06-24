@@ -75,15 +75,13 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         Debug.LogError("Griff's Dumb Data!!!: " + data);
         string command = data;
-        if (gameHistory.Split('\n').Length <= 2)
+        if (gameHistory.Split('\n').Length <= 1)
         {
             gameHistory += command + ",1" + '\n';
         }
         else
         {
-            Debug.Log("LAST COMMAND: " + gameHistory.Substring(gameHistory.LastIndexOf(',') + 1));
-            Debug.Log("NUMBER OF LAST COMMAND: " + int.Parse(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Remove(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Length - 2)));
-            gameHistory += command + "," + (int.Parse(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Remove(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Length - 2)) + 1) + '\n';
+            gameHistory += command + "," + (int.Parse(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Replace('\n', ' ').Replace(" ", "")) + 1) + '\n';
         }
 
         if (boardScript.getOnlineTeam() != cs.getCurrentOnlinePlayer())
@@ -149,15 +147,13 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (command != "" && PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
         {
-            if (gameHistory.Split('\n').Length <= 2)
+            if (gameHistory.Split('\n').Length <= 1)
             {
                 gameHistory += command + ",1" + '\n';
             }
             else
             {
-                Debug.Log("LAST COMMAND: " + gameHistory.Substring(gameHistory.LastIndexOf(',') + 1));
-                Debug.Log("NUMBER OF LAST COMMAND: " + int.Parse(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Remove(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Length - 2)));
-                gameHistory += command + "," + (int.Parse(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Remove(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Length - 2)) + 1) + '\n';
+                gameHistory += command + "," + (int.Parse(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Replace('\n', ' ').Replace(" ", "")) + 1) + '\n';
             }
             processCommand(command);
         }
@@ -344,15 +340,13 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
             processCommand(gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2]);
             string command = gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2];
 
-            if (gameHistory.Split('\n').Length <= 2)
+            if (gameHistory.Split('\n').Length <= 1)
             {
                 gameHistory += command + ",1" + '\n';
             }
             else
             {
-                Debug.Log("LAST COMMAND: " + gameHistory.Substring(gameHistory.LastIndexOf(',') + 1));
-                Debug.Log("NUMBER OF LAST COMMAND: " + int.Parse(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Remove(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Length - 2)));
-                gameHistory += command + "," + (int.Parse(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Remove(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Length - 2)) + 1) + '\n';
+                gameHistory += command + "," + (int.Parse(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Replace('\n', ' ').Replace(" ", "")) + 1) + '\n';
             }
             Debug.Log("Just added fake game history item");
         }
