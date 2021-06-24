@@ -173,7 +173,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
                 Debug.Log("THE CLIENT THAT JUST ENDED THEIR TURN HAS THE LONGER GAME HISTORY");
                 foreach (string command in data.Split('\n'))
                 {
-                    if (!gameHistory.Contains(command))
+                    if (!gameHistory.Contains(command) && !command.Contains("end"))
                     {
                         Debug.Log("MISSING COMMAND: " + command);
                         this.photonView.RPC("updateGameHistory", RpcTarget.All, command, PhotonNetwork.MasterClient.ActorNumber);
@@ -184,7 +184,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
                 Debug.Log("THE MASTER CLIENT HAS THE LONGER GAME HISTORY");
                 foreach (string command in gameHistory.Split('\n'))
                 {
-                    if (!data.Contains(command))
+                    if (!data.Contains(command) && !command.Contains("end"))
                     {
                         Debug.Log("MISSING COMMAND: " + command);
                         this.photonView.RPC("updateGameHistory", RpcTarget.All, command, actorNumber);
@@ -329,6 +329,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
         //}
         else if (parsedCommand[0] == "attack")
         {
+            Debug.Log("DOING AN ATTACK");
             cs.doAttack(int.Parse(parsedCommand[2]), int.Parse(parsedCommand[3]), int.Parse(parsedCommand[4]));
         }
     }
