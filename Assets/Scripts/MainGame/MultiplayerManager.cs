@@ -78,11 +78,14 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
         if (gameHistory.Split('\n').Length <= 2)
         {
             gameHistory += command + ",1" + '\n';
-        } else
-        {
-            gameHistory += command + "," + int.Parse(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Remove(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Length - 2)) + '\n';
         }
-        
+        else
+        {
+            Debug.Log("LAST COMMAND: " + gameHistory.Substring(gameHistory.LastIndexOf(',') + 1));
+            Debug.Log("NUMBER OF LAST COMMAND: " + int.Parse(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Remove(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Length - 2)));
+            gameHistory += command + "," + (int.Parse(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Remove(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Length - 2)) + 1) + '\n';
+        }
+
         if (boardScript.getOnlineTeam() != cs.getCurrentOnlinePlayer())
         {
             if (command != "")
@@ -152,7 +155,9 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
             }
             else
             {
-                gameHistory += command + "," + int.Parse(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Remove(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Length - 2)) + '\n';
+                Debug.Log("LAST COMMAND: " + gameHistory.Substring(gameHistory.LastIndexOf(',') + 1));
+                Debug.Log("NUMBER OF LAST COMMAND: " + int.Parse(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Remove(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Length - 2)));
+                gameHistory += command + "," + (int.Parse(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Remove(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Length - 2)) + 1) + '\n';
             }
             processCommand(command);
         }
@@ -345,7 +350,9 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
             }
             else
             {
-                gameHistory += command + "," + int.Parse(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Remove(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Length - 2)) + '\n';
+                Debug.Log("LAST COMMAND: " + gameHistory.Substring(gameHistory.LastIndexOf(',') + 1));
+                Debug.Log("NUMBER OF LAST COMMAND: " + int.Parse(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Remove(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Length - 2)));
+                gameHistory += command + "," + (int.Parse(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Remove(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Length - 2)) + 1) + '\n';
             }
             Debug.Log("Just added fake game history item");
         }
