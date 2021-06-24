@@ -75,7 +75,14 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         Debug.LogError("Griff's Dumb Data!!!: " + data);
         string command = data;
-        gameHistory += command + '\n';
+        if (gameHistory.Split('\n').Length <= 2)
+        {
+            gameHistory += command + ",1" + '\n';
+        } else
+        {
+            gameHistory += command + ((gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2]).Split(',')[(gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2]).Split(',').Length - 1] + 1) + '\n';
+        }
+        
         if (boardScript.getOnlineTeam() != cs.getCurrentOnlinePlayer())
         {
             if (command != "")
@@ -139,7 +146,14 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (command != "" && PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
         {
-            gameHistory += command + '\n';
+            if (gameHistory.Split('\n').Length <= 2)
+            {
+                gameHistory += command + ",1" + '\n';
+            }
+            else
+            {
+                gameHistory += command + ((gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2]).Split(',')[(gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2]).Split(',').Length - 1] + 1) + '\n';
+            }
             processCommand(command);
         }
     }
@@ -323,7 +337,16 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
         if (Input.GetKeyUp(KeyCode.H))
         {
             processCommand(gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2]);
-            gameHistory += gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2] + '\n';
+            string command = gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2];
+
+            if (gameHistory.Split('\n').Length <= 2)
+            {
+                gameHistory += command + ",1" + '\n';
+            }
+            else
+            {
+                gameHistory += command + ((gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2]).Split(',')[(gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2]).Split(',').Length - 1] + 1) + '\n';
+            }
             Debug.Log("Just added fake game history item");
         }
         if (boardScript != null)
