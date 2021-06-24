@@ -80,7 +80,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
             gameHistory += command + ",1" + '\n';
         } else
         {
-            gameHistory += command + ((gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2]).Split(',')[(gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2]).Split(',').Length - 1] + 1) + '\n';
+            gameHistory += command + (int.Parse((gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2]).Split(',')[(gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2]).Split(',').Length - 1]) + 1) + '\n';
         }
         
         if (boardScript.getOnlineTeam() != cs.getCurrentOnlinePlayer())
@@ -152,7 +152,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
             }
             else
             {
-                gameHistory += command + ((gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2]).Split(',')[(gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2]).Split(',').Length - 1] + 1) + '\n';
+                gameHistory += command + (int.Parse((gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2]).Split(',')[(gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2]).Split(',').Length - 1]) + 1) + '\n';
             }
             processCommand(command);
         }
@@ -345,7 +345,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
             }
             else
             {
-                gameHistory += command + ((gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2]).Split(',')[(gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2]).Split(',').Length - 1] + 1) + '\n';
+                gameHistory += command + (int.Parse((gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2]).Split(',')[(gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2]).Split(',').Length - 1]) + 1) + '\n';
             }
             Debug.Log("Just added fake game history item");
         }
