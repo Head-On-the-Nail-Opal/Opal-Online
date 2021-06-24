@@ -323,34 +323,29 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
             cs.pressEndTurn();
 
         }
-        //else if (parsedCommand[0] == "attack" && (reconnecting || int.Parse(parsedCommand[1]) != boardScript.getOnlineTeam()))
-        //{
-        //    cs.doAttack(int.Parse(parsedCommand[2]), int.Parse(parsedCommand[3]), int.Parse(parsedCommand[4]));
-        //}
-        else if (parsedCommand[0] == "attack")
+        else if (parsedCommand[0] == "attack" && (reconnecting || int.Parse(parsedCommand[1]) != boardScript.getOnlineTeam()))
         {
-            Debug.Log("DOING AN ATTACK");
             cs.doAttack(int.Parse(parsedCommand[2]), int.Parse(parsedCommand[3]), int.Parse(parsedCommand[4]));
         }
     }
 
     void Update()
     {
-        if (Input.GetKeyUp(KeyCode.H))
-        {
-            processCommand(gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2]);
-            string command = gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2];
+        //if (Input.GetKeyUp(KeyCode.H))
+        //{
+        //    processCommand(gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2]);
+        //    string command = gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2];
 
-            if (gameHistory.Split('\n').Length <= 1)
-            {
-                gameHistory += command + ",1" + '\n';
-            }
-            else
-            {
-                gameHistory += command + "," + (int.Parse(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Replace('\n', ' ').Replace(" ", "")) + 1) + '\n';
-            }
-            Debug.Log("Just added fake game history item");
-        }
+        //    if (gameHistory.Split('\n').Length <= 1)
+        //    {
+        //        gameHistory += command + ",1" + '\n';
+        //    }
+        //    else
+        //    {
+        //        gameHistory += command + "," + (int.Parse(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Replace('\n', ' ').Replace(" ", "")) + 1) + '\n';
+        //    }
+        //    Debug.Log("Just added fake game history item");
+        //}
         if (boardScript != null)
         {
             if (boardScript.getMult() == false)
