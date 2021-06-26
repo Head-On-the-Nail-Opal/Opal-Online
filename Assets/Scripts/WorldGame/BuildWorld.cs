@@ -14,13 +14,14 @@ public class BuildWorld : MonoBehaviour
     private List<OpalHolder> patchInfo = new List<OpalHolder>();
     public List<string> opalSpawns;
     public List<List<OpalHolder>> newSpawns = new List<List<OpalHolder>>();
-    private float tilesize = 8.3f;
+    private float tilesize = 1f;
     public Player pl;
     private Vector3 lastPosition;
     private TileCode[,] checkStanding;
     private Vector2 mapSize;
     private TileCode currentTile;
     private TileCode lastTile;
+    public OpalLogger oL;
     // Start is called before the first frame update
     void Start()
     {
@@ -74,7 +75,7 @@ public class BuildWorld : MonoBehaviour
             {"O", false } };
         pl.sendBumpCodes(getPassable);
         build();
-        createWalls();
+        //createWalls();
         createEncounterAreas();
     }
 
@@ -145,7 +146,7 @@ public class BuildWorld : MonoBehaviour
             string[] splitter2 = s.Split(' ');
             makeMap.Add(splitter2);
         }
-        int i = 0;
+        int i = (int)mapSize.y-1;
         foreach (string[] ss in makeMap)
         {
             int j = 0;
@@ -163,15 +164,16 @@ public class BuildWorld : MonoBehaviour
                     {
                         TileCode tc = Instantiate<TileCode>(getTileByCode[s.Substring(0,1)]);
                         tc.setSecondaryCode(s.Substring(1, 2));
-                        tc.transform.position = new Vector3(j*tilesize, (s.Length - i - 1)*tilesize + mapSize.y*tilesize, 19);
-                        tc.transform.localScale = new Vector3(1f, 1f, 1.001f);
+                        tc.transform.position = new Vector3(j*tilesize, i*tilesize, 19);
+                        tc.transform.localScale *= 1/8.3f;
                         allTiles.Add(tc);
                         checkStanding[j,i] = tc;
+                        tc.gameObject.SetActive(false);
                         j++;
                     }
                 }
             }
-            i++;
+            i--;
         }
         pl.sendMap(checkStanding);
     }
@@ -252,8 +254,8 @@ public class BuildWorld : MonoBehaviour
         //need to offset these values based on the offset of the map
         int xpos = (int)(((int)(pl.transform.position.x) / tilesize) + 0.5f);
         int ypos = (int)(((int)(pl.transform.position.y) / tilesize) - 1.5f);
-        currentTile = checkStanding[xpos,(int) (mapSize.y - ypos)];
-        pl.sendMapPosition(new Vector2(xpos, (int)(mapSize.y - ypos)));
+        currentTile = checkStanding[Mathf.RoundToInt(pl.transform.position.x),Mathf.RoundToInt(pl.transform.position.y)];
+        //pl.sendMapPosition(new Vector2(xpos, (int)(mapSize.y - ypos)));
         //print(currentTile.getCode());
         //print(xpos + " and "+ ypos);
     }
@@ -294,11 +296,25 @@ public class BuildWorld : MonoBehaviour
             opal = Instantiate<OpalScript>(opal, this.transform);
             opal.setOpal(null);
             opal.transform.localPosition = new Vector3(tc.getPos().x, tc.getPos().y, 18);
+
             opal.transform.rotation = Quaternion.Euler(0, 0, 0);
-            opal.transform.localScale *= 5;
+            opal.transform.localScale *= 1;
             //Destroy(opal.GetComponent<Rigidbody2D>());
             opal.gameObject.AddComponent<RoamOpal>();
+            opal.GetComponent<RoamOpal>().setMap(checkStanding, getPassable);
+            opal.GetComponent<RoamOpal>().addOpalLogger(oL);
+            //opal.GetComponent<RoamOpal>().setGridPos(calculateGridPos(opal));
         }
+    }
+
+    private Vector2 calculateGridPos(OpalScript o)
+    {
+        Vector2 output = new Vector2();
+        int xpos = (int)(((int)(o.transform.position.x) / tilesize));
+        int ypos = (int)(((int)(o.transform.position.y) / tilesize));
+        currentTile = checkStanding[xpos, (int)(mapSize.y - ypos)];
+        output = new Vector2(xpos, (int)(mapSize.y - ypos));
+        return output;
     }
 }
 

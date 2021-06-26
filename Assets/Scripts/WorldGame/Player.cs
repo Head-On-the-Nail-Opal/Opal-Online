@@ -6,8 +6,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour {
     private string controller = "keyboard";
-    private Rigidbody2D rigidbody2D;
-    private float speedMod = 8.3f;
+    private float speedMod = 1f;
     private SpriteRenderer sr;
     private Animator anim;
     private ParticleSystem wet;
@@ -30,10 +29,13 @@ public class Player : MonoBehaviour {
     private Dictionary<string, bool> getPassable;
     private TileCode[,] fullMap;
     private Vector2 currentGridPos;
+    public OpalLogger oL;
+    private bool loaded = false;
+    private List<TileCode> loadedTiles = new List<TileCode>();
+    public GameObject tallGrassCover;
 
     // Use this for initialization
     void Start () {
-        rigidbody2D = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
         grass = Instantiate<ParticleSystem>(Resources.Load<ParticleSystem>("Prefabs/World/Particles/Grass"), this.transform);
@@ -45,6 +47,11 @@ public class Player : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
+        if(fullMap != null && !loaded)
+        {
+            activateTiles((int)transform.position.x, (int)transform.position.y);
+            loaded = true;
+        }
         anim.speed = 2;
 	    if(controller == "keyboard" && canMove)
         {
@@ -102,7 +109,7 @@ public class Player : MonoBehaviour {
             }
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                StartCoroutine(aim.slash());
+                //StartCoroutine(aim.slash());
             }
             if (Input.GetKeyDown(KeyCode.P))
             {
@@ -117,8 +124,6 @@ public class Player : MonoBehaviour {
                 if (currentKey != "" && !moving)
                     StartCoroutine(move());
             }
-            else
-                rigidbody2D.velocity = new Vector2(0 * speedMod, 0 * speedMod);
         }	
 	}
 
@@ -202,47 +207,62 @@ public class Player : MonoBehaviour {
             {
                 aim.transform.localRotation = Quaternion.Euler(0, 0, -270);
                 anim.CrossFade("RBIdle", 0);
-                if (!getPassable[fullMap[(int)currentGridPos.x+1, (int)currentGridPos.y].getCode()] && i == 0)
+                if (!getPassable[fullMap[(int)transform.position.x+1, (int)transform.position.y].getCode()] && i == 0)
                 {
                     break;
                 }
+                onMoveToTile(fullMap[Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y)].getCode());
                 transform.position = new Vector2((1 * speedMod) / steps + transform.position.x, transform.position.y);
             }
             else if (thisStep == "A")
             {
                 aim.transform.localRotation = Quaternion.Euler(0, 0, 270);
                 anim.CrossFade("LBIdle", 0);
-                if (!getPassable[fullMap[(int)currentGridPos.x-1, (int)currentGridPos.y].getCode()] && i == 0)
+                if (!getPassable[fullMap[(int)transform.position.x-1, (int)transform.position.y].getCode()] && i == 0)
                 {
                     break;
                 }
+                onMoveToTile(fullMap[Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y)].getCode());
                 transform.position = new Vector2((-1 * speedMod) / steps + transform.position.x, transform.position.y);
             }
             else if (thisStep == "S")
             {
                 anim.CrossFade("FBIdle", 0);
                 aim.transform.localRotation = Quaternion.Euler(0, 0, 0);
-                if (!getPassable[fullMap[(int)currentGridPos.x, (int)currentGridPos.y + 1].getCode()] && i == 0)
+                if (!getPassable[fullMap[(int)transform.position.x, (int)transform.position.y - 1].getCode()] && i == 0)
                 {
                     break;
                 }
+                onMoveToTile(fullMap[Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y)].getCode());
                 transform.position = new Vector2(transform.position.x, (-1 * speedMod) / steps + transform.position.y);
             }
             else if (thisStep == "W")
             {
                 anim.CrossFade("BBIdle", 0);
                 aim.transform.localRotation = Quaternion.Euler(0, 0, 180);
-                if (!getPassable[fullMap[(int)currentGridPos.x,(int)currentGridPos.y-1].getCode()] && i == 0)
+                if (!getPassable[fullMap[(int)transform.position.x,(int)transform.position.y+1].getCode()] && i == 0)
                 {
                     break;
                 }
+                onMoveToTile(fullMap[Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y)].getCode());
                 transform.position = new Vector2(transform.position.x, (1 * speedMod) / steps + transform.position.y);
             }
             yield return new WaitForSeconds(0.00001f);
         }
         if(!keepMoving)
             currentKey = "";
+        transform.position = new Vector2(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y));
+        activateTiles((int)transform.position.x, (int)transform.position.y);
+        OpalScript collide = oL.checkTile((int)transform.position.x, (int)transform.position.y);
+        if(collide != null)
+        {
+            print(collide.getMyName());
+            addOpal(collide.getVariant());
+            oL.removeOpal(collide.gameObject.GetComponent<RoamOpal>());
+            DestroyImmediate(collide.gameObject);
+        }
         moving = false;
+        //print(fullMap[(int)transform.position.x, (int)transform.position.y].getCode());
         if (buffer != "")
         {
             currentKey = buffer;
@@ -289,14 +309,12 @@ public class Player : MonoBehaviour {
     public void catchOpal(string variant)
     {
         canMove = false;
-        rigidbody2D.constraints = RigidbodyConstraints2D.FreezeAll;
         cg.Launch(variant, transform.position);
     }
 
     public void addOpal(string variant)
     {
         canMove = true;
-        rigidbody2D.constraints = RigidbodyConstraints2D.FreezeRotation;
         if (variant != null)
         {
             party.Add(variant);
@@ -471,6 +489,40 @@ public class Player : MonoBehaviour {
     public void sendBumpCodes(Dictionary<string,bool> b)
     {
         getPassable = b;
+    }
+
+    public void activateTiles(int x, int y)
+    {
+        foreach(TileCode t in loadedTiles)
+        {
+            t.gameObject.SetActive(false);
+        }
+        for(int i = -8; i < 9; i++)
+        {
+            for (int j = -5; j < 6; j++)
+            {
+                if (x + i < fullMap.GetLength(0) && y + j < fullMap.GetLength(1) && x+i >= 0 && y+j >= 0)
+                {
+                    if (fullMap[x + i, y + j] != null)
+                    {
+                        fullMap[x + i, y + j].gameObject.SetActive(true);
+                        loadedTiles.Add(fullMap[x + i, y + j]);
+                    }
+                }
+            }
+        }
+    }
+
+    private void onMoveToTile(string code)
+    {
+        if(code == "G")
+        {
+            tallGrassCover.SetActive(true);
+        }
+        else
+        {
+            tallGrassCover.SetActive(false);
+        }
     }
 
 }

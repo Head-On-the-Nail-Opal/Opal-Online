@@ -212,6 +212,7 @@ abstract public class OpalScript : MonoBehaviour {
             string path = particles[particleSystem];
             ParticleSystem myPart = Instantiate<ParticleSystem>(Resources.Load<ParticleSystem>(path), this.transform);
             myPart.transform.localPosition = new Vector3(0, 0, -2);
+            myPart.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
             if(particleSystem == 6 || particleSystem == 7)
             {
                 myPart.transform.localPosition = new Vector3(0, 0, 0.1f);
@@ -224,7 +225,7 @@ abstract public class OpalScript : MonoBehaviour {
         {
             transform.localScale *= 2;
         }
-        if (anim != null && myCharm != "Goreilla Suit") {
+        if (anim != null && myCharm == "Goreilla Suit") {
             anim.CrossFade("Goreilla", 0);
         }
         else if(anim != null)
