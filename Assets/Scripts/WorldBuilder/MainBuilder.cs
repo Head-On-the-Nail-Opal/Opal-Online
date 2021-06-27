@@ -49,6 +49,8 @@ public class MainBuilder : MonoBehaviour
             { "W", Resources.Load<TileCode>("Prefabs/WorldTiles/Water")},
             { "S", Resources.Load<TileCode>("Prefabs/WorldTiles/StoneWall") },
             { "C", Resources.Load<TileCode>("Prefabs/WorldTiles/RockyFloor")},
+            { "r", Resources.Load<TileCode>("Prefabs/WorldTiles/FlowerGrassA")},
+            { "R", Resources.Load<TileCode>("Prefabs/WorldTiles/FlowerGrassB")},
             {"O", Resources.Load<TileCode>("Prefabs/WorldTiles/Ore") } };
     }
 

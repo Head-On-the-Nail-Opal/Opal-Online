@@ -50,6 +50,8 @@ public class BuildWorld : MonoBehaviour
             { "W", Resources.Load<TileCode>("Prefabs/WorldTiles/Water")},
             { "S", Resources.Load<TileCode>("Prefabs/WorldTiles/StoneWall") },
             { "C", Resources.Load<TileCode>("Prefabs/WorldTiles/RockyFloor")},
+            { "r", Resources.Load<TileCode>("Prefabs/WorldTiles/FlowerGrassA")},
+            { "R", Resources.Load<TileCode>("Prefabs/WorldTiles/FlowerGrassB")},
             {"O", Resources.Load<TileCode>("Prefabs/WorldTiles/Ore")} };
         getPassable = new Dictionary<string, bool>() {
             { "_", true },
@@ -61,6 +63,8 @@ public class BuildWorld : MonoBehaviour
             { "W", true},
             { "S", false },
             { "C", true},
+            { "R", true},
+            { "r", true},
             {"O", false} };
         getEncounter = new Dictionary<string, bool>() {
             { "_", false },
@@ -72,6 +76,8 @@ public class BuildWorld : MonoBehaviour
             { "W", true},
             { "S", false },
             { "C", true},
+            { "R", true},
+            { "r", false},
             {"O", false } };
         pl.sendBumpCodes(getPassable);
         build();
