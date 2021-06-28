@@ -78,6 +78,8 @@ abstract public class OpalScript : MonoBehaviour {
 
     private Vector3 coordinates = new Vector3();
 
+    protected List<OpalScript> cursed = new List<OpalScript>(); 
+
     private void Awake()
     {
         GameObject board = GameObject.Find("Main Camera");
