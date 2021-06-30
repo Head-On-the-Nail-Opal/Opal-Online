@@ -38,7 +38,7 @@ public class Brachiosh : OpalScript
     {
         foreach(OpalScript o in cursed)
         {
-            if(o.getDead() != true)
+            if(o.getDead() != true && o.getCurrentTile() != null && o.getCurrentTile().type == "Flood")
             {
                 o.takeDamage(10,false,true);
             }

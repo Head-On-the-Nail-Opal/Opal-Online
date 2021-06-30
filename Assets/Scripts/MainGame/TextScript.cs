@@ -679,9 +679,9 @@ public class TextScript : MonoBehaviour {
         }else if (o.getCharm() == "")
         {
             itemUI.GetComponent<SpriteRenderer>().enabled = false;
-            itemName.text = "No Charm";
+            itemName.text = "";
             itemName.fontSize = 20;
-            itemDesc.text = "This opal carries no charm.";
+            itemDesc.text = "";
         }else if (!o.getCharmRevealed())
         {
             itemUI.GetComponent<SpriteRenderer>().enabled = true;

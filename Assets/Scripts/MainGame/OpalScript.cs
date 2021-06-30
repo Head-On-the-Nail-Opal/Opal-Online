@@ -963,6 +963,7 @@ abstract public class OpalScript : MonoBehaviour {
         if (type1 == "Electric" || type2 == "Electric")
         {
             charge += amount;
+            onChargeItem(amount);
             boardScript.callParticles("charge", transform.position);
         }
     }
@@ -1969,6 +1970,18 @@ abstract public class OpalScript : MonoBehaviour {
         return;
     }
 
+    public void onChargeItem(int inc)
+    {
+        if (myCharm == "Frayed Wires")
+        {
+            if (inc < 0)
+            {
+                doTempBuff(0, -1, 0-inc);
+                charmRevealed = true;
+            }
+        }
+    }
+
     public void onPlacementItem()
     {
         if(myCharm == "Defense Orb")
@@ -2018,6 +2031,13 @@ abstract public class OpalScript : MonoBehaviour {
     public void onDamageItem(int dam)
     {
         switch (myCharm) {
+            case "Shock Collar":
+                if (!charmRevealed && boardScript.getMyCursor().getCurrentOpal().getTeam() != getTeam())
+                {
+                    doCharge(5);
+                    charmRevealed = true;
+                }
+                break;
             case "Defense Orb":
                 doTempBuff(1, -1, -1);
                 break;
@@ -2086,6 +2106,16 @@ abstract public class OpalScript : MonoBehaviour {
     public void onStartItem()
     {
         switch (myCharm) {
+            case "Electromagnet":
+                foreach (OpalScript o in boardScript.gameOpals)
+                {
+                    if (o != null && o.getCharge() > 0)
+                    {
+                        doCharge(2);
+                        charmRevealed = true;
+                    }
+                }
+                break;
             case "Lightweight Fluid":
                 doHeal(2, getLifted());
                 charmRevealed = true;

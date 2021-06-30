@@ -41,6 +41,9 @@ public class ItemDescriptions : MonoBehaviour
         items.Add("Dripping Candle,At the start of your turn burn adjacent Opals."); 
         items.Add("Whetstone,When you end your turn next to a Boulder you and it gain +2 defense.");
         items.Add("Suffering Crown,When you take damage from an Opal with higher attack than you gain +5 attack."); //Potential LEGENDARY
+        items.Add("Frayed Wires,Whenever you spend a charge gain +1 attack");
+        items.Add("Shock Collar,Gain +5 charge the first time you take damage from an enemy");
+        items.Add("Electromagnet,At the start of your turn, if all of your teammates have charge, gain +2 charge");
         items.Sort();
 
 
