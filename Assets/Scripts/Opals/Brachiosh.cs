@@ -6,7 +6,7 @@ public class Brachiosh : OpalScript
 {
     override public void setOpal(string pl)
     {
-        health = 15;
+        health = 20;
         maxHealth = health;
         attack = 0;
         defense = 4;
@@ -27,8 +27,9 @@ public class Brachiosh : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Brackish", 0, 0, 0, "<Passive>\nOn Brachiosh's death, all Opals cursed by Brachiosh that are standing in flood take 10 damage,");
-        Attacks[1] = new Attack("Brinestorm", 5, 1, 0, "Place a flood tile and curse the Opal standing on the target tile.");
-        Attacks[2] = new Attack("Salt Bath", 0, 1, 0, "Cursed Opals currently standing in flood gain +2 to attack and defense.");
+        Attacks[1] = new Attack("Brinestorm", 5, 1, 0, "Place a flood tile and curse the Opal standing on the target tile, twice");
+        Attacks[1].setUses(2);
+        Attacks[2] = new Attack("Salt Bath", 0, 1, 0, "Cursed Opals currently standing in flood gain +3 to attack and defense.");
         Attacks[3] = new Attack("Shower", 0, 1, 0, "Surrounding tiles become Flood");
         type1 = "Water";
         type2 = "Spirit";
@@ -55,8 +56,7 @@ public class Brachiosh : OpalScript
         else if (attackNum == 1)
         {
             boardScript.setTile(target, "Flood", false);
-            if(!cursed.Contains(target))
-                cursed.Add(target);
+            target.setCursed(this);
             return 0;
         }
         else if (attackNum == 2)
@@ -65,8 +65,8 @@ public class Brachiosh : OpalScript
             {
                 if (!o.getDead() && o.getCurrentTile() != null && o.getCurrentTile().type == "Flood")
                 {
-                    o.doTempBuff(0, -1, 2);
-                    o.doTempBuff(1, -1, 2);
+                    o.doTempBuff(0, -1, 3);
+                    o.doTempBuff(1, -1, 3);
                 }
             }
             return 0;

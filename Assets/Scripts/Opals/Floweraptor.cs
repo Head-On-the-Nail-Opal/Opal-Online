@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class Floweraptor : OpalScript
 {
+
+    private bool usedAbility = false;
     override public void setOpal(string pl)
     {
-        health = 5;
+        health = 10;
         maxHealth = health;
-        attack = 4;
+        attack = 6;
         defense = 0;
-        speed = 4;
+        speed = 6;
         priority = 8;
         myName = "Floweraptor";
         transform.localScale = new Vector3(3.5f, 3.5f, 1);
@@ -28,10 +30,16 @@ public class Floweraptor : OpalScript
         player = pl;
         Attacks[0] = new Attack("Death's Shriek", 0, 0, 0, "<Passive>\n On Floweraptor's death, all Opals cursed by it lose -10 attack for 1 turn.");
         Attacks[1] = new Attack("Bloom", 0, 1, 0, "Place a Growth at your feet and gain +1 speed.");
-        Attacks[2] = new Attack("Drain Nutrients", 0, 1, 0, "Gain +2 attack for each cursed target. They each lose -2 attack.");
-        Attacks[3] = new Attack("Stalk", 1, 1, 8, "Curse the target, you may move after attacking.");
+        Attacks[2] = new Attack("Drain Nutrients", 0, 1, 0, "<Free Ability>\nOnce per turn, gain +2 attack for each cursed target. They each lose -2 attack.");
+        Attacks[2].setFreeAction(true);
+        Attacks[3] = new Attack("Stalk", 1, 1, 10, "Curse the target, you may move after attacking.");
         type1 = "Grass";
         type2 = "Spirit";
+    }
+
+    public override void onStart()
+    {
+        usedAbility = false;
     }
 
     public override void prepAttack(int attackNum)
@@ -80,20 +88,23 @@ public class Floweraptor : OpalScript
         }
         else if (attackNum == 2)
         {
-            foreach (OpalScript o in cursed)
+            if (usedAbility == false)
             {
-                if (!o.getDead())
+                foreach (OpalScript o in cursed)
                 {
-                    o.doTempBuff(0,-1,-2);
-                    doTempBuff(0, -1, 2);
+                    if (!o.getDead())
+                    {
+                        o.doTempBuff(0, -1, -2);
+                        doTempBuff(0, -1, 2);
+                    }
                 }
+                usedAbility = true;
             }
             return 0;
         }
         else if (attackNum == 3)
         {
-            if (!cursed.Contains(target))
-                cursed.Add(target);
+            target.setCursed(this);
         }
         return cA.getBaseDamage() + getAttack();
     }

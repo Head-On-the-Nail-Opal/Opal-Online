@@ -41,7 +41,7 @@ public class Pebblepal : OpalScript
         player = pl;
         Attacks[0] = new Attack("Rockly Aura", 0, 0, 0, "<Passive>\nAt the end of Pebblepal's turn, friendly Opals adjacent to Pebblepal gain +5 attack and defense for 1 turn");
         Attacks[1] = new Attack("Friend Boost", 0, 0, 0, "<Passive>\n Each Boulder adjacent to Pebblepal extends the range of its Rockly Aura ");
-        Attacks[2] = new Attack("Indecisive", 0, 1, 0, "Rockly Aura deals debufs to adjacent enemy Opals instead of buffing.");
+        Attacks[2] = new Attack("Indecisive", 0, 1, 0, "Rockly Aura deals debuffs to adjacent enemy Opals instead of buffing.");
         Attacks[3] = new Attack("Roll", 1, 1, 0, "Move one tile over.");
         type1 = "Ground";
         type2 = "Air";
@@ -81,8 +81,8 @@ public class Pebblepal : OpalScript
                     {
                         if (boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer != null && boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer.getTeam() != getTeam())
                         {
-                            boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer.doTempBuff(0, 1, -5);
-                            boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer.doTempBuff(1, 1, -5);
+                            boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer.doTempBuff(0, 1, -8);
+                            boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer.doTempBuff(1, 1, -8);
                         }
                     }
                 }
@@ -106,7 +106,7 @@ public class Pebblepal : OpalScript
             atSwitch = !atSwitch;
             if (atSwitch)
             {
-                Attacks[0] = new Attack("Rockly Aura", 0, 0, 0, "<Passive>\nAt the end of Pebblepal's turn, enemy Opals adjacent to Pebblepal gain -5 attack and defense for 1 turn");
+                Attacks[0] = new Attack("Rockly Aura", 0, 0, 0, "<Passive>\nAt the end of Pebblepal's turn, enemy Opals adjacent to Pebblepal gain -8 attack and defense for 1 turn");
                 DestroyImmediate(myAura.gameObject);
                 myAura = Instantiate<ParticleSystem>(Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/RocklyAuraHarm"), transform);
             }

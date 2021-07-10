@@ -119,6 +119,12 @@ public class Projectile : MonoBehaviour{
                 return new Color(255 / 255f, 0 / 255f, 0 / 255f);
             return new Color(200 / 255f, 0 / 255f, 0 / 255f);
         }
+        else if (type == "Spirit")
+        {
+            if (first)
+                return new Color(157 / 255f, 0 / 255f, 166 / 255f);
+            return new Color(98 / 255f, 0 / 255f, 143 / 255f);
+        }
         return projColor;
     }
 

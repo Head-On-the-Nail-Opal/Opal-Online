@@ -1,8 +1,9 @@
 Please don't change this, it will be encrypted eventually.
 Inflicshun||Straight-Edge,Glorm||Straight-Edge,Chardinal||Straight-Edge,
-Butterflight|Defense Orb|Cautious,Wingnition|Potion of Gratitude|Optimistic,Hopscure|Spectre Essence|Risk-Taker,Diamite|Makeshift Shield|Impatient,
-Slungus||Straight-Edge,
-Pebblepal||Straight-Edge,
+Butterflight|Defense Orb|Cautious,Wingnition|Potion of Gratitude|Optimistic,Hopscure|Spectre Essence|Risk-Taker,Fragmatom||Straight-Edge,
+Inseedious||Straight-Edge,
+KnightLite||Straight-Edge,
+Investigator||Straight-Edge,Pebblepal||Straight-Edge,Shineode||Straight-Edge,
 endTeams
-Amalgum,Ambush,Aquarican,Aughtment,Barriarray,Beaconfire,Beamrider,Betary,Bubbacle,Butterflight,Cactoid,Charayde,Chardinal,Chasmcrawler,Cottonmaw,Diamite,Drizziphyl,Duplimorph,Excremite,Experiment42,Finbow,Fluttorch,Fragmatom,Froxic,FumePlume,Gilsplish,Glorm,Glummer,Gorj,Grimmline,Groth,Hearthhog,Heatriarch,Hopscure,Hoviron,Inflicshun,Inseedious,Jetjinn,KnightLite,Luminute,Meadowebb,Mechalodon,Nachteous,Oremordilla,Overgroink,Pebblepal,Prismin,Protectric,Puffsqueak,Scorpirad,Sentree,Shineode,Shocket,Slungus,Snugbun,Sorceraura,Spillarc,Spiritch,Strikel,Succuum,Terradactyl,Teslamp,Thermor,Tortquoise,Toxikrab,Verminfection,Volcoco,Wingnition,Wobblestone,Zheep,
+Amalgum,Ambush,Aquarican,Aughtment,Barriarray,Beaconfire,Beamrider,Betary,Bubbacle,Butterflight,Cactoid,Charayde,Chardinal,Chasmcrawler,Cottonmaw,Diamite,Drizziphyl,Duplimorph,Excremite,Experiment42,Finbow,Fluttorch,Fragmatom,Froxic,FumePlume,Gilsplish,Glorm,Glummer,Gorj,Grimmline,Groth,Hearthhog,Heatriarch,Hopscure,Hoviron,Inflicshun,Inseedious,Jetjinn,KnightLite,Luminute,Meadowebb,Mechalodon,Nachteous,Oremordilla,Overgroink,Pebblepal,Prismin,Protectric,Puffsqueak,Scorpirad,Sentree,Shineode,Shocket,Slungus,Snugbun,Sorceraura,Spillarc,Spiritch,Strikel,Succuum,Terradactyl,Teslamp,Thermor,Tortquoise,Toxikrab,Verminfection,Volcoco,Wingnition,Wobblestone,Zheep,Investigator,
 endOpals

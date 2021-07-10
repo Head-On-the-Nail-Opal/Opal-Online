@@ -664,6 +664,12 @@ public class TileScript : MonoBehaviour {
             trapEffect = Instantiate<GameObject>(temp, this.transform);
             trapEffect.transform.localPosition = new Vector3(0, 0.5f, 0);
         }
+        else if (trapType == "Mist")
+        {
+            GameObject temp = Resources.Load<GameObject>("Prefabs/ParticleSystems/Traps/Mist");
+            trapEffect = Instantiate<GameObject>(temp, this.transform);
+            trapEffect.transform.localPosition = new Vector3(0, 0.5f, 0);
+        }
     }
 
     public void clearTrap()
@@ -711,6 +717,17 @@ public class TileScript : MonoBehaviour {
                 boardScript.setTile((int)transform.position.x - 1, (int)transform.position.z, "Boulder", false);
                 boardScript.setTile((int)transform.position.x, (int)transform.position.z + 1, "Boulder", false);
                 boardScript.setTile((int)transform.position.x, (int)transform.position.z - 1, "Boulder", false);
+                break;
+            case "Mist":
+                foreach(OpalScript o in target.getCursedBy())
+                {
+                    if(o.getMyName() == "Mistery")
+                    {
+                        target.takeDamage(14,true, true);
+                        DestroyImmediate(trapEffect);
+                        break;
+                    }
+                }
                 break;
         }
     }

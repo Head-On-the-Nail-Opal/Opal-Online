@@ -78,7 +78,8 @@ abstract public class OpalScript : MonoBehaviour {
 
     private Vector3 coordinates = new Vector3();
 
-    protected List<OpalScript> cursed = new List<OpalScript>(); 
+    protected List<OpalScript> cursed = new List<OpalScript>();
+    protected List<OpalScript> cursedBy = new List<OpalScript>();
 
     private void Awake()
     {
@@ -1044,6 +1045,9 @@ abstract public class OpalScript : MonoBehaviour {
                     DestroyImmediate(currentBurn.gameObject);
                 currentBurn = null;
                 burnCounter = 2;
+            }else if(newburn && burning)
+            {
+                burnTimer = 3;
             }
             burning = newburn;
         }
@@ -1084,6 +1088,10 @@ abstract public class OpalScript : MonoBehaviour {
                     doTempBuff(2, -1, -1);
                     charmRevealed = true;
                 }
+            }
+            else if (newLift && lifted)
+            {
+                liftTimer = 3;
             }
             lifted = newLift;
         }
@@ -1127,6 +1135,10 @@ abstract public class OpalScript : MonoBehaviour {
                 if(currentPoison != null)
                     DestroyImmediate(currentPoison.gameObject);
                 currentPoison = null;
+            }
+            else if (newpoison && poisoned)
+            {
+                poisonTimer = 3;
             }
             poisoned = newpoison;
         }
@@ -1808,6 +1820,20 @@ abstract public class OpalScript : MonoBehaviour {
                 health += heal;
             }
         }
+    }
+
+    public void setCursed(OpalScript curser)
+    {
+        if (!curser.cursed.Contains(this))
+        {
+            curser.cursed.Add(this);
+            cursedBy.Add(curser);
+        }
+    }
+
+    public List<OpalScript> getCursedBy()
+    {
+        return cursedBy;
     }
 
 
