@@ -17,7 +17,7 @@ public class ConnectedTile : MonoBehaviour
         connectedTileSprites = Resources.LoadAll<Sprite>("Sprites/Water_Tiles");
 
         //Top left water sprites
-        waterTileGroups.Add(new List<int>() { 4, 8, 9, 10, 23, 29, 31, 34, 35, 45, 46 });
+        waterTileGroups.Add(new List<int>() { 4, 8, 9, 10, 17, 23, 29, 31, 34, 35, 45, 46 });
 
         //Top water sprites
         waterTileGroups.Add(new List<int>() { 0, 1, 2, 3, 5, 6, 7, 28, 36, 37, 38, 39, 40 });
@@ -41,7 +41,7 @@ public class ConnectedTile : MonoBehaviour
         waterTileGroups.Add(new List<int>() { 5, 6, 10, 21, 22, 23, 28, 32, 33, 34, 35, 41, 43 });
 
         //Top left grass sprites
-        grassTileGroups.Add(new List<int>() { 13, 14, 18, 20, 21, 22, 25, 26, 30, 32, 33, 44, 45 });
+        grassTileGroups.Add(new List<int>() { 13, 14, 18, 20, 21, 22, 25, 26, 30, 32, 33, 44 });
 
         //Top grass sprites
         grassTileGroups.Add(new List<int>() { 4, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 29, 30, 31, 32, 33, 34, 41, 42, 43, 44, 45, 46 });
@@ -98,7 +98,7 @@ public class ConnectedTile : MonoBehaviour
                 }
             }
 
-            //Debug.Log("Possible tiles(step " + i + "): " + debugToString(possibleTiles));
+            Debug.Log("Possible tiles(step " + i + "): " + debugToString(possibleTiles));
         }
 
         if (possibleTiles.Count > 0)

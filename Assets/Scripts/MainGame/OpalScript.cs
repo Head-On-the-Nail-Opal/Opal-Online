@@ -207,7 +207,8 @@ abstract public class OpalScript : MonoBehaviour {
         variant = myName + num;
         int intNum = int.Parse(num);
         skin = intNum % 100;
-        int particleSystem = (intNum / 100) % 100;
+        //int particleSystem = (intNum / 100) % 100;
+        int particleSystem = 0;
         int particleColor = (intNum / 10000) % 100;
         int size = (intNum / 1000000) % 100;
         if (particleSystem != 0)
@@ -215,7 +216,7 @@ abstract public class OpalScript : MonoBehaviour {
             string path = particles[particleSystem];
             ParticleSystem myPart = Instantiate<ParticleSystem>(Resources.Load<ParticleSystem>(path), this.transform);
             myPart.transform.localPosition = new Vector3(0, 0, -2);
-            myPart.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+            myPart.transform.localScale *= 0.1f;
             if(particleSystem == 6 || particleSystem == 7)
             {
                 myPart.transform.localPosition = new Vector3(0, 0, 0.1f);
@@ -320,6 +321,75 @@ abstract public class OpalScript : MonoBehaviour {
                 defense -= 2;
                 break;
         }
+    }
+
+    public string getPersonalityInfo(string p)
+    {
+        switch (p)
+        {
+            case "Proud":
+                return "Attack +1, Defense -1";
+            case "Reserved":
+                return "Defense +1, Attack -1";
+            case "Risk-Taker":
+                return "Attack +2, Defense -2";
+            case "Worried":
+                return "Defense +2, Attack -2";
+            case "Tactical":
+                return "Attack +3, Speed -1";
+            case "Cautious":
+                return "Defense +3, Speed -1";
+            case "Relaxed":
+                return "Health +5, Speed -1";
+            case "Optimistic":
+                return "Health +5, Attack -2";
+            case "Pesimistic":
+                return "Health +5, Defense -2";
+            case "Impatient":
+                return "Speed +1, Attack -2, Defense -2";
+        }
+        return "";
+    }
+
+    public void setRandomPersonality()
+    {
+        int rand = Random.Range(0, 11);
+        switch (rand) {
+            case 0:
+                personality = "Straight-Edge";
+                break;
+            case 1:
+                personality = "Proud";
+                break;
+            case 2:
+                personality = "Reserved";
+                break;
+            case 3:
+                personality = "Risk-Taker";
+                break;
+            case 4:
+                personality = "Worried";
+                break;
+            case 5:
+                personality = "Tactical";
+                break;
+            case 6:
+                personality = "Cautious";
+                break;
+            case 7:
+                personality = "Relaxed";
+                break;
+            case 8:
+                personality = "Optimistic";
+                break;
+            case 9:
+                personality = "Pesimistic";
+                break;
+            case 10:
+                personality = "Impatient";
+                break;
+        }
+
     }
 
     public string getCharm()
@@ -733,7 +803,7 @@ abstract public class OpalScript : MonoBehaviour {
                     targetTile = boardScript.tileGrid[x, y];
                 }
             }
-            if (adj && !boardScript.getResetting())
+            if (adj && !boardScript.getResetting() && currentTile != null)
             {
                 int xVel = 0;
                 int yVel = 0;

@@ -223,7 +223,7 @@ public class Investigator : OpalScript
             {
                 return 0;
             }
-            if(attackNum == 3 && target.currentPlayer != null && target.currentPlayer.getMyName() == "Boulder")
+            if(attackNum == 3 && target.currentPlayer != null && target.currentPlayer.getMyName() == "Boulder" && usedAbility == false)
             {
                 return 0;
             }

@@ -149,7 +149,7 @@ public class Floweraptor : OpalScript
         }
         else if (attackNum == 3)
         {
-            return 0;
+
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
     }

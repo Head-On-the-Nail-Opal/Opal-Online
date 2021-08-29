@@ -22,6 +22,11 @@ public class BuildWorld : MonoBehaviour
     private TileCode currentTile;
     private TileCode lastTile;
     public OpalLogger oL;
+
+    private void Awake()
+    {
+        pl.setBuildWorld(this);
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -85,6 +90,7 @@ public class BuildWorld : MonoBehaviour
         createEncounterAreas();
     }
 
+    
     // Update is called once per frame
     void Update()
     {
@@ -94,7 +100,7 @@ public class BuildWorld : MonoBehaviour
             getCurrentTile();
             if (currentTile != lastTile)
             {
-                checkSpawn();
+                //checkSpawn();
                 lastTile = currentTile;
             }
         }
@@ -102,7 +108,7 @@ public class BuildWorld : MonoBehaviour
 
     private void build()
     {
-        string path = "Assets/Resources/Maps/map.txt";
+        string path = "Assets/StreamingAssets/map.txt";
         string map = "";
         //Read the text from directly from the test.txt file
         StreamReader reader = new StreamReader(path);
@@ -266,14 +272,27 @@ public class BuildWorld : MonoBehaviour
         //print(xpos + " and "+ ypos);
     }
 
-    private void checkSpawn()
+    public void checkSpawn(TileCode current)
     {
-        if (currentTile.getSecondary() != "__")
+        if (current.getSecondary() != "__" && currentTile != null && currentTile.getSecondary() != "__")
         {
-            if(Random.Range(1, 7) == 4)
+            if((current.getPos().x < currentTile.getPos().x + 4 && current.getPos().x > currentTile.getPos().x - 4) && (current.getPos().y < currentTile.getPos().y + 4 && current.getPos().y > currentTile.getPos().y - 4))
             {
-                doSpawnOpal(int.Parse(currentTile.getSecondary()), currentTile);
+                if (current.getSecondary() == currentTile.getSecondary())
+                {
+                    if (Random.Range(1, 100) == 4)
+                    {
+                        doSpawnOpal(int.Parse(current.getSecondary()), current);
+                    }
+                }
             }
+            //else if(current.getSecondary() != currentTile.getSecondary())
+            //{
+            //    if (Random.Range(1, 200) == 4)
+             //   {
+             //       doSpawnOpal(int.Parse(current.getSecondary()), current);
+             //   }
+            //}
         }
     }
 

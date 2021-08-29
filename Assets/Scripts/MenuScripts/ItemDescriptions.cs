@@ -44,7 +44,9 @@ public class ItemDescriptions : MonoBehaviour
         items.Add("Frayed Wires,Whenever you spend a charge gain +1 attack");
         items.Add("Shock Collar,Gain +5 charge the first time you take damage from an enemy");
         items.Add("Electromagnet,At the start of your turn if all of your teammates have charge gain +2 charge");
+      
         items.Sort();
+        items.Add("None,No effect");
 
 
         foreach (string s in items)
@@ -70,6 +72,10 @@ public class ItemDescriptions : MonoBehaviour
 
     public string getDescFromItem(string name)
     {
+        if (!justNames.Contains(name))
+        {
+            return null;
+        }
         return items[justNames.IndexOf(name)].Split(',')[1];
     }
 

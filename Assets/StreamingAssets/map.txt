@@ -69,8 +69,8 @@ endmap
 8 Sentree-30 Overgroink-15 Butterflight-15 Fluttorch-15 Verminfection-10 Heatriarch-4 Groth-1
 9 Sentree-40 Cottonmaw-15 Drizziphyl-15 Fluttorch-15 Knightlite-10 Froxic-4 Fragmatom-1
 10 Terradactyl-30 Scorpirad-15 Jetjinn-15 Cactoid-15 Excremite-10 Betary-10 Barriarray-4 Amalgum-1
-11 Terradactyl-30 Scorpirad-15 Jetjinn-15 Cactoid-15 Excremite-10 Betary-10 Barriarray-4 Aughtment-1
+11 Terradactyl-30 Scorpirad-15 Jetjinn-15 Cactoid-15 Excremite-10 Betary-10 Barriarray-3 Aughtment-1 Investigator-1
 12 Sentree-25 Shocket-15 Grimmline-15 Volcoco-15 Cottonmaw-15 Drizziphyl-15
 13 Gilsplish-30 Slungus-30 Froxic-20 Spillarc-15 Hoviron-4 Gorj-1
-14 Luminute-30 Teslamp-15 Glummer-15 Ambush-15 Hopscure-10 Prismin-10 Zheep-4 Beamrider-1
+14 Luminute-15 Mistery-15 Teslamp-15 Glummer-15 Ambush-15 Hopscure-10 Prismin-10 Zheep-4 Beamrider-1
 15 Tortquoise-30 Wingnition-15 Strikel-15 Shineode-15 Fumeplume-10 Spiritch-5 Excremite-5 Experiment42-4 Duplimorph-1
