@@ -126,6 +126,7 @@ MonoBehaviour:
     type: 3}
   connectedTileSprites: []
   changeTexture: {fileID: 0}
+  displayNum: {fileID: 0}
   currentPlayer: {fileID: 0}
   currentEffect: {fileID: 0}
 --- !u!1 &1480277264016130
@@ -195,7 +196,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 2097769597
-  m_SortingLayer: -3
+  m_SortingLayer: -4
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300002, guid: 795cbec47caab324e827dc9fdac3f7e8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -275,7 +276,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 2097769597
-  m_SortingLayer: -3
+  m_SortingLayer: -4
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300002, guid: 795cbec47caab324e827dc9fdac3f7e8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -355,7 +356,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 2097769597
-  m_SortingLayer: -3
+  m_SortingLayer: -4
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: ae27200cb21846641a09919446555dc4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

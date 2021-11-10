@@ -43,6 +43,7 @@ public class Player : MonoBehaviour {
     private List<InventoryOpal> inventoryOpals = new List<InventoryOpal>();
     private List<InventoryOpal> inventoryOpals1 = new List<InventoryOpal>();
     private List<InventoryOpal> inventoryOpals2 = new List<InventoryOpal>();
+    private List<InventoryOpal> allOpals = new List<InventoryOpal>();
     private OpalScript currentDisplayOpal;
     private string fromTileCode;
     private BuildWorld bw;
@@ -50,9 +51,13 @@ public class Player : MonoBehaviour {
     private bool inspecting = false;
     public ItemMenu itemMenu;
     private bool assigningCharms = false;
+    private bool inShop = false;
     private OpalScript currentOpal;
     private int currentPage = 0;
     public GlobalScript glob;
+    public NPCTracker npcT;
+    private int facing = 0;
+    private bool naming = false;
 
     // Use this for initialization
     void Start () {
@@ -63,14 +68,16 @@ public class Player : MonoBehaviour {
         grass.gameObject.SetActive(false);
         wet.gameObject.SetActive(false);
         aimsr = aim.GetComponent<SpriteRenderer>();
-        loadFromFile();
+        
         InventoryOpal ioPrefab = Resources.Load<InventoryOpal>("Prefabs/World/InventoryOpal");
         for (int i = 0; i < 49; i++)
         {
             InventoryOpal io = Instantiate<InventoryOpal>(ioPrefab, caughtOpals.transform);
             io.setPlayer(this);
             io.setOpal(null, i);
+            io.setPage(0);
             inventoryOpals.Add(io);
+            allOpals.Add(io);
         }
         for (int i = 0; i < 49; i++)
         {
@@ -78,6 +85,8 @@ public class Player : MonoBehaviour {
             io.setPlayer(this);
             io.setOpal(null, i);
             inventoryOpals1.Add(io);
+            allOpals.Add(io);
+            io.setPage(1);
             io.gameObject.SetActive(false);
         }
         for (int i = 0; i < 49; i++)
@@ -86,6 +95,8 @@ public class Player : MonoBehaviour {
             io.setPlayer(this);
             io.setOpal(null, i);
             inventoryOpals2.Add(io);
+            allOpals.Add(io);
+            io.setPage(2);
             io.gameObject.SetActive(false);
         }
         for (int i = 0; i < 6; i++)
@@ -94,10 +105,12 @@ public class Player : MonoBehaviour {
             io.setPlayer(this);
             io.setPartyOpal(null, i);
             partyOpals.Add(io);
+            allOpals.Add(io);
         }
         InventoryOpal trash = Instantiate<InventoryOpal>(ioPrefab, caughtOpals.transform);
         trash.setPlayer(this);
         trash.setTrash();
+        loadFromFile();
 
     }
 	
@@ -111,29 +124,30 @@ public class Player : MonoBehaviour {
         anim.speed = 2;
 	    if(controller == "keyboard")
         {
+            if (inspecting)
+            {
+                return;
+            }
             int upSpeed = 0;
             int rightSpeed = 0;
             processInputs();
-            if (Input.GetKeyDown(KeyCode.LeftShift))
+            if (Input.GetKeyDown(KeyCode.E))
             {
-                anim.speed *= 2;
-                running = true;
-            }else if (Input.GetKeyUp(KeyCode.LeftShift))
-            {
-                anim.speed /= 2;
-                running = false;
-            }if (Input.GetKeyDown(KeyCode.E))
-            {
-                if (assigningCharms)
+                if (inShop)
                 {
                     itemMenu.transform.position = new Vector3(-1000, -1000, -10);
-                    assigningCharms = false;
+                    inShop = false;
+                }
+                if (assigningCharms)
+                {
+                    //itemMenu.transform.position = new Vector3(-1000, -1000, -10);
+                    //assigningCharms = false;
                 }
                 else if (inspecting)
                 {
-                    oI.transform.position = new Vector3(-1000, -1000, -10);
-                    inspecting = false;
-                    currentOpal = null;
+                   // oI.transform.position = new Vector3(-1000, -1000, -10);
+                   // inspecting = false;
+                   // currentOpal = null;
                 }
                 else if (canMove && !catchGame)
                 {
@@ -152,20 +166,11 @@ public class Player : MonoBehaviour {
             }
             if (Input.GetKeyDown(KeyCode.O))
             {
-                List<OpalScript> myTeam = new List<OpalScript>();
-                for(int i = 0;i < 4; i++)
-                {
-                    if(partyOpals[i] != null)
-                        myTeam.Add(partyOpals[i].getOpal());
-                }
-                glob.setTeams(myTeam,myTeam,null,null);
-                glob.setControllers("keyboard", "keyboard", "keyboard", "keyboard");
-                glob.setMult(true);
-                UnityEngine.SceneManagement.SceneManager.LoadScene("Connecting", UnityEngine.SceneManagement.LoadSceneMode.Single); //temporary
+                 //temporary
             }
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                //StartCoroutine(aim.slash());
+                checkForNPC((int)getFacingTile().x, (int)getFacingTile().y);
             }
             if (Input.GetKeyDown(KeyCode.P))
             {
@@ -173,7 +178,13 @@ public class Player : MonoBehaviour {
             }
             if (Input.GetKeyDown(KeyCode.L))
             {
+                resetState();
                 loadFromFile();
+            }
+            if (Input.GetKeyDown(KeyCode.Delete))
+            {
+                resetState();
+                saveToFile();
             }
             if (!inv)
             {
@@ -271,6 +282,7 @@ public class Player : MonoBehaviour {
                     break;
                 }
                 anim.CrossFade("GobbaMovingRight", 0);
+                facing = 0;
                 onMoveToTile(fullMap[Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y)].getCode());
                 transform.position = new Vector2((1 * speedMod) / steps + transform.position.x, transform.position.y);
             }
@@ -283,6 +295,7 @@ public class Player : MonoBehaviour {
                     break;
                 }
                 anim.CrossFade("GobbaMovingLeft", 0);
+                facing = 1;
                 onMoveToTile(fullMap[Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y)].getCode());
                 transform.position = new Vector2((-1 * speedMod) / steps + transform.position.x, transform.position.y);
             }
@@ -295,6 +308,7 @@ public class Player : MonoBehaviour {
                     break;
                 }
                 anim.CrossFade("GobbaMovingFront", 0);
+                facing = 2;
                 onMoveToTile(fullMap[Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y)].getCode());
                 transform.position = new Vector2(transform.position.x, (-1 * speedMod) / steps + transform.position.y);
             }
@@ -307,6 +321,7 @@ public class Player : MonoBehaviour {
                     break;
                 }
                 anim.CrossFade("GobbaMovingBack", 0);
+                facing = 3;
                 onMoveToTile(fullMap[Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y)].getCode());
                 transform.position = new Vector2(transform.position.x, (1 * speedMod) / steps + transform.position.y);
             }
@@ -338,18 +353,22 @@ public class Player : MonoBehaviour {
             if(thisStep == "W")
             {
                 anim.CrossFade("GobbaIdleBack", 0);
+                facing = 3;
             }
             else if(thisStep == "A")
             {
                 anim.CrossFade("GobbaIdleLeft", 0);
+                facing = 1;
             }
             else if (thisStep == "S")
             {
                 anim.CrossFade("GobbaIdleFront", 0);
+                facing = 2;
             }
             else if (thisStep == "D")
             {
                 anim.CrossFade("GobbaIdleRight", 0);
+                facing = 0;
             }
         }
     }
@@ -452,6 +471,74 @@ public class Player : MonoBehaviour {
         }
     }
 
+    public void addOpalDetails(string details, int i)
+    {
+        catchGame = false;
+        canMove = true;
+        if (details == null)
+        {
+            return;
+        }
+        if (details != null)
+        {
+            //party.Add(details);
+        }
+        int index = i;
+        int page = 0;
+        while(index > 48)
+        {
+            index -= 49;
+            page += 1;
+        }
+        print("Found a " + details + " on page " + page + " in slot " + index);
+        bool placed = false;
+        foreach (InventoryOpal io in inventoryOpals)
+        {
+            if (io.getOpal() == null && io.getIndex() == index && page == 0)
+            {
+                io.setOpalWithDetails(details);
+                placed = true;
+                break;
+            }
+        }
+        if (placed == false)
+        {
+            foreach (InventoryOpal io in inventoryOpals1)
+            {
+                if (io.getOpal() == null && io.getIndex() == index && page == 1)
+                {
+                    io.setOpalWithDetails(details);
+                    placed = true;
+                    break;
+                }
+            }
+        }
+        if (placed == false)
+        {
+            foreach (InventoryOpal io in inventoryOpals2)
+            {
+                if (io.getOpal() == null && io.getIndex() == index && page == 2)
+                {
+                    io.setOpalWithDetails(details);
+                    placed = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    public void addWithDetailsToParty(string details)
+    {
+        foreach(InventoryOpal io in partyOpals)
+        {
+            if (io.getOpal() == null)
+            {
+                io.setOpalWithDetails(details);
+                break;
+            }
+        }
+    }
+
     public void switchOpals(InventoryOpal io)
     {
         if (switchOpal == null) {
@@ -464,12 +551,41 @@ public class Player : MonoBehaviour {
         }
         else
         {
-            if(io == switchOpal)
+            if (io == switchOpal)
             {
                 switchOpal.setSwitching(false);
                 switchOpal = null;
                 return;
             }
+
+            OpalScript temp = io.getOpal();
+            io.clearOpal();
+            if (io.getParty())
+            {
+                //io.setPartyOpal(switchOpal.getOpal().getDetails(), io.getIndex());
+                io.setOpal(switchOpal.getOpal().saveDetails());
+            }
+            else
+            {
+                io.setOpal(switchOpal.getOpal().saveDetails());
+            }
+            switchOpal.clearOpal();
+            if(temp != null && !io.getTrash())
+            {
+                if (switchOpal.getParty())
+                {
+                    //switchOpal.setPartyOpal(temp.getDetails(), switchOpal.getIndex());
+                    switchOpal.setOpal(temp.saveDetails());
+                }
+                else
+                {
+                    switchOpal.setOpal(temp.saveDetails());
+                }
+            }
+            switchOpal.setSwitching(false);
+            switchOpal = null;
+
+            /**
             OpalScript ioClone = io.getOpal();
             OpalScript switchOpalClone = switchOpal.getOpal();
             OpalScript temp = io.getOpal();
@@ -477,30 +593,30 @@ public class Player : MonoBehaviour {
             io.clearOpal();
             if (io.getParty())
             {
-                io.setPartyOpal(switchOpal.getOpal().getVariant(), io.getIndex());
-                io.setDetails(switchOpalClone);
+                io.setPartyOpal(switchOpal.getOpal().getDetails(), io.getIndex());
+                //io.setDetails(switchOpalClone);
             }
             else
             {
-                io.setOpal(switchOpal.getOpal().getVariant(), io.getIndex());
-                io.setDetails(switchOpalClone);
+                io.setOpal(switchOpal.getOpal().getDetails(), io.getIndex());
+                //io.setDetails(switchOpalClone);
             }
             switchOpal.clearOpal();
             if (temp != null && !io.getTrash())
             {
                 if (switchOpal.getParty())
                 {
-                    switchOpal.setPartyOpal(temp.getVariant(), switchOpal.getIndex());
-                    switchOpal.setDetails(ioClone);
+                    switchOpal.setPartyOpal(temp.getDetails(), switchOpal.getIndex());
+                    //switchOpal.setDetails(ioClone);
                 }
                 else
                 {
-                    switchOpal.setOpal(temp.getVariant(), switchOpal.getIndex());
-                    switchOpal.setDetails(ioClone);
+                    switchOpal.setOpal(temp.getDetails(), switchOpal.getIndex());
+                    //switchOpal.setDetails(ioClone);
                 }
             }
             switchOpal.setSwitching(false);
-            switchOpal = null;
+            switchOpal = null;*/
         }
     }
 
@@ -532,53 +648,51 @@ public class Player : MonoBehaviour {
     public void saveToFile()
     {
         string path = "Assets/StreamingAssets/player.txt";
-        /**
+        
         using (var stream = new FileStream(path, FileMode.Truncate))
         {
             using (var writer = new StreamWriter(stream))
             {
                 writer.Write(transform.position.x + "_" + transform.position.y+"\n");
-                foreach (PartyPlate p in ps.getParty())
+                foreach (InventoryOpal io in inventoryOpals)
                 {
-                    if (p.getOpal() != null)
-                        writer.Write(p.getOpal().getVariant() + "\n");
+                    if (io.getOpal() != null)
+                        writer.Write(io.getOpal().saveDetails() + "\n");
                     else
                         writer.Write("_\n");
                 }
-                writer.Write("partyend\n");
-                foreach (PartyPlate p in ps.getContents(0))
+                foreach (InventoryOpal io in inventoryOpals1)
                 {
-                    if(p.getOpal() != null)
-                        writer.Write(p.getOpal().getVariant() + "\n");
+                    if (io.getOpal() != null)
+                        writer.Write(io.getOpal().saveDetails() + "\n");
+                    else
+                        writer.Write("_\n");
+                }
+                foreach (InventoryOpal io in inventoryOpals2)
+                {
+                    if (io.getOpal() != null)
+                        writer.Write(io.getOpal().saveDetails() + "\n");
                     else
                         writer.Write("_\n");
                 }
                 writer.Write("opalend\n");
-                foreach (PartyPlate p in ps.getContents(1))
+                foreach (InventoryOpal io in partyOpals)
                 {
-                    if (p.getItem() != null)
-                        writer.Write(p.getItem().getCode() + "\n");
+                    if (io.getOpal() != null)
+                        writer.Write(io.getOpal().saveDetails() + "\n");
                     else
                         writer.Write("_\n");
                 }
-                writer.Write("itemend\n");
-                writer.Write("" + ps.getGold() + "\n");
-                int i = 0;
-                foreach(Shop s in AllShops)
-                {
-                    writer.Write("nextShop\n");
-                    writer.Write(s.getSaveData());
-                    i++;
-                }
-                writer.Write("shopsend\n");
+                writer.Write("partyend\n");
             }
-        }*/
+        }
         //AssetDatabase.ImportAsset(path);
         TextAsset asset = Resources.Load<TextAsset>("Maps/player");
     }
 
     public void loadFromFile() //when updating this make sure you don't break people's saves
     {
+        resetState();
         string path = "Assets/StreamingAssets/player.txt";
         StreamReader reader = new StreamReader(path);
         string read = reader.ReadLine();
@@ -594,50 +708,25 @@ public class Player : MonoBehaviour {
         {
             return;
         }
-        while (read != "partyend")
-        {
-            if (read != "_")
-            {
-                //ps.addToParty(read);
-            }
-            i++;
-            read = reader.ReadLine();
-        }
-        read = reader.ReadLine();
         while (read != "opalend")
         {
-            if(read != "_")
-            {
-               // ps.addOpal(read);
-            }
-            i++;
-            read = reader.ReadLine();
-        }
-        while (read != "itemend")
-        {
-            //print(read);
             if (read != "_")
             {
-              //  ps.addItem(read);
+                addWithDetails(read, i);
             }
             i++;
             read = reader.ReadLine();
         }
-        //ps.updateGold(int.Parse(reader.ReadLine()));
-        read = reader.ReadLine();
-        int currentShop = -1;
-        /**
-        while (read != "shopsend")
+        //read = reader.ReadLine();
+        while (read != "partyend")
         {
-            if(read == "nextShop")
+            if (read != "_" && read != "opalend")
             {
-                currentShop++;
-                AllShops[currentShop].upgradeShop(int.Parse(reader.ReadLine()));
+                addWithDetailsToParty(read);
             }
-            if(read.Substring(0,1) == "O" || read.Substring(0, 1) == "I")
-                AllShops[currentShop].processLine(read);
+            i++;
             read = reader.ReadLine();
-        }*/
+        }
     }
 
     public void updateGold(int amount)
@@ -776,7 +865,135 @@ public class Player : MonoBehaviour {
         foreach(InventoryOpal o in io)
         {
             o.gameObject.SetActive(enable);
+            o.summonOpal();
         }
+    }
+
+    private Vector2 getFacingTile() 
+    {
+        int x = (int)transform.position.x;
+        int y = (int)transform.position.y;
+        switch (facing) {
+            case 0:
+                x += 1;
+                break;
+            case 1:
+                x -= 1;
+                break;
+            case 2:
+                y -= 1;
+                break;
+            case 3:
+                y += 1;
+                break;
+
+        }
+        return new Vector2(x, y);
+    }
+
+    private string checkForNPC(int x, int y)
+    {
+        string output =  npcT.getNPC(x,y);
+
+        if (output == "BatlGob")
+        {
+            saveToFile();
+            if (checkReadyForBattle())
+            {
+                List<OpalScript> myTeam = new List<OpalScript>();
+                for (int i = 0; i < 4; i++)
+                {
+                    if (partyOpals[i] != null && partyOpals[i].getOpal() != null)
+                        myTeam.Add(partyOpals[i].getOpal());
+                }
+                glob.setTeams(myTeam, myTeam, null, null);
+                glob.setControllers("keyboard", "keyboard", "keyboard", "keyboard");
+                glob.setMult(true);
+                UnityEngine.SceneManagement.SceneManager.LoadScene("Connecting", UnityEngine.SceneManagement.LoadSceneMode.Single);
+            }
+        }else if(output == "Shubo")
+        {
+            saveToFile();
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu", UnityEngine.SceneManagement.LoadSceneMode.Single);
+        }
+        return output;
+    }
+
+    private bool checkReadyForBattle()
+    {
+        List<OpalScript> opals = new List<OpalScript>();
+        foreach(InventoryOpal o in partyOpals)
+        {
+            foreach(OpalScript op in opals)
+            {
+                if(o.getOpal() != null && o.getOpal().getMyName() == op.getMyName())
+                {
+                    print("opal repeat");
+                    return false;
+                }
+                else if (op.getCharm() != "None" && op.getCharm() != null && op.getCharm() != "" && o.getOpal() != null && o.getOpal().getCharm() == op.getCharm())
+                {
+                    print("charm repeat");
+                    return false;
+                }
+            }
+            if(o.getOpal() != null)
+                opals.Add(o.getOpal());
+        }
+        if(opals.Count < 1)
+        {
+            print("not enough opals");
+            return false;
+        }
+        return true;
+    }
+
+
+    //format OPALNAME/detail1,detail2
+    private void addWithDetails(string opalData, int i)
+    {
+        addOpalDetails(opalData, i);
+    }
+
+    private void resetState()
+    {
+        foreach(InventoryOpal io in inventoryOpals)
+        {
+            io.clearOpal();
+        }
+        foreach (InventoryOpal io in inventoryOpals1)
+        {
+            io.clearOpal();
+        }
+        foreach (InventoryOpal io in inventoryOpals2)
+        {
+            io.clearOpal();
+        }
+        foreach(InventoryOpal io in partyOpals)
+        {
+            io.clearOpal();
+        }
+    }
+
+    public void setNaming()
+    {
+       // naming = true;
+    }
+
+    public void setNotNaming()
+    {
+       // naming = false;
+        foreach(InventoryOpal io in allOpals)
+        {
+            io.updateLabel();
+        }
+    }
+
+    public void back()
+    {
+        oI.transform.position = new Vector3(-1000, -1000, -10);
+        inspecting = false;
+        currentOpal = null;
     }
 
 }

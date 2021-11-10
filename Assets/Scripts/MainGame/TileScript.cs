@@ -11,6 +11,10 @@ public class TileScript : MonoBehaviour {
     public GameObject GrowthEffect;
     public List<Sprite> connectedTileSprites;
     public GameObject changeTexture;
+    private GameObject displayNum;
+    private Sprite displayThree;
+    private Sprite displayTwo;
+    private Sprite displayOne;
     private ConnectedTile connectedTile;
 
     public OpalScript currentPlayer = null;
@@ -62,6 +66,8 @@ public class TileScript : MonoBehaviour {
         {
             impassable = true;
         }
+        setupTimer();
+        showTimer(false);
         connectedTile = transform.GetChild(0).transform.GetComponentInChildren<ConnectedTile>();
         if(connectedTileSprites.Count > 0)
         {
@@ -291,6 +297,76 @@ public class TileScript : MonoBehaviour {
         {
             decayTurn = 1;
         }
+    }
+
+    public void setupTimer()
+    {
+        displayNum = Instantiate<GameObject>(Resources.Load<GameObject>("Prefabs/TileTimer"), transform);
+        displayNum.transform.localPosition = new Vector3(0.5f, 0.75f, -0.5f);
+        displayNum.transform.rotation = Quaternion.Euler(0,-45,0);
+        displayNum.transform.localScale = new Vector3(3, 1.5f, 3);
+        
+    }
+
+    public void setTimer(int num)
+    {
+        if (displayNum == null)
+            return;
+        if(num == 3)
+        {
+            foreach(SpriteRenderer s in displayNum.GetComponentsInChildren<SpriteRenderer>())
+            {
+                if(s.name == "3")
+                {
+                    s.enabled = true;
+                }
+                else
+                {
+                    s.enabled = false;
+                }
+            }
+        }else if(num == 2)
+        {
+            foreach (SpriteRenderer s in displayNum.GetComponentsInChildren<SpriteRenderer>())
+            {
+                if (s.name == "2")
+                {
+                    s.enabled = true;
+                }
+                else
+                {
+                    s.enabled = false;
+                }
+            }
+        }
+        else if(num == 1)
+        {
+            foreach (SpriteRenderer s in displayNum.GetComponentsInChildren<SpriteRenderer>())
+            {
+                if (s.name == "1")
+                {
+                    s.enabled = true;
+                }
+                else
+                {
+                    s.enabled = false;
+                }
+            }
+        }
+        else
+        {
+            showTimer(false);
+        }
+        
+    }
+
+    public void showTimer(bool show)
+    {
+        if (displayNum == null)
+            return;
+        displayNum.SetActive(show);
+        if(show)
+            setTimer(decayTurn);
     }
 
 
@@ -531,6 +607,7 @@ public class TileScript : MonoBehaviour {
             if(type != "Grass" && type != "Boulder" && !(type == "Growth" && currentPlayer != null) && !(type == "Flood" && checkNeighbors("Flood")))
             {
                 decayTurn--;
+                setTimer(decayTurn);
             }
             if(decayTurn <= 0 && type != "Grass")
             {

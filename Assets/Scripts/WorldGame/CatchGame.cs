@@ -143,4 +143,9 @@ public class CatchGame : MonoBehaviour
     {
         p.nextPage(next);
     }
+
+    public void back()
+    {
+        p.back();
+    }
 }

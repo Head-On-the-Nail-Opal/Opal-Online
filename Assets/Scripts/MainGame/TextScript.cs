@@ -154,10 +154,10 @@ public class TextScript : MonoBehaviour {
         if (displayCurrent == null)
         {
             displayCurrent = Instantiate<OpalScript>(opal);
-            displayCurrent.setOpal(null);
+            //displayCurrent.setOpal(null);
             displayCurrent.transform.position = new Vector3(5.55f, 3.42f, -10.05f);
             displayCurrent.transform.localRotation = Quaternion.Euler(40, -45, 0);
-            displayCurrent.showSpot(false);
+            displayCurrent.resetHighlight();
             //displayCurrent.transform.localScale *= 2;
         }
         Attack[] atlist = opal.getAttacks();
@@ -305,10 +305,10 @@ public class TextScript : MonoBehaviour {
             if (displaySelected == null)
             {
                 displaySelected = Instantiate<OpalScript>(opal);
-                displaySelected.setOpal(null);
+                //displaySelected.setOpal(null);
                 displaySelected.transform.position = new Vector3(16.46f, 3.46f, 0.83f);
                 displaySelected.transform.localRotation = Quaternion.Euler(40, -45, 0);
-                displaySelected.showSpot(false);
+                displaySelected.resetHighlight();
                 //displaySelected.transform.localScale *= 2;
             }
             targetName.text = opal.getName();

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InventoryOpal : MonoBehaviour
 {
@@ -11,7 +12,10 @@ public class InventoryOpal : MonoBehaviour
     private bool followMouse = false;
     private bool party = false;
     private int index;
+    private int page;
     private bool trash = false;
+    public Text namePlateName;
+    public GameObject namePlate;
 
     // Start is called before the first frame update
     void Start()
@@ -37,7 +41,7 @@ public class InventoryOpal : MonoBehaviour
             if (myOpal != null)
             {
                 Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                myOpal.transform.position = new Vector3(mousePos.x, mousePos.y, -13);
+                myOpal.transform.position = new Vector3(mousePos.x, mousePos.y, -14f);
             }
         }
     }
@@ -59,6 +63,16 @@ public class InventoryOpal : MonoBehaviour
         return trash;
     }
 
+    public void setPage(int i)
+    {
+        page = i;
+    }
+
+    public int getPage()
+    {
+        return page;
+    }
+
     public void setOpal(string opal, int i)
     {
         if (trash)
@@ -73,6 +87,49 @@ public class InventoryOpal : MonoBehaviour
         setOpal(opal);
     }
 
+    //format OPALNAME/detail1,detail2
+    public void setOpalWithDetails(string opaldetails)
+    {
+        if (opaldetails == null)
+        {
+            clearOpal();
+            return;
+        }
+        print("new method: " + opaldetails);
+        string[] temp = opaldetails.Split('/');
+        string[] details = temp[1].Split(',');
+        string myName = temp[0];
+        string myCharm = details[0];
+        string myPersonality = details[1];
+        int mySize = int.Parse(details[2]);
+        string myNickname = details[3];
+        OpalScript opalPrefab = Resources.Load<OpalScript>("Prefabs/Opals/" + myName);
+        if (myOpal != null)
+        {
+            Destroy(myOpal.gameObject);
+        }
+        myOpal = Instantiate<OpalScript>(opalPrefab, transform);
+        myOpal.setOpal(null);
+        myOpal.setCharm(myCharm);
+        myOpal.setPersonality(myPersonality);
+        myOpal.setNickname(myNickname);
+        myOpal.GetComponent<Animator>().enabled = true;
+        myOpal.transform.rotation = Quaternion.Euler(0, 0, 0);
+        myOpal.transform.localScale *= 0.6f;
+        myOpal.setSize(mySize);
+        myOpal.transform.localPosition = new Vector3(0, 0, -0.51f);
+        if (myOpal.getNickname() != null && myOpal.getNickname() != "")
+        {
+            namePlateName.text = myOpal.getNickname();
+            namePlate.SetActive(true);
+        }
+        else
+        {
+            namePlateName.text = "";
+            namePlate.SetActive(false);
+        }
+    }
+
     public void setPartyOpal(string opal, int i)
     {
         party = true;
@@ -81,6 +138,7 @@ public class InventoryOpal : MonoBehaviour
         float y = 3f - index;
         transform.localPosition = new Vector3(x, y, -1);
         setOpal(opal);
+
     }
 
     public bool getParty()
@@ -90,11 +148,17 @@ public class InventoryOpal : MonoBehaviour
 
     public void setOpal(string opal)
     {
+        if (opal != null && opal.Contains("/"))
+        {
+            setOpalWithDetails(opal);
+            return;
+        }
         if (opal == null)
         {
             clearOpal();
             return;
         }
+        print("old method: " + opal);
         int variantLength = 8;
         string opalN = opal.Substring(0, opal.Length - variantLength);
         string opalV = opal.Substring(opal.Length - variantLength, variantLength);
@@ -110,8 +174,36 @@ public class InventoryOpal : MonoBehaviour
         myOpal.GetComponent<Animator>().enabled = true;
         myOpal.transform.rotation = Quaternion.Euler(0, 0, 0);
         //transform.localPosition = new Vector3(0, 0, 0);
-        myOpal.transform.localScale *= 0.75f;
-        myOpal.transform.localPosition = new Vector3(0, 0, -1);
+        myOpal.transform.localScale *= 0.6f;
+        myOpal.transform.localPosition = new Vector3(0, 0, -0.51f);
+        if (myOpal.getNickname() != null && myOpal.getNickname() != "")
+        {
+            namePlateName.text = myOpal.getNickname();
+            namePlate.SetActive(true);
+        }
+        else
+        {
+            namePlateName.text = "";
+            namePlate.SetActive(false);
+        }
+    }
+
+    public void updateLabel()
+    {
+        if(myOpal == null)
+        {
+            return;
+        }
+        if (myOpal.getNickname() != null && myOpal.getNickname() != "")
+        {
+            namePlateName.text = myOpal.getNickname();
+            namePlate.SetActive(true);
+        }
+        else
+        {
+            namePlateName.text = "";
+            namePlate.SetActive(false);
+        }
     }
 
     public void setDetails(OpalScript o)
@@ -130,6 +222,8 @@ public class InventoryOpal : MonoBehaviour
         {
             Destroy(myOpal.gameObject);
             myOpal = null;
+            namePlateName.text = "";
+            namePlate.SetActive(false);
         }
     }
 
@@ -143,7 +237,7 @@ public class InventoryOpal : MonoBehaviour
         {
             followMouse = false;
             if(myOpal != null)
-                myOpal.transform.localPosition = new Vector3(0, 0, -1);
+                myOpal.transform.localPosition = new Vector3(0, 0, -0.51f);
         }
     }
 
@@ -192,5 +286,11 @@ public class InventoryOpal : MonoBehaviour
     {
         if (myOpal != null)
             myOpal.gameObject.SetActive(show);
+    }
+
+    public void summonOpal()
+    {
+        if(myOpal != null)
+            myOpal.transform.localPosition = new Vector3(0, 0, -0.51f);
     }
 }

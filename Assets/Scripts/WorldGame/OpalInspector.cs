@@ -16,6 +16,10 @@ public class OpalInspector : MonoBehaviour
     public Text name;
     public Text type;
 
+    public Text nickname;
+    public Text nn;
+    public InputField iF;
+
     public GameObject backDrop;
     private OpalScript myOpal;
     private OpalScript displayOpal;
@@ -64,6 +68,19 @@ public class OpalInspector : MonoBehaviour
         {
             charm.text = "Charm: None";
         }
+
+        if(myOpal.getNickname() != null)
+        {
+            iF.text = myOpal.getNickname();
+            nickname.text = myOpal.getNickname();
+            nn.text = myOpal.getNickname();
+        }
+        else
+        {
+            iF.text = myOpal.getNickname();
+            nickname.text = "No Nickname";
+            nn.text = "No Nickname";
+        }
     }
 
     public void togglePersonality()
@@ -78,5 +95,10 @@ public class OpalInspector : MonoBehaviour
             personality.text = "Personality: " + myOpal.getPersonalityInfo(myOpal.getPersonality());
             personalityInfo = true;
         }
+    }
+
+    public void setNickname()
+    {
+        myOpal.setNickname(nn.text);
     }
 }

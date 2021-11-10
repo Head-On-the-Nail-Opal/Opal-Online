@@ -61,6 +61,9 @@ public class CatchGameButton : MonoBehaviour
         }else if(purpose == "Right")
         {
             mainGame.nextPage(true);
+        }else if(purpose == "back")
+        {
+            mainGame.back();
         }
 
     }

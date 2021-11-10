@@ -35,6 +35,8 @@ public class ItemMenu : MonoBehaviour
         int k = 0;
         for(int i = 0; i < charms.itemsCount(); i++)
         {
+
+           
             ItemSlot temp = Instantiate<ItemSlot>(itemSlot, transform);
             temp.setPlayer(p);
             float x = -4 + (k*4);
@@ -48,7 +50,13 @@ public class ItemMenu : MonoBehaviour
                 k = 0;
                 j++;
             }
+            
         }
+    }
+
+    public void setPlayGame()
+    {
+        clear();
     }
 
     public void clear()
@@ -58,6 +66,25 @@ public class ItemMenu : MonoBehaviour
             Destroy(i.gameObject);
         }
         items.Clear();
+    }
+
+    private void addButton(string text)
+    {
+        int k = items.Count;
+        int j = k / 4;
+        ItemSlot temp = Instantiate<ItemSlot>(itemSlot, transform);
+        temp.setPlayer(p);
+        float x = -4 + (k * 4);
+        float y = 4 - j * 0.5f;
+        temp.transform.localPosition = new Vector3(x, y, -1);
+        temp.setText(text);
+        items.Add(temp);
+        k++;
+        if (k == 3)
+        {
+            k = 0;
+            j++;
+        }
     }
 
     public void generateDescription(string item)

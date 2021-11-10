@@ -51,6 +51,7 @@ public class MainBuilder : MonoBehaviour
             { "C", Resources.Load<TileCode>("Prefabs/WorldTiles/RockyFloor")},
             { "r", Resources.Load<TileCode>("Prefabs/WorldTiles/FlowerGrassA")},
             { "R", Resources.Load<TileCode>("Prefabs/WorldTiles/FlowerGrassB")},
+            { "N", Resources.Load<TileCode>("Prefabs/WorldTiles/NPCTile")},
             {"O", Resources.Load<TileCode>("Prefabs/WorldTiles/Ore") } };
     }
 
@@ -326,7 +327,7 @@ public class MainBuilder : MonoBehaviour
 
     private void writeMap(string[,] map)
     {
-        string path = "Assets/Resources/Maps/map.txt";
+        string path = "Assets/StreamingAssets/map.txt";
         using (var stream = new FileStream(path, FileMode.Truncate))
         {
             using (var writer = new StreamWriter(stream))
@@ -369,7 +370,7 @@ public class MainBuilder : MonoBehaviour
             allTiles[num] = null;
         }
         cleanAllTiles(false);
-        string path = "Assets/Resources/Maps/map.txt";
+        string path = "Assets/StreamingAssets/map.txt";
         string map = "";
         //Read the text from directly from the test.txt file
         StreamReader reader = new StreamReader(path);
