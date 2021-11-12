@@ -39,6 +39,7 @@ public class TileScript : MonoBehaviour {
     private bool impassable = false;
     private TileScript link;
     private SpriteRenderer changeSpriteRenderer;
+    private bool highlight = false;
 
     private List<List<Sprite>> directions = new List<List<Sprite>>();
     private List<Sprite> east = new List<Sprite>();
@@ -306,6 +307,28 @@ public class TileScript : MonoBehaviour {
         displayNum.transform.rotation = Quaternion.Euler(0,-45,0);
         displayNum.transform.localScale = new Vector3(3, 1.5f, 3);
         
+    }
+
+    public void highlightTwinPortal(bool toggle)
+    {
+            if (link == null)
+                return;
+            doHighlight(toggle);
+            link.doHighlight(toggle);
+    }
+
+    private void doHighlight(bool toggle)
+    {
+        if (toggle && !highlight)
+        {
+            trapEffect.transform.localScale *= 1.5f;
+            highlight = true;
+        }
+        else if(!toggle && highlight)
+        {
+            trapEffect.transform.localScale /= 1.5f;
+            highlight = false;
+        }
     }
 
     public void setTimer(int num)

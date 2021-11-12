@@ -142,6 +142,12 @@ public class CursorScript : MonoBehaviour {
         }
         //print("oof");
         moveCursor(myPos, orthoCam.WorldToScreenPoint(myPos), orthoCam.WorldToScreenPoint(reticle.transform.position));
+        if(tileFrom != null)
+        {
+            tileFrom.highlightTwinPortal(false);
+        }
+
+
         tileFrom = boardScript.tileGrid[(int)myPos.x, (int)myPos.z];
         if(tileFrom != lastTile)
         {
@@ -175,6 +181,9 @@ public class CursorScript : MonoBehaviour {
                 t.setRelativeCoordinates((int)myPos.x, (int)myPos.z, attacking, selectedPlayer);
             }
         }
+
+        tileFrom.highlightTwinPortal(true);
+        
 
         //ts.updateCurrent(selectedPlayer, distance);
         if (placing)

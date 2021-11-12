@@ -54,6 +54,7 @@ abstract public class OpalScript : MonoBehaviour {
     private Color teamColor;
     private bool flashing = false;
     private Vector3 highlightSpot = new Vector3(0, 0, 0.01f);
+    private Coroutine curseFlash;
 
     public bool shrouded = false;
     protected GroundScript boardScript;
@@ -151,10 +152,10 @@ abstract public class OpalScript : MonoBehaviour {
     //Start changes
 
     void Update () {
-        if((myHighlight == null || !setTeam) && player != null && playerIndicator != null)
+        if(myName != "Boulder" && (myHighlight == null || !setTeam) && player != null && playerIndicator != null)
         {
-
             setTeam = true;
+            //GetComponent<SpriteRenderer>().material.shader = Shader.Find("");
             SpriteRenderer highlight = Instantiate<SpriteRenderer>(GetComponent<SpriteRenderer>(), transform);
             highlight.gameObject.AddComponent<Animator>();
             highlight.GetComponent<Animator>().runtimeAnimatorController = GetComponent<Animator>().runtimeAnimatorController;
@@ -250,13 +251,16 @@ abstract public class OpalScript : MonoBehaviour {
 
     public void showHighlight()
     {
+        if (myHighlight == null)
+            return;
         myHighlight.GetComponent<SpriteRenderer>().enabled = true;
     }
 
     public void flipOpal(bool dir)
     {
         GetComponent<SpriteRenderer>().flipX = dir;
-        myHighlight.GetComponent<SpriteRenderer>().flipX = dir;
+        if(myHighlight != null)
+            myHighlight.GetComponent<SpriteRenderer>().flipX = dir;
     }
 
     public void toggleSkull(bool toggle)
@@ -268,6 +272,27 @@ abstract public class OpalScript : MonoBehaviour {
         else
         {
             GetComponent<SpriteRenderer>().color = Color.white;
+        }
+    }
+
+    private IEnumerator doCurseFlash()
+    {
+        //print("du hello");
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        sr.color = Color.white;
+        while (true)
+        {
+            for (int i = 0; i < 50; i++)
+            {
+                sr.color -= new Color(0.01f, 0.01f, 0.01f);
+                yield return new WaitForFixedUpdate();
+            }
+            for (int j = 0; j < 50; j++)
+            {
+                sr.color += new Color(0.01f, 0.01f, 0.01f);
+                yield return new WaitForFixedUpdate();
+            }
+            yield return new WaitForSeconds(0.3f);
         }
     }
 
@@ -1972,11 +1997,6 @@ abstract public class OpalScript : MonoBehaviour {
 
     public void doHeal(int heal, bool overheal)
     {
-        if(myCharm == "Jasper Figure")
-        {
-            overheal = true;
-            charmRevealed = true;
-        }
         if (health != maxHealth || overheal)
         {
             onHeal(heal);

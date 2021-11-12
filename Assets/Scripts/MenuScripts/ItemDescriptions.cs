@@ -36,7 +36,7 @@ public class ItemDescriptions : MonoBehaviour
         items.Add("Golden Figure,Whenever you take damage heal by 1 health."); 
         items.Add("Azurite Figure, At the start of your turn place a Flood at your feet"); 
         items.Add("Garnet Figure, When you take damage the attacker's current tile turns to flame."); 
-        items.Add("Jasper Figure, All incoming healing is overheal."); // Potential LEGENDARY
+        //items.Add("Jasper Figure, All incoming healing is overheal."); // Potential LEGENDARY
         items.Add("Juniper Necklace, At the start of the game gain +1 attack defense and speed for each void type ally."); //Potential LEGENDARY
         items.Add("Dripping Candle,At the start of your turn burn adjacent Opals."); 
         items.Add("Whetstone,When you end your turn next to a Boulder you and it gain +2 defense.");
