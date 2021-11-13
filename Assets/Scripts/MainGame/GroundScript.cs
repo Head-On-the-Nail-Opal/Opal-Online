@@ -951,7 +951,7 @@ public class GroundScript : MonoBehaviour {
             if (!o.getDead() && !alreadyMoved.Contains(o.getID())) 
             {
                 OpalScript temp = Instantiate<OpalScript>(o, myCanvas.transform);
-                
+                temp.setDisplayOpal();
                 opalTurns.Add(temp);
                 temp.healStatusEffects();
                 temp.transform.localPosition = new Vector3(835, 425 - i,0);

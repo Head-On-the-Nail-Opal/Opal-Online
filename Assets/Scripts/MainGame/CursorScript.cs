@@ -86,6 +86,26 @@ public class CursorScript : MonoBehaviour {
     }
 
 
+    private void clearGhosts(TileScript t)
+    {
+        if (t.currentPlayer != null && t.currentPlayer.getMyName() != "Boulder")
+        {
+            if (t.currentPlayer.getPos().x != (int)t.getPos().x || t.currentPlayer.getPos().z != (int)t.getPos().z)
+            {
+                //print("Current Opal: " + t.currentPlayer.getMyName() + "Opal Position: "+ t.currentPlayer.getPos().x+", "+ t.currentPlayer.getPos().z + "; Tile Position: "+ (int)myPos.x + ","+ (int)myPos.z);
+                t.standingOn(null);
+            }
+        }
+        if (t.getImpassable())
+        {
+            if (t.currentPlayer == null && t.type != "Boulder" && !t.getFallen())
+            {
+                t.setImpassable(false);
+            }
+        }
+    }
+
+
     // Update is called once per frame
     void Update () {
         //initialize the first turn
@@ -152,20 +172,7 @@ public class CursorScript : MonoBehaviour {
         if(tileFrom != lastTile)
         {
             ts.updateSelected(tileFrom.currentPlayer);
-            if (tileFrom.currentPlayer != null && tileFrom.currentPlayer.getMyName() != "Boulder")
-            {
-                if(tileFrom.currentPlayer.getPos().x != myPos.x || tileFrom.currentPlayer.getPos().z != myPos.z)
-                {
-                    tileFrom.standingOn(null);
-                }
-            }
-            if (tileFrom.getImpassable())
-            {
-                if(tileFrom.currentPlayer == null && tileFrom.type != "Boulder" && !tileFrom.getFallen())
-                {
-                    tileFrom.setImpassable(false);
-                }
-            }
+            clearGhosts(tileFrom);
             lastTile = tileFrom;
         }
 
@@ -892,6 +899,10 @@ public class CursorScript : MonoBehaviour {
         }
         selectedPlayer = nextOpal;
         currentHighlight = StartCoroutine(selectedPlayer.highlightFlash());
+        foreach(TileScript t in boardScript.tileGrid)
+        {
+            clearGhosts(t);
+        }
         boardScript.updateTurnOrder(currentTurn);
         if (selectedPlayer.getDead() == true)
         {

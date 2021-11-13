@@ -55,6 +55,7 @@ abstract public class OpalScript : MonoBehaviour {
     private bool flashing = false;
     private Vector3 highlightSpot = new Vector3(0, 0, 0.01f);
     private Coroutine curseFlash;
+    private bool displayOpal = false;
 
     public bool shrouded = false;
     protected GroundScript boardScript;
@@ -149,15 +150,29 @@ abstract public class OpalScript : MonoBehaviour {
         type2 = "";
     }
 
+    public void setDisplayOpal()
+    {
+        displayOpal = true;
+        foreach(SpriteRenderer sr in GetComponentsInChildren<SpriteRenderer>())
+        {
+            if(sr.name == "Highlight")
+            {
+                sr.enabled = false;
+                return;
+            }
+        }
+    }
+
     //Start changes
 
     void Update () {
-        if(myName != "Boulder" && (myHighlight == null || !setTeam) && player != null && playerIndicator != null)
+        if(myName != "Boulder" && !displayOpal && (myHighlight == null || !setTeam) && player != null && playerIndicator != null)
         {
             setTeam = true;
             //GetComponent<SpriteRenderer>().material.shader = Shader.Find("");
             SpriteRenderer highlight = Instantiate<SpriteRenderer>(GetComponent<SpriteRenderer>(), transform);
             highlight.gameObject.AddComponent<Animator>();
+            highlight.gameObject.name = "Highlight";
             highlight.GetComponent<Animator>().runtimeAnimatorController = GetComponent<Animator>().runtimeAnimatorController;
             highlight.transform.localScale *= 2;
             highlight.transform.position = new Vector3(0, 0, 0);
