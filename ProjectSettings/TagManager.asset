@@ -59,6 +59,12 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: UI Back
+    uniqueID: 2823863035
+    locked: 0
   - name: UI
     uniqueID: 931809875
+    locked: 0
+  - name: Reticle
+    uniqueID: 764696059
     locked: 0

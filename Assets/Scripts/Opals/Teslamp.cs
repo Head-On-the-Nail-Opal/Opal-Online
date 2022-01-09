@@ -49,7 +49,6 @@ public class Teslamp : OpalScript
             {
                 boardScript.setTile((int)target.getPos().x, (int)target.getPos().z, "Grass", true);
                 doCharge(2);
-                boardScript.setChargeDisplay(getCharge());
             }
             return 0;
         }
@@ -92,7 +91,6 @@ public class Teslamp : OpalScript
             }
             healStatusEffects();
             doCharge(i);
-            boardScript.setChargeDisplay(getCharge());
         }
         return cA.getBaseDamage() + getAttack();
     }

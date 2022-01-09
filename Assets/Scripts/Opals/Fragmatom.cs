@@ -33,8 +33,8 @@ public class Fragmatom : OpalScript
         Attacks[2] = new Attack("Diagonal Beam", 1, 8, 3, "Deal damage to all Opals in a diagonal line");
         Attacks[3] = new Attack("Shift Order", 0, 1, 0, "<Free Ability>\nAll of your Reflectrons shift their angle");
         Attacks[3].setFreeAction(true);
-        type1 = "Swarm";
-        type2 = "Laser";
+        type1 = "Laser";
+        type2 = "Swarm";
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)

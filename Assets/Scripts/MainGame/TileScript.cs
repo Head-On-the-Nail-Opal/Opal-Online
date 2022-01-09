@@ -40,6 +40,7 @@ public class TileScript : MonoBehaviour {
     private TileScript link;
     private SpriteRenderer changeSpriteRenderer;
     private bool highlight = false;
+    private bool isRed = false;
 
     private List<List<Sprite>> directions = new List<List<Sprite>>();
     private List<Sprite> east = new List<Sprite>();
@@ -307,6 +308,46 @@ public class TileScript : MonoBehaviour {
         displayNum.transform.rotation = Quaternion.Euler(0,-45,0);
         displayNum.transform.localScale = new Vector3(3, 1.5f, 3);
         
+    }
+
+    public void setRed(bool red, bool blue)
+    {
+        if (blue)
+        {
+            //print("du hello");
+            foreach (MeshRenderer mr in GetComponentsInChildren<MeshRenderer>())
+            {
+                mr.material.color = new Color(225 / 255f, 225 / 255f, 1);
+            }
+            foreach (SpriteRenderer sr in GetComponentsInChildren<SpriteRenderer>())
+            {
+                sr.color = new Color(225 / 255f, 225 / 255f, 1);
+            }
+            //isRed = true;
+        }
+        else if (red)
+        {
+            foreach(MeshRenderer mr in GetComponentsInChildren<MeshRenderer>()){
+                mr.material.color = new Color(1, 100 / 255f, 100 / 255f);
+            }
+            foreach(SpriteRenderer sr in GetComponentsInChildren<SpriteRenderer>())
+            {
+                sr.color = new Color(1, 100 / 255f, 100 / 255f);
+            }
+            //isRed = true;
+        }
+        else
+        {
+            foreach (MeshRenderer mr in GetComponentsInChildren<MeshRenderer>())
+            {
+                mr.material.color = Color.white;
+            }
+            foreach (SpriteRenderer sr in GetComponentsInChildren<SpriteRenderer>())
+            {
+                sr.color = Color.white;
+            }
+            //isRed = false;
+        }
     }
 
     public void highlightTwinPortal(bool toggle)

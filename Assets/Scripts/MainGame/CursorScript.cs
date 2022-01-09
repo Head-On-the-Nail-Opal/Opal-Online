@@ -72,7 +72,7 @@ public class CursorScript : MonoBehaviour {
         targeter = Resources.Load<Target>("Prefabs/Targeter");
         warningPrefab = Resources.Load<GameObject>("Prefabs/Warning");
         placing = true;
-        currentProj = Resources.Load<Projectile>("Prefabs/DefaultProjectile");
+        currentProj = Resources.Load<Projectile>("Prefabs/ParticleProjectile");
         Cursor.visible = false;
         ts.enableTileScreen(false, "", -1);
         if(boardScript.getMult())
@@ -86,13 +86,14 @@ public class CursorScript : MonoBehaviour {
     }
 
 
-    private void clearGhosts(TileScript t)
+    public void clearGhosts(TileScript t)
     {
+        //print("got called");
         if (t.currentPlayer != null && t.currentPlayer.getMyName() != "Boulder")
         {
             if (t.currentPlayer.getPos().x != (int)t.getPos().x || t.currentPlayer.getPos().z != (int)t.getPos().z)
             {
-                //print("Current Opal: " + t.currentPlayer.getMyName() + "Opal Position: "+ t.currentPlayer.getPos().x+", "+ t.currentPlayer.getPos().z + "; Tile Position: "+ (int)myPos.x + ","+ (int)myPos.z);
+                print("Current Opal: " + t.currentPlayer.getMyName() + "Opal Position: "+ t.currentPlayer.getPos().x+", "+ t.currentPlayer.getPos().z + "; Tile Position: "+ (int)myPos.x + ","+ (int)myPos.z);
                 t.standingOn(null);
             }
         }
@@ -100,6 +101,7 @@ public class CursorScript : MonoBehaviour {
         {
             if (t.currentPlayer == null && t.type != "Boulder" && !t.getFallen())
             {
+                print("Ghost Found; Tile Position: " + (int)myPos.x + "," + (int)myPos.z);
                 t.setImpassable(false);
             }
         }
@@ -172,7 +174,7 @@ public class CursorScript : MonoBehaviour {
         if(tileFrom != lastTile)
         {
             ts.updateSelected(tileFrom.currentPlayer);
-            clearGhosts(tileFrom);
+            //clearGhosts(tileFrom);
             lastTile = tileFrom;
         }
 
@@ -299,12 +301,12 @@ public class CursorScript : MonoBehaviour {
             //display movement options
             if (distance > 0 && tileFrom.currentPlayer == selectedPlayer && boardScript.dummies[(int)myPos.x, (int)myPos.z] == null && attacking == -1) //check if tilefrom current player == selected player
             {
+                moving = true;
                 DummyScript tempDummy = Instantiate<DummyScript>(dummyPrefab);
                 tempDummy.setCoordinates((int)selectedPlayer.getPos().x, (int)selectedPlayer.getPos().z);
                 boardScript.dummies[(int)myPos.x, (int)myPos.z] = tempDummy;
                 boardScript.spotlight.transform.position = new Vector3((int)selectedPlayer.getPos().x, 2, (int)selectedPlayer.getPos().z);
                 tempDummy.Spawn(distance, 0, 0, true);
-                moving = true;
                 pathing = true;
             }
             //display movement options
@@ -715,6 +717,11 @@ public class CursorScript : MonoBehaviour {
         return animating;
     }
 
+    public bool getMoving()
+    {
+        return moving;
+    }
+
     public void setCurrentOpal(OpalScript o)
     {
         selectedPlayer = o;
@@ -739,7 +746,6 @@ public class CursorScript : MonoBehaviour {
 
         distance = selectedPlayer.getSpeed();
         boardScript.spotlight.transform.position = new Vector3((int)selectedPlayer.getPos().x, 2, (int)selectedPlayer.getPos().z);
-        boardScript.setChargeDisplay(selectedPlayer.getCharge());
         ts.updateCurrent(selectedPlayer, distance);
         currentController = boardScript.getCurrentController(selectedPlayer.getTeam());
 
@@ -788,7 +794,8 @@ public class CursorScript : MonoBehaviour {
 
     public void nextTurn()
     {
-        MM.verifyNoDisconnection();
+        if(boardScript.getMult() == true)
+            MM.verifyNoDisconnection();
         selectedPlayer.setMyTurn(false);
         foreach (OpalScript o in boardScript.gameOpals)
         {
@@ -899,10 +906,6 @@ public class CursorScript : MonoBehaviour {
         }
         selectedPlayer = nextOpal;
         currentHighlight = StartCoroutine(selectedPlayer.highlightFlash());
-        foreach(TileScript t in boardScript.tileGrid)
-        {
-            clearGhosts(t);
-        }
         boardScript.updateTurnOrder(currentTurn);
         if (selectedPlayer.getDead() == true)
         {
@@ -920,6 +923,10 @@ public class CursorScript : MonoBehaviour {
         if(((selectedPlayer.getPos().x >= 0 && selectedPlayer.getPos().x <= 9) && (selectedPlayer.getPos().z >= 0 && selectedPlayer.getPos().z <= 9)) && boardScript.tileGrid[(int)selectedPlayer.getPos().x, (int)selectedPlayer.getPos().z].currentPlayer == null)
         {
             //boardScript.tileGrid[(int)selectedPlayer.getPos().x, (int)selectedPlayer.getPos().z].standingOn(selectedPlayer);
+        }
+        foreach (TileScript t in boardScript.tileGrid)
+        {
+            clearGhosts(t);
         }
         selectedPlayer.setMyTurn(true);
         selectedPlayer.StartOfTurn();
@@ -952,7 +959,6 @@ public class CursorScript : MonoBehaviour {
         boardScript.spotlight.transform.position = new Vector3((int)selectedPlayer.getPos().x, 2, (int)selectedPlayer.getPos().z);
         destroyDummies();
         boardScript.diplayPath(false);
-        boardScript.setChargeDisplay(selectedPlayer.getCharge());
         ts.updateCurrent(selectedPlayer, distance);
         currentController = boardScript.getCurrentController(selectedPlayer.getTeam());
         foreach(TileScript t in boardScript.tileGrid)
@@ -997,6 +1003,11 @@ public class CursorScript : MonoBehaviour {
             //boardScript.getMM().sendFullGameData(boardScript.generateString());
             //boardScript.getMM().sendMultiplayerData("reset," + currentOnlinePlayer);
         }
+    }
+
+    public int getAttacking()
+    {
+        return attacking;
     }
 
 
@@ -1130,6 +1141,10 @@ public class CursorScript : MonoBehaviour {
 
     private void destroyDummies()
     {
+        foreach(TileScript t in boardScript.tileGrid)
+        {
+            t.setRed(false,false);
+        }
         for (int i = 0; i < 10; i++)
         {
             for (int j = 0; j < 10; j++)

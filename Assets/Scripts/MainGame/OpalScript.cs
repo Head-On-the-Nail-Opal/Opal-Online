@@ -56,6 +56,7 @@ abstract public class OpalScript : MonoBehaviour {
     private Vector3 highlightSpot = new Vector3(0, 0, 0.01f);
     private Coroutine curseFlash;
     private bool displayOpal = false;
+    private bool damagedByPoison = false;
 
     public bool shrouded = false;
     protected GroundScript boardScript;
@@ -87,6 +88,10 @@ abstract public class OpalScript : MonoBehaviour {
 
     protected List<OpalScript> cursed = new List<OpalScript>();
     protected List<OpalScript> cursedBy = new List<OpalScript>();
+
+    public List<OpalScript> evolvesInto = new List<OpalScript>();
+    public List<OpalScript> evolvesFrom = new List<OpalScript>();
+    public bool defaultStage = true;
 
     private void Awake()
     {
@@ -1035,8 +1040,10 @@ abstract public class OpalScript : MonoBehaviour {
 
     public int teleport(int x, int y, int totalDist)
     {
+        //boardScript.clearGhosts(x, y);
         if (x > -1 && x < 10 && y > -1 && y < 10 && !boardScript.tileGrid[x, y].getImpassable() && boardScript.tileGrid[x, y].currentPlayer == null)
         {
+            
             Vector3 lastPos = getPos();
             if (currentTile != null)
                 currentTile.standingOn(null);
@@ -1558,10 +1565,14 @@ abstract public class OpalScript : MonoBehaviour {
         {
             healStatusEffects();
             dead = true;
+            Vector3 deadTile = getPos();
             if (transform.position.x != -100 && transform.position.y < 1)
+            {
                 boardScript.tileGrid[(int)getPos().x, (int)getPos().z].currentPlayer = null;
+            }
             transform.position = new Vector3(-100, -100, -100);
             coordinates = new Vector3(-100, -100, -100);
+            boardScript.clearGhosts((int)deadTile.x, (int)deadTile.z);
         }
     }
 
@@ -1685,18 +1696,37 @@ abstract public class OpalScript : MonoBehaviour {
         return target;
     }
 
-    //mod specifies whether defense should modify the damage taken
     public virtual void takeDamage(int dam, bool mod, bool effect)
     {
-        if(dam <= 0)
+        takeDamage(dam, mod, effect, false);
+    }
+
+    public virtual void takeDamageBelowArmor(int dam, bool mod, bool effect)
+    {
+        takeDamage(dam, mod, effect, true);
+    }
+
+    //mod specifies whether defense should modify the damage taken
+    public virtual void takeDamage(int dam, bool mod, bool effect, bool belowArmor)
+    {
+        OpalScript cursedByOozwl = null;
+        foreach (OpalScript o in cursedBy)
+        {
+            if (o.getMyName() == "Oozwl")
+                cursedByOozwl = o;
+        }
+        if (dam <= 0)
         {
             return;
         }
-        if(armor > 0 && (!mod || dam - getDefense() > 0))
+        if (!belowArmor)
         {
-            addArmor(-1);
-            onDamage(-1);
-            return;
+            if (armor > 0 && (!mod || dam - getDefense() > 0))
+            {
+                addArmor(-1);
+                onArmorDamage(-1);
+                return;
+            }
         }
         if (barriarraySurrounding() != null)
         {
@@ -1740,6 +1770,11 @@ abstract public class OpalScript : MonoBehaviour {
             {
                 boardScript.getMyCursor().getCurrentOpal().spawnOplet(spiritchPrefab, boardScript.tileGrid[(int)getPos().x, (int)getPos().z]);
             }
+            if (cursedByOozwl != null && damagedByPoison)
+            {
+                cursedByOozwl.doHeal(cursedByOozwl.getMaxHealth(), false);
+                cursedByOozwl.doTempBuff(2, -1, 2);
+            }
             currentTile = null;
             if(temp != null)
                 temp.setImpassable(false);
@@ -1748,55 +1783,7 @@ abstract public class OpalScript : MonoBehaviour {
         }
         onDamage(dam);
         onDamageItem(dam);
-    }
-
-    public void takeDamageBelowArmor(int dam, bool mod, bool effect)
-    {
-        if (dam <= 0)
-        {
-            return;
-        }
-        if (barriarraySurrounding() != null)
-        {
-            barriarraySurrounding().takeDamage(dam, mod, effect);
-            return;
-        }
-        if (!mod)
-        {
-            this.health -= dam;
-            DamageResultScript temp;
-            temp = Instantiate<DamageResultScript>(damRes);
-            temp.setUp(-dam, this);
-            if (effect)
-            {
-                boardScript.callParticles("damage", transform.position);
-            }
-        }
-        else if (dam - getDefense() > 0 && dam > 0)
-        {
-            this.health = this.health - (dam - getDefense());
-            DamageResultScript temp = Instantiate<DamageResultScript>(damRes);
-            temp.setUp(-(dam - getDefense()), this);
-            if (effect)
-                boardScript.callParticles("damage", transform.position);
-        }
-        if (this.health <= 0)
-        {
-            TileScript temp = currentTile;
-            if (currentTile != null)
-                temp.standingOn(null);
-            onDeathTile(temp);
-            if (boardScript.getMyCursor().getCurrentOpal() != null && boardScript.getMyCursor().getCurrentOpal().getMyName() == "Numbskull" && boardScript.getMyCursor().getCurrentOpal().getTeam() != getTeam())
-            {
-                boardScript.getMyCursor().getCurrentOpal().spawnOplet(spiritchPrefab, boardScript.tileGrid[(int)getPos().x, (int)getPos().z]);
-            }
-            currentTile = null;
-            if (temp != null)
-                temp.setImpassable(false);
-            dead = true;
-            StartCoroutine(shrinker());
-        }
-        onDamage(dam);
+        damagedByPoison = false;
     }
 
     public IEnumerator doAttackAnim(OpalScript target, CursorScript cursor, int attackNum, Projectile currentProj)
@@ -2163,9 +2150,16 @@ abstract public class OpalScript : MonoBehaviour {
 
     public void takePoisonDamage(bool decay)
     {
+        bool cursedByOozwl = false;
+        foreach(OpalScript o in cursedBy)
+        {
+            if (o.getMyName() == "Oozwl")
+                cursedByOozwl = true;
+        }
         if (decay)
         {
-            poisonTimer--;
+            if(!cursedByOozwl)
+                poisonTimer--;
             if (currentTile != null && currentTile.type == "Miasma")
             {
                 poisonTimer = 3;
@@ -2184,14 +2178,25 @@ abstract public class OpalScript : MonoBehaviour {
                 o.takeDamage(poisonCounter, false, false);
                 o.doTempBuff(0, -1, -1);
                 o.doTempBuff(1, -1, -1);
+                if (cursedByOozwl)
+                {
+                    o.doTempBuff(0, -1, -1);
+                    o.doTempBuff(1, -1, -1);
+                }
                 cursedByMoppet = true;
             }
         }
         if (!cursedByMoppet)
         {
+            damagedByPoison = true;
             takeDamage(poisonCounter, false, false);
             doTempBuff(0, -1, -1);
             doTempBuff(1, -1, -1);
+            if (cursedByOozwl){
+                doTempBuff(0, -1, -1);
+                doTempBuff(1, -1, -1);
+            }
+
         }
         boardScript.callParticles("poison", transform.position);
     }
@@ -2232,6 +2237,11 @@ abstract public class OpalScript : MonoBehaviour {
     }
 
     public virtual void onHeal(int amount)
+    {
+        return;
+    }
+
+    public virtual void onArmorDamage(int dam)
     {
         return;
     }
