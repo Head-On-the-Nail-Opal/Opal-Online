@@ -26,7 +26,7 @@ public class Groth : OpalScript
             GetComponent<SpriteRenderer>().flipX = false;
         }
         offsetX = 0;
-        offsetY = 0.1f;
+        offsetY = 0f;
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Meditation", 0, 0, 0, "<Passive>\n While Groth remains in the same place it will grow larger amounts of growths around it.");

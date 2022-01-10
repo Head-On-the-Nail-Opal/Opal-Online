@@ -869,6 +869,12 @@ public class GroundScript : MonoBehaviour {
         }
     }
 
+    public void fireProjectile(OpalScript from, OpalScript to, int attackNum)
+    {
+        myCursor.doAttack((int)to.getPos().x, (int)to.getPos().z, attackNum, from);
+    }
+
+
     public void protSetTrap(float x, float y, string traptype)
     {
         TileScript target = tileGrid[(int)x, (int)y];
@@ -1077,7 +1083,23 @@ public class GroundScript : MonoBehaviour {
 
     public void clearGhosts(int x, int y)
     {
+        if (x > -1 && x < 10 && y >-1 && y < 10)
         myCursor.clearGhosts(tileGrid[x,y]);
+    }
+
+    public void refundMovement(int i)
+    {
+        myCursor.setDistance(i);
+    }
+
+    public void nextTurn()
+    {
+        myCursor.nextTurn();
+    }
+
+    public OpalScript getCurrentOpal()
+    {
+        return myCursor.getCurrentOpal();
     }
 
     public string getTileType(int x, int z)

@@ -176,7 +176,7 @@ abstract public class OpalScript : MonoBehaviour {
             setTeam = true;
             //GetComponent<SpriteRenderer>().material.shader = Shader.Find("");
             SpriteRenderer highlight = Instantiate<SpriteRenderer>(GetComponent<SpriteRenderer>(), transform);
-            highlight.gameObject.AddComponent<Animator>();
+            //highlight.gameObject.AddComponent<Animator>();
             highlight.gameObject.name = "Highlight";
             highlight.GetComponent<Animator>().runtimeAnimatorController = GetComponent<Animator>().runtimeAnimatorController;
             highlight.transform.localScale *= 2;
@@ -950,6 +950,11 @@ abstract public class OpalScript : MonoBehaviour {
                         currentTile.setCurrentOpal(this);
                     break;
                 }
+                if (currentTile.findSurroundingMeadowebb())
+                {
+                    boardScript.refundMovement(tilesTravelled.Count - tile-1);
+                    break;
+                }
                 tile++;
             }
         }
@@ -1259,6 +1264,10 @@ abstract public class OpalScript : MonoBehaviour {
 
     public void setBurning(bool newburn, bool insect)
     {
+        if(myName == "Boulder")
+        {
+            return;
+        }
         if(newburn && myCharm == "Insect Husk" && insect)
         {
             setPoison(true, false);
@@ -1294,6 +1303,10 @@ abstract public class OpalScript : MonoBehaviour {
 
     public void setLifted(bool newLift)
     {
+        if(myName == "Boulder")
+        {
+            return;
+        }
         if (type1 != "Air" && type2 != "Air")
         {
             if (newLift && !lifted)
@@ -1348,6 +1361,8 @@ abstract public class OpalScript : MonoBehaviour {
 
     public void setPoison(bool newpoison, bool insect)
     {
+        if (myName == "Boulder")
+            return;
         if (newpoison && myCharm == "Insect Husk" && insect)
         {
             setBurning(true, false);
@@ -1552,6 +1567,8 @@ abstract public class OpalScript : MonoBehaviour {
         
         onDie();
         onDieItem();
+        if(boardScript.getCurrentOpal() == this)
+            boardScript.nextTurn();
         float shrink = 1f;
         for (int i = 0; i < 20; i++)
         {

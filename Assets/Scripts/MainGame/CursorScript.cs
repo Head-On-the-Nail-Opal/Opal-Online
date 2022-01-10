@@ -722,6 +722,11 @@ public class CursorScript : MonoBehaviour {
         return moving;
     }
 
+    public void setDistance(int i)
+    {
+        distance += i;
+    }
+
     public void setCurrentOpal(OpalScript o)
     {
         selectedPlayer = o;

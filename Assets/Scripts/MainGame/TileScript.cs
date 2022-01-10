@@ -307,7 +307,6 @@ public class TileScript : MonoBehaviour {
         displayNum.transform.localPosition = new Vector3(0.5f, 0.75f, -0.5f);
         displayNum.transform.rotation = Quaternion.Euler(0,-45,0);
         displayNum.transform.localScale = new Vector3(3, 1.5f, 3);
-        
     }
 
     public void setRed(bool red, bool blue)
@@ -328,11 +327,11 @@ public class TileScript : MonoBehaviour {
         else if (red)
         {
             foreach(MeshRenderer mr in GetComponentsInChildren<MeshRenderer>()){
-                mr.material.color = new Color(1, 100 / 255f, 100 / 255f);
+                mr.material.color = new Color(1, 200 / 255f, 200 / 255f);
             }
             foreach(SpriteRenderer sr in GetComponentsInChildren<SpriteRenderer>())
             {
-                sr.color = new Color(1, 100 / 255f, 100 / 255f);
+                sr.color = new Color(1, 200 / 255f, 200 / 255f);
             }
             //isRed = true;
         }
@@ -657,6 +656,23 @@ public class TileScript : MonoBehaviour {
                 clearTrap();
             }
         }
+    }
+
+    public bool findSurroundingMeadowebb()
+    {
+        bool m = false;
+        if (currentPlayer == null)
+            return false;
+        foreach(TileScript t in currentPlayer.getSurroundingTiles(false))
+        {
+            if(t != null && t.getCurrentOpal() != null && t.getCurrentOpal().getMyName() == "Meadowebb" && t.type == "Growth")
+            {
+                OpalScript meadowebb = t.getCurrentOpal();
+                boardScript.fireProjectile(meadowebb, currentPlayer, 1);
+                m = true;
+            }
+        }
+        return m;
     }
 
     public void setCurrentOpal(OpalScript o)
