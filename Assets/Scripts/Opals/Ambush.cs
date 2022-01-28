@@ -28,8 +28,8 @@ public class Ambush : OpalScript {
         Attacks[0] = new Attack("Relocation", 0, 5, 0, "<Free Ability>\n Teleport from a Growth tile to any Growth tile.");
         Attacks[0].setFreeAction(true);
         Attacks[1] = new Attack("Seed Launch", 4, 1, 0, "Place a Growth at the feet of your target and at your feet.");
-        Attacks[2] = new Attack("Thorned Swipe", 1, 1, 8, "May move after using this attack.");
-        Attacks[3] = new Attack("Dimishing Wrap", 0, 1, 0, "Gain +1 attack for each adjacent Opal. Adjacent Opals lose -1 defense. May move after using this attack.", 1);
+        Attacks[2] = new Attack("Thorned Swipe", 1, 1, 8, "May move after using this ability.");
+        Attacks[3] = new Attack("Dimishing Wrap", 0, 1, 0, "Gain +1 attack for each adjacent Opal. Adjacent Opals lose -1 defense. May move after using this ability.", 1);
         type1 = "Grass";
         type2 = "Dark";
     }

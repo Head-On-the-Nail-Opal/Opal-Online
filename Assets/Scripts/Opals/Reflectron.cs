@@ -37,8 +37,8 @@ public class Reflectron : OpalScript
         Attacks[3] = new Attack("Heal Ray", 1, 6, 0, "Heal all Opals in a line 2 health");
         Attacks[4] = new Attack("Straight Reflection", 1, 6, 4,"");
         Attacks[5] = new Attack("Diagonal Reflection", 1, 8, 4, "");
-        type1 = "Laser";
-        type2 = "Light";
+        type1 = "Light";
+        type2 = "Laser";
     }
 
     public override void toggleMethod()

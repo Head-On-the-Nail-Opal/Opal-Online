@@ -28,6 +28,7 @@ public class CatchGameOpal : MonoBehaviour
         bc = gameObject.AddComponent<BoxCollider2D>();
         myOpal = GetComponent<OpalScript>();
         sr = GetComponent<SpriteRenderer>();
+        transform.localScale *= 2;
         bc.size = new Vector2(4, 4);
         if (rigidbody2D != null)
         {
@@ -38,6 +39,7 @@ public class CatchGameOpal : MonoBehaviour
         tag = "Catch";
         bc.isTrigger = true;
         lifetime = 500;
+        StartCoroutine(fade());
     }
 
         // Update is called once per frame
@@ -49,20 +51,10 @@ public class CatchGameOpal : MonoBehaviour
             DestroyImmediate(GetComponent<RoamOpal>());
             return;
         }
-        if (snagged)
-        {
-            rigidbody2D.velocity = new Vector2(0 * speedMod, 0 * speedMod);
-            return;
-        }
-        if (lifetime <= 0)
-        {
-            StartCoroutine(shrinker());
-            return;
-        }
         if (decision <= 0)
         {
-            decision = Random.Range(10, 20);
-            int makeChoice = Random.Range(0, 100);
+            //decision = Random.Range(10, 20);
+            /**int makeChoice = Random.Range(0, 100);
             if (makeChoice == 0)
             {
                 return;
@@ -98,7 +90,7 @@ public class CatchGameOpal : MonoBehaviour
                         sr.flipX = true;
                     }
                 }
-            }
+            }*/
         }
         if (rigidbody2D != null && !freeze)
         {
@@ -138,7 +130,17 @@ public class CatchGameOpal : MonoBehaviour
             shrink -= 0.05f;
             yield return new WaitForSeconds(0.05f);
         }
-        parent.doCatch(false);
         DestroyImmediate(gameObject);
+    }
+
+    public IEnumerator fade()
+    {
+        SpriteRenderer sr = myOpal.GetComponent<SpriteRenderer>();
+        sr.color = Color.black;
+        for (int i = 0; i < 20; i++)
+        {
+            sr.color= new Color(i*0.05f,i*0.05f,i*0.05f);
+            yield return new WaitForSeconds(0.01f);
+        }
     }
 }

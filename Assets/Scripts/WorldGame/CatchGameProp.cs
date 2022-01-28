@@ -31,7 +31,6 @@ public class CatchGameProp : MonoBehaviour
             collision.transform.parent = this.transform;
             collision.gameObject.GetComponent<CatchGameOpal>().setSnagged(true);
             parent.StopAllCoroutines();
-            parent.setSnagged(true);
         }
     }
 
@@ -40,7 +39,6 @@ public class CatchGameProp : MonoBehaviour
         
         if (collision.tag == "CatchWall")
         {
-            parent.doCatch(false);
         }
     }
 }

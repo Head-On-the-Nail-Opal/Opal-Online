@@ -186,6 +186,10 @@ public class MainMenuScript : MonoBehaviour {
         {
             refillOpals();
         }
+        if (Input.GetKeyDown(KeyCode.Backslash))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("World", UnityEngine.SceneManagement.LoadSceneMode.Single);
+        }
 
         if (Input.GetButtonDown("button 0"))
         {

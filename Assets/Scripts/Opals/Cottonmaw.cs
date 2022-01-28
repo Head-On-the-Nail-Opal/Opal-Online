@@ -55,7 +55,7 @@ public class Cottonmaw : OpalScript
 
         if (currentTile != null && currentTile.type == "Growth")
         {
-            boardScript.setTile(this, "Grass", true);
+            boardScript.setTile(this, "Grass", false);
         }
     }
 

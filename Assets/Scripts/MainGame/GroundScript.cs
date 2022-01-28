@@ -95,6 +95,8 @@ public class GroundScript : MonoBehaviour {
     private bool gameWon = false;
     private bool resetting = false;
 
+    public Vocabulary vocab;
+
     private void Awake()
     {
         me = this;
@@ -123,6 +125,8 @@ public class GroundScript : MonoBehaviour {
         debuffEffect = Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/DebuffEffect");
 
         growthTilePrefab = Resources.Load<TileScript>("Prefabs/Tiles/GrowthTile");
+
+        vocab.setIt();
 
         tempB = glob.getBlueTeam();
         tempR = glob.getRedTeam();
@@ -865,6 +869,12 @@ public class GroundScript : MonoBehaviour {
         }
     }
 
+    public void fireProjectile(OpalScript from, OpalScript to, int attackNum)
+    {
+        myCursor.doAttack((int)to.getPos().x, (int)to.getPos().z, attackNum, from);
+    }
+
+
     public void protSetTrap(float x, float y, string traptype)
     {
         TileScript target = tileGrid[(int)x, (int)y];
@@ -951,7 +961,7 @@ public class GroundScript : MonoBehaviour {
             if (!o.getDead() && !alreadyMoved.Contains(o.getID())) 
             {
                 OpalScript temp = Instantiate<OpalScript>(o, myCanvas.transform);
-                
+                temp.setDisplayOpal();
                 opalTurns.Add(temp);
                 temp.healStatusEffects();
                 temp.transform.localPosition = new Vector3(835, 425 - i,0);
@@ -1031,23 +1041,6 @@ public class GroundScript : MonoBehaviour {
         }
     }
 
-    public void setChargeDisplay(int num)
-    {
-        foreach(GameObject g in charges)
-        {
-            DestroyImmediate(g);
-        }
-        charges.Clear();
-        for(int i = 0; i < num; i++)
-        {
-            GameObject tempCharge = Instantiate<GameObject>(chargeLightning);
-            tempCharge.transform.position = new Vector3(6.5f + 0.1f * i, 4.5f, -7.8f + 0.1f * i);
-            tempCharge.transform.eulerAngles = new Vector3(35, -45, 0);
-            tempCharge.transform.localScale = new Vector3(0.1111f, 0.1111f, 0.11111f);
-            charges.Add(tempCharge);
-        } //6.5,-7.8 ---> 7.501, -6.799
-    }
-
     public bool checkForBarriarray()
     {
         if (isBarriarray == -1)
@@ -1088,6 +1081,27 @@ public class GroundScript : MonoBehaviour {
         target.standingOn(opalTwo);
     }
 
+    public void clearGhosts(int x, int y)
+    {
+        if (x > -1 && x < 10 && y >-1 && y < 10)
+        myCursor.clearGhosts(tileGrid[x,y]);
+    }
+
+    public void refundMovement(int i)
+    {
+        myCursor.setDistance(i);
+    }
+
+    public void nextTurn()
+    {
+        myCursor.nextTurn();
+    }
+
+    public OpalScript getCurrentOpal()
+    {
+        return myCursor.getCurrentOpal();
+    }
+
     public string getTileType(int x, int z)
     {
         if(x >= 0 && x <= 9 && z >= 0 && z <= 9)
@@ -1108,5 +1122,24 @@ public class GroundScript : MonoBehaviour {
             }
         }
         return i;
+    }
+
+    public string isVocabWord(string word)
+    {
+        string strippedWord = "";
+        foreach (char c in word) {
+            if(c != '.' && c != ',')
+            {
+                strippedWord += c;
+            }
+        }
+        strippedWord = strippedWord.ToLower();
+        return vocab.getDefinition(strippedWord);
+    }
+
+    public void setRed(int x, int z, bool red)
+    {
+        //print(myCursor.getMoving());
+        tileGrid[x, z].setRed(red, myCursor.getMoving());
     }
 }

@@ -14,6 +14,8 @@ public class InventoryButton : MonoBehaviour
     private bool current = false;
     private MeshRenderer mr;
     public Text myText;
+    public Sprite pressed;
+    public Sprite unpressed;
 
     private void Awake()
     {
@@ -50,6 +52,11 @@ public class InventoryButton : MonoBehaviour
 
     public void OnMouseEnter()
     {
+        if (unpressed != null)
+        {
+            GetComponent<SpriteRenderer>().sprite = unpressed;
+            return;
+        }
         if (current)
         {
             mr.material = softRed;
@@ -62,6 +69,11 @@ public class InventoryButton : MonoBehaviour
 
     public void OnMouseExit()
     {
+        if(unpressed != null)
+        {
+            GetComponent<SpriteRenderer>().sprite = unpressed;
+            return;
+        }
         if (current)
         {
             mr.material = redClr;

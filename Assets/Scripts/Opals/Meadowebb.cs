@@ -4,13 +4,16 @@ using UnityEngine;
 
 public class Meadowebb : OpalScript
 {
+
+    private int healAmount = 0;
+
     override public void setOpal(string pl)
     {
         health = 20;
         maxHealth = health;
         attack = 2;
-        defense = 1;
-        speed = 4;
+        defense = 2;
+        speed = 3;
         priority = 9;
         myName = "Meadowebb";
         transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.6f;
@@ -26,40 +29,21 @@ public class Meadowebb : OpalScript
         offsetY = -0.2f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Full Field", 0, 0, 0, "<Passive>\nAt the start of your turn gain +1 attack and defense for each ally standing on Growth.");
-        Attacks[1] = new Attack("Seeded", 1, 5, 0, "Place a Growth tile adjacent to any Growth tile. May use this three times.");
-        Attacks[1].setUses(3);
-        Attacks[2] = new Attack("Green Bite", 1, 1, 4, "Deal double damage to an Opal standing on Growth.");
-        Attacks[3] = new Attack("Dewy Munch", 0, 1, 0, "For each adjacent Opal gain +2 health. Placea growth tile underfoot.", 1);
+        Attacks[0] = new Attack("Grassy Lair", 0, 0, 0, "<Passive>\nWhile Meadowebb is on Growth, if an Opal enters a surrounding tile, Meadowebb uses Munch on them.");
+        Attacks[1] = new Attack("Munch", 1, 1, 6, "Deal damage and place a growth tile at the feet of the target. If they're already on Growth, deal damage again.");
+        Attacks[2] = new Attack("Striking Stance", 0, 1, 0, "Gain +4 attack, +4 defense and -1 speed for 1 turn. Place a Growth underneath Meadowebb.");
+        Attacks[3] = new Attack("Gather Dew", 0, 1, 0, "Consume all Growths surrounding Meadowebb, then after the next time you take damage heal 2 health for each. ("+0+")");
         type1 = "Grass";
         type2 = "Grass";
     }
 
-    public override void onStart()
+    public override void onDamage(int dam)
     {
-        List<OpalScript> myTeam = new List<OpalScript>();
-        if(player == "Red")
+        if(healAmount > 0)
         {
-            myTeam = boardScript.p1Opals;
-        }else if (player == "Blue")
-        {
-            myTeam = boardScript.p2Opals;
-        }
-        else if (player == "Green")
-        {
-            myTeam = boardScript.p3Opals;
-        }
-        else if (player == "Orange")
-        {
-            myTeam = boardScript.p4Opals;
-        }
-        foreach (OpalScript o in myTeam)
-        {
-            if(o.getCurrentTile() != null && o.getCurrentTile().type == "Growth" && o != this)
-            {
-                doTempBuff(0, -1, 1);
-                doTempBuff(1, -1, 1);
-            }
+            doHeal(healAmount, false);
+            healAmount = 0;
+            Attacks[3] = new Attack("Gather Dew", 0, 1, 0, "Consume all Growths surrounding Meadowebb, then after the next time you take damage heal 2 health for each. (" + 0 + ")");
         }
     }
 
@@ -72,25 +56,34 @@ public class Meadowebb : OpalScript
         }
         else if (attackNum == 1) //Seed Launch
         {
-            getBoard().setTile((int)target.getPos().x, (int)target.getPos().z, "Growth", false);
-            return 0;
-        }
-        else if (attackNum == 2) //Grass Cover
-        {
-            if (target.getCurrentTile().type == "Growth")
+            if(target.getCurrentTile() != null && target.getCurrentTile().type == "Growth")
             {
-                return (Attacks[attackNum].getBaseDamage() + getAttack()) * 2;
-            }
-        }else if (attackNum == 3)
-        {
-            if(target != this)
-            {
-                doHeal(2, false);
+                target.takeDamage(cA.getBaseDamage() + getAttack(), true, true);
             }
             else
             {
-                boardScript.setTile(this, "Growth", false);
+                boardScript.setTile(target, "Growth", false);
             }
+            return cA.getBaseDamage() + getAttack();
+        }
+        else if (attackNum == 2) //Grass Cover
+        {
+            doTempBuff(0, 1, 4);
+            doTempBuff(1, 1, 4);
+            doTempBuff(2, 1, -1);
+            boardScript.setTile(this, "Growth", false);
+            return 0;
+        }else if (attackNum == 3)
+        {
+            foreach(TileScript t in getSurroundingTiles(false))
+            {
+                if(t.type == "Growth")
+                {
+                    healAmount += 2;
+                    boardScript.setTile(t, "Grass", true);
+                }
+            }
+            Attacks[3] = new Attack("Gather Dew", 0, 1, 0, "Consume all Growths surrounding Meadowebb, then after the next time you take damage heal 2 health for each. (" + healAmount + ")");
             return 0;
         }
         return cA.getBaseDamage() + getAttack();
@@ -105,7 +98,7 @@ public class Meadowebb : OpalScript
         }
         else if (attackNum == 1) //Seed Launch
         {
-            getBoard().setTile((int)target.getPos().x, (int)target.getPos().z, "Growth", false);
+            return 0;
         }
         else if (attackNum == 2) //Grass Cover
         {
@@ -124,24 +117,22 @@ public class Meadowebb : OpalScript
         }
         else if (attackNum == 1)
         {
-            return 0;
+            int output = Attacks[attackNum].getBaseDamage() + getAttack(); 
+            if (target != null && target.type == "Growth")
+            {
+                output += Attacks[attackNum].getBaseDamage() + getAttack();
+            }
+            return output;
         }
         else if (attackNum == 2)
         {
-            if (target.type == "Growth")
-            {
-                return (Attacks[attackNum].getBaseDamage() + getAttack())*2 - target.currentPlayer.getDefense();
-            }
+            return 0;
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
     }
 
     public override int checkCanAttack(TileScript target, int attackNum)
     {
-        if (attackNum == 1)
-        {
-            return 0;
-        }
         if (target.currentPlayer != null)
         {
             return 0;

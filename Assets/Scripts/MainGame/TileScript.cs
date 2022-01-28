@@ -11,6 +11,10 @@ public class TileScript : MonoBehaviour {
     public GameObject GrowthEffect;
     public List<Sprite> connectedTileSprites;
     public GameObject changeTexture;
+    private GameObject displayNum;
+    private Sprite displayThree;
+    private Sprite displayTwo;
+    private Sprite displayOne;
     private ConnectedTile connectedTile;
 
     public OpalScript currentPlayer = null;
@@ -35,6 +39,8 @@ public class TileScript : MonoBehaviour {
     private bool impassable = false;
     private TileScript link;
     private SpriteRenderer changeSpriteRenderer;
+    private bool highlight = false;
+    private bool isRed = false;
 
     private List<List<Sprite>> directions = new List<List<Sprite>>();
     private List<Sprite> east = new List<Sprite>();
@@ -62,6 +68,8 @@ public class TileScript : MonoBehaviour {
         {
             impassable = true;
         }
+        setupTimer();
+        showTimer(false);
         connectedTile = transform.GetChild(0).transform.GetComponentInChildren<ConnectedTile>();
         if(connectedTileSprites.Count > 0)
         {
@@ -293,6 +301,137 @@ public class TileScript : MonoBehaviour {
         }
     }
 
+    public void setupTimer()
+    {
+        displayNum = Instantiate<GameObject>(Resources.Load<GameObject>("Prefabs/TileTimer"), transform);
+        displayNum.transform.localPosition = new Vector3(0.5f, 0.75f, -0.5f);
+        displayNum.transform.rotation = Quaternion.Euler(0,-45,0);
+        displayNum.transform.localScale = new Vector3(3, 1.5f, 3);
+    }
+
+    public void setRed(bool red, bool blue)
+    {
+        if (blue)
+        {
+            //print("du hello");
+            foreach (MeshRenderer mr in GetComponentsInChildren<MeshRenderer>())
+            {
+                mr.material.color = new Color(225 / 255f, 225 / 255f, 1);
+            }
+            foreach (SpriteRenderer sr in GetComponentsInChildren<SpriteRenderer>())
+            {
+                sr.color = new Color(225 / 255f, 225 / 255f, 1);
+            }
+            //isRed = true;
+        }
+        else if (red)
+        {
+            foreach(MeshRenderer mr in GetComponentsInChildren<MeshRenderer>()){
+                mr.material.color = new Color(1, 200 / 255f, 200 / 255f);
+            }
+            foreach(SpriteRenderer sr in GetComponentsInChildren<SpriteRenderer>())
+            {
+                sr.color = new Color(1, 200 / 255f, 200 / 255f);
+            }
+            //isRed = true;
+        }
+        else
+        {
+            foreach (MeshRenderer mr in GetComponentsInChildren<MeshRenderer>())
+            {
+                mr.material.color = Color.white;
+            }
+            foreach (SpriteRenderer sr in GetComponentsInChildren<SpriteRenderer>())
+            {
+                sr.color = Color.white;
+            }
+            //isRed = false;
+        }
+    }
+
+    public void highlightTwinPortal(bool toggle)
+    {
+            if (link == null)
+                return;
+            doHighlight(toggle);
+            link.doHighlight(toggle);
+    }
+
+    private void doHighlight(bool toggle)
+    {
+        if (toggle && !highlight)
+        {
+            trapEffect.transform.localScale *= 1.5f;
+            highlight = true;
+        }
+        else if(!toggle && highlight)
+        {
+            trapEffect.transform.localScale /= 1.5f;
+            highlight = false;
+        }
+    }
+
+    public void setTimer(int num)
+    {
+        if (displayNum == null)
+            return;
+        if(num == 3)
+        {
+            foreach(SpriteRenderer s in displayNum.GetComponentsInChildren<SpriteRenderer>())
+            {
+                if(s.name == "3")
+                {
+                    s.enabled = true;
+                }
+                else
+                {
+                    s.enabled = false;
+                }
+            }
+        }else if(num == 2)
+        {
+            foreach (SpriteRenderer s in displayNum.GetComponentsInChildren<SpriteRenderer>())
+            {
+                if (s.name == "2")
+                {
+                    s.enabled = true;
+                }
+                else
+                {
+                    s.enabled = false;
+                }
+            }
+        }
+        else if(num == 1)
+        {
+            foreach (SpriteRenderer s in displayNum.GetComponentsInChildren<SpriteRenderer>())
+            {
+                if (s.name == "1")
+                {
+                    s.enabled = true;
+                }
+                else
+                {
+                    s.enabled = false;
+                }
+            }
+        }
+        else
+        {
+            showTimer(false);
+        }
+        
+    }
+
+    public void showTimer(bool show)
+    {
+        if (displayNum == null)
+            return;
+        displayNum.SetActive(show);
+        if(show)
+            setTimer(decayTurn);
+    }
+
 
     //format: type, fallen, decayTurn, currentTrap, linkX, linkZ, end
     public string generateString()
@@ -519,6 +658,23 @@ public class TileScript : MonoBehaviour {
         }
     }
 
+    public bool findSurroundingMeadowebb()
+    {
+        bool m = false;
+        if (currentPlayer == null)
+            return false;
+        foreach(TileScript t in currentPlayer.getSurroundingTiles(false))
+        {
+            if(t != null && t.getCurrentOpal() != null && t.getCurrentOpal().getMyName() == "Meadowebb" && t.type == "Growth")
+            {
+                OpalScript meadowebb = t.getCurrentOpal();
+                boardScript.fireProjectile(meadowebb, currentPlayer, 1);
+                m = true;
+            }
+        }
+        return m;
+    }
+
     public void setCurrentOpal(OpalScript o)
     {
         currentPlayer = o;
@@ -531,6 +687,7 @@ public class TileScript : MonoBehaviour {
             if(type != "Grass" && type != "Boulder" && !(type == "Growth" && currentPlayer != null) && !(type == "Flood" && checkNeighbors("Flood")))
             {
                 decayTurn--;
+                setTimer(decayTurn);
             }
             if(decayTurn <= 0 && type != "Grass")
             {
@@ -664,6 +821,12 @@ public class TileScript : MonoBehaviour {
             trapEffect = Instantiate<GameObject>(temp, this.transform);
             trapEffect.transform.localPosition = new Vector3(0, 0.5f, 0);
         }
+        else if (trapType == "Mist")
+        {
+            GameObject temp = Resources.Load<GameObject>("Prefabs/ParticleSystems/Traps/Mist");
+            trapEffect = Instantiate<GameObject>(temp, this.transform);
+            trapEffect.transform.localPosition = new Vector3(0, 0.5f, 0);
+        }
     }
 
     public void clearTrap()
@@ -711,6 +874,17 @@ public class TileScript : MonoBehaviour {
                 boardScript.setTile((int)transform.position.x - 1, (int)transform.position.z, "Boulder", false);
                 boardScript.setTile((int)transform.position.x, (int)transform.position.z + 1, "Boulder", false);
                 boardScript.setTile((int)transform.position.x, (int)transform.position.z - 1, "Boulder", false);
+                break;
+            case "Mist":
+                foreach(OpalScript o in target.getCursedBy())
+                {
+                    if(o.getMyName() == "Mistery")
+                    {
+                        target.takeDamage(14,true, true);
+                        DestroyImmediate(trapEffect);
+                        break;
+                    }
+                }
                 break;
         }
     }

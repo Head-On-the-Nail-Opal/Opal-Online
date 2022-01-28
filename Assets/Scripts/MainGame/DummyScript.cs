@@ -31,7 +31,8 @@ public class DummyScript : MonoBehaviour {
      * */
     public void Spawn(int tD, int d, int attackState, bool original)
     {
-        if(attackState == 7)
+        boardScript.setRed((int)pos.x, (int)pos.z, true);
+        if (attackState == 7)
         {
             findHighestAttack(tD);
             return;
@@ -79,6 +80,7 @@ public class DummyScript : MonoBehaviour {
                                         DummyScript tempDummy = Instantiate<DummyScript>(this);
                                         tempDummy.setCoordinates((int)pos.x + i, (int)pos.z + j);
                                         boardScript.dummies[(int)pos.x + i, (int)pos.z + j] = tempDummy;
+                                        boardScript.setRed((int)pos.x + i, (int)pos.z + j, true);
                                         temps[numLoop] = tempDummy;
                                         if(i == 1 && j == 0)
                                         {
@@ -144,6 +146,7 @@ public class DummyScript : MonoBehaviour {
                 {
                     DummyScript tempDummy = Instantiate<DummyScript>(this);
                     tempDummy.setCoordinates((int)pos.x - i, (int)pos.z);
+                    boardScript.setRed((int)pos.x - i, (int)pos.z, true);
                     boardScript.dummies[(int)pos.x - i, (int)pos.z] = tempDummy;
                     currentPos = new Vector2(pos.x - i, pos.z);
                 }
@@ -155,6 +158,7 @@ public class DummyScript : MonoBehaviour {
                 {
                     DummyScript tempDummy = Instantiate<DummyScript>(this);
                     tempDummy.setCoordinates((int)pos.x + i, (int)pos.z);
+                    boardScript.setRed((int)pos.x + i, (int)pos.z, true);
                     boardScript.dummies[(int)pos.x + i, (int)pos.z] = tempDummy;
                     currentPos = new Vector2(pos.x + i, pos.z);
                 }
@@ -166,6 +170,7 @@ public class DummyScript : MonoBehaviour {
                 {
                     DummyScript tempDummy = Instantiate<DummyScript>(this);
                     tempDummy.setCoordinates((int)pos.x, (int)pos.z + i);
+                    boardScript.setRed((int)pos.x, (int)pos.z + i, true);
                     boardScript.dummies[(int)pos.x, (int)pos.z + i] = tempDummy;
                     currentPos = new Vector2(pos.x, pos.z + i);
                 }
@@ -177,6 +182,7 @@ public class DummyScript : MonoBehaviour {
                 {
                     DummyScript tempDummy = Instantiate<DummyScript>(this);
                     tempDummy.setCoordinates((int)pos.x, (int)pos.z - i);
+                    boardScript.setRed((int)pos.x, (int)pos.z - i, true);
                     boardScript.dummies[(int)pos.x, (int)pos.z - i] = tempDummy;
                     currentPos = new Vector2(pos.x, pos.z - i);
                 }
@@ -199,6 +205,7 @@ public class DummyScript : MonoBehaviour {
                 {
                     DummyScript tempDummy = Instantiate<DummyScript>(this);
                     tempDummy.setCoordinates(i, j);
+                    boardScript.setRed(i, j, true);
                     boardScript.dummies[i,j] = tempDummy;
                     //tempDummy.Spawn(range, 0, 1, false);
                 }
@@ -227,6 +234,7 @@ public class DummyScript : MonoBehaviour {
                 {
                     DummyScript tempDummy = Instantiate<DummyScript>(this);
                     tempDummy.setCoordinates((int)(pos.x + i),(int)( pos.z + j));
+                    boardScript.setRed((int)pos.x + i, (int)pos.z + j, true);
                     boardScript.dummies[(int)(pos.x + i),(int)( pos.z + j)] = tempDummy;
                 }
             }
@@ -242,6 +250,7 @@ public class DummyScript : MonoBehaviour {
             {
                 DummyScript tempDummy = Instantiate<DummyScript>(this);
                 tempDummy.setCoordinates((int)o.getPos().x, (int)o.getPos().z);
+                boardScript.setRed((int)o.getPos().x, (int)o.getPos().z, true);
                 boardScript.dummies[(int)o.getPos().x, (int)o.getPos().z] = tempDummy;
             }
         }

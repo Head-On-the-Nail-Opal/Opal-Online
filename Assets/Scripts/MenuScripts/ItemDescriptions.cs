@@ -36,12 +36,17 @@ public class ItemDescriptions : MonoBehaviour
         items.Add("Golden Figure,Whenever you take damage heal by 1 health."); 
         items.Add("Azurite Figure, At the start of your turn place a Flood at your feet"); 
         items.Add("Garnet Figure, When you take damage the attacker's current tile turns to flame."); 
-        items.Add("Jasper Figure, All incoming healing is overheal."); // Potential LEGENDARY
+        //items.Add("Jasper Figure, All incoming healing is overheal."); // Potential LEGENDARY
         items.Add("Juniper Necklace, At the start of the game gain +1 attack defense and speed for each void type ally."); //Potential LEGENDARY
         items.Add("Dripping Candle,At the start of your turn burn adjacent Opals."); 
         items.Add("Whetstone,When you end your turn next to a Boulder you and it gain +2 defense.");
         items.Add("Suffering Crown,When you take damage from an Opal with higher attack than you gain +5 attack."); //Potential LEGENDARY
+        items.Add("Frayed Wires,Whenever you spend a charge gain +1 attack");
+        items.Add("Shock Collar,Gain +5 charge the first time you take damage from an enemy");
+        items.Add("Electromagnet,At the start of your turn if all of your teammates have charge gain +2 charge");
+      
         items.Sort();
+        items.Add("None,No effect");
 
 
         foreach (string s in items)
@@ -67,6 +72,10 @@ public class ItemDescriptions : MonoBehaviour
 
     public string getDescFromItem(string name)
     {
+        if (!justNames.Contains(name))
+        {
+            return null;
+        }
         return items[justNames.IndexOf(name)].Split(',')[1];
     }
 

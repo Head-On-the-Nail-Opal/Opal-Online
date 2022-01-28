@@ -14,9 +14,12 @@ public class AttackScreen : MonoBehaviour
     private Vector3 myPos;
     private string[] shapes = new string[] { "", "Mortar", "Unimplemented", "Water Rush", "Line of Sight", "Target Growths", "Laser Beam", "All Opals", "Diagonal Laser"};
     private SpriteRenderer sr;
+    private GroundScript board;
+    private string textDescription;
 
     private void Awake()
     {
+        board = GameObject.Find("Main Camera").GetComponent<GroundScript>();
         myPos = transform.localPosition;
         transform.position = new Vector3(-100, -100, -100);
         sr = GetComponent<SpriteRenderer>();
@@ -48,9 +51,10 @@ public class AttackScreen : MonoBehaviour
 
     public void updateScreen(OpalScript attacking, int attackNum, TileScript target)
     {
+        bool checkText = false;
         name.text = "";
         damage.text = "";
-        description.text = "";
+        //description.text = "";
         range.text = "";
         mechanic.text = "";
         shape.text = "";
@@ -79,16 +83,30 @@ public class AttackScreen : MonoBehaviour
             return;
 
         }
+
+        if(attacking.Attacks[attackNum].getDesc() != textDescription)
+        {
+            checkText = true;
+            textDescription = attacking.Attacks[attackNum].getDesc();
+        }
+
         transform.localPosition = myPos;
         name.text = attacking.Attacks[attackNum].aname;
         string[] desc = attacking.Attacks[attackNum].getDesc().Split('\n');
         if (desc.Length == 2)
         {
-            mechanic.text = "" + desc[0].Substring(0, desc[0].Length-1).Substring(1);
-            description.text = "" + desc[1];
+            mechanic.text = "" + desc[0].Substring(0, desc[0].Length - 1).Substring(1);
         }
-        else
-            description.text = "" + desc[0];
+        if (checkText)
+        {
+            if (desc.Length == 2)
+            {
+                mechanic.text = "" + desc[0].Substring(0, desc[0].Length - 1).Substring(1);
+                description.text = "" + desc[1];
+            }
+            else
+                description.text = "" + desc[0];
+        }
         range.text = "" + attacking.Attacks[attackNum].getRange();
         if(attacking.Attacks[attackNum].getRange() == 0 && attacking.Attacks[attackNum].getShape() == 0)
             shape.text = "Self Target";  
@@ -102,5 +120,23 @@ public class AttackScreen : MonoBehaviour
             damage.text = "" + attacking.getAttackDamage(attackNum, target);
         else
             damage.text = "0";
+
+        if (checkText)
+        {
+            string[] eachWord = description.text.Split(' ');
+            string checkVocab = "";
+
+            foreach (string s in eachWord)
+            {
+                if (board.isVocabWord(s) != null)
+                {
+                    
+                    checkVocab += "<b><color=navy>" + s +"</color></b> ";
+                }
+                else
+                    checkVocab += s + " ";
+            }
+            description.text = checkVocab;
+        }
     }
 }

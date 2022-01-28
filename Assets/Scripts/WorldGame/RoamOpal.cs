@@ -3,37 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class RoamOpal : MonoBehaviour {
-    Rigidbody2D rigidbody2D;
-    BoxCollider2D bc;
+
     SpriteRenderer sr;
     OpalScript myOpal;
-    private float speedMod = 8;
-    private int decision = 0;
+    private float speedMod = 1f;
+    private int decision = 20;
     private int upSpeed = 0;
     private int rightSpeed = 0;
     private int lifetime;
     private bool freeze = false;
+    private TileCode[,] map;
+    private Dictionary<string, bool> getPassable;
+    private bool moving = false;
+    private OpalLogger oL;
+
     // Use this for initialization
     void Start () {
-        if (GetComponent<Rigidbody2D>() == null)
-            rigidbody2D = gameObject.AddComponent<Rigidbody2D>();
-        else
-            rigidbody2D = GetComponent<Rigidbody2D>();
-        bc = gameObject.AddComponent<BoxCollider2D>();
+
         myOpal = GetComponent<OpalScript>();
         sr = GetComponent<SpriteRenderer>();
-        bc.size = new Vector2(4, 4);
-        if (rigidbody2D != null)
-        {
-            rigidbody2D.gravityScale = 0;
-            rigidbody2D.mass = 0.0000001f;
-            rigidbody2D.freezeRotation = true;
-        }
         lifetime = Random.Range(200, 1000);
         transform.localScale = transform.localScale * 0.05f;
         StartCoroutine(grower());
         tag = "Opal";
-        bc.isTrigger = false;
         string skin = "00";
         string particle = "00";
         string color = "00";
@@ -41,8 +33,8 @@ public class RoamOpal : MonoBehaviour {
 
         //skin
         int rand = Random.Range(1, 1000);
-        if (rand < 100) { skin = "01"; }
-        if (rand < 10) { skin = "02"; }
+        //if (rand < 100) { skin = "01"; }
+        //if (rand < 10) { skin = "02"; }
 
         //particle
         rand = Random.Range(1, 1000);
@@ -79,14 +71,13 @@ public class RoamOpal : MonoBehaviour {
         //print("Skin: " + skin + " Particle: " + particle + " Color: " + color);
         string variant = size + color + particle + skin;
         myOpal.setVariant(""+variant);
-
+        //print(currentGridPos.x + "," + currentGridPos.y);
     }
 	
 	// Update is called once per frame
 	void Update () {
         if(transform.position.z == -100)
         {
-            //DestroyImmediate(this.gameObject);
             DestroyImmediate(GetComponent<RoamOpal>());
             return;
         }
@@ -95,57 +86,104 @@ public class RoamOpal : MonoBehaviour {
             StartCoroutine(shrinker());
             return;
         }
-        if (decision <= 0)
+        if (decision <= 0 && !moving)
         {
-            decision = Random.Range(10, 20);
-            int makeChoice = Random.Range(0, 100);
-            if(makeChoice == 0)
+            
+            int makeChoice = Random.Range(0, 5);
+            if (!freeze)
             {
-                return;
-            }
-            else if(makeChoice % 2 == 0 )
-            {
-                if(makeChoice/2 % 2 == 0)
+                if (makeChoice == 0)
                 {
-                    upSpeed = 1;
-                }
-                else
-                {
-                    rightSpeed = 1;
-                    sr.flipX = true;
-                    if (myOpal.getMyName() == "Succuum" || myOpal.getMyName() == "Mechalodon")
+                    if (getPassable[map[Mathf.RoundToInt(transform.position.x + 1), Mathf.RoundToInt(transform.position.y)].getCode()] && oL.checkTile(Mathf.RoundToInt(transform.position.x + 1), Mathf.RoundToInt(transform.position.y)) == null)
                     {
-                        sr.flipX = false;
+                        //print(map[Mathf.RoundToInt(transform.position.x + 1), Mathf.RoundToInt(transform.position.y)].getCode());
+                        StartCoroutine(move(1, 0));
+                    }
+                }
+                else if (makeChoice == 1)
+                {
+                    if (getPassable[map[Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y+1)].getCode()] && oL.checkTile(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y+1)) == null)
+                    {
+                        //print(map[Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y+1)].getCode());
+                        StartCoroutine(move(0, 1));
+                    }
+                }
+                else if (makeChoice == 2)
+                {
+                    if (getPassable[map[Mathf.RoundToInt(transform.position.x - 1), Mathf.RoundToInt(transform.position.y)].getCode()] && oL.checkTile(Mathf.RoundToInt(transform.position.x - 1), Mathf.RoundToInt(transform.position.y)) == null)
+                    {
+                        //print(map[Mathf.RoundToInt(transform.position.x - 1), Mathf.RoundToInt(transform.position.y)].getCode());
+                        StartCoroutine(move(-1, 0));
+                    }
+                }
+                else if (makeChoice == 3)
+                {
+                    if (getPassable[map[Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y - 1)].getCode()] && oL.checkTile(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y-1)) == null)
+                    {
+                        //print(map[Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y - 1)].getCode());
+                        StartCoroutine(move(0, -1));
                     }
                 }
             }
-            else
-            {
-                if (makeChoice / 2 % 2 == 0)
-                {
-                    upSpeed = -1;
-                }
-                else
-                {
-                    rightSpeed = -1;
-                    sr.flipX = false;
-                    if(myOpal.getMyName()  == "Succuum" || myOpal.getMyName() == "Mechalodon")
-                    {
-                        sr.flipX = true;
-                    }
-                }
-            }
-        }
-        if (rigidbody2D != null && !freeze)
-        {
-            rigidbody2D.velocity = new Vector2(rightSpeed * speedMod, upSpeed * speedMod);
         }
         decision--;
         lifetime--;
     }
 
+    public IEnumerator move(int x, int y)
+    {
+        moving = true;
+        float steps = 5;
+        if (x == 1)
+        {
+            sr.flipX = true;
+            if (myOpal.getMyName() == "Succuum" || myOpal.getMyName() == "Mechalodon")
+            {
+                sr.flipX = false;
+            }
+        }
+        else if (x == -1)
+        {
+            sr.flipX = false;
+            if (myOpal.getMyName() == "Succuum" || myOpal.getMyName() == "Mechalodon")
+            {
+                sr.flipX = true;
+            }
+        }
+        for (int i = 0; i < steps; i++)
+        {
+            if(x != 0)
+            {
+                transform.position = new Vector2((x * speedMod) / steps + transform.position.x, transform.position.y);
+            }
+            else if (y != 0)
+            {
+                transform.position = new Vector2(transform.position.x, (y * speedMod) / steps + transform.position.y);
+            }
+            else
+            {
+
+            }
+            yield return new WaitForSeconds(0.0001f);
+        }
+        //print(currentGridPos.x + "," + currentGridPos.y);
+        //print(map[Mathf.RoundToInt(transform.position.x + 1), Mathf.RoundToInt(transform.position.y)].getCode());
+        decision = Random.Range(20, 60);
+        OpalScript overlap = oL.checkTile(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y));
+        if (overlap != null && overlap != this.gameObject.GetComponent<OpalScript>())
+            decision = 0;
+        moving = false;
+    }
+
+        public void setMap(TileCode[,] cS, Dictionary<string, bool> b)
+    {
+        map = cS;
+        getPassable = b;
+    }
+
     public IEnumerator shrinker()
     {
+        oL.removeOpal(this);
         float shrink = 1f;
         for (int i = 0; i < 20; i++)
         {
@@ -158,8 +196,6 @@ public class RoamOpal : MonoBehaviour {
 
     public IEnumerator grower()
     {
-        Vector2 size = bc.size;
-        bc.size *= 0;
         float shrink = 0.05f;
         for (int i = 0; i < 11; i++)
         {
@@ -167,11 +203,16 @@ public class RoamOpal : MonoBehaviour {
             shrink += 0.05f;
             yield return new WaitForSeconds(0.05f);
         }
-        bc.size = size;
+        oL.addOpal(this);
     }
 
     public void freezeMe()
     {
         freeze = true;
+    }
+
+    public void addOpalLogger(OpalLogger o)
+    {
+        oL = o;
     }
 }

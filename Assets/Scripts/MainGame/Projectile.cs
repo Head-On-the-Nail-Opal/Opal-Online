@@ -11,6 +11,7 @@ public class Projectile : MonoBehaviour{
     List<Color> rainbows = new List<Color>() { Color.red, new Color(219 / 255f, 11 / 255f, 0), Color.yellow, Color.green, Color.blue, new Color(75 / 255f, 0 / 255f, 130 / 255f), new Color(238 / 255f, 130 / 238, 0)};
     int r = 0;
     CursorScript cs;
+    ParticleSystem hurtParticle;
 
     /**
      * Shape state
@@ -34,6 +35,8 @@ public class Projectile : MonoBehaviour{
         }
         mainCol = getColorFromType(type1, true);
         secondCol = getColorFromType(type1, false);
+
+        hurtParticle = Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/ParticleDamage");
         //GetComponent<Renderer>().material.color = mainCol;
         if(head)
             cs = FindObjectOfType<CursorScript>();
@@ -118,6 +121,18 @@ public class Projectile : MonoBehaviour{
             if (first)
                 return new Color(255 / 255f, 0 / 255f, 0 / 255f);
             return new Color(200 / 255f, 0 / 255f, 0 / 255f);
+        }
+        else if (type == "Swarm")
+        {
+            if (first)
+                return new Color(184 / 255f, 109 / 255f, 39 / 255f);
+            return new Color(149 / 255f, 166 / 255f, 36 / 255f);
+        }
+        else if (type == "Spirit")
+        {
+            if (first)
+                return new Color(157 / 255f, 0 / 255f, 166 / 255f);
+            return new Color(98 / 255f, 0 / 255f, 143 / 255f);
         }
         return projColor;
     }
@@ -215,6 +230,7 @@ public class Projectile : MonoBehaviour{
         }
         if (head)
         {
+            summonParticleDamage(mainCol, target.getPos());
             target.takeDamage(from.getAttackEffect(attackNum, target), true, true);
             cs.updateData();
             if (from != target)
@@ -260,6 +276,7 @@ public class Projectile : MonoBehaviour{
         }
         if (head)
         {
+            summonParticleDamage(mainCol, target.transform.position);
             from.getAttackEffect(attackNum, target);
             cs.updateData();
             if (from != target.currentPlayer)
@@ -268,5 +285,13 @@ public class Projectile : MonoBehaviour{
         }
         
         DestroyImmediate(this.gameObject);
+    }
+
+    private void summonParticleDamage(Color clr, Vector3 pos)
+    {
+        ParticleSystem pD = Instantiate<ParticleSystem>(hurtParticle);
+        var m = pD.main;
+        m.startColor = clr;
+        pD.transform.position = new Vector3(pos.x, 0.5f, pos.z);
     }
 }

@@ -49,7 +49,14 @@ abstract public class OpalScript : MonoBehaviour {
     private int minionCount = 0;
     private string myCharm;
     private bool charmRevealed = false;
-
+    private string myNickname;
+    private GameObject myHighlight;
+    private Color teamColor;
+    private bool flashing = false;
+    private Vector3 highlightSpot = new Vector3(0, 0, 0.01f);
+    private Coroutine curseFlash;
+    private bool displayOpal = false;
+    private bool damagedByPoison = false;
 
     public bool shrouded = false;
     protected GroundScript boardScript;
@@ -72,11 +79,19 @@ abstract public class OpalScript : MonoBehaviour {
     private bool earlyEnd = false;
     private Spiritch spiritchPrefab;
     private string personality = "Straight-Edge";
+    private int mySize = 2;
 
     private Vector3 startTile;
     private bool takenDamage = false;
 
     private Vector3 coordinates = new Vector3();
+
+    protected List<OpalScript> cursed = new List<OpalScript>();
+    protected List<OpalScript> cursedBy = new List<OpalScript>();
+
+    public List<OpalScript> evolvesInto = new List<OpalScript>();
+    public List<OpalScript> evolvesFrom = new List<OpalScript>();
+    public bool defaultStage = true;
 
     private void Awake()
     {
@@ -140,40 +155,71 @@ abstract public class OpalScript : MonoBehaviour {
         type2 = "";
     }
 
+    public void setDisplayOpal()
+    {
+        displayOpal = true;
+        foreach(SpriteRenderer sr in GetComponentsInChildren<SpriteRenderer>())
+        {
+            if(sr.name == "Highlight")
+            {
+                sr.enabled = false;
+                return;
+            }
+        }
+    }
+
     //Start changes
 
     void Update () {
-        if((mySpot == null || !setTeam) && player != null && playerIndicator != null)
+        if(myName != "Boulder" && !displayOpal && (myHighlight == null || !setTeam) && player != null && playerIndicator != null)
         {
-            GameObject spot = Instantiate<GameObject>(playerIndicator);
-            spot.transform.localPosition = new Vector3(0,-1.1f ,0);
-            spot.transform.localScale = new Vector3(1f / transform.localScale.x/3, 0.0001f / transform.localScale.y, 1/transform.localScale.x/3);
-            spot.transform.SetParent(this.transform, false);
             setTeam = true;
-            Material temp = new Material(Shader.Find("Standard"));
-            if(player == "Red")
+            //GetComponent<SpriteRenderer>().material.shader = Shader.Find("");
+            SpriteRenderer highlight = Instantiate<SpriteRenderer>(GetComponent<SpriteRenderer>(), transform);
+            //highlight.gameObject.AddComponent<Animator>();
+            highlight.gameObject.name = "Highlight";
+            highlight.GetComponent<Animator>().runtimeAnimatorController = GetComponent<Animator>().runtimeAnimatorController;
+            highlight.transform.localScale *= 2;
+            highlight.transform.position = new Vector3(0, 0, 0);
+            Shader shaderGUItext = Shader.Find("GUI/Text Shader");
+            highlight.material.shader = shaderGUItext;
+            myHighlight = highlight.gameObject;
+
+
+            if (player == "Red")
             {
-                temp.color = Color.red;
+                teamColor = Color.red;
             }else if(player == "Blue")
             {
-                temp.color = Color.blue;
+                teamColor = Color.blue;
             }
             else if(player == "Green")
             {
-                temp.color = Color.green;
+
+                teamColor = Color.green;
             }
             else if(player == "Orange")
             {
-                temp.color = new Color(1, 0.5f, 0);
+
+                teamColor = new Color(1, 0.5f, 0);
             }
-            foreach(MeshRenderer m in spot.GetComponentsInChildren<MeshRenderer>())
+            highlight.color = teamColor;
+            highlight.enabled = false;
+            if(GetComponent<SpriteRenderer>().flipX != highlight.flipX)
             {
-                m.material = temp;
+                highlight.flipX = GetComponent<SpriteRenderer>().flipX;
             }
-            mySpot = spot;
-            showSpot(false);
-            StartCoroutine(spinSpot());
+            //StartCoroutine(highlightFlash());
         }
+
+        if(myHighlight != null && myHighlight.transform.position != highlightSpot)
+        {
+            myHighlight.transform.localPosition = new Vector3(0,0,0.01f);
+            myHighlight.transform.rotation = transform.rotation;
+            myHighlight.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
+            //print("du hello");
+        }
+
         if(transform.position.x < -99 || display)
         {
             return;
@@ -189,7 +235,92 @@ abstract public class OpalScript : MonoBehaviour {
         }
 	}
 
-    
+
+    public IEnumerator highlightFlash()
+    {
+        if (myHighlight != null)
+        {
+
+            flashing = true;
+            SpriteRenderer hsr = myHighlight.GetComponent<SpriteRenderer>();
+            hsr.enabled = true;
+            while (true)
+            {
+                for (int i = 0; i < 20; i++)
+                {
+                    hsr.color += new Color(0.05f, 0.05f, 0.05f);
+                    yield return new WaitForFixedUpdate();
+                }
+                for (int j = 0; j < 20; j++)
+                {
+                    hsr.color -= new Color(0.05f, 0.05f, 0.05f);
+                    yield return new WaitForFixedUpdate();
+                }
+                yield return new WaitForSeconds(0.3f);
+            }
+        }
+    }
+
+    public void resetHighlight()
+    {
+        if (myHighlight == null)
+            return;
+        myHighlight.GetComponent<SpriteRenderer>().color = teamColor;
+        myHighlight.GetComponent<SpriteRenderer>().enabled = false;
+    }
+
+    public void showHighlight()
+    {
+        if (myHighlight == null)
+            return;
+        myHighlight.GetComponent<SpriteRenderer>().enabled = true;
+    }
+
+    public void flipOpal(bool dir)
+    {
+        GetComponent<SpriteRenderer>().flipX = dir;
+        if(myHighlight != null)
+            myHighlight.GetComponent<SpriteRenderer>().flipX = dir;
+    }
+
+    public void toggleSkull(bool toggle)
+    {
+        if (toggle)
+        {
+            GetComponent<SpriteRenderer>().color = Color.black;
+        }
+        else
+        {
+            GetComponent<SpriteRenderer>().color = Color.white;
+        }
+    }
+
+    private IEnumerator doCurseFlash()
+    {
+        //print("du hello");
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        sr.color = Color.white;
+        while (true)
+        {
+            for (int i = 0; i < 50; i++)
+            {
+                sr.color -= new Color(0.01f, 0.01f, 0.01f);
+                yield return new WaitForFixedUpdate();
+            }
+            for (int j = 0; j < 50; j++)
+            {
+                sr.color += new Color(0.01f, 0.01f, 0.01f);
+                yield return new WaitForFixedUpdate();
+            }
+            yield return new WaitForSeconds(0.3f);
+        }
+    }
+
+
+    public List<OpalScript> getCursed()
+    {
+        return cursed;
+    }
 
     //Variant documentation - changed from griff's version
     //skin is decided by the last two digits
@@ -200,11 +331,12 @@ abstract public class OpalScript : MonoBehaviour {
     {
         List<Color> clrs = new List<Color>(){ Color.red, Color.green, Color.blue, Color.cyan, Color.black, Color.gray, Color.magenta, Color.white, new Color(255/256f, 165/256f, 0), new Color(212/256f, 175/256f, 55/256f), new Color(0,102/256f,0), new Color(1,153/255f,1) };
         List<string> particles = new List<string>(){"", "Prefabs/World/Particles/Rarity-Burn", "Prefabs/World/Particles/Rarity-Drip", "Prefabs/World/Particles/Rarity-Twinkle", "Prefabs/World/Particles/Rarity-Crown", "Prefabs/World/Particles/Rarity-Dusty", "Prefabs/World/Particles/Rarity-Hyperspeed", "Prefabs/World/Particles/Rarity-Portal" };
-        List<float> sizes = new List<float>() {1f, 0.6f, 0.8f, 1.2f, 1.4f };
         variant = myName + num;
         int intNum = int.Parse(num);
         skin = intNum % 100;
-        int particleSystem = (intNum / 100) % 100;
+        List<float> sizes = new List<float>() { 0.6f, 0.8f, 1, 1.2f, 1.4f };
+        //int particleSystem = (intNum / 100) % 100;
+        int particleSystem = 0;
         int particleColor = (intNum / 10000) % 100;
         int size = (intNum / 1000000) % 100;
         if (particleSystem != 0)
@@ -212,6 +344,7 @@ abstract public class OpalScript : MonoBehaviour {
             string path = particles[particleSystem];
             ParticleSystem myPart = Instantiate<ParticleSystem>(Resources.Load<ParticleSystem>(path), this.transform);
             myPart.transform.localPosition = new Vector3(0, 0, -2);
+            myPart.transform.localScale *= 0.1f;
             if(particleSystem == 6 || particleSystem == 7)
             {
                 myPart.transform.localPosition = new Vector3(0, 0, 0.1f);
@@ -224,7 +357,7 @@ abstract public class OpalScript : MonoBehaviour {
         {
             transform.localScale *= 2;
         }
-        if (anim != null && myCharm != "Goreilla Suit") {
+        if (anim != null && myCharm == "Goreilla Suit") {
             anim.CrossFade("Goreilla", 0);
         }
         else if(anim != null)
@@ -232,11 +365,12 @@ abstract public class OpalScript : MonoBehaviour {
             anim.CrossFade(myName + skin, 0);
         }
         transform.localScale *= sizes[size];
+        mySize = size;
         foreach(Transform t in GetComponentInChildren<Transform>())
         {
             t.localScale *= sizes[size];
         }
-        anim.CrossFade(myName + skin, 0);
+        //anim.CrossFade(myName + skin, 0);
     }
 
     public string convertToString(OpalScript o)
@@ -318,6 +452,77 @@ abstract public class OpalScript : MonoBehaviour {
         }
     }
 
+    public string getPersonalityInfo(string p)
+    {
+        switch (p)
+        {
+            case "Proud":
+                return "Attack +1, Defense -1";
+            case "Reserved":
+                return "Defense +1, Attack -1";
+            case "Risk-Taker":
+                return "Attack +2, Defense -2";
+            case "Worried":
+                return "Defense +2, Attack -2";
+            case "Tactical":
+                return "Attack +3, Speed -1";
+            case "Cautious":
+                return "Defense +3, Speed -1";
+            case "Relaxed":
+                return "Health +5, Speed -1";
+            case "Optimistic":
+                return "Health +5, Attack -2";
+            case "Pesimistic":
+                return "Health +5, Defense -2";
+            case "Impatient":
+                return "Speed +1, Attack -2, Defense -2";
+            case "Straight-Edge":
+                return "No stat change";
+        }
+        return "";
+    }
+
+    public void setRandomPersonality()
+    {
+        int rand = Random.Range(0, 11);
+        switch (rand) {
+            case 0:
+                personality = "Straight-Edge";
+                break;
+            case 1:
+                personality = "Proud";
+                break;
+            case 2:
+                personality = "Reserved";
+                break;
+            case 3:
+                personality = "Risk-Taker";
+                break;
+            case 4:
+                personality = "Worried";
+                break;
+            case 5:
+                personality = "Tactical";
+                break;
+            case 6:
+                personality = "Cautious";
+                break;
+            case 7:
+                personality = "Relaxed";
+                break;
+            case 8:
+                personality = "Optimistic";
+                break;
+            case 9:
+                personality = "Pesimistic";
+                break;
+            case 10:
+                personality = "Impatient";
+                break;
+        }
+
+    }
+
     public string getCharm()
     {
         return myCharm;
@@ -328,7 +533,17 @@ abstract public class OpalScript : MonoBehaviour {
         //print("Set charm to " + i.getName());
         myCharm = i;
     }
+
+    public string getNickname()
+    {
+        return myNickname;
+    }
     
+    public void setNickname(string nn)
+    {
+        myNickname = nn;
+    }
+
     /**public void setCharm(string n)
     {
         myCharm = new Charm();
@@ -340,7 +555,27 @@ abstract public class OpalScript : MonoBehaviour {
     {
         myCharm = o.getCharm();
         personality = o.getPersonality();
-        //proccessPersonality(personality);
+        List<float> sizes = new List<float>() { 0.6f, 0.8f, 1, 1.2f, 1.4f };
+        mySize = o.getSize();
+        transform.localScale *= sizes[mySize];
+        myNickname = o.getNickname();
+    }
+
+    public int getSize()
+    {
+        return mySize;
+    }
+
+    public void setSize(int size)
+    {
+        List<float> sizes = new List<float>() { 0.6f, 0.8f, 1, 1.2f, 1.4f };
+        mySize = size;
+        transform.localScale *= sizes[mySize];
+    }
+
+    public string saveDetails()
+    {
+        return myName + "/" + myCharm + "," + personality + ","+mySize+","+myNickname;
     }
 
     public void summonParticle(string name)
@@ -670,22 +905,22 @@ abstract public class OpalScript : MonoBehaviour {
                     int yVel = 0;
                     if (currentTile.getPos().x < targetTile.getPos().x)
                     {
-                        GetComponent<SpriteRenderer>().flipX = true;
+                        flipOpal(true);
                         xVel = 1;
                     }
                     else if (currentTile.getPos().x > targetTile.getPos().x)
                     {
-                        GetComponent<SpriteRenderer>().flipX = false;
+                        flipOpal(false);
                         xVel = -1;
                     }
                     else if (currentTile.getPos().z < targetTile.getPos().z)
                     {
-                        GetComponent<SpriteRenderer>().flipX = true;
+                        flipOpal(true);
                         yVel = 1;
                     }
                     else if (currentTile.getPos().z > targetTile.getPos().z)
                     {
-                        GetComponent<SpriteRenderer>().flipX = false;
+                        flipOpal(false);
                         yVel = -1;
                     }
                     for (int i = 0; i < 10; i++)
@@ -715,6 +950,11 @@ abstract public class OpalScript : MonoBehaviour {
                         currentTile.setCurrentOpal(this);
                     break;
                 }
+                if (currentTile.findSurroundingMeadowebb())
+                {
+                    boardScript.refundMovement(tilesTravelled.Count - tile-1);
+                    break;
+                }
                 tile++;
             }
         }
@@ -729,28 +969,28 @@ abstract public class OpalScript : MonoBehaviour {
                     targetTile = boardScript.tileGrid[x, y];
                 }
             }
-            if (adj && !boardScript.getResetting())
+            if (adj && !boardScript.getResetting() && currentTile != null)
             {
                 int xVel = 0;
                 int yVel = 0;
                 if (currentTile.getPos().x < targetTile.getPos().x)
                 {
-                    GetComponent<SpriteRenderer>().flipX = true;
+                    flipOpal(true);
                     xVel = 1;
                 }
                 else if (currentTile.getPos().x > targetTile.getPos().x)
                 {
-                    GetComponent<SpriteRenderer>().flipX = false;
+                    flipOpal(false);
                     xVel = -1;
                 }
                 else if (currentTile.getPos().z < targetTile.getPos().z)
                 {
-                    GetComponent<SpriteRenderer>().flipX = true;
+                    flipOpal(true);
                     yVel = 1;
                 }
                 else if (currentTile.getPos().z > targetTile.getPos().z)
                 {
-                    GetComponent<SpriteRenderer>().flipX = false;
+                    flipOpal(false);
                     yVel = -1;
                 }
                 for (int i = 0; i < 10; i++)
@@ -805,8 +1045,10 @@ abstract public class OpalScript : MonoBehaviour {
 
     public int teleport(int x, int y, int totalDist)
     {
+        //boardScript.clearGhosts(x, y);
         if (x > -1 && x < 10 && y > -1 && y < 10 && !boardScript.tileGrid[x, y].getImpassable() && boardScript.tileGrid[x, y].currentPlayer == null)
         {
+            
             Vector3 lastPos = getPos();
             if (currentTile != null)
                 currentTile.standingOn(null);
@@ -960,6 +1202,7 @@ abstract public class OpalScript : MonoBehaviour {
         if (type1 == "Electric" || type2 == "Electric")
         {
             charge += amount;
+            onChargeItem(amount);
             boardScript.callParticles("charge", transform.position);
         }
     }
@@ -1021,6 +1264,10 @@ abstract public class OpalScript : MonoBehaviour {
 
     public void setBurning(bool newburn, bool insect)
     {
+        if(myName == "Boulder")
+        {
+            return;
+        }
         if(newburn && myCharm == "Insect Husk" && insect)
         {
             setPoison(true, false);
@@ -1040,6 +1287,9 @@ abstract public class OpalScript : MonoBehaviour {
                     DestroyImmediate(currentBurn.gameObject);
                 currentBurn = null;
                 burnCounter = 2;
+            }else if(newburn && burning)
+            {
+                burnTimer = 3;
             }
             burning = newburn;
         }
@@ -1053,6 +1303,10 @@ abstract public class OpalScript : MonoBehaviour {
 
     public void setLifted(bool newLift)
     {
+        if(myName == "Boulder")
+        {
+            return;
+        }
         if (type1 != "Air" && type2 != "Air")
         {
             if (newLift && !lifted)
@@ -1081,6 +1335,10 @@ abstract public class OpalScript : MonoBehaviour {
                     charmRevealed = true;
                 }
             }
+            else if (newLift && lifted)
+            {
+                liftTimer = 3;
+            }
             lifted = newLift;
         }
         
@@ -1103,6 +1361,8 @@ abstract public class OpalScript : MonoBehaviour {
 
     public void setPoison(bool newpoison, bool insect)
     {
+        if (myName == "Boulder")
+            return;
         if (newpoison && myCharm == "Insect Husk" && insect)
         {
             setBurning(true, false);
@@ -1123,6 +1383,10 @@ abstract public class OpalScript : MonoBehaviour {
                 if(currentPoison != null)
                     DestroyImmediate(currentPoison.gameObject);
                 currentPoison = null;
+            }
+            else if (newpoison && poisoned)
+            {
+                poisonTimer = 3;
             }
             poisoned = newpoison;
         }
@@ -1303,6 +1567,8 @@ abstract public class OpalScript : MonoBehaviour {
         
         onDie();
         onDieItem();
+        if(boardScript.getCurrentOpal() == this)
+            boardScript.nextTurn();
         float shrink = 1f;
         for (int i = 0; i < 20; i++)
         {
@@ -1316,10 +1582,14 @@ abstract public class OpalScript : MonoBehaviour {
         {
             healStatusEffects();
             dead = true;
+            Vector3 deadTile = getPos();
             if (transform.position.x != -100 && transform.position.y < 1)
+            {
                 boardScript.tileGrid[(int)getPos().x, (int)getPos().z].currentPlayer = null;
+            }
             transform.position = new Vector3(-100, -100, -100);
             coordinates = new Vector3(-100, -100, -100);
+            boardScript.clearGhosts((int)deadTile.x, (int)deadTile.z);
         }
     }
 
@@ -1443,18 +1713,37 @@ abstract public class OpalScript : MonoBehaviour {
         return target;
     }
 
-    //mod specifies whether defense should modify the damage taken
     public virtual void takeDamage(int dam, bool mod, bool effect)
     {
-        if(dam <= 0)
+        takeDamage(dam, mod, effect, false);
+    }
+
+    public virtual void takeDamageBelowArmor(int dam, bool mod, bool effect)
+    {
+        takeDamage(dam, mod, effect, true);
+    }
+
+    //mod specifies whether defense should modify the damage taken
+    public virtual void takeDamage(int dam, bool mod, bool effect, bool belowArmor)
+    {
+        OpalScript cursedByOozwl = null;
+        foreach (OpalScript o in cursedBy)
+        {
+            if (o.getMyName() == "Oozwl")
+                cursedByOozwl = o;
+        }
+        if (dam <= 0)
         {
             return;
         }
-        if(armor > 0 && (!mod || dam - getDefense() > 0))
+        if (!belowArmor)
         {
-            addArmor(-1);
-            onDamage(-1);
-            return;
+            if (armor > 0 && (!mod || dam - getDefense() > 0))
+            {
+                addArmor(-1);
+                onArmorDamage(-1);
+                return;
+            }
         }
         if (barriarraySurrounding() != null)
         {
@@ -1498,6 +1787,11 @@ abstract public class OpalScript : MonoBehaviour {
             {
                 boardScript.getMyCursor().getCurrentOpal().spawnOplet(spiritchPrefab, boardScript.tileGrid[(int)getPos().x, (int)getPos().z]);
             }
+            if (cursedByOozwl != null && damagedByPoison)
+            {
+                cursedByOozwl.doHeal(cursedByOozwl.getMaxHealth(), false);
+                cursedByOozwl.doTempBuff(2, -1, 2);
+            }
             currentTile = null;
             if(temp != null)
                 temp.setImpassable(false);
@@ -1506,55 +1800,7 @@ abstract public class OpalScript : MonoBehaviour {
         }
         onDamage(dam);
         onDamageItem(dam);
-    }
-
-    public void takeDamageBelowArmor(int dam, bool mod, bool effect)
-    {
-        if (dam <= 0)
-        {
-            return;
-        }
-        if (barriarraySurrounding() != null)
-        {
-            barriarraySurrounding().takeDamage(dam, mod, effect);
-            return;
-        }
-        if (!mod)
-        {
-            this.health -= dam;
-            DamageResultScript temp;
-            temp = Instantiate<DamageResultScript>(damRes);
-            temp.setUp(-dam, this);
-            if (effect)
-            {
-                boardScript.callParticles("damage", transform.position);
-            }
-        }
-        else if (dam - getDefense() > 0 && dam > 0)
-        {
-            this.health = this.health - (dam - getDefense());
-            DamageResultScript temp = Instantiate<DamageResultScript>(damRes);
-            temp.setUp(-(dam - getDefense()), this);
-            if (effect)
-                boardScript.callParticles("damage", transform.position);
-        }
-        if (this.health <= 0)
-        {
-            TileScript temp = currentTile;
-            if (currentTile != null)
-                temp.standingOn(null);
-            onDeathTile(temp);
-            if (boardScript.getMyCursor().getCurrentOpal() != null && boardScript.getMyCursor().getCurrentOpal().getMyName() == "Numbskull" && boardScript.getMyCursor().getCurrentOpal().getTeam() != getTeam())
-            {
-                boardScript.getMyCursor().getCurrentOpal().spawnOplet(spiritchPrefab, boardScript.tileGrid[(int)getPos().x, (int)getPos().z]);
-            }
-            currentTile = null;
-            if (temp != null)
-                temp.setImpassable(false);
-            dead = true;
-            StartCoroutine(shrinker());
-        }
-        onDamage(dam);
+        damagedByPoison = false;
     }
 
     public IEnumerator doAttackAnim(OpalScript target, CursorScript cursor, int attackNum, Projectile currentProj)
@@ -1562,13 +1808,13 @@ abstract public class OpalScript : MonoBehaviour {
         TileScript myTile = currentTile;
         if(target != null && target.getCurrentTile().getPos().x <= currentTile.getPos().x && target.getCurrentTile().getPos().z <= currentTile.getPos().z)
         {
-            GetComponent<SpriteRenderer>().flipX = false;
-            target.GetComponent<SpriteRenderer>().flipX = true;
+            flipOpal(false);
+            target.flipOpal(true);
         }
         else if(target != null)
         {
-            GetComponent<SpriteRenderer>().flipX = true;
-            target.GetComponent<SpriteRenderer>().flipX = false;
+            flipOpal(true);
+            target.flipOpal(false);
         }
         int dir = 1;
         float speed = 0.1f;
@@ -1600,11 +1846,11 @@ abstract public class OpalScript : MonoBehaviour {
         TileScript myTile = currentTile;
         if (target != null && target.getPos().x <= currentTile.getPos().x && target.getPos().z <= currentTile.getPos().z)
         {
-            GetComponent<SpriteRenderer>().flipX = false;
+            flipOpal(false);
         }
         else if (target != null)
         {
-            GetComponent<SpriteRenderer>().flipX = true;
+            flipOpal(true);
         }
         int dir = 1;
         float speed = 0.1f;
@@ -1770,11 +2016,6 @@ abstract public class OpalScript : MonoBehaviour {
 
     public void doHeal(int heal, bool overheal)
     {
-        if(myCharm == "Jasper Figure")
-        {
-            overheal = true;
-            charmRevealed = true;
-        }
         if (health != maxHealth || overheal)
         {
             onHeal(heal);
@@ -1804,6 +2045,20 @@ abstract public class OpalScript : MonoBehaviour {
                 health += heal;
             }
         }
+    }
+
+    public void setCursed(OpalScript curser)
+    {
+        if (!curser.cursed.Contains(this))
+        {
+            curser.cursed.Add(this);
+            cursedBy.Add(curser);
+        }
+    }
+
+    public List<OpalScript> getCursedBy()
+    {
+        return cursedBy;
     }
 
 
@@ -1887,7 +2142,17 @@ abstract public class OpalScript : MonoBehaviour {
                 return;
             }
         }
-        takeDamage(burnCounter, false, false);
+        bool cursedByMoppet = false;
+        foreach(OpalScript o in cursedBy)
+        {
+            if(o.getMyName() == "Moppet")
+            {
+                o.takeDamage(burnCounter, false, false);
+                cursedByMoppet = true;
+            }
+        }
+        if(!cursedByMoppet)
+            takeDamage(burnCounter, false, false);
         if (myCharm == "Heat-Proof Cloth")
         {
             burnCounter += 1;
@@ -1902,9 +2167,16 @@ abstract public class OpalScript : MonoBehaviour {
 
     public void takePoisonDamage(bool decay)
     {
+        bool cursedByOozwl = false;
+        foreach(OpalScript o in cursedBy)
+        {
+            if (o.getMyName() == "Oozwl")
+                cursedByOozwl = true;
+        }
         if (decay)
         {
-            poisonTimer--;
+            if(!cursedByOozwl)
+                poisonTimer--;
             if (currentTile != null && currentTile.type == "Miasma")
             {
                 poisonTimer = 3;
@@ -1915,9 +2187,34 @@ abstract public class OpalScript : MonoBehaviour {
                 return;
             }
         }
-        takeDamage(poisonCounter, false, false);
-        doTempBuff(0, -1, -1);
-        doTempBuff(1, -1, -1);
+        bool cursedByMoppet = false;
+        foreach (OpalScript o in cursedBy)
+        {
+            if (o.getMyName() == "Moppet")
+            {
+                o.takeDamage(poisonCounter, false, false);
+                o.doTempBuff(0, -1, -1);
+                o.doTempBuff(1, -1, -1);
+                if (cursedByOozwl)
+                {
+                    o.doTempBuff(0, -1, -1);
+                    o.doTempBuff(1, -1, -1);
+                }
+                cursedByMoppet = true;
+            }
+        }
+        if (!cursedByMoppet)
+        {
+            damagedByPoison = true;
+            takeDamage(poisonCounter, false, false);
+            doTempBuff(0, -1, -1);
+            doTempBuff(1, -1, -1);
+            if (cursedByOozwl){
+                doTempBuff(0, -1, -1);
+                doTempBuff(1, -1, -1);
+            }
+
+        }
         boardScript.callParticles("poison", transform.position);
     }
 
@@ -1961,9 +2258,26 @@ abstract public class OpalScript : MonoBehaviour {
         return;
     }
 
+    public virtual void onArmorDamage(int dam)
+    {
+        return;
+    }
+
     public virtual void toggleMethod()
     {
         return;
+    }
+
+    public void onChargeItem(int inc)
+    {
+        if (myCharm == "Frayed Wires")
+        {
+            if (inc < 0)
+            {
+                doTempBuff(0, -1, 0-inc);
+                charmRevealed = true;
+            }
+        }
     }
 
     public void onPlacementItem()
@@ -2015,6 +2329,13 @@ abstract public class OpalScript : MonoBehaviour {
     public void onDamageItem(int dam)
     {
         switch (myCharm) {
+            case "Shock Collar":
+                if (!charmRevealed && boardScript.getMyCursor().getCurrentOpal().getTeam() != getTeam())
+                {
+                    doCharge(5);
+                    charmRevealed = true;
+                }
+                break;
             case "Defense Orb":
                 doTempBuff(1, -1, -1);
                 break;
@@ -2083,6 +2404,16 @@ abstract public class OpalScript : MonoBehaviour {
     public void onStartItem()
     {
         switch (myCharm) {
+            case "Electromagnet":
+                foreach (OpalScript o in boardScript.gameOpals)
+                {
+                    if (o != null && o.getCharge() > 0)
+                    {
+                        doCharge(2);
+                        charmRevealed = true;
+                    }
+                }
+                break;
             case "Lightweight Fluid":
                 doHeal(2, getLifted());
                 charmRevealed = true;

@@ -52,6 +52,10 @@ public class CursorScript : MonoBehaviour {
     private int currentOnlinePlayer = 0;
     private string lastCommand = "";
     private bool animating = false;
+    private bool toggleShift = false;
+    private bool tSkull = false;
+
+    private Coroutine currentHighlight;
 
     // Use this for initialization
     void Start () {
@@ -68,7 +72,7 @@ public class CursorScript : MonoBehaviour {
         targeter = Resources.Load<Target>("Prefabs/Targeter");
         warningPrefab = Resources.Load<GameObject>("Prefabs/Warning");
         placing = true;
-        currentProj = Resources.Load<Projectile>("Prefabs/DefaultProjectile");
+        currentProj = Resources.Load<Projectile>("Prefabs/ParticleProjectile");
         Cursor.visible = false;
         ts.enableTileScreen(false, "", -1);
         if(boardScript.getMult())
@@ -82,6 +86,28 @@ public class CursorScript : MonoBehaviour {
     }
 
 
+    public void clearGhosts(TileScript t)
+    {
+        //print("got called");
+        if (t.currentPlayer != null && t.currentPlayer.getMyName() != "Boulder")
+        {
+            if (t.currentPlayer.getPos().x != (int)t.getPos().x || t.currentPlayer.getPos().z != (int)t.getPos().z)
+            {
+                print("Current Opal: " + t.currentPlayer.getMyName() + "Opal Position: "+ t.currentPlayer.getPos().x+", "+ t.currentPlayer.getPos().z + "; Tile Position: "+ (int)myPos.x + ","+ (int)myPos.z);
+                t.standingOn(null);
+            }
+        }
+        if (t.getImpassable())
+        {
+            if (t.currentPlayer == null && t.type != "Boulder" && !t.getFallen())
+            {
+                print("Ghost Found; Tile Position: " + (int)myPos.x + "," + (int)myPos.z);
+                t.setImpassable(false);
+            }
+        }
+    }
+
+
     // Update is called once per frame
     void Update () {
         //initialize the first turn
@@ -92,6 +118,7 @@ public class CursorScript : MonoBehaviour {
             distance = selectedPlayer.getSpeed();
             boardScript.spotlight.transform.position = new Vector3((int)selectedPlayer.getPos().x, 2, (int)selectedPlayer.getPos().z);
             ts.updateCurrent(selectedPlayer, distance);
+            currentHighlight = StartCoroutine(selectedPlayer.highlightFlash());
             selectedPlayer.setMyTurn(true);
             currentController = boardScript.getCurrentController(selectedPlayer.getTeam());
             if(selectedPlayer.getTeam() == "Red")
@@ -137,24 +164,17 @@ public class CursorScript : MonoBehaviour {
         }
         //print("oof");
         moveCursor(myPos, orthoCam.WorldToScreenPoint(myPos), orthoCam.WorldToScreenPoint(reticle.transform.position));
+        if(tileFrom != null)
+        {
+            tileFrom.highlightTwinPortal(false);
+        }
+
+
         tileFrom = boardScript.tileGrid[(int)myPos.x, (int)myPos.z];
         if(tileFrom != lastTile)
         {
             ts.updateSelected(tileFrom.currentPlayer);
-            if (tileFrom.currentPlayer != null && tileFrom.currentPlayer.getMyName() != "Boulder")
-            {
-                if(tileFrom.currentPlayer.getPos().x != myPos.x || tileFrom.currentPlayer.getPos().z != myPos.z)
-                {
-                    tileFrom.standingOn(null);
-                }
-            }
-            if (tileFrom.getImpassable())
-            {
-                if(tileFrom.currentPlayer == null && tileFrom.type != "Boulder" && !tileFrom.getFallen())
-                {
-                    tileFrom.setImpassable(false);
-                }
-            }
+            //clearGhosts(tileFrom);
             lastTile = tileFrom;
         }
 
@@ -170,6 +190,9 @@ public class CursorScript : MonoBehaviour {
                 t.setRelativeCoordinates((int)myPos.x, (int)myPos.z, attacking, selectedPlayer);
             }
         }
+
+        tileFrom.highlightTwinPortal(true);
+        
 
         //ts.updateCurrent(selectedPlayer, distance);
         if (placing)
@@ -214,6 +237,38 @@ public class CursorScript : MonoBehaviour {
             }
         }
 
+        if (toggleShift)
+        {
+            ts.checkBuffs(selectedPlayer, tileFrom.currentPlayer);
+            if (attacking == -1)
+                ts.displayAttacks(selectedPlayer, tileFrom.currentPlayer);
+            foreach (OpalScript o in boardScript.gameOpals)
+            {
+                o.showHighlight();
+            }
+            if (tileFrom.currentPlayer != null && !tSkull)
+            {
+                foreach (OpalScript o in tileFrom.currentPlayer.getCursed())
+                {
+                    o.toggleSkull(true);
+                    tSkull = true;
+                }
+            }
+            else if(tSkull && lastPos != myPos)
+            {
+                foreach (OpalScript o in boardScript.gameOpals)
+                {
+                    o.toggleSkull(false);
+                    tSkull = false;
+                }
+            }
+            ts.enableTileScreen(true, tileFrom.type, tileFrom.getLife());
+            foreach (TileScript t in boardScript.tileGrid)
+            {
+                t.showTimer(true);
+            }
+        }
+
         if ((currentController == "joystick 1" || currentController == "joystick 2" || currentController == "joystick 3" || currentController == "joystick 4") && Input.GetButtonUp("button 3" + addon))
         {
             reticle.transform.position = new Vector3(selectedPlayer.getPos().x, 0, selectedPlayer.getPos().z);
@@ -246,12 +301,12 @@ public class CursorScript : MonoBehaviour {
             //display movement options
             if (distance > 0 && tileFrom.currentPlayer == selectedPlayer && boardScript.dummies[(int)myPos.x, (int)myPos.z] == null && attacking == -1) //check if tilefrom current player == selected player
             {
+                moving = true;
                 DummyScript tempDummy = Instantiate<DummyScript>(dummyPrefab);
                 tempDummy.setCoordinates((int)selectedPlayer.getPos().x, (int)selectedPlayer.getPos().z);
                 boardScript.dummies[(int)myPos.x, (int)myPos.z] = tempDummy;
                 boardScript.spotlight.transform.position = new Vector3((int)selectedPlayer.getPos().x, 2, (int)selectedPlayer.getPos().z);
                 tempDummy.Spawn(distance, 0, 0, true);
-                moving = true;
                 pathing = true;
             }
             //display movement options
@@ -388,27 +443,64 @@ public class CursorScript : MonoBehaviour {
             ts.updateAttackScreen(selectedPlayer, attacking, boardScript.tileGrid[(int)myPos.x, (int)myPos.z]);
         }
 
-        if ((Input.GetKey(KeyCode.LeftShift) && currentController == "keyboard") || (Input.GetButton("LBump" + addon) && (currentController == "joystick 1" || currentController == "joystick 2" || currentController == "joystick 3" || currentController == "joystick 4")))
+        if ((Input.GetKeyDown(KeyCode.LeftShift) && currentController == "keyboard") || (Input.GetButton("LBump" + addon) && (currentController == "joystick 1" || currentController == "joystick 2" || currentController == "joystick 3" || currentController == "joystick 4")))
         {
-            ts.checkBuffs(selectedPlayer, tileFrom.currentPlayer);
-            if(attacking == -1)
-                ts.displayAttacks(selectedPlayer, tileFrom.currentPlayer);
-            foreach(OpalScript o in boardScript.gameOpals)
+            if (!toggleShift)
             {
-                o.showSpot(true);
+                ts.checkBuffs(selectedPlayer, tileFrom.currentPlayer);
+                if (attacking == -1)
+                    ts.displayAttacks(selectedPlayer, tileFrom.currentPlayer);
+                foreach (OpalScript o in boardScript.gameOpals)
+                {
+                    o.showHighlight();
+                }
+                if(tileFrom.currentPlayer != null && !tSkull)
+                {
+                    foreach(OpalScript o in tileFrom.currentPlayer.getCursed())
+                    {
+                        o.toggleSkull(true);
+                    }
+                    tSkull = true;
+                }
+                ts.enableTileScreen(true, tileFrom.type, tileFrom.getLife());
+                foreach(TileScript t in boardScript.tileGrid)
+                {
+                    t.showTimer(true);
+                }
             }
-            ts.enableTileScreen(true, tileFrom.type, tileFrom.getLife());
-        }
-        if ((Input.GetKeyUp(KeyCode.LeftShift) && currentController == "keyboard") || (Input.GetButtonUp("LBump" + addon) && (currentController == "joystick 1" || currentController == "joystick 2" || currentController == "joystick 3" || currentController == "joystick 4")))
-        {
-            ts.displayAttacks(null, null);
-            ts.disableBuffs(selectedPlayer, tileFrom.currentPlayer);
-            foreach (OpalScript o in boardScript.gameOpals)
+            else
             {
-                o.showSpot(false);
+                ts.displayAttacks(null, null);
+                ts.disableBuffs(selectedPlayer, tileFrom.currentPlayer);
+                foreach (OpalScript o in boardScript.gameOpals)
+                {
+                    if (tSkull)
+                    {
+                        o.toggleSkull(false);
+                    }
+                    if (o != selectedPlayer)
+                        o.resetHighlight();
+                }
+                tSkull = false;
+                foreach (TileScript t in boardScript.tileGrid)
+                {
+                    t.showTimer(false);
+                }
+                ts.enableTileScreen(false, "", -1);
             }
-            ts.enableTileScreen(false, "", -1);
+            toggleShift = !toggleShift;
         }
+        //if ((Input.GetKeyUp(KeyCode.LeftShift) && currentController == "keyboard") || (Input.GetButtonUp("LBump" + addon) && (currentController == "joystick 1" || currentController == "joystick 2" || currentController == "joystick 3" || currentController == "joystick 4")))
+       //{
+         //   ts.displayAttacks(null, null);
+          //  ts.disableBuffs(selectedPlayer, tileFrom.currentPlayer);
+           // foreach (OpalScript o in boardScript.gameOpals)
+            //{
+             //   if(o != selectedPlayer)
+              //  o.resetHighlight();
+            //}
+            //ts.enableTileScreen(false, "", -1);
+        //}
 
 
         if (attacking != -1 && transform.position != lastPos)
@@ -625,6 +717,16 @@ public class CursorScript : MonoBehaviour {
         return animating;
     }
 
+    public bool getMoving()
+    {
+        return moving;
+    }
+
+    public void setDistance(int i)
+    {
+        distance += i;
+    }
+
     public void setCurrentOpal(OpalScript o)
     {
         selectedPlayer = o;
@@ -649,7 +751,6 @@ public class CursorScript : MonoBehaviour {
 
         distance = selectedPlayer.getSpeed();
         boardScript.spotlight.transform.position = new Vector3((int)selectedPlayer.getPos().x, 2, (int)selectedPlayer.getPos().z);
-        boardScript.setChargeDisplay(selectedPlayer.getCharge());
         ts.updateCurrent(selectedPlayer, distance);
         currentController = boardScript.getCurrentController(selectedPlayer.getTeam());
 
@@ -698,7 +799,8 @@ public class CursorScript : MonoBehaviour {
 
     public void nextTurn()
     {
-        MM.verifyNoDisconnection();
+        if(boardScript.getMult() == true)
+            MM.verifyNoDisconnection();
         selectedPlayer.setMyTurn(false);
         foreach (OpalScript o in boardScript.gameOpals)
         {
@@ -802,7 +904,13 @@ public class CursorScript : MonoBehaviour {
                 break;
             }
         }
+        if (currentHighlight != null)
+        {
+            StopCoroutine(currentHighlight);
+            selectedPlayer.resetHighlight();
+        }
         selectedPlayer = nextOpal;
+        currentHighlight = StartCoroutine(selectedPlayer.highlightFlash());
         boardScript.updateTurnOrder(currentTurn);
         if (selectedPlayer.getDead() == true)
         {
@@ -820,6 +928,10 @@ public class CursorScript : MonoBehaviour {
         if(((selectedPlayer.getPos().x >= 0 && selectedPlayer.getPos().x <= 9) && (selectedPlayer.getPos().z >= 0 && selectedPlayer.getPos().z <= 9)) && boardScript.tileGrid[(int)selectedPlayer.getPos().x, (int)selectedPlayer.getPos().z].currentPlayer == null)
         {
             //boardScript.tileGrid[(int)selectedPlayer.getPos().x, (int)selectedPlayer.getPos().z].standingOn(selectedPlayer);
+        }
+        foreach (TileScript t in boardScript.tileGrid)
+        {
+            clearGhosts(t);
         }
         selectedPlayer.setMyTurn(true);
         selectedPlayer.StartOfTurn();
@@ -852,7 +964,6 @@ public class CursorScript : MonoBehaviour {
         boardScript.spotlight.transform.position = new Vector3((int)selectedPlayer.getPos().x, 2, (int)selectedPlayer.getPos().z);
         destroyDummies();
         boardScript.diplayPath(false);
-        boardScript.setChargeDisplay(selectedPlayer.getCharge());
         ts.updateCurrent(selectedPlayer, distance);
         currentController = boardScript.getCurrentController(selectedPlayer.getTeam());
         foreach(TileScript t in boardScript.tileGrid)
@@ -897,6 +1008,11 @@ public class CursorScript : MonoBehaviour {
             //boardScript.getMM().sendFullGameData(boardScript.generateString());
             //boardScript.getMM().sendMultiplayerData("reset," + currentOnlinePlayer);
         }
+    }
+
+    public int getAttacking()
+    {
+        return attacking;
     }
 
 
@@ -1030,6 +1146,10 @@ public class CursorScript : MonoBehaviour {
 
     private void destroyDummies()
     {
+        foreach(TileScript t in boardScript.tileGrid)
+        {
+            t.setRed(false,false);
+        }
         for (int i = 0; i < 10; i++)
         {
             for (int j = 0; j < 10; j++)
@@ -1333,9 +1453,9 @@ public class CursorScript : MonoBehaviour {
             o.setOpal(o.getTeam());
             o.transform.localScale *= 3;
             boardScript.setGameWon(true);
-            o.GetComponent<SpriteRenderer>().flipX = true;
-            if(i > winners.Count/2)
-                o.GetComponent<SpriteRenderer>().flipX = false;
+            o.flipOpal(true);
+            if (i > winners.Count / 2)
+                o.flipOpal(false);
         }
     }
 
