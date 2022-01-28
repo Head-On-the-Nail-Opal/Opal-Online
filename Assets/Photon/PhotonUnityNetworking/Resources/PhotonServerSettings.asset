@@ -43,5 +43,6 @@ MonoBehaviour:
   - updatePlayerCount
   - shareGameHistory
   - requestGameHistory
+  - updateGameHistory
   DisableAutoOpenWizard: 1
   ShowSettings: 1
