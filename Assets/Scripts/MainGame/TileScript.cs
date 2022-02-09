@@ -16,6 +16,7 @@ public class TileScript : MonoBehaviour {
     private Sprite displayTwo;
     private Sprite displayOne;
     private ConnectedTile connectedTile;
+    private Color myNormalColor;
 
     public OpalScript currentPlayer = null;
     public GameObject currentEffect = null;
@@ -41,6 +42,9 @@ public class TileScript : MonoBehaviour {
     private SpriteRenderer changeSpriteRenderer;
     private bool highlight = false;
     private bool isRed = false;
+    private List<string> currentCharms = new List<string>();
+    private ParticleSystem charmParticle;
+    private ParticleSystem currentCharmParticle;
 
     private List<List<Sprite>> directions = new List<List<Sprite>>();
     private List<Sprite> east = new List<Sprite>();
@@ -62,6 +66,8 @@ public class TileScript : MonoBehaviour {
         bluePlate = Resources.Load<GameObject>("Prefabs/BluePlate");
         greenPlate = Resources.Load<GameObject>("Prefabs/GreenPlate");
         orangePlate = Resources.Load<GameObject>("Prefabs/OrangePlate");
+        charmParticle = Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/Charm");
+        myNormalColor = GetComponent<MeshRenderer>().material.color;
         if (changeTexture != null)
             changeSpriteRenderer = changeTexture.GetComponent<SpriteRenderer>();
         if(type == "Boulder")
@@ -316,7 +322,7 @@ public class TileScript : MonoBehaviour {
             //print("du hello");
             foreach (MeshRenderer mr in GetComponentsInChildren<MeshRenderer>())
             {
-                mr.material.color = new Color(225 / 255f, 225 / 255f, 1);
+                //mr.material.color = new Color(225 / 255f, 225 / 255f, 1);
             }
             foreach (SpriteRenderer sr in GetComponentsInChildren<SpriteRenderer>())
             {
@@ -327,7 +333,7 @@ public class TileScript : MonoBehaviour {
         else if (red)
         {
             foreach(MeshRenderer mr in GetComponentsInChildren<MeshRenderer>()){
-                mr.material.color = new Color(1, 200 / 255f, 200 / 255f);
+                //mr.material.color = new Color(1, 200 / 255f, 200 / 255f);
             }
             foreach(SpriteRenderer sr in GetComponentsInChildren<SpriteRenderer>())
             {
@@ -339,7 +345,7 @@ public class TileScript : MonoBehaviour {
         {
             foreach (MeshRenderer mr in GetComponentsInChildren<MeshRenderer>())
             {
-                mr.material.color = Color.white;
+               // mr.material.color = myNormalColor;
             }
             foreach (SpriteRenderer sr in GetComponentsInChildren<SpriteRenderer>())
             {
@@ -655,6 +661,20 @@ public class TileScript : MonoBehaviour {
                 doTrap(player);
                 clearTrap();
             }
+            if(currentCharms.Count > 0)
+            {
+                List<string> removedCharms = new List<string>();
+                foreach (string c in getCharms())
+                {
+                    string[] parsed = c.Split(',');
+                    if (parsed.Length > 1 && parsed[2] == player.getTeam())
+                    {
+                        player.setCharmFromTile(c);
+                        removedCharms.Add(c);
+                    }
+                }
+                removeCharms(removedCharms);
+            }
         }
     }
 
@@ -889,6 +909,43 @@ public class TileScript : MonoBehaviour {
         }
     }
 
+    public void addCharm(string c)
+    {
+        currentCharms.Add(c);
+        if (currentCharmParticle == null)
+            currentCharmParticle = Instantiate<ParticleSystem>(charmParticle, transform);
+    }
+
+    public void removeCharms()
+    {
+        currentCharms.Clear();
+        if (currentCharmParticle != null)
+        {
+            Destroy(currentCharmParticle.gameObject);
+            currentCharmParticle.Clear();
+        }
+    }
+
+
+    public void removeCharms(List<string> removeUs)
+    {
+        foreach(string c in removeUs)
+        {
+            currentCharms.Remove(c);
+        }
+        if(currentCharms.Count == 0)
+        {
+            removeCharms();
+        }
+    }
+
+    public List<string> getCharms()
+    {
+        if (currentCharms.Count == 0)
+            return new List<string>() { "None" };
+        return currentCharms;
+    }
+
     public string getTrap()
     {
         return currentTrap;
@@ -1030,6 +1087,8 @@ public class TileScript : MonoBehaviour {
         }
         print(maybeMe.Count);
     }
+
+
 
     public void determineShapeOLD() 
     {

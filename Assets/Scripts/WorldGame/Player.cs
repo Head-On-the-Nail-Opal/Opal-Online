@@ -815,7 +815,7 @@ public class Player : MonoBehaviour {
 
     public void charmClicked(string charm)
     {
-        currentOpal.setCharm(charm);
+        currentOpal.setCharmFromString(charm,false);
         assigningCharms = false;
         itemMenu.transform.position = new Vector3(-1000, -1000, -10);
         oI.setOpal(currentOpal);
@@ -931,7 +931,7 @@ public class Player : MonoBehaviour {
                     print("opal repeat");
                     return false;
                 }
-                else if (op.getCharm() != "None" && op.getCharm() != null && op.getCharm() != "" && o.getOpal() != null && o.getOpal().getCharm() == op.getCharm())
+                else if ((op.getCharmsNames().Count != 0 && op.getCharmsNames()[0] != "None") && op.getCharms()[0] != null && op.getCharmsNames()[0] != "" && o.getOpal() != null && o.getOpal().getCharms()[0] == op.getCharms()[0])
                 {
                     print("charm repeat");
                     return false;

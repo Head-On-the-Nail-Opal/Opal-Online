@@ -60,9 +60,9 @@ public class OpalInspector : MonoBehaviour
             personality.text = "Personality: None?";
         }
 
-        if (myOpal.getCharm() != null)
+        if (myOpal.getCharms()[0] != null)
         {
-            charm.text = "Charm: " + myOpal.getCharm();
+            charm.text = "Charm: " + myOpal.getCharms()[0];
         }
         else
         {

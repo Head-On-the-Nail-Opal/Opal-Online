@@ -269,7 +269,7 @@ public class GroundScript : MonoBehaviour {
         //Debug.LogError("du hello:" +data);
         OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + parsed[0]));
         temp.setPersonality(parsed[2]);
-        temp.setCharm(parsed[1]);
+        temp.setCharmFromString(parsed[1],false);
         return temp;
     }
 
@@ -683,9 +683,8 @@ public class GroundScript : MonoBehaviour {
         {
             wasFlood = true;
         }
+        List<string> tileCharm = replaced.getCharms();
         OpalScript standing = replaced.getCurrentOpal();
-        if(standing != null)
-            print(standing.getMyName());
         if(type == replaced.type)
         {
             return null;
@@ -841,6 +840,11 @@ public class GroundScript : MonoBehaviour {
                     }
                 }
             }
+        }
+        foreach (string c in tileCharm)
+        {
+            if(c != "" && c != "None")
+                tileGrid[x, y].addCharm(c);
         }
         return tileGrid[x, y];
     }
@@ -1022,6 +1026,16 @@ public class GroundScript : MonoBehaviour {
     {
 
         myCursor.updateCurrent(id);
+    }
+
+    public void updateCurrent()
+    {
+        myCursor.updateCurrent();
+    }
+
+    public void updateCurrentActually()
+    {
+        myCursor.updateCurrentActually();
     }
 
     public void doWet(int x, int y, bool wet)

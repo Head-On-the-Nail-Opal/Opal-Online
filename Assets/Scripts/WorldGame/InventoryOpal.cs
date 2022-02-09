@@ -110,7 +110,7 @@ public class InventoryOpal : MonoBehaviour
         }
         myOpal = Instantiate<OpalScript>(opalPrefab, transform);
         myOpal.setOpal(null);
-        myOpal.setCharm(myCharm);
+        myOpal.setCharmFromString(myCharm,false);
         myOpal.setPersonality(myPersonality);
         myOpal.setNickname(myNickname);
         myOpal.GetComponent<Animator>().enabled = true;

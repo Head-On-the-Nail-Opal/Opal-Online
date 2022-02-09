@@ -1292,12 +1292,13 @@ public class MainMenuScript : MonoBehaviour {
         }
         if (temp == null)
             return;
-        if (temp.getCharm() != null)
+        if (temp.getCharms()[0] != null)
         {
-            bannedCharms.Remove(temp.getCharm());
+            bannedCharms.Remove(temp.getCharmsNames()[0]);
         }
         bannedCharms.Add(name);
-        temp.setCharm(name);
+        temp.replaceCharmName(name);
+        print(name);
         mainCam.transform.position = new Vector3(0,15,-10);
         //print(temp.getMyName() + "'s charm is set to " + temp.getCharm());
         setCurrentCharm(temp);
@@ -1305,10 +1306,10 @@ public class MainMenuScript : MonoBehaviour {
 
     public void setCurrentCharm(OpalScript op)
     {
-        if (op.getCharm() == null)
+        if (op.getCharms()[0] == null)
             charmLabel.text = "Current Charm: None";
         else
-            charmLabel.text = "Current Charm: " +  op.getCharm();
+            charmLabel.text = "Current Charm: " +  op.getCharmsNames()[0];
     }
 
     public void setTeamDisplays()
@@ -1383,10 +1384,10 @@ public class MainMenuScript : MonoBehaviour {
         if (o != null)
         {
             personalityTracker.text = "Current Personality\n" + o.getPersonality() + "\n" + getPersonalityStats(o.getPersonality());
-            if (o.getCharm() == null)
+            if (o.getCharmsNames().Count == 0 || o.getCharmsNames()[0] == "None")
                 charmLabel.text = "Current Charm: None";
             else
-                charmLabel.text = "Current Charm: " + o.getCharm();
+                charmLabel.text = "Current Charm: " + o.getCharmsNames()[0];
         }
 
     }
@@ -1564,9 +1565,9 @@ public class MainMenuScript : MonoBehaviour {
             {
                 return;
             }
-            if(o.getCharm() != null)
+            if(o.getCharms()[0] != null)
             {
-                bannedCharms.Add(o.getCharm());
+                bannedCharms.Add(o.getCharmsNames()[0]);
             }
         }
         mainCam.transform.position = new Vector3(0, 15, -10);

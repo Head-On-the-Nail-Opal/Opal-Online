@@ -61,6 +61,7 @@ public class TextScript : MonoBehaviour {
     public Text itemName;
     public Text itemDesc;
     public ItemDescriptions iD;
+    public int currentItem = 0;
 
     public AttackScreen attackScreen;
     public AttackScreen attackScreen1;
@@ -680,13 +681,13 @@ public class TextScript : MonoBehaviour {
             itemName.text = "";
             itemName.fontSize = 20;
             itemDesc.text = "";
-        }else if (o.getCharm() == "")
+        }else if (o.getCharmsNames().Count == 0 || o.getCharmsNames()[0] == "None")
         {
             itemUI.GetComponent<SpriteRenderer>().enabled = false;
             itemName.text = "";
             itemName.fontSize = 20;
             itemDesc.text = "";
-        }else if (!o.getCharmRevealed())
+        }else if (o.getCharmsNames().Count > currentItem && !o.checkRevealed(o.getCharmsNames()[currentItem])&& false)
         {
             itemUI.GetComponent<SpriteRenderer>().enabled = true;
             itemName.text = "Hidden Charm";
@@ -696,9 +697,24 @@ public class TextScript : MonoBehaviour {
         else
         {
             itemUI.GetComponent<SpriteRenderer>().enabled = true;
-            itemName.text = o.getCharm();
+            itemName.text = o.getCharmsNames()[currentItem];
             itemName.fontSize = 20;
-            itemDesc.text = iD.getDescFromItem(o.getCharm());
+            itemDesc.text = iD.getDescFromItem(o.getCharmsNames()[currentItem]);
         }
+    }
+
+    public void cycleCharm(bool up, OpalScript o) {
+        int count = o.getCharms().Count;
+        if (up)
+        {
+            if (currentItem > 0)
+                currentItem--;
+        }
+        else
+        {
+            if (currentItem < count-1)
+                currentItem++;
+        }
+        updateCharm(o);
     }
 }

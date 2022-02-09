@@ -1,9 +1,6 @@
 Please don't change this, it will be encrypted eventually.
-Glorm||Straight-Edge,Verminfection||Straight-Edge,
-Hopscure||Straight-Edge,Hoviron||Straight-Edge,
-Chardinal||Straight-Edge,Fluttorch||Straight-Edge,
-Meadowebb||Straight-Edge,Ambush|Mysterious Leaf|Relaxed,
-Spiritch||Straight-Edge,Pebblepal||Straight-Edge,
+Ambush|Defense Orb|Straight-Edge,Hopscure|Garnet Figure|Straight-Edge,Diamite|Insect Husk|Straight-Edge,
+Jetjinn|None|Straight-Edge,Hearthhog|Whetstone|Straight-Edge,
 endTeams
-Abysmeel,Amalgum,Ambush,Aquarican,Aughtment,Barriarray,Beaconfire,Beamrider,Betary,Bubbacle,Butterflight,Cactoid,Charayde,Chardinal,Chasmcrawler,Cottonmaw,Diamite,Drizziphyl,Duplimorph,Excremite,Experiment42,Finbow,Fluttorch,Fragmatom,Froxic,FumePlume,Gilsplish,Glorm,Glummer,Gorj,Grimmline,Groth,Hearthhog,Heatriarch,Hopscure,Hoviron,Inflicshun,Inseedious,Jetjinn,KnightLite,Luminute,Meadowebb,Mechalodon,Nachteous,Oremordilla,Overgroink,Pebblepal,Prismin,Protectric,Puffsqueak,Scorpirad,Sentree,Shineode,Shocket,Slungus,Snugbun,Sorceraura,Spillarc,Spiritch,Strikel,Succuum,Terradactyl,Teslamp,Thermor,Tortquoise,Toxikrab,Verminfection,Volcoco,Wingnition,Wobblestone,Zheep,Investigator,Mistery,Moppet,Oozwl,
+Abysmeel,Amalgum,Ambush,Aquarican,Aughtment,Barriarray,Beaconfire,Beamrider,Betary,Bubbacle,Butterflight,Cactoid,Charayde,Chardinal,Chasmcrawler,Cottonmaw,Diamite,Drizziphyl,Duplimorph,Excremite,Experiment42,Finbow,Fluttorch,Fragmatom,Froxic,FumePlume,Gilsplish,Glorm,Glummer,Gorj,Grimmline,Groth,Hearthhog,Heatriarch,Hopscure,Hoviron,Inflicshun,Inseedious,Investigator,Jetjinn,KnightLite,Luminute,Meadowebb,Mechalodon,Mistery,Moppet,Nachteous,Oozwl,Oremordilla,Overgroink,Pebblepal,Prismin,Protectric,Puffsqueak,Scorpirad,Sentree,Shineode,Shocket,Slungus,Snugbun,Sorceraura,Spillarc,Spiritch,Strikel,Succuum,Terradactyl,Teslamp,Thermor,Tortquoise,Toxikrab,Verminfection,Volcoco,Wingnition,Wobblestone,Zheep,
 endOpals

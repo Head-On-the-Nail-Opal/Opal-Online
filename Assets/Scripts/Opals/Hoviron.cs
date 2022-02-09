@@ -16,7 +16,7 @@ public class Hoviron : OpalScript
         maxHealth = health;
         attack = 3;
         defense = 3;
-        speed = 2;
+        speed = 3;
         priority = 1;
         myName = "Hoviron";
         transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.7f;

@@ -47,8 +47,8 @@ abstract public class OpalScript : MonoBehaviour {
     protected List<ParticleSystem> armors = new List<ParticleSystem>();
     private int matchID = -1;
     private int minionCount = 0;
-    private string myCharm;
-    private bool charmRevealed = false;
+    //private string myCharm;
+    private List<Charm> myCharms = new List<Charm>();
     private string myNickname;
     private GameObject myHighlight;
     private Color teamColor;
@@ -357,7 +357,7 @@ abstract public class OpalScript : MonoBehaviour {
         {
             transform.localScale *= 2;
         }
-        if (anim != null && myCharm == "Goreilla Suit") {
+        if (anim != null && haveCharm("Goreilla Suit")) {
             anim.CrossFade("Goreilla", 0);
         }
         else if(anim != null)
@@ -386,19 +386,14 @@ abstract public class OpalScript : MonoBehaviour {
 
     public string saveOpal()
     {
-        return getMyName() +'|'+ getCharm() +'|'+ getPersonality();
+        return getMyName() +'|'+ getCharmsNames()[0] +'|'+ getPersonality();
     }
 
     public void setFromSave(string data)
     {
         string[] parsed = data.Split('|');
-        myCharm = parsed[1];
+        setCharmFromString(parsed[1], false);
         personality = parsed[2];
-    }
-
-    public bool getCharmRevealed()
-    {
-        return charmRevealed;
     }
 
     public void proccessPersonality(string p)
@@ -523,15 +518,90 @@ abstract public class OpalScript : MonoBehaviour {
 
     }
 
-    public string getCharm()
+    public List<Charm> getCharms()
     {
-        return myCharm;
+        if (myCharms.Count == 0)
+        {
+            Charm empty = new Charm();
+            empty.setName("None");
+            return new List<Charm>() {empty};
+        }
+        return myCharms;
     }
 
-    public void setCharm(string i)
+    public void setCharm(Charm i)
     {
-        //print("Set charm to " + i.getName());
-        myCharm = i;
+        myCharms.Add(i);
+    }
+
+    public void setCharmFromString(string c, bool revealed)
+    {
+        Charm charm = new Charm();
+        charm.setName(c);
+        charm.setRevealed(revealed);
+        myCharms.Add(charm);
+    }
+
+    public List<string> getCharmsNames()
+    {
+        List<string> charmNames = new List<string>();
+        foreach(Charm c in myCharms)
+        {
+            charmNames.Add(c.getName());
+        }
+        return charmNames;
+    }
+
+    public bool haveCharm(string s)
+    {
+        foreach (Charm c in myCharms)
+        {
+            if(c.getName() == s)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public bool checkRevealed(string s)
+    {
+        int index = 0;
+        foreach (Charm c in myCharms)
+        {
+            if (c.getName() == s)
+            {
+                return myCharms[index].getRevealed();
+            }
+            index++;
+        }
+        return false;
+    }
+
+    public void setCharmRevealed(string s, bool r)
+    {
+        foreach (Charm c in myCharms)
+        {
+            if (c.getName() == s)
+            {
+                c.setRevealed(r);
+            }
+        }
+    }
+
+    public void replaceCharm(Charm i)
+    {
+        myCharms.Clear();
+        myCharms.Add(i);
+    }
+
+    public void replaceCharmName(string c)
+    {
+        myCharms.Clear();
+        Charm i = new Charm();
+        i.setName(c);
+        i.setRevealed(false);
+        myCharms.Add(i);
     }
 
     public string getNickname()
@@ -553,7 +623,10 @@ abstract public class OpalScript : MonoBehaviour {
 
     public void setDetails(OpalScript o)
     {
-        myCharm = o.getCharm();
+        foreach(Charm c in o.getCharms())
+        {
+            setCharm(c);
+        }
         personality = o.getPersonality();
         List<float> sizes = new List<float>() { 0.6f, 0.8f, 1, 1.2f, 1.4f };
         mySize = o.getSize();
@@ -575,7 +648,7 @@ abstract public class OpalScript : MonoBehaviour {
 
     public string saveDetails()
     {
-        return myName + "/" + myCharm + "," + personality + ","+mySize+","+myNickname;
+        return myName + "/" + myCharms[0] + "," + personality + ","+mySize+","+myNickname;
     }
 
     public void summonParticle(string name)
@@ -1062,6 +1135,7 @@ abstract public class OpalScript : MonoBehaviour {
                 if (lastTile != null)
                     lastTile.standingOn(null);
                 currentTile.standingOn(this);
+                boardScript.updateCurrent();
                 if (this.getDead())
                 {
                     return -1;
@@ -1268,10 +1342,10 @@ abstract public class OpalScript : MonoBehaviour {
         {
             return;
         }
-        if(newburn && myCharm == "Insect Husk" && insect)
+        if(newburn && haveCharm("Insect Husk") && insect)
         {
             setPoison(true, false);
-            charmRevealed = true;
+            setCharmRevealed("Insect Husk", true);
             return;
         }
         if (type1 != "Fire" && type2 != "Fire")
@@ -1314,25 +1388,25 @@ abstract public class OpalScript : MonoBehaviour {
                 onStatusCondition(false, false, true);
                 currentLift = Instantiate<ParticleSystem>(liftedParticle, this.transform);
                 liftTimer = 3;
-                if(myCharm == "Balloon of Light")
+                if(haveCharm("Balloon of Light"))
                 {
                     doTempBuff(2, -1, 1);
-                    charmRevealed = true;
-                }else if(myCharm == "Floating Bandages")
+                    setCharmRevealed("Balloon of Light", true);
+                }else if(haveCharm("Floating Bandages"))
                 {
                     setPoison(false);
                     setBurning(false);
-                    charmRevealed = true;
+                    setCharmRevealed("Floating Bandages", true);
                 }
             }
             else if (!newLift && lifted)
             {
                 DestroyImmediate(currentLift.gameObject);
                 currentLift = null;
-                if (myCharm == "Balloon of Light")
+                if (haveCharm("Balloon of Light"))
                 {
                     doTempBuff(2, -1, -1);
-                    charmRevealed = true;
+                    setCharmRevealed("Balloon of Light", true);
                 }
             }
             else if (newLift && lifted)
@@ -1363,10 +1437,10 @@ abstract public class OpalScript : MonoBehaviour {
     {
         if (myName == "Boulder")
             return;
-        if (newpoison && myCharm == "Insect Husk" && insect)
+        if (newpoison && haveCharm("Insect Husk") && insect)
         {
             setBurning(true, false);
-            charmRevealed = true;
+            setCharmRevealed("Insect Husk", true);
             return;
         }
         if ((type1 != "Plague" && type2 != "Plague"))
@@ -1590,7 +1664,31 @@ abstract public class OpalScript : MonoBehaviour {
             transform.position = new Vector3(-100, -100, -100);
             coordinates = new Vector3(-100, -100, -100);
             boardScript.clearGhosts((int)deadTile.x, (int)deadTile.z);
+            if (deadTile.x > -1 && deadTile.x < 10 && deadTile.z > -1 && deadTile.z < 10)
+            {
+                foreach(string c in exportCharmToTile())
+                    boardScript.tileGrid[(int)deadTile.x, (int)deadTile.z].addCharm(c);
+            }
         }
+    }
+
+    public void setCharmFromTile(string tileCharm)
+    {
+        string[] parsed = tileCharm.Split(',');
+        if (parsed.Length <= 1)
+            return;
+        setCharmFromString(parsed[0], parsed[1]=="True");
+        onPickUpItem(parsed[0]);
+    }
+
+    public List<string> exportCharmToTile()
+    {
+        List<string> output = new List<string>();
+        foreach (Charm charm in myCharms)
+        {
+            output.Add(charm.getName()+ ","+charm.getRevealed()+","+getTeam());
+        }
+        return output;
     }
 
     public IEnumerator spinSpot()
@@ -1773,10 +1871,10 @@ abstract public class OpalScript : MonoBehaviour {
         }
         if(this.health <= 0)
         {
-            if(getCharm() == "Spectre Essence" && !charmRevealed)
+            if(haveCharm("Spectre Essence") && !checkRevealed("Spectre Essence"))
             {
                 health = 1;
-                charmRevealed = true;
+                setCharmRevealed("Spectre Essence", true);
                 return;
             }
             TileScript temp = currentTile;
@@ -1970,6 +2068,8 @@ abstract public class OpalScript : MonoBehaviour {
         {
             defense -= 2;
         }
+        //boardScript.updateCurrent();
+        boardScript.updateCurrentActually();
     }
 
     public void onGrowth(bool on)
@@ -1984,6 +2084,8 @@ abstract public class OpalScript : MonoBehaviour {
             attack -= 2;
             defense -= 2;
         }
+        //boardScript.updateCurrent();
+        boardScript.updateCurrentActually();
     }
 
     abstract public int getAttackEffect(int attackNum, OpalScript target);
@@ -2153,10 +2255,10 @@ abstract public class OpalScript : MonoBehaviour {
         }
         if(!cursedByMoppet)
             takeDamage(burnCounter, false, false);
-        if (myCharm == "Heat-Proof Cloth")
+        if (haveCharm("Heat-Proof Cloth"))
         {
             burnCounter += 1;
-            charmRevealed = true;
+            setCharmRevealed("Heat-Proof Cloth", true);
         }
         else
         {
@@ -2270,262 +2372,314 @@ abstract public class OpalScript : MonoBehaviour {
 
     public void onChargeItem(int inc)
     {
-        if (myCharm == "Frayed Wires")
+        if (haveCharm("Frayed Wires"))
         {
             if (inc < 0)
             {
                 doTempBuff(0, -1, 0-inc);
-                charmRevealed = true;
+                setCharmRevealed("Frayed Wires", true);
             }
+        }
+    }
+
+    public void onPickUpItem(string pickedUp)
+    {
+        if(pickedUp == "Cloak of Whispers")
+        {
+            doTempBuff(2, -1, 1);
+        }else if (pickedUp == "Death Wish")
+        {
+            doTempBuff(0, -1, 2);
+            doTempBuff(1, -1, 2);
+        }
+        else if (pickedUp == "Defense Orb")
+        {
+            doTempBuff(1, -1, 4);
+        }
+        else if (pickedUp == "Juniper Necklace")
+        {
+            foreach (OpalScript o in boardScript.gameOpals)
+            {
+                if (o != null && o.getTeam() == getTeam() && (o.getMainType() == "Void" || o.getSecondType() == "Void"))
+                {
+                    doTempBuff(0, -1, 1);
+                    doTempBuff(1, -1, 1);
+                    doTempBuff(2, -1, 1);
+                }
+            }
+        }
+        else if (pickedUp == "Taunting Necklace")
+        {
+            doTempBuff(1, -1, 5);
         }
     }
 
     public void onPlacementItem()
     {
-        if(myCharm == "Defense Orb")
+        if(haveCharm("Defense Orb"))
         {
             doTempBuff(1, -1, 4);
-            charmRevealed = true;
-        }else if(myCharm == "Makeshift Shield")
+            setCharmRevealed("Defense Orb", true);
+        }else if(haveCharm("Makeshift Shield"))
         {
             addArmor(1);
-            charmRevealed = true;
+            setCharmRevealed("Mskeshift Shield", true);
         }
-        else if (myCharm == "Cursed Ring")
+        else if (haveCharm("Cursed Ring"))
         {
             setPoison(true);
-            charmRevealed = true;
+            setCharmRevealed("Cursed Ring", true);
         }
-        switch (myCharm)
+        foreach (string c in getCharmsNames())
         {
-            case "Cloak of Whispers":
-                doTempBuff(2, -1, 1);
-                charmRevealed = true;
-                break;
-            case "Death Wish":
-                doTempBuff(0, -1, -2);
-                doTempBuff(1, -1, 2);
-                charmRevealed = true;
-                break;
-            case "Taunting Mask":
-                doTempBuff(1, -1, 5);
-                charmRevealed = true;
-                break;
-            case "Juniper Necklace":
-                foreach(OpalScript o in boardScript.gameOpals)
-                {
-                    if(o != null && o.getTeam() == getTeam() && (o.getMainType() == "Void" || o.getSecondType() == "Void"))
+            switch (c)
+            {
+                case "Cloak of Whispers":
+                    doTempBuff(2, -1, 1);
+                    setCharmRevealed("Cloak of Whispers", true);
+                    break;
+                case "Death Wish":
+                    doTempBuff(0, -1, -2);
+                    doTempBuff(1, -1, 2);
+                    setCharmRevealed("Death Wish", true);
+                    break;
+                case "Taunting Mask":
+                    doTempBuff(1, -1, 5);
+                    setCharmRevealed("Taunting Mask", true);
+                    break;
+                case "Juniper Necklace":
+                    foreach (OpalScript o in boardScript.gameOpals)
                     {
-                        doTempBuff(0, -1, 1);
-                        doTempBuff(1, -1, 1);
-                        doTempBuff(2, -1, 1);
+                        if (o != null && o.getTeam() == getTeam() && (o.getMainType() == "Void" || o.getSecondType() == "Void"))
+                        {
+                            doTempBuff(0, -1, 1);
+                            doTempBuff(1, -1, 1);
+                            doTempBuff(2, -1, 1);
+                        }
                     }
-                }
-                charmRevealed = true;
-                break;
+                    setCharmRevealed("Juniper Necklace", true);
+                    break;
+            }
         }
     }
 
     public void onDamageItem(int dam)
     {
-        switch (myCharm) {
-            case "Shock Collar":
-                if (!charmRevealed && boardScript.getMyCursor().getCurrentOpal().getTeam() != getTeam())
-                {
-                    doCharge(5);
-                    charmRevealed = true;
-                }
-                break;
-            case "Defense Orb":
-                doTempBuff(1, -1, -1);
-                break;
-            case "Jade Figure":
-                if(currentTile != null && currentTile.type == "Growth")
-                {
-                    doTempBuff(0, -1, 1);
-                    doTempBuff(1, -1, 1);
-                    charmRevealed = true;
-                }
-                break;
-            case "Broken Doll":
-                if(dam > 0)
-                {
-                    if(boardScript.getMyCursor().getCurrentOpal().getTeam() == getTeam())
+        foreach (string c in getCharmsNames())
+        {
+            switch (c)
+            {
+                case "Shock Collar":
+                    if (!checkRevealed("Shock Collar") && boardScript.getMyCursor().getCurrentOpal().getTeam() != getTeam())
                     {
-                        doTempBuff(2, 1, 2);
+                        doCharge(5);
+                        setCharmRevealed("Shock Collar", true);
                     }
-                    charmRevealed = true;
-                }
-                break;
-            case "Potion of Gratitude":
-                if(dam > 0)
-                {
-                    if (!takenDamage)
+                    break;
+                case "Defense Orb":
+                    doTempBuff(1, -1, -1);
+                    break;
+                case "Jade Figure":
+                    if (currentTile != null && currentTile.type == "Growth")
                     {
-                        doHeal(10, false);
-                        charmRevealed = true;
-                        takenDamage = true;
+                        doTempBuff(0, -1, 1);
+                        doTempBuff(1, -1, 1);
+                        setCharmRevealed("Jade Figure", true);
                     }
-                }
-                break;
-            case "Taunting Mask":
-                if(dam > defense)
-                {
-                    boardScript.myCursor.getCurrentOpal().doHeal(2, false);
-                    charmRevealed = true;
-                }
-                break;
-            case "Death's Skull":
-                if(dead)
-                {
-                    boardScript.myCursor.getCurrentOpal().takeDamage(dam, true, true);
-                    charmRevealed = true;
-                }
-                break;
-            case "Golden Figure":
-                doHeal(2, false);
-                charmRevealed = true;
-                break;
-            case "Garnet Figure":
-                boardScript.setTile(boardScript.myCursor.getCurrentOpal(), "Fire", false);
-                charmRevealed = true;
-                break;
-            case "Suffering Crown":
-                if(boardScript.myCursor.getCurrentOpal().getAttack() > getAttack())
-                {
-                    doTempBuff(0, -1, 5);
-                    charmRevealed = true;
-                }
-                return;
-            
+                    break;
+                case "Broken Doll":
+                    if (dam > 0)
+                    {
+                        if (boardScript.getMyCursor().getCurrentOpal().getTeam() == getTeam())
+                        {
+                            doTempBuff(2, 1, 2);
+                        }
+                        setCharmRevealed("Broken Doll", true);
+                    }
+                    break;
+                case "Potion of Gratitude":
+                    if (dam > 0)
+                    {
+                        if (!takenDamage)
+                        {
+                            doHeal(10, false);
+                            setCharmRevealed("Potion of Gratitude", true);
+                            takenDamage = true;
+                        }
+                    }
+                    break;
+                case "Taunting Mask":
+                    if (dam > defense)
+                    {
+                        boardScript.myCursor.getCurrentOpal().doHeal(2, false);
+                        setCharmRevealed("Taunting Mask", true);
+                    }
+                    break;
+                case "Death's Skull":
+                    if (dead)
+                    {
+                        boardScript.myCursor.getCurrentOpal().takeDamage(dam, true, true);
+                        setCharmRevealed("Death's Skull", true);
+                    }
+                    break;
+                case "Golden Figure":
+                    doHeal(2, false);
+                    setCharmRevealed("Golden Figure", true);
+                    break;
+                case "Garnet Figure":
+                    boardScript.setTile(boardScript.myCursor.getCurrentOpal(), "Fire", false);
+                    setCharmRevealed("Garnet Figure", true);
+                    break;
+                case "Suffering Crown":
+                    if (boardScript.myCursor.getCurrentOpal().getAttack() > getAttack())
+                    {
+                        doTempBuff(0, -1, 5);
+                        setCharmRevealed("Suffering Crown", true);
+                    }
+                    return;
+
+            }
         }
     }
 
     public void onStartItem()
     {
-        switch (myCharm) {
-            case "Electromagnet":
-                foreach (OpalScript o in boardScript.gameOpals)
-                {
-                    if (o != null && o.getCharge() > 0)
+        foreach (string c in getCharmsNames())
+        {
+            switch (c)
+            {
+                case "Electromagnet":
+                    foreach (OpalScript o in boardScript.gameOpals)
                     {
-                        doCharge(2);
-                        charmRevealed = true;
+                        if (o != null && o.getCharge() > 0)
+                        {
+                            doCharge(2);
+                            setCharmRevealed("Electromagnet", true);
+                        }
                     }
-                }
-                break;
-            case "Lightweight Fluid":
-                doHeal(2, getLifted());
-                charmRevealed = true;
-                break;
-            case "Metal Scrap":
-                if (currentTile != null)
-                {
-                    startTile = currentTile.getPos();
-                }
-                break;
-            case "Azurite Figure":
-                if(currentTile != null)
-                {
-                    boardScript.setTile(currentTile, "Flood", false);
-                }
-                charmRevealed = true;
-                break;
-            case "Dripping Candle":
-                foreach(TileScript t in getSurroundingTiles(true))
-                {
-                    if (t.getCurrentOpal() != null)
-                        t.getCurrentOpal().setBurning(true);
-                }
-                charmRevealed = true;
-                break;
+                    break;
+                case "Lightweight Fluid":
+                    doHeal(2, getLifted());
+                    setCharmRevealed("Lightweight Fluid", true);
+                    break;
+                case "Metal Scrap":
+                    if (currentTile != null)
+                    {
+                        startTile = currentTile.getPos();
+                    }
+                    break;
+                case "Azurite Figure":
+                    if (currentTile != null)
+                    {
+                        boardScript.setTile(currentTile, "Flood", false);
+                    }
+                    setCharmRevealed("Azurite Figure", true);
+                    break;
+                case "Dripping Candle":
+                    foreach (TileScript t in getSurroundingTiles(true))
+                    {
+                        if (t.getCurrentOpal() != null)
+                            t.getCurrentOpal().setBurning(true);
+                    }
+                    setCharmRevealed("Dripping Candle", true);
+                    break;
+            }
         }
     }
 
     public void onEndItem()
     {
-        switch (myCharm)
+        foreach (string c in getCharmsNames())
         {
-            case "Metal Scrap":
-                if (currentTile != null && currentTile.getPos() == startTile)
-                {
-                    addArmor(1);
-                    charmRevealed = true;
-                }
-                break;
-            case "Mysterious Leaf":
-                if(currentTile != null && currentTile.type == "Growth")
-                {
-                    foreach(TileScript t in getSurroundingTiles(true))
+            switch (c)
+            {
+                case "Metal Scrap":
+                    if (currentTile != null && currentTile.getPos() == startTile)
                     {
-                        if(t.getCurrentOpal() != null)
+                        addArmor(1);
+                        setCharmRevealed("Metal Scrap", true);
+                    }
+                    break;
+                case "Mysterious Leaf":
+                    if (currentTile != null && currentTile.type == "Growth")
+                    {
+                        foreach (TileScript t in getSurroundingTiles(true))
                         {
-                            t.getCurrentOpal().doTempBuff(0, -1, 1);
-                            t.getCurrentOpal().doTempBuff(1, -1, 1);
+                            if (t.getCurrentOpal() != null)
+                            {
+                                t.getCurrentOpal().doTempBuff(0, -1, 1);
+                                t.getCurrentOpal().doTempBuff(1, -1, 1);
+                            }
+                        }
+                        setCharmRevealed("Mysterious Leaf", true);
+                    }
+                    break;
+                case "Damp Machine":
+                    if (currentTile != null && currentTile.type == "Flood")
+                    {
+                        doTempBuff(1, -1, 2);
+                    }
+                    break;
+                case "Whetstone":
+                    bool rock = false;
+                    foreach (TileScript t in getSurroundingTiles(true))
+                    {
+                        if (t.getCurrentOpal() != null && t.getCurrentOpal().getMyName() == "Boulder")
+                        {
+                            t.getCurrentOpal().doTempBuff(1, -1, 2);
+                            rock = true;
                         }
                     }
-                    charmRevealed = true;
-                }
-                break;
-            case "Damp Machine":
-                if(currentTile != null && currentTile.type == "Flood")
-                {
-                    doTempBuff(1, -1, 2);
-                }
-                break;
-            case "Whetstone":
-                bool rock = false;
-                foreach(TileScript t in getSurroundingTiles(true))
-                {
-                    if(t.getCurrentOpal() != null && t.getCurrentOpal().getMyName() == "Boulder")
+                    if (rock)
                     {
-                        t.getCurrentOpal().doTempBuff(1,-1,2);
-                        rock = true;
+                        doTempBuff(1, -1, 2);
+                        setCharmRevealed("Whetstone", true);
                     }
-                }
-                if (rock)
-                {
-                    doTempBuff(1, -1, 2);
-                    charmRevealed = true;
-                }
-                break;
+                    break;
+            }
         }
     }
 
     public void onArmorItem(int add)
     {
-        switch (myCharm)
+        foreach (string c in getCharmsNames())
         {
-            case "Comfortable Padding":
-                if(add > 1)
-                {
-                    doTempBuff(0, -1, 2);
-                    charmRevealed = true;
-                }
-                else
-                {
-                    doTempBuff(0, -1, -2);
-                    charmRevealed = true;
-                }
-                break;
+            switch (c)
+            {
+                case "Comfortable Padding":
+                    if (add > 1)
+                    {
+                        doTempBuff(0, -1, 2);
+                        setCharmRevealed("Comfortable Padding", true);
+                    }
+                    else
+                    {
+                        doTempBuff(0, -1, -2);
+                        setCharmRevealed("Comfortable Padding", true);
+                    }
+                    break;
+            }
         }
     }
 
     public void onDieItem()
     {
-        switch (myCharm)
+        foreach (string c in getCharmsNames())
         {
-            case "Grieving Shrimp":
-                foreach(OpalScript o in boardScript.gameOpals)
-                {
-                    if(o.getTeam() == getTeam())
+            switch (c)
+            {
+                case "Grieving Shrimp":
+                    foreach (OpalScript o in boardScript.gameOpals)
                     {
-                        o.doTempBuff(0, 1, 7);
-                        o.doTempBuff(1, 1, 7);
+                        if (o.getTeam() == getTeam())
+                        {
+                            o.doTempBuff(0, 1, 7);
+                            o.doTempBuff(1, 1, 7);
+                        }
                     }
-                }
-                charmRevealed = true;
-                break;
+                    setCharmRevealed("Grieving Shrimp", true);
+                    break;
+            }
         }
     }
 
@@ -2754,5 +2908,33 @@ abstract public class OpalScript : MonoBehaviour {
         {
             turnlength = 0;
         }
-    } 
+    }
+
+
+    public class Charm
+    {
+        string name;
+        bool revealed = false;
+
+        public void setName(string n)
+        {
+            name = n;
+        }
+
+        public string getName()
+        {
+            return name;
+        }
+
+        public bool getRevealed()
+        {
+            return revealed;
+        }
+
+        public void setRevealed(bool r)
+        {
+            revealed = r;
+        }
+    }
+
 }

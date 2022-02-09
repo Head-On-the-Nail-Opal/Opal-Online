@@ -229,6 +229,28 @@ public class CursorScript : MonoBehaviour {
             nextTurn();
         }
 
+        if (Input.GetKeyDown(KeyCode.DownArrow) && toggleShift)
+        {
+            if (tileFrom.getCurrentOpal() != null)
+            {
+                ts.cycleCharm(false, tileFrom.getCurrentOpal());
+            }
+            else
+            {
+                ts.cycleCharm(false, selectedPlayer);
+            }
+        }else if (Input.GetKeyDown(KeyCode.UpArrow) && toggleShift)
+        {
+            if (tileFrom.getCurrentOpal() != null)
+            {
+                ts.cycleCharm(true, tileFrom.getCurrentOpal());
+            }
+            else
+            {
+                ts.cycleCharm(true, selectedPlayer);
+            }
+        }
+
         if (Input.GetKeyDown(KeyCode.Home))
         {
             foreach(OpalScript o in boardScript.gameOpals)
@@ -1082,10 +1104,6 @@ public class CursorScript : MonoBehaviour {
         {
             tempProj.fire(selectedPlayer, boardScript.tileGrid[x, y], at);
         }
-        if (boardScript.tileGrid[x, y].type == "Boulder" && selectedPlayer.getAttacks()[at].getBaseDamage() > 0)
-        {
-            boardScript.setTile(x, y, "Grass", true);
-        }
     }
 
     public void doAttack(int x, int y, int at, OpalScript updatedPlayer)
@@ -1115,10 +1133,6 @@ public class CursorScript : MonoBehaviour {
         {
             tempProj.fire(updatedPlayer, boardScript.tileGrid[x, y], at);
         }
-        if (boardScript.tileGrid[x, y].type == "Boulder" && updatedPlayer.getAttacks()[at].getBaseDamage() > 0)
-        {
-            boardScript.setTile(x, y, "Grass", true);
-        }
     }
 
     public void pressEndTurn()
@@ -1142,6 +1156,17 @@ public class CursorScript : MonoBehaviour {
                 return;
             }
         }
+    }
+
+    public void updateCurrent()
+    {
+        if (tileFrom != null && tileFrom.currentPlayer != null)
+            ts.updateSelected(tileFrom.currentPlayer);
+    }
+
+    public void updateCurrentActually()
+    {
+        ts.updateCurrent(selectedPlayer, distance);
     }
 
     private void destroyDummies()
