@@ -156,7 +156,11 @@ public class CursorScript : MonoBehaviour {
         moveReticle(currentController);
         if (Input.GetKeyUp(KeyCode.Escape) || Input.GetButtonUp("Home" + addon))
         {
-            boardScript.toggleMenu();
+            if (boardScript.getGameWon())
+            {
+                UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu", UnityEngine.SceneManagement.LoadSceneMode.Single);
+            }else
+                boardScript.toggleMenu();
         }
         if (gameOver)
         {
@@ -802,6 +806,13 @@ public class CursorScript : MonoBehaviour {
                 return true;
         }
         return false;
+    }
+
+    public void flashOpal()
+    {
+        if(currentHighlight != null)
+            StopCoroutine(currentHighlight);
+        currentHighlight = StartCoroutine(selectedPlayer.highlightFlash());
     }
 
     public void restartAttack()

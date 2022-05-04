@@ -661,6 +661,15 @@ public class GroundScript : MonoBehaviour {
         }
     }
 
+    public TileScript getTile(int x,int z)
+    {
+        if (x < 0 || x > 9 || z < 0 || z > 9 || tileGrid[x, z].getFallen())
+        {
+            return null;
+        }
+        return tileGrid[x, z];
+    }
+
     public TileScript setTile(OpalScript o, string type, bool over)
     {
         return setTile((int)o.getPos().x, (int)o.getPos().z, type, over);
@@ -968,6 +977,7 @@ public class GroundScript : MonoBehaviour {
                 temp.setDisplayOpal();
                 opalTurns.Add(temp);
                 temp.healStatusEffects();
+                temp.doHighlight();
                 temp.transform.localPosition = new Vector3(835, 425 - i,0);
                 temp.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
                 temp.transform.localScale = new Vector3(100*temp.transform.localScale.x, 100 * temp.transform.localScale.y, 1);

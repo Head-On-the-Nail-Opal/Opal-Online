@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class Strikel : OpalScript
 {
-
+    bool lostArmor = false;
     override public void setOpal(string pl)
     {
-        health = 30;
+        health = 15;
         maxHealth = health;
-        attack = 3;
+        attack = 4;
         defense = 1;
-        speed = 2;
+        speed = 4;
         priority = 6;
         myName = "Strikel";
         transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.7f;
@@ -27,19 +27,23 @@ public class Strikel : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Sharpen", 0, 0, 0, "<Passive>\nWhen Strikel takes damage it gains +1 attack");
-        Attacks[1] = new Attack("Overclock", 0, 1, 0, "Take 4 damage, gain +1 speed, then take 2 damage.");
-        Attacks[2] = new Attack("Calculated Strike", 1, 1, 6, "If the target survives this attack, then gain +1 defense.");
-        Attacks[3] = new Attack("Shattering Slash", 1, 1, 10, "Take 4 damage, then take 4 damage, then deal damage.");
+        Attacks[0] = new Attack("Sharpen", 0, 1, 0, "<Free Ability>\nTake 2 damage. (Ignores Armor)");
+        Attacks[0].setFreeAction(true);
+        Attacks[1] = new Attack("Furious Blades", 1, 1, 0, "Deal damage, dealing more the lower health Strikel has.");
+        Attacks[2] = new Attack("Synthesized Adrenaline", 0, 1, 0, "Gain +3 attack. If you lost armor since your last turn, gain +6 instead.");
+        Attacks[3] = new Attack("Efficiency Boost", 0, 1, 0, "Take 5 damage and then gain +1 armor. If it has armor when Strikel uses this, gain +4 attack and +4 defense for 1 turn.");
         type1 = "Metal";
         type2 = "Metal";
     }
 
-    
-
-    public override void onDamage(int dam)
+    public override void onEnd()
     {
-        doTempBuff(0, -1, 1);
+        lostArmor = false;
+    }
+
+    public override void onArmorDamage(int dam)
+    {
+        lostArmor = true;
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -47,26 +51,35 @@ public class Strikel : OpalScript
         Attack cA = Attacks[attackNum];
         if (attackNum == 0) //
         {
+            takeDamageBelowArmor(2, false, true);
             return 0;
         }
         else if (attackNum == 1) //
         {
-            takeDamage(4, false, true);
-            doTempBuff(2, -1, 1);
-            takeDamage(2, false, true);
-            return 0;
+            return (maxHealth - getHealth()) + getAttack();
         }
         else if (attackNum == 2) //
         {
-            if(target.getHealth() + target.getDefense() > cA.getBaseDamage() + getAttack())
+            if (lostArmor)
             {
-                doTempBuff(1, -1, 1);
+                doTempBuff(0, -1, 6);
             }
+            else
+            {
+                doTempBuff(0, -1, 3);
+            }
+            return 0;
         }
         else if (attackNum == 3) //
         {
-            takeDamage(4, false, true);
-            takeDamage(4, false, true);
+            if(getArmor() > 0)
+            {
+                doTempBuff(0, 2, 4);
+                doTempBuff(1, 2, 4);
+            }
+            takeDamage(5, false, true);
+            addArmor(1);
+            return 0;
         }
         return cA.getBaseDamage() + getAttack();
     }
@@ -98,14 +111,15 @@ public class Strikel : OpalScript
             return 0;
         }else if(attackNum == 1)
         {
-            return 6;
-        }else if(attackNum == 2)
+            return (maxHealth - getHealth()) + getAttack() - target.currentPlayer.getDefense();
+        }
+        else if(attackNum == 2)
         {
-            return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+            return 0;
         }
         else if (attackNum == 3)
         {
-            return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense() + 2;
+            return 5;
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
     }

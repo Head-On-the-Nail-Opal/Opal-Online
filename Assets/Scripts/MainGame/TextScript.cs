@@ -156,6 +156,7 @@ public class TextScript : MonoBehaviour {
         {
             displayCurrent = Instantiate<OpalScript>(opal);
             displayCurrent.setDisplayOpal();
+            displayCurrent.doHighlight();
             //displayCurrent.setOpal(null);
             displayCurrent.transform.position = new Vector3(5.55f, 3.42f, -10.05f);
             displayCurrent.transform.localRotation = Quaternion.Euler(40, -45, 0);
@@ -309,6 +310,7 @@ public class TextScript : MonoBehaviour {
             {
                 displaySelected = Instantiate<OpalScript>(opal);
                 displaySelected.setDisplayOpal();
+                displaySelected.doHighlight();
                 //displaySelected.setOpal(null);
                 displaySelected.transform.position = new Vector3(16.46f, 3.46f, 0.83f);
                 displaySelected.transform.localRotation = Quaternion.Euler(40, -45, 0);

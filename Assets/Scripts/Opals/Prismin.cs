@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Prismin : OpalScript
 {
+
+    private int restore = 1;
+    private int relay = 0;
+
     override public void setOpal(string pl)
     {
         health = 30;
@@ -27,13 +31,20 @@ public class Prismin : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Replicate", 0, 1, 0, "Double all buffs or debuffs on Prismin. Prismin takes 15 damage.");
-        Attacks[1] = new Attack("Balance", 1, 1, 0, "Switch buffs and debuffs with a friendly Opal.");
-        Attacks[2] = new Attack("Restore", 0, 1, 0, "Overheal Prismin by 10 health.");
-        Attacks[3] = new Attack("Support", 1, 1, 0, "Give an Opal +1 attack and defense. Overheal them by 5.");
+        Attacks[0] = new Attack("Restore", 1, 1, 0, "Fully heal the targeted Opal. Prismin has [1] use of this ability.");
+        Attacks[1] = new Attack("Regeneration", 0, 1, 0, "All surrounding Opals gain +4 attack and +4 defense for 1 turn. Heal them each by 3 health.");
+        Attacks[2] = new Attack("Relay", 1, 1, 0, "Give an Opal +3 attack, then give an Opal +3 defense.");
+        Attacks[2].setUses(2);
+        Attacks[3] = new Attack("Recover", 0, 1, 0, "Lose -10 health. Gain another use of Restore.");
         type1 = "Light";
         type2 = "Light";
         og = true;
+    }
+
+    public override void onStart()
+    {
+        Attacks[0] = new Attack("Restore", 1, 1, 0, "Fully heal the targeted Opal. Prismin has ["+restore+"] use of this ability.");
+        relay = 0;
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -41,59 +52,46 @@ public class Prismin : OpalScript
         Attack cA = Attacks[attackNum];
         if (attackNum == 0) //Balance
         {
-            List<TempBuff> newBuffs = new List<TempBuff>();
-            foreach(TempBuff t in buffs)
+            if(restore > 0)
             {
-                newBuffs.Add(t);
+                target.doHeal(target.getMaxHealth() - target.getHealth(), false);
+                restore--;
+                Attacks[0] = new Attack("Restore", 1, 1, 0, "Fully heal the targeted Opal. Prismin has [" + restore + "] use of this ability.");
             }
-            foreach(TempBuff t in newBuffs)
-            {
-                if(t.getTurnlength() != 0)
-                    doTempBuff(t.getTargetStat(), t.getTurnlength(),t.getAmount());
-            }
-            takeDamage(15, false, true);
             return 0;
         }
         else if (attackNum == 1) //Restore
         {
-            if(target.getTeam() == getTeam())
+            foreach(TileScript t in getSurroundingTiles(false))
             {
-                List<TempBuff> myBuffs = new List<TempBuff>();
-                List<TempBuff> tBuffs = new List<TempBuff>();
-                foreach(TempBuff t in buffs)
+                if(t.getCurrentOpal() != null)
                 {
-                    if (t.getTurnlength() != 0)
-                        myBuffs.Add(t);
+                    t.getCurrentOpal().doHeal(3, false);
+                    t.getCurrentOpal().doTempBuff(0,1,4);
+                    t.getCurrentOpal().doTempBuff(1,1,4);
                 }
-                foreach(TempBuff t in target.getBuffs())
-                {
-                    if (t.getTurnlength() != 0)
-                        tBuffs.Add(t);
-                }
-                target.clearAllBuffs();
-                clearAllBuffs();
-                foreach (TempBuff t in myBuffs)
-                {
-                    target.doTempBuff(t.getTargetStat(), t.getTurnlength(), t.getAmount());
-                }
-                foreach(TempBuff t in tBuffs)
-                {
-                    doTempBuff(t.getTargetStat(), t.getTurnlength(), t.getAmount());
-                }
-                
             }
             return 0;
         }
         else if (attackNum == 2) //Shift
         {
-            doHeal(10, true);
+            if(relay == 0)
+            {
+                target.doTempBuff(0, -1, 3);
+                relay = 1;
+            }
+            else
+            {
+                target.doTempBuff(1, -1, 3);
+                relay = 0;
+            }
             return 0;
         }
         else if(attackNum == 3)
         {
-            target.doTempBuff(0, -1, 1);
-            target.doTempBuff(1, -1, 1);
-            target.doHeal(5, true);
+            takeDamage(10, false, true);
+            restore++;
+            Attacks[0] = new Attack("Restore", 1, 1, 0, "Fully heal the targeted Opal. Prismin has ["+restore+"] use of this ability.");
             return 0;
         }
         return cA.getBaseDamage() + getAttack();
@@ -119,5 +117,18 @@ public class Prismin : OpalScript
             return 0;
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+    }
+
+    public override int checkCanAttack(TileScript target, int attackNum)
+    {
+        if (attackNum == 0 && target.currentPlayer != null && restore <= 0)
+        {
+            return -1;
+        }
+        else if (target.currentPlayer != null)
+        {
+            return 0;
+        }
+        return -1;
     }
 }

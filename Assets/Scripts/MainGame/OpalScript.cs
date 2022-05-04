@@ -174,41 +174,8 @@ abstract public class OpalScript : MonoBehaviour {
         if(myName != "Boulder" && !displayOpal && (myHighlight == null || !setTeam) && player != null && playerIndicator != null)
         {
             setTeam = true;
-            //GetComponent<SpriteRenderer>().material.shader = Shader.Find("");
-            SpriteRenderer highlight = Instantiate<SpriteRenderer>(GetComponent<SpriteRenderer>(), transform);
-            //highlight.gameObject.AddComponent<Animator>();
-            highlight.gameObject.name = "Highlight";
-            highlight.GetComponent<Animator>().runtimeAnimatorController = GetComponent<Animator>().runtimeAnimatorController;
-            highlight.transform.localScale *= 2;
-            highlight.transform.position = new Vector3(0, 0, 0);
-            Shader shaderGUItext = Shader.Find("GUI/Text Shader");
-            highlight.material.shader = shaderGUItext;
-            myHighlight = highlight.gameObject;
-
-
-            if (player == "Red")
-            {
-                teamColor = Color.red;
-            }else if(player == "Blue")
-            {
-                teamColor = Color.blue;
-            }
-            else if(player == "Green")
-            {
-
-                teamColor = Color.green;
-            }
-            else if(player == "Orange")
-            {
-
-                teamColor = new Color(1, 0.5f, 0);
-            }
-            highlight.color = teamColor;
-            highlight.enabled = false;
-            if(GetComponent<SpriteRenderer>().flipX != highlight.flipX)
-            {
-                highlight.flipX = GetComponent<SpriteRenderer>().flipX;
-            }
+            doHighlight();
+            
             //StartCoroutine(highlightFlash());
         }
 
@@ -246,18 +213,98 @@ abstract public class OpalScript : MonoBehaviour {
             hsr.enabled = true;
             while (true)
             {
+                if (hsr == null)
+                    break;
                 for (int i = 0; i < 20; i++)
                 {
+                    if (hsr == null)
+                        break;
                     hsr.color += new Color(0.05f, 0.05f, 0.05f);
                     yield return new WaitForFixedUpdate();
                 }
+                if (hsr == null)
+                    break;
                 for (int j = 0; j < 20; j++)
                 {
+                    if (hsr == null)
+                        break;
                     hsr.color -= new Color(0.05f, 0.05f, 0.05f);
                     yield return new WaitForFixedUpdate();
                 }
+                if (hsr == null)
+                    break;
                 yield return new WaitForSeconds(0.3f);
             }
+        }
+    }
+
+    public void doHighlight()
+    {
+        doHighlight("");
+    }
+
+    public void doHighlight(string input)
+    {
+        if(myHighlight != null)
+        {
+            Destroy(myHighlight);
+            myHighlight = null;
+        }
+
+        foreach(Transform child in transform)
+        {
+            if(child.name == "Highlight")
+            {
+                Destroy(child.gameObject);
+            }
+        }
+
+        SpriteRenderer highlight = Instantiate<SpriteRenderer>(GetComponent<SpriteRenderer>(), this.transform);
+        highlight.gameObject.name = "Highlight";
+        Destroy(highlight.gameObject.GetComponent<OpalScript>());
+        foreach(Transform child in highlight.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        highlight.GetComponent<Animator>().runtimeAnimatorController = GetComponent<Animator>().runtimeAnimatorController;
+        if(input != "")
+        {
+            highlight.GetComponent<Animator>().Play(input);
+        }
+        highlight.transform.localScale *= 1f;
+        highlight.transform.position = new Vector3(0, 0, 0);
+        Shader shaderGUItext = Shader.Find("GUI/Text Shader");
+        highlight.material.shader = shaderGUItext;
+        myHighlight = highlight.gameObject;
+
+        if (player == "Red")
+        {
+            teamColor = Color.red;
+        }
+        else if (player == "Blue")
+        {
+            teamColor = Color.blue;
+        }
+        else if (player == "Green")
+        {
+
+            teamColor = Color.green;
+        }
+        else if (player == "Orange")
+        {
+
+            teamColor = new Color(1, 0.5f, 0);
+        }
+        highlight.color = teamColor;
+        highlight.enabled = false;
+        if (GetComponent<SpriteRenderer>().flipX != highlight.flipX)
+        {
+            highlight.flipX = GetComponent<SpriteRenderer>().flipX;
+        }
+
+        if(boardScript.myCursor.getCurrentOpal() == this)
+        {
+            boardScript.myCursor.flashOpal();
         }
     }
 
@@ -938,6 +985,50 @@ abstract public class OpalScript : MonoBehaviour {
         {
             target.nudge(d, false, true);
         }
+    }
+
+    public List<TileScript> getLineBetween(TileScript start, TileScript end)
+    {
+        List<TileScript> output = new List<TileScript>();
+        if (start.getPos().x == end.getPos().x)
+        {
+            if (start.getPos().z - end.getPos().z > 0)
+            {
+                for (int i = 0; i <= Mathf.Abs(start.getPos().z - end.getPos().z); i++)
+                {
+                    if (boardScript.getTile((int)start.getPos().x, (int)start.getPos().z - i) != null)
+                        output.Add(boardScript.getTile((int)start.getPos().x, (int)start.getPos().z - i));
+                }
+            }
+            else
+            {
+                for (int i = 0; i <= Mathf.Abs(start.getPos().z - end.getPos().z); i++)
+                {
+                    if (boardScript.getTile((int)start.getPos().x, (int)start.getPos().z + i) != null)
+                        output.Add(boardScript.getTile((int)start.getPos().x, (int)start.getPos().z + i));
+                }
+            }
+        }
+        else if (start.getPos().z == end.getPos().z)
+        {
+            if (start.getPos().x - end.getPos().x > 0)
+            {
+                for (int i = 0; i <= Mathf.Abs(start.getPos().x - end.getPos().x); i++)
+                {
+                    if (boardScript.getTile((int)start.getPos().x - i, (int)start.getPos().z) != null)
+                        output.Add(boardScript.getTile((int)start.getPos().x - i, (int)start.getPos().z));
+                }
+            }
+            else
+            {
+                for (int i = 0; i <= Mathf.Abs(start.getPos().x - end.getPos().x); i++)
+                {
+                    if (boardScript.getTile((int)start.getPos().x + i, (int)start.getPos().z) != null)
+                        output.Add(boardScript.getTile((int)start.getPos().x + i, (int)start.getPos().z));
+                }
+            }
+        }
+        return output;
     }
 
     public int doMove(int x, int y, int totalDist)
@@ -1666,8 +1757,14 @@ abstract public class OpalScript : MonoBehaviour {
             boardScript.clearGhosts((int)deadTile.x, (int)deadTile.z);
             if (deadTile.x > -1 && deadTile.x < 10 && deadTile.z > -1 && deadTile.z < 10)
             {
-                foreach(string c in exportCharmToTile())
-                    boardScript.tileGrid[(int)deadTile.x, (int)deadTile.z].addCharm(c);
+                foreach (string c in exportCharmToTile())
+                {
+                    if (c.Split(',')[0] != "None")
+                    {
+                        print(c);
+                        boardScript.tileGrid[(int)deadTile.x, (int)deadTile.z].addCharm(c);
+                    }
+                }
             }
         }
     }
@@ -1824,6 +1921,8 @@ abstract public class OpalScript : MonoBehaviour {
     //mod specifies whether defense should modify the damage taken
     public virtual void takeDamage(int dam, bool mod, bool effect, bool belowArmor)
     {
+        if (health <= 0)
+            return;
         OpalScript cursedByOozwl = null;
         foreach (OpalScript o in cursedBy)
         {
@@ -1889,6 +1988,19 @@ abstract public class OpalScript : MonoBehaviour {
             {
                 cursedByOozwl.doHeal(cursedByOozwl.getMaxHealth(), false);
                 cursedByOozwl.doTempBuff(2, -1, 2);
+            }
+            if(getMyName() == "Experiment42")
+            {
+                bool allDead = true;
+                foreach(OpalScript o in boardScript.gameOpals)
+                {
+                    if(o.getTeam() == getTeam() && !o.getDead() && o != this)
+                    {
+                        allDead = false;
+                    }
+                }
+                if(!allDead)
+                    return;
             }
             currentTile = null;
             if(temp != null)
@@ -2253,8 +2365,11 @@ abstract public class OpalScript : MonoBehaviour {
                 cursedByMoppet = true;
             }
         }
-        if(!cursedByMoppet)
+        if (!cursedByMoppet)
+        {
+            onBurnDamage(burnCounter);
             takeDamage(burnCounter, false, false);
+        }
         if (haveCharm("Heat-Proof Cloth"))
         {
             burnCounter += 1;
@@ -2361,6 +2476,11 @@ abstract public class OpalScript : MonoBehaviour {
     }
 
     public virtual void onArmorDamage(int dam)
+    {
+        return;
+    }
+
+    public virtual void onBurnDamage(int dam)
     {
         return;
     }

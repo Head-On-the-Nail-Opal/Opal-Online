@@ -48,11 +48,13 @@ public class Reflectron : OpalScript
         {
             Attacks[3] = new Attack("Heal Ray", 1, 8, 0, "Heal all Opals in a diagonal line 2 health");
             anim.CrossFade("ReflectronDiagonal", 0);
+            doHighlight("ReflectronDiagonal");
         }
         else
         {
             Attacks[3] = new Attack("Heal Ray", 1, 6, 0, "Heal all Opals in a line 2 health");
             anim.CrossFade("Reflectron", 0);
+            doHighlight("Reflectron");
         }
     }
 

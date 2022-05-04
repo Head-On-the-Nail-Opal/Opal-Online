@@ -1,6 +1,7 @@
 Please don't change this, it will be encrypted eventually.
-Ambush|Defense Orb|Straight-Edge,Hopscure|Garnet Figure|Straight-Edge,Diamite|Insect Husk|Straight-Edge,
-Jetjinn|None|Straight-Edge,Hearthhog|Whetstone|Straight-Edge,
+Rekindle|None|Straight-Edge,Ambush|None|Straight-Edge,
+Woolloy|None|Straight-Edge,Experiment42|None|Straight-Edge,
+Inflicshun|None|Straight-Edge,Fluttorch|None|Straight-Edge,
 endTeams
-Abysmeel,Amalgum,Ambush,Aquarican,Aughtment,Barriarray,Beaconfire,Beamrider,Betary,Bubbacle,Butterflight,Cactoid,Charayde,Chardinal,Chasmcrawler,Cottonmaw,Diamite,Drizziphyl,Duplimorph,Excremite,Experiment42,Finbow,Fluttorch,Fragmatom,Froxic,FumePlume,Gilsplish,Glorm,Glummer,Gorj,Grimmline,Groth,Hearthhog,Heatriarch,Hopscure,Hoviron,Inflicshun,Inseedious,Investigator,Jetjinn,KnightLite,Luminute,Meadowebb,Mechalodon,Mistery,Moppet,Nachteous,Oozwl,Oremordilla,Overgroink,Pebblepal,Prismin,Protectric,Puffsqueak,Scorpirad,Sentree,Shineode,Shocket,Slungus,Snugbun,Sorceraura,Spillarc,Spiritch,Strikel,Succuum,Terradactyl,Teslamp,Thermor,Tortquoise,Toxikrab,Verminfection,Volcoco,Wingnition,Wobblestone,Zheep,
+Abysmeel,Amalgum,Ambush,Aquarican,Aughtment,Barriarray,Rekindle,Beamrider,Betary,Bubbacle,Butterflight,Cactoid,Charayde,Chardinal,Chasmcrawler,Cottonmaw,Diamite,Drizziphyl,Duplimorph,Excremite,Experiment42,Finbow,Fluttorch,Fragmatom,Froxic,FumePlume,Gilsplish,Glorm,Glummer,Gorj,Grimmline,Groth,Hearthhog,Heatriarch,Hopscure,Hoviron,Inflicshun,Inseedious,Investigator,Jetjinn,KnightLite,Luminute,Meadowebb,Mechalodon,Mistery,Moppet,Nachteous,Oozwl,Oremordilla,Overgroink,Pebblepal,Prismin,Protectric,Puffsqueak,Scorpirad,Sentree,Shineode,Shocket,Slungus,Snugbun,Sorceraura,Spillarc,Spiritch,Strikel,Succuum,Terradactyl,Teslamp,Thermor,Tortquoise,Toxikrab,Verminfection,Volcoco,Wingnition,Wobblestone,Woolloy,
 endOpals

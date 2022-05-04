@@ -45,7 +45,7 @@ public class Inflicshun : OpalScript
             Attacks[1] = new Attack("Omega Slash", 1, 1, 15, "Give target burn, poison, and lift. Heal by half the damage dealt.");
             Attacks[2] = new Attack("Omega Blast", 8, 4, 10, "Add damage based on current burn and poison damage. The target is pushed 2 tiles.");
             Attacks[3] = new Attack("Omega Tune", 0, 1, 0, "Heal 10 health. Gain +3 attack, +3 defense, and +2 speed.");
-            anim.CrossFade("Inflicshun111", 0);
+            anim.Play("Inflicshun111", 0);
             currentForm = "111";
         }
         else if(getBurning() && getPoison())
@@ -53,7 +53,7 @@ public class Inflicshun : OpalScript
             Attacks[1] = new Attack("Painful Slash", 1, 1, 10, "Give target burn and poison.");
             Attacks[2] = new Attack("Painful Blast", 5, 4, 8, "Add damage based on current burn and poison damage.");
             Attacks[3] = new Attack("Painful Tune", 0, 1, 0, "Gain +3 attack, +3 defense.");
-            anim.CrossFade("Inflicshun110", 0);
+            anim.Play("Inflicshun110", 0);
             currentForm = "110";
         }
         else if(getPoison() && getLifted())
@@ -61,7 +61,7 @@ public class Inflicshun : OpalScript
             Attacks[1] = new Attack("Nauseous Slash", 1, 1, 10, "Give target poison and lift.");
             Attacks[2] = new Attack("Nauseous Blast", 5, 4, 8, "Add damage based on current poison damage. The target is pushed 2 tiles.");
             Attacks[3] = new Attack("Nauseous Tune", 0, 1, 0, "Gain +3 defense and +2 speed.");
-            anim.CrossFade("Inflicshun011", 0);
+            anim.Play("Inflicshun011", 0);
             currentForm = "011";
         }
         else if(getBurning() && getLifted())
@@ -69,7 +69,7 @@ public class Inflicshun : OpalScript
             Attacks[1] = new Attack("Flaming Slash", 1, 1, 10, "Give target burn and lift.");
             Attacks[2] = new Attack("Flaming Blast", 5, 4, 8, "Add damage based on current burn damage. The target is pushed 2 tiles.");
             Attacks[3] = new Attack("Flaming Tune", 0, 1, 0, "Gain +3 attack and +2 speed.");
-            anim.CrossFade("Inflicshun101", 0);
+            anim.Play("Inflicshun101", 0);
             currentForm = "101";
         }
         else if (getBurning())
@@ -77,7 +77,7 @@ public class Inflicshun : OpalScript
             Attacks[1] = new Attack("Searing Slash", 1, 1, 8, "Burn target.");
             Attacks[2] = new Attack("Searing Blast", 4, 4, 6, "Add damage based on current burn damage.");
             Attacks[3] = new Attack("Searing Tune", 0, 1, 0, "Gain +2 attack.");
-            anim.CrossFade("Inflicshun100", 0);
+            anim.Play("Inflicshun100", 0);
             currentForm = "100";
         }
         else if (getPoison())
@@ -85,7 +85,7 @@ public class Inflicshun : OpalScript
             Attacks[1] = new Attack("Sickly Slash", 1, 1, 8, "Poison target.");
             Attacks[2] = new Attack("Sickly Blast", 4, 4, 6, "Add damage based on current poison damage.");
             Attacks[3] = new Attack("Sickly Tune", 0, 1, 0, "Gain +2 defense.");
-            anim.CrossFade("Inflicshun010", 0);
+            anim.Play("Inflicshun010", 0);
             currentForm = "010";
         }
         else if (getLifted())
@@ -93,7 +93,7 @@ public class Inflicshun : OpalScript
             Attacks[1] = new Attack("Floaty Slash", 1, 1, 8, "Lift target.");
             Attacks[2] = new Attack("Floaty Blast", 4, 4, 6, "The target is pushed 1 tile.");
             Attacks[3] = new Attack("Floaty Tune", 0, 1, 0, "Gain +1 speed.");
-            anim.CrossFade("Inflicshun001", 0);
+            anim.Play("Inflicshun001", 0);
             currentForm = "001"; 
         }
         else
@@ -101,19 +101,22 @@ public class Inflicshun : OpalScript
             Attacks[1] = new Attack("Slash", 1, 1, 6, "Deal close range damage");
             Attacks[2] = new Attack("Blast", 3, 4, 4, "Deal damage from further away");
             Attacks[3] = new Attack("Tune", 0, 1, 0, "Gain +1 attack");
-            anim.CrossFade("Inflicshun000", 0);
+            anim.Play("Inflicshun000", 0);
             currentForm = "000";
         }
+        doHighlight("Inflicshun"+currentForm);
     }
 
     public override void onStart()
     {
         getForm();
+        showHighlight();
     }
 
     public override void onMove(int distanceMoved)
     {
         getForm();
+        showHighlight();
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
