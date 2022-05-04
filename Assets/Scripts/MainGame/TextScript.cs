@@ -28,6 +28,7 @@ public class TextScript : MonoBehaviour {
 
     public Text theyWon;
     public Transform winBarrier;
+    public GameObject winScreen;
 
     public Transform outline;
 
@@ -533,30 +534,77 @@ public class TextScript : MonoBehaviour {
 
     public void doWin(string whoWon)
     {
-        if(whoWon == "Tie")
+        winBarrier.localPosition = new Vector3(0, 0, 0);
+        if (whoWon == "Tie")
         {
-            theyWon.text = "Oh no a tie! Better play again!!!\n Press ESCAPE or START BUTTON to go the Main Menu";
-            theyWon.color = Color.green;
-            winBarrier.localPosition = new Vector3(200, -250, 0);
+            //theyWon.text = "Oh no a tie! Better play again!!!\n Press ESCAPE or START BUTTON to go the Main Menu";
+            theyWon.color = Color.magenta;
+            winScreen.GetComponent<SpriteRenderer>().color = Color.magenta;
             return;
         }
-        theyWon.text = "Congrats!\n " + whoWon + " Team won!!!!\n Press ESCAPE or START BUTTON to go the Main Menu";
+        //theyWon.text = "Congrats!\n " + whoWon + " Team won!!!!\n Press ESCAPE or START BUTTON to go the Main Menu";
         if(whoWon == "Red")
         {
             theyWon.color = Color.red;
+            winScreen.GetComponent<SpriteRenderer>().color = Color.red;
         }else if(whoWon == "Blue")
         {
             theyWon.color = Color.blue;
+            winScreen.GetComponent<SpriteRenderer>().color = Color.blue;
         }
         else if (whoWon == "Green")
         {
             theyWon.color = Color.green;
+            winScreen.GetComponent<SpriteRenderer>().color = Color.green;
         }
         else if (whoWon == "Orange")
         {
             theyWon.color = new Color(1, 0.5f, 0);
+            winScreen.GetComponent<SpriteRenderer>().color = new Color(1, 0.5f, 0);
         }
-        winBarrier.localPosition = new Vector3(200, -250, 0);
+    }
+
+    public void setUpWinOpals(List<OpalScript> winners)
+    {
+        if(winners.Count > 0)
+        {
+            winners[0].transform.position = new Vector3(8.5f,7,-4);
+            winners[0].transform.rotation = Quaternion.Euler(35, -45, 0);
+            winners[0].transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
+            winners[0].setOpal(winners[0].getTeam());
+            winners[0].transform.localScale *= 2;
+            winners[0].flipOpal(true);
+            winners[0].resetHighlight();
+        }if(winners.Count > 1)
+        {
+            winners[1].transform.position = new Vector3(13f, 7, 0.3f);
+            winners[1].transform.rotation = Quaternion.Euler(35, -45, 0);
+            winners[1].transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
+            winners[1].setOpal(winners[0].getTeam());
+            winners[1].transform.localScale *= 2;
+            winners[1].flipOpal(false);
+            winners[1].resetHighlight();
+        }
+        if (winners.Count > 1)
+        {
+            winners[2].transform.position = new Vector3(9.5f, 4.5f, -5);
+            winners[2].transform.rotation = Quaternion.Euler(35, -45, 0);
+            winners[2].transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
+            winners[2].setOpal(winners[0].getTeam());
+            winners[2].transform.localScale *= 2;
+            winners[2].flipOpal(true);
+            winners[2].resetHighlight();
+        }
+        if (winners.Count > 1)
+        {
+            winners[3].transform.position = new Vector3(14, 4.5f, -0.5f);
+            winners[3].transform.rotation = Quaternion.Euler(35, -45, 0);
+            winners[3].transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
+            winners[3].setOpal(winners[0].getTeam());
+            winners[3].transform.localScale *= 2;
+            winners[3].flipOpal(false);
+            winners[3].resetHighlight();
+        }
     }
 
     public IEnumerator displayRoundNum(int round)

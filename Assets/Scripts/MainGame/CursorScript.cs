@@ -1422,7 +1422,9 @@ public class CursorScript : MonoBehaviour {
             foreach (OpalScript o in boardScript.gameOpals)
             {
                 if (o.getTeam() == "Red")
+                {
                     winningTeam.Add(o);
+                }
             }
             cheeringOpals(winningTeam);
             gameOver = true;
@@ -1479,6 +1481,9 @@ public class CursorScript : MonoBehaviour {
 
     private void cheeringOpals(List<OpalScript> winners)
     {
+        boardScript.setGameWon(true);
+        ts.setUpWinOpals(winners);
+        /**
         int i = 0;
         foreach(OpalScript o in winners)
         {
@@ -1492,7 +1497,7 @@ public class CursorScript : MonoBehaviour {
             o.flipOpal(true);
             if (i > winners.Count / 2)
                 o.flipOpal(false);
-        }
+        }*/
     }
 
     private void moveReticle(string controller)
