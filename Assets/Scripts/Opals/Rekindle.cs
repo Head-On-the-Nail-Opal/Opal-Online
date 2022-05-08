@@ -103,6 +103,7 @@ public class Rekindle : OpalScript
             resurrect.setNotDead();
             resurrect.setPos((int)target.getPos().x, (int)target.getPos().z);
             resurrect.doMove((int)target.getPos().x, (int)target.getPos().z, 0);
+            resurrect.clearCharms();
 
             foreach (OpalScript o in cursed)
             {

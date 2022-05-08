@@ -642,6 +642,11 @@ abstract public class OpalScript : MonoBehaviour {
         myCharms.Add(i);
     }
 
+    public void clearCharms()
+    {
+        myCharms.Clear();
+    }
+
     public void replaceCharmName(string c)
     {
         myCharms.Clear();
