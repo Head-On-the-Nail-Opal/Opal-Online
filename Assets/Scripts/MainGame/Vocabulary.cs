@@ -32,6 +32,7 @@ public class Vocabulary : MonoBehaviour
         vocab.Add("surrounding", "The 8 tiles around the target.");
         vocab.Add("push", "Move the target a certain number of tiles in a certain direction.");
         vocab.Add("heal", "Raise the health of the target.");
+        vocab.Add("tidal:", "The effect of this ability will change every other turn.");
     }
 
 

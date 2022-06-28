@@ -4,18 +4,19 @@ using UnityEngine;
 
 public class Froxic : OpalScript
 {
-    CursorScript cs;
+
+    int poisonedTeammates = 0;
 
     override public void setOpal(string pl)
     {
-        health = 25;
+        health = 20;
         maxHealth = health;
-        attack = 4;
-        defense = 1;
+        attack = 2;
+        defense = 2;
         speed = 2;
         priority = 9;
         myName = "Froxic";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.6f;
+        transform.localScale = new Vector3(2f, 2f, 2) * 1.1f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -28,29 +29,44 @@ public class Froxic : OpalScript
         offsetY = -0.1f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Secretion", 0, 0, 0, "<Passive>\n If Froxic is standing in Flood, attackers are poisoned. This poison deals damage equal to damage dealt to Froxic.");
-        Attacks[1] = new Attack("Contaminate", 1, 3, 6, "<Water Rush>\n Poison the target.");
-        Attacks[2] = new Attack("Neurotoxin", 1, 3, 0, "<Water Rush>\n Target takes damage from its poison. Heal the damage dealt.");
-        Attacks[3] = new Attack("Damp", 0, 1, 0, "Place Flood at your feet and on surrounding tiles.");
+        Attacks[0] = new Attack("Contaminate", 0, 0, 0, "<Passive>\nWhen Froxic takes damage, poison all Opals in the same body of water as it.");
+        Attacks[1] = new Attack("Secretion", 1, 3, 0, "<Water Rush>\nGive target +3 attack and +4 defense for 1 turn. Also heal them by 4. Has one more use for each teammate currently poisoned.");
+        Attacks[2] = new Attack("Neurotoxin", 1, 3, 0, "<Water Rush>\nIncrease target's poison damage by 3. Tidal: By 5 instead.");
+        Attacks[2].setTidalD("<Water Rush>\nIncrease target's poison damage by 5. Tidal: By 3 instead.");
+        Attacks[3] = new Attack("Toxic Shock", 1, 4, 5, "Deal damage. If every living non-plague type Opal in the match is poisoned, deal 20 more damage.");
         type1 = "Plague";
         type2 = "Water";
-        if(pl != null)
-        {
-            cs = FindObjectOfType<CursorScript>();
-        }
+    }
+
+    public override void onStart()
+    {
+        checkPoisonedTeammates();
     }
 
     public override void onDamage(int dam)
     {
         if(currentTile != null && currentTile.type == "Flood")
         {
-            OpalScript attacker = cs.getCurrentOpal();
-            if(attacker != this && dam - getDefense() > 0)
+           foreach(OpalScript o in getOpalsInSameFlood())
             {
-                attacker.setPoison(true);
-                attacker.setPoisonCounter(dam - getDefense(), true);
+                o.setPoison(true);
             }
         }
+
+        checkPoisonedTeammates();
+    }
+
+    private void checkPoisonedTeammates()
+    {
+        poisonedTeammates = 0;
+        foreach (OpalScript o in boardScript.gameOpals)
+        {
+            if (o.getTeam() == getTeam() && !o.getDead() && o.getPoison())
+            {
+                poisonedTeammates++;
+            }
+        }
+        Attacks[1].setUses(poisonedTeammates);
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -62,26 +78,28 @@ public class Froxic : OpalScript
         }
         else if (attackNum == 1) //Seed Launch
         {
-            target.setPoison(true);
+            target.doTempBuff(0, 1, 3);
+            target.doTempBuff(1, 1, 4);
+            target.doHeal(4, false);
+            return 0;
         }
         else if (attackNum == 2) //Grass Cover
         {
-            if (target.getPoison())
-            {
-                target.takeDamage(target.getPoisonCounter(), false, true);
-                doHeal(target.getPoisonCounter(), false);
-            }
+            if (getTidal())
+                target.setPoisonCounter(getPoisonCounter() + 5, true);
+            else
+                target.setPoisonCounter(getPoisonCounter() + 3, true);
             return 0;
         }else if(attackNum == 3)
         {
-            for (int i = -1; i < 2; i++)
+            foreach(OpalScript o in boardScript.gameOpals)
             {
-                for (int j = -1; j < 2; j++)
+                if (!(o.getDead() || o.getPoison() || o.getMainType() == "Plague" || o.getSecondType() == "Plague"))
                 {
-                    getBoard().setTile((int)target.getPos().x + i, (int)target.getPos().z + j, "Flood", false);
+                    return cA.getBaseDamage() + getAttack();
                 }
             }
-            return 0;
+            return 20 + cA.getBaseDamage() + getAttack();
         }
         return cA.getBaseDamage() + getAttack();
     }
@@ -115,21 +133,21 @@ public class Froxic : OpalScript
         }
         else if (attackNum == 1)
         {
-            return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+            return 0;
         }
         else if (attackNum == 2)
         {
-            if(target.currentPlayer != null)
-            {
-                if (target.currentPlayer.getPoison())
-                {
-                    return target.currentPlayer.getPoisonCounter();
-                }
-            }
             return 0;
         }else if(attackNum == 3)
         {
-            return 0;
+            foreach (OpalScript o in boardScript.gameOpals)
+            {
+                if (!(o.getDead() || o.getPoison() || o.getMainType() == "Plague" || o.getSecondType() == "Plague"))
+                {
+                    return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+                }
+            }
+            return 20 + Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
     }

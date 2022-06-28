@@ -313,8 +313,9 @@ public class TextScript : MonoBehaviour {
                 displaySelected.setDisplayOpal();
                 displaySelected.doHighlight();
                 //displaySelected.setOpal(null);
-                displaySelected.transform.position = new Vector3(16.46f, 3.46f, 0.83f);
+                displaySelected.transform.position = new Vector3(16.35f, 3.33f, 0.94f);
                 displaySelected.transform.localRotation = Quaternion.Euler(40, -45, 0);
+                
                 displaySelected.GetComponent<SpriteRenderer>().sortingLayerName = "UI Back";
                 //displaySelected.resetHighlight();
                 //displaySelected.transform.localScale *= 2;
@@ -585,7 +586,7 @@ public class TextScript : MonoBehaviour {
             winners[1].flipOpal(false);
             winners[1].resetHighlight();
         }
-        if (winners.Count > 1)
+        if (winners.Count > 2)
         {
             winners[2].transform.position = new Vector3(9.5f, 4.5f, -5);
             winners[2].transform.rotation = Quaternion.Euler(35, -45, 0);
@@ -595,7 +596,7 @@ public class TextScript : MonoBehaviour {
             winners[2].flipOpal(true);
             winners[2].resetHighlight();
         }
-        if (winners.Count > 1)
+        if (winners.Count > 3)
         {
             winners[3].transform.position = new Vector3(14, 4.5f, -0.5f);
             winners[3].transform.rotation = Quaternion.Euler(35, -45, 0);

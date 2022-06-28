@@ -7,10 +7,10 @@ public class Bubbacle : OpalScript
 
     override public void setOpal(string pl)
     {
-        health = 30;
+        health = 20;
         maxHealth = health;
-        attack = 3;
-        defense = 1;
+        attack = 1;
+        defense = 3;
         speed = 3;
         priority = 6;
         myName = "Bubbacle";
@@ -27,10 +27,10 @@ public class Bubbacle : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Frail", 0, 0, 0, "<Passive>\n When Bubbacle takes damage, place water tiles at its feet and on adjacent tiles. Useful!");
-        Attacks[1] = new Attack("Bubble Blast", 4, 4, 6, "Deal 1 extra damage for every 2 health points you're missing. Place flood tiles to your target.");
-        Attacks[2] = new Attack("Imbibe", 0, 1, 0, "If standing in Flood, heal 6 health. If not, take 1 damage.");
-        Attacks[3] = new Attack("Big Bubble", 2, 4, 6, "Take 1 damage. Place Flood tiles adjacent and under target.");
+        Attacks[0] = new Attack("Frail", 0, 0, 0, "<Passive>\n When Bubbacle takes damage, place water tiles at its feet and on adjacent tiles.");
+        Attacks[1] = new Attack("Bubble Blast", 4, 4, 3, "Deal damage at range. Target gets 2 levels of Bubbled. When Bubbled Opals take damage, they spread water around them at a range equal to the amount of Bubbled levels they have (up to five). This reduces their Bubbled level by 1.");
+        Attacks[2] = new Attack("Pressure Wash", 3, 4, 4, "Deal damage at range. Before dealing damage, add Bubbacle’s defense buffs to its attack stat, and then clear its attack and defense buffs.");
+        Attacks[3] = new Attack("Pop Frequency", 0, 1, 0, "All Bubbled Opals take damage based on their bubble level. Bubbacle gains +1 defense for each for 2 turns.");
         type1 = "Water";
         type2 = "Water";
         og = true;
@@ -57,65 +57,29 @@ public class Bubbacle : OpalScript
         }
         else if (attackNum == 1) //Bubbleblast
         {
-            string direct = "right";
-            int dist = (int)getPos().x - (int)target.getPos().x;
-            if (dist == 0)
-            {
-                direct = "up";
-                dist = (int)getPos().z - (int)target.getPos().z;
-            }
-            if (dist < 0)
-            {
-                if (direct == "right")
-                {
-                    direct = "left";
-                }
-                else if (direct == "up")
-                {
-                    direct = "down";
-                }
-                dist = Mathf.Abs(dist);
-            }
-            for (int i = 0; i <= dist; i++)
-            {
-                if (direct == "right")
-                {
-                    getBoard().setTile((int)getPos().x - i, (int)getPos().z, "Flood", false);
-                }
-                else if (direct == "left")
-                {
-                    getBoard().setTile((int)getPos().x + i, (int)getPos().z, "Flood", false);
-                }
-                else if (direct == "up")
-                {
-                    getBoard().setTile((int)getPos().x, (int)getPos().z - i, "Flood", false);
-                }
-                else if (direct == "down")
-                {
-                    getBoard().setTile((int)getPos().x, (int)getPos().z + i, "Flood", false);
-                }
-            }
-            return cA.getBaseDamage() + getAttack() + ((getMaxHealth() - getHealth())/2);
+            target.incrementEnchantment("Bubbled", 2, 5);
+            return cA.getBaseDamage() + getAttack();
         }
         else if (attackNum == 2) //Imbibe
         {
-            if(boardScript.tileGrid[(int)transform.position.x, (int)transform.position.z].type == "Flood")
+            int addMe = getAttack() + getTempBuff(1);
+
+            clearBuffs(0);
+            clearBuffs(1);
+
+            return cA.getBaseDamage()+addMe;
+        }
+        else if(attackNum == 3)
+        {
+            foreach(OpalScript o in boardScript.gameOpals)
             {
-                doHeal(6, false);
-            }
-            else
-            {
-                takeDamage(1, false, true);
+                if(o.getEnchantmentValue("Bubbled") > 0)
+                {
+                    o.takeDamage(o.getEnchantmentValue("Bubbled"), true, true);
+                    doTempBuff(1, 3, 1);
+                }
             }
             return 0;
-        }else if(attackNum == 3)
-        {
-            takeDamage(1, false, true);
-            boardScript.setTile(target, "Flood", false);
-            boardScript.setTile((int)target.getPos().x + 1, (int)target.getPos().z, "Flood", false);
-            boardScript.setTile((int)target.getPos().x - 1, (int)target.getPos().z, "Flood", false);
-            boardScript.setTile((int)target.getPos().x, (int)target.getPos().z + 1, "Flood", false);
-            boardScript.setTile((int)target.getPos().x, (int)target.getPos().z - 1, "Flood", false);
         }
         return cA.getBaseDamage() + getAttack();
     }
@@ -146,17 +110,19 @@ public class Bubbacle : OpalScript
         {
             return 0;
         }
-        else if (attackNum == 1)
+        else if(attackNum == 1)
         {
             return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
         }
-        else if (attackNum == 2)
+        else if(attackNum == 2)
         {
-            if(target.type != "Flood")
-            {
-                return 1;
-            }
-            return 0;
+            return Attacks[attackNum].getBaseDamage() + getAttack() + getTempBuff(1) - target.currentPlayer.getDefense();
+        }
+        else if(attackNum == 3)
+        {
+            if (target.currentPlayer.getEnchantmentValue("Bubbled") < 1)
+                return 0;
+            return target.currentPlayer.getEnchantmentValue("Bubbled");
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
     }

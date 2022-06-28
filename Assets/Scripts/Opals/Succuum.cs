@@ -6,10 +6,10 @@ public class Succuum : OpalScript {
 
     override public void setOpal(string pl)
     {
-        health = 30;
+        health = 20;
         maxHealth = health;
-        attack = 2;
-        defense = 2;
+        attack = 1;
+        defense = 3;
         speed = 4;
         priority = 1;
         myName = "Succuum";
@@ -26,14 +26,35 @@ public class Succuum : OpalScript {
         {
             GetComponent<SpriteRenderer>().flipX = true;
         }
-        Attacks[0] = new Attack("Exhale", 5, 4, 1, "Deal 1 damage and push target back one tile. Use this attack 2 times.");
-        Attacks[0].setUses(2);
-        Attacks[1] = new Attack("Vaccuum Breath", 4, 4, 0, "Heal a target 8 health and pull them to you. Tiles they move over become flooded.");
-        Attacks[2] = new Attack("Deep Breathing", 0, 1, 8, "Gain +3 attack for 1 turn. Place Flood tiles on your surrounding tiles and at your feet. Targets on surrounding tiles gain Lift.");
-        Attacks[3] = new Attack("Suck Essence", 1, 3, 5, "<Water Rush> Heal the damage you deal.");
+        Attacks[0] = new Attack("Suck Essence", 0, 0, 0, "<Passive>\nEnemy Opals that start their turn surrounding Succuum lose -3 attack and -1 speed. This debuff lasts until they start their turn on a non-adjacent tile.");
+        Attacks[1] = new Attack("Vaccuum Breath", 3, 4, 0, "Pull target Opal to Succuum. Tiles the target moves over, and under Succuum, become Flood.");
+        Attacks[2] = new Attack("Empowered Deluge", 8, 1, 0, "For each enemy Opal surrounding Succuum, place a Flood. Tidal: And place Flood on adjacent tiles.");
+        Attacks[2].setTidalD("For each enemy Opal surrounding Succuum, place a Flood, and Flood adjacent tiles. Tidal: Adjacent tiles are not Flooded.");
+        Attacks[3] = new Attack("Deep Breathing", 0, 1, 0, "Heal Succuum 4 health. Place Flood on tiles surrounding and under Succuum.");
         type1 = "Water";
         type2 = "Air";
         og = true;
+    }
+
+    private void adjustDeluge()
+    {
+        int nearbyOpals = 0;
+        foreach(TileScript t in getSurroundingTiles(false))
+        {
+            if (t.getCurrentOpal() != null && t.getCurrentOpal().getTeam() != getTeam())
+                nearbyOpals++;
+        }
+        Attacks[2].setUses(nearbyOpals);
+    }
+
+    public override void onStart()
+    {
+        adjustDeluge();
+    }
+
+    public override void onMove(int distanceMoved)
+    {
+        adjustDeluge();
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -41,11 +62,10 @@ public class Succuum : OpalScript {
         Attack cA = Attacks[attackNum];
         if(attackNum == 0) //Suck Essence
         {
-            pushAway(1, target);
+            
         }
         else if(attackNum == 1) //Healing Breath
         {
-            target.doHeal(8, false);
             string direct = "right";
             int dist = (int)getPos().x - (int)target.getPos().x;
             if (dist == 0) {
@@ -99,22 +119,65 @@ public class Succuum : OpalScript {
             {
                 target.nudge(4, false, false);
             }
+
+            boardScript.setTile(this, "Flood", false);
          
             return 0;
         }
         else if(attackNum == 2) //Deep Breathing
         {
-            doTempBuff(0, 2, 3);
-            foreach(TileScript t in getSurroundingTiles(false))
+            if (getTidal())
             {
-                boardScript.setTile(t, "Flood", false);
+                foreach (TileScript t in target.getSurroundingTiles(true))
+                {
+                    boardScript.setTile(t, "Flood", false);
+                }
             }
-            boardScript.setTile(this, "Flood", false);
+
+            boardScript.setTile(target, "Flood", false);
+            
             return 0;
         }
         else if (attackNum == 3)
         {
-            doHeal(getAttackDamage(attackNum, target.getCurrentTile()), false);
+            doHeal(4, false);
+            boardScript.setTile(target, "Flood", false);
+            foreach (TileScript t in getSurroundingTiles(false))
+            {
+                boardScript.setTile(t, "Flood", false);
+            }
+            return 0;
+        }
+        return cA.getBaseDamage() + getAttack();
+    }
+
+    public override int getAttackEffect(int attackNum, TileScript target)
+    {
+        Attack cA = Attacks[attackNum];
+        if (attackNum == 0)
+        {
+            return 0;
+        }
+        else if (attackNum == 1)
+        {
+        }
+        else if (attackNum == 2)
+        {
+            
+            if (getTidal())
+            {
+                foreach (TileScript t in target.getSurroundingTiles(true))
+                {
+                    boardScript.setTile(t, "Flood", false);
+                }
+            }
+
+            boardScript.setTile(target, "Flood", false);
+            return 0;
+        }
+        else if (attackNum == 3)
+        {
+            return 0;
         }
         return cA.getBaseDamage() + getAttack();
     }
@@ -125,7 +188,7 @@ public class Succuum : OpalScript {
             return 0;
         if (attackNum == 0)
         {
-            return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+            return 0;
         }
         else if (attackNum == 1)
         {
@@ -135,9 +198,23 @@ public class Succuum : OpalScript {
         {
             return 0;
         }
-        else if (attackNum == 2)
+        else if (attackNum == 3)
         {
+            return 0;
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+    }
+
+    public override int checkCanAttack(TileScript target, int attackNum)
+    {
+        if (attackNum == 2)
+        {
+            return 0;
+        }
+        if (target.currentPlayer != null)
+        {
+            return 0;
+        }
+        return -1;
     }
 }

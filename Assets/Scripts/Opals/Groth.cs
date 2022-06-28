@@ -123,7 +123,10 @@ public class Groth : OpalScript
 
     public override int checkCanAttack(TileScript target, int attackNum)
     {
-        if (target.currentPlayer != null)
+        if (target.currentPlayer != null && target.currentPlayer != this)
+        {
+            return 0;
+        }else if (target.currentPlayer != null && attackNum == 2)
         {
             return 0;
         }

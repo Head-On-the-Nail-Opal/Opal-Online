@@ -186,9 +186,13 @@ public class MainMenuScript : MonoBehaviour {
         {
             refillOpals();
         }
+        if (Input.GetKeyDown(KeyCode.Plus))
+        {
+            //UnityEngine.SceneManagement.SceneManager.LoadScene("World", UnityEngine.SceneManagement.LoadSceneMode.Single);
+        }
         if (Input.GetKeyDown(KeyCode.Backslash))
         {
-            UnityEngine.SceneManagement.SceneManager.LoadScene("World", UnityEngine.SceneManagement.LoadSceneMode.Single);
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu", UnityEngine.SceneManagement.LoadSceneMode.Single);
         }
 
         if (Input.GetButtonDown("button 0"))
@@ -1292,13 +1296,12 @@ public class MainMenuScript : MonoBehaviour {
         }
         if (temp == null)
             return;
-        if (temp.getCharms()[0] != null)
+        if (temp.getCharmsNames().Count > 0 && temp.getCharmsNames()[0] != null)
         {
             bannedCharms.Remove(temp.getCharmsNames()[0]);
         }
         bannedCharms.Add(name);
         temp.replaceCharmName(name);
-        print(name);
         mainCam.transform.position = new Vector3(0,15,-10);
         //print(temp.getMyName() + "'s charm is set to " + temp.getCharm());
         setCurrentCharm(temp);

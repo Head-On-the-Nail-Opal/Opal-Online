@@ -36,7 +36,7 @@ public class Investigator : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Archeologist", 0, 0, 0, "<Passive>\nAfter Investigator breaks 2 boulders, they may discover a fossil Opal to spawn on an adjacent tile.");
-        Attacks[1] = new Attack("Pick Arm", 1, 1, 10, "If the target is a Boulder this hits Opals adjacent to the target");
+        Attacks[1] = new Attack("Pick Arm", 1, 1, 10, "If the target is a Boulder this hits Opals adjacent to the target. It does not hit Investigator.");
         Attacks[2] = new Attack("Discovery", 1, 1, 0, "Place a Boulder");
         Attacks[3] = new Attack("Excavate", 1, 1, 0, "<Free Ability>\nBreak a boulder adjacent to Investigator, once per turn.");
         Attacks[3].setFreeAction(true);
@@ -45,6 +45,11 @@ public class Investigator : OpalScript
         flarasaurPrefab = Resources.Load<Flarasaur>("Prefabs/SubOpals/Flarasaur");
         brachioshPrefab = Resources.Load<Brachiosh>("Prefabs/SubOpals/Brachiosh");
         floweraptorPrefab = Resources.Load<Floweraptor>("Prefabs/SubOpals/Floweraptor");
+    }
+
+    public override void onPlacement()
+    {
+        Attacks[0] = new Attack("Archeologist", 0, 0, 0, "<Passive>\nAfter Investigator breaks 2 boulders, they may discover a fossil Opal to spawn on an adjacent tile. (" + (2 - bouldersLeft) + "/" + 2 + ")");
     }
 
     public override void onStart()
@@ -71,13 +76,14 @@ public class Investigator : OpalScript
         }
         else
         {
-            Attacks[0] = new Attack("Archeologist", 0, 0, 0, "<Passive>\nAfter Investigator destroys 2 boulders with Excavate, they may immediately discover a fossil Opal to spawn on an adjacent tile.");
+            Attacks[0] = new Attack("Archeologist", 0, 0, 0, "<Passive>\nAfter Investigator breaks 2 boulders, they may discover a fossil Opal to spawn on an adjacent tile. (" + (2 - bouldersLeft) + "/" + 2 + ")");
             Attacks[1] = new Attack("Pick Arm", 1, 1, 10, "If the target is a Boulder this hits Opals adjacent to the target");
             Attacks[2] = new Attack("Discovery", 1, 1, 0, "Place a Boulder");
             Attacks[3] = new Attack("Excavate", 1, 1, 0, "<Free Ability>\nBreak a boulder adjacent to Investigator, once per turn.");
             Attacks[3].setFreeAction(true);
         }
     }
+
 
     public override int getAttackEffect(int attackNum, OpalScript target)
     {
@@ -94,7 +100,7 @@ public class Investigator : OpalScript
                 {
                     foreach(TileScript t in target.getSurroundingTiles(true))
                     {
-                        if(t.currentPlayer != null)
+                        if(t.currentPlayer != null && t.currentPlayer != this)
                         {
                             t.currentPlayer.takeDamage(10 + getAttack(), true, true);
                         }
@@ -119,6 +125,7 @@ public class Investigator : OpalScript
                     target.takeDamageBelowArmor(target.getHealth(), false, true);
                     usedAbility = true;
                     bouldersLeft--;
+                    Attacks[0] = new Attack("Archeologist", 0, 0, 0, "<Passive>\nAfter Investigator breaks 2 boulders, they may discover a fossil Opal to spawn on an adjacent tile. (" + (2 - bouldersLeft) + "/" + 2 + ")");
                     if (bouldersLeft < 1)
                     {
                         discovering = true;

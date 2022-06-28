@@ -15,7 +15,7 @@ public class Glummer : OpalScript
         speed = 3;
         priority = 3;
         myName = "Glummer";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.7f;
+        transform.localScale = new Vector3(3.5f, 3.5f, 1);
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -25,7 +25,7 @@ public class Glummer : OpalScript
             GetComponent<SpriteRenderer>().flipX = false;
         }
         offsetX = 0;
-        offsetY = -0.1f;
+        offsetY = 0f;
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Beacon", 1, 4, 0, "Spawn a Glimmerpillar.");

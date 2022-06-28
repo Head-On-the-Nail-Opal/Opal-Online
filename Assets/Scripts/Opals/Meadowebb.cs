@@ -68,9 +68,9 @@ public class Meadowebb : OpalScript
         }
         else if (attackNum == 2) //Grass Cover
         {
-            doTempBuff(0, 1, 4);
-            doTempBuff(1, 1, 4);
-            doTempBuff(2, 1, -1);
+            doTempBuff(0, 2, 4);
+            doTempBuff(1, 2, 4);
+            doTempBuff(2, 2, -1);
             boardScript.setTile(this, "Growth", false);
             return 0;
         }else if (attackNum == 3)

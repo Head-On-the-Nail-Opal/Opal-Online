@@ -1,6 +1,10 @@
 Please don't change this, it will be encrypted eventually.
-Ambush|Defense Orb|Straight-Edge,Rekindle|None|Straight-Edge,
-Hearthhog|None|Straight-Edge,Luminute|None|Straight-Edge,
+Ambush|None|Straight-Edge,Betary|None|Straight-Edge,Glummer|None|Straight-Edge,Wingnition|None|Straight-Edge,
+Groth|None|Straight-Edge,Succuum|None|Straight-Edge,Sentree|None|Straight-Edge,Rekindle|None|Straight-Edge,
+Glummer|None|Straight-Edge,
+Ambush|None|Straight-Edge,Glummer|None|Straight-Edge,Rekindle|None|Straight-Edge,Sentree|None|Straight-Edge,
+Hearthhog|None|Straight-Edge,
+Ambush|None|Straight-Edge,
 endTeams
-Abysmeel,Amalgum,Ambush,Aquarican,Aughtment,Barriarray,Rekindle,Beamrider,Betary,Bubbacle,Butterflight,Cactoid,Charayde,Chardinal,Chasmcrawler,Cottonmaw,Diamite,Drizziphyl,Duplimorph,Excremite,Experiment42,Finbow,Fluttorch,Fragmatom,Froxic,FumePlume,Gilsplish,Glorm,Glummer,Gorj,Grimmline,Groth,Hearthhog,Heatriarch,Hopscure,Hoviron,Inflicshun,Inseedious,Investigator,Jetjinn,KnightLite,Luminute,Meadowebb,Mechalodon,Mistery,Moppet,Nachteous,Oozwl,Oremordilla,Overgroink,Pebblepal,Prismin,Protectric,Puffsqueak,Scorpirad,Sentree,Shineode,Shocket,Slungus,Snugbun,Sorceraura,Spillarc,Spiritch,Strikel,Succuum,Terradactyl,Teslamp,Thermor,Tortquoise,Toxikrab,Verminfection,Volcoco,Wingnition,Wobblestone,Woolloy,
+Abysmeel,Amalgum,Ambush,Aquarican,Aughtment,Barriarray,Beamrider,Betary,Bubbacle,Butterflight,Cactoid,Charayde,Chardinal,Chasmcrawler,Cottonmaw,Diamite,Drizziphyl,Duplimorph,Excremite,Experiment42,Finbow,Fluttorch,Fragmatom,Froxic,FumePlume,Gilsplish,Glorm,Glummer,Gorj,Grimmline,Groth,Hearthhog,Heatriarch,Hopscure,Hoviron,Inflicshun,Inseedious,Investigator,Jetjinn,KnightLite,Luminute,Meadowebb,Mechalodon,Mistery,Moppet,Nachteous,Nekrokrab,Oozwl,Oremordilla,Overgroink,Pebblepal,Prismin,Protectric,Puffsqueak,Rekindle,Scorpirad,Sentree,Shineode,Shocket,Slungus,Snugbun,Sorceraura,Spillarc,Spiritch,Strikel,Succuum,Swoopitch,Teslamp,Thermor,Tortquoise,Verminfection,Volcoco,Wingnition,Wobblestone,Woolloy,
 endOpals

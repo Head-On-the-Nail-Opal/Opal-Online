@@ -125,6 +125,7 @@ public class GroundScript : MonoBehaviour {
         debuffEffect = Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/DebuffEffect");
 
         growthTilePrefab = Resources.Load<TileScript>("Prefabs/Tiles/GrowthTile");
+        fireTilePrefab = Resources.Load<TileScript>("Prefabs/Tiles/FireTile");
 
         vocab.setIt();
 
@@ -852,7 +853,7 @@ public class GroundScript : MonoBehaviour {
         }
         foreach (string c in tileCharm)
         {
-            if(c != "" && c != "None")
+            if(c != "" && c != "None" && tileGrid[x,y] != replaced)
                 tileGrid[x, y].addCharm(c);
         }
         return tileGrid[x, y];
@@ -877,6 +878,26 @@ public class GroundScript : MonoBehaviour {
                 if (isValidTile(i + (int)start.getPos().x, j + (int)start.getPos().z))
                 {
                     setTile(tileGrid[i + (int)start.getPos().x, j + (int)start.getPos().z], type, false);
+                }
+            }
+        }
+    }
+
+    public void setTilesRound(TileScript start, int dist, string type)
+    {
+        TileScript tileCatch = setTile(start, type, false);
+        if (start.getPos().x == -100)
+            start = tileCatch;
+        for (int i = -dist + 1; i < dist; i++)
+        {
+            for (int j = -dist + 1; j < dist; j++)
+            {
+                if (Mathf.Abs(i) + Mathf.Abs(j) < dist)
+                {
+                    if (isValidTile(i + (int)start.getPos().x, j + (int)start.getPos().z))
+                    {
+                        setTile(tileGrid[i + (int)start.getPos().x, j + (int)start.getPos().z], type, false);
+                    }
                 }
             }
         }

@@ -12,7 +12,7 @@ public class Ambush : OpalScript {
         speed = 4;
         priority = 9;
         myName = "Ambush";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1)* 0.9f;
+        transform.localScale = new Vector3(3f, 3f, 1);
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -61,7 +61,7 @@ public class Ambush : OpalScript {
         {
             if(target.type == "Growth" && target.currentPlayer == null)
             {
-                summonParticle("Vanish");
+                //summonNewParticle("Vanish");
             }
         }
     }

@@ -15,7 +15,7 @@ public class Puffsqueak : OpalScript
         speed = 4;
         priority = 7;
         myName = "Puffsqueak";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.9f;
+        transform.localScale = new Vector3(3f, 3f, 1);
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -52,6 +52,7 @@ public class Puffsqueak : OpalScript
         {
             boardScript.setTile((int)target.getPos().x, (int)target.getPos().z, "Growth", false);
             target.doTempBuff(2, 1, 1);
+            return 0;
         }
         else if (attackNum == 1)
         {

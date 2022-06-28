@@ -41,7 +41,7 @@ public class Woolloy : OpalScript
             "Flood: Gain +1 speed for 1 turn when you start your turn on a Flood tile."
          * */
 
-        Attacks[0] = new Attack("Scrap Alloy", 0, 0, 0, "<Passive>\nThe first tile cleared by Clean Rub per turn provides a variety of passive effects.");
+        Attacks[0] = new Attack("Scrap Alloy", 0, 0, 0, "<Passive>\nThe first tile cleared by Heavy Brush per turn provides a variety of passive effects.");
         Attacks[1] = new Attack("Heavy Brush", 0, 1, 0, "<Free Ability>\n Clear the tile under Woolloy.");
         Attacks[1].setFreeAction(true);
         Attacks[2] = new Attack("Steel Scrub", 0, 1, 0, "Heal any status conditions on Woolloy and adjacent Opals. Heal each 4 health.");

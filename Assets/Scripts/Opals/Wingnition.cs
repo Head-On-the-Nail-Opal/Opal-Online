@@ -24,7 +24,7 @@ public class Wingnition : OpalScript
         speed = 4;
         priority = 7;
         myName = "Wingnition";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 1.1f;
+        transform.localScale = new Vector3(3.5f, 3.5f, 1);
         offsetX = 0;
         offsetY = 0.1f;
         offsetZ = 0;

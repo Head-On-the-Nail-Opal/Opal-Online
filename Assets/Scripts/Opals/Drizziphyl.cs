@@ -70,15 +70,10 @@ public class Drizziphyl : OpalScript
         }
         else if (attackNum == 2) //
         {
-            for (int i = -1; i < 2; i++)
+            getBoard().setTile(target, "Flood", false);
+            foreach (TileScript t in target.getSurroundingTiles(true))
             {
-                for (int j = -1; j < 2; j++)
-                {
-                    if (Mathf.Abs(i) != Mathf.Abs(j) || (i == 0 && j == 0))
-                    {
-                        getBoard().setTile((int)target.getPos().x + i, (int)target.getPos().z + j, "Flood", false);
-                    }
-                }
+                getBoard().setTile(t, "Flood", false);
             }
         }
         else if (attackNum == 3) //

@@ -78,8 +78,8 @@ public class Finbow : OpalScript
         }
         else if (attackNum == 1) //Seed Launch
         {
-            doTempBuff(0, 2, -2);
-            doTempBuff(1, 2, -2);
+            target.doTempBuff(0, 2, -2);
+            target.doTempBuff(1, 2, -2);
             return cA.getBaseDamage() + getAttack() - 2;
         }
         else if (attackNum == 2) //Grass Cover

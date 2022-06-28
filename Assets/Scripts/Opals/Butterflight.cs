@@ -32,7 +32,7 @@ public class Butterflight : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Pollinate", 1, 1, 0, "<Free Ability>\n Lose -2 defense and heal an Opal 4 health");
+        Attacks[0] = new Attack("Pollinate", 1, 1, 0, "<Free Ability>\n Lose -2 defense and heal an Opal 4 health. Cannot use if below -5 defense.");
         Attacks[0].setFreeAction(true);
         Attacks[1] = new Attack("Breeze", 3, 1, 0, "Select a target Opal. Then choose a direction to push them 4 tiles.");
         Attacks[1].setUses(2);
@@ -196,6 +196,12 @@ public class Butterflight : OpalScript
 
     public override int checkCanAttack(TileScript target, int attackNum)
     {
+        if (attackNum == 0) {
+            if (getDefense() > -5)
+                return 0;
+            else
+                return -1;
+        }
         if (attackNum == 1)
             return 0;
         else if(target.currentPlayer != null)

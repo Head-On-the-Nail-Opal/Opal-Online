@@ -98,7 +98,7 @@ public class ConnectedTile : MonoBehaviour
                 }
             }
 
-            Debug.Log("Possible tiles(step " + i + "): " + debugToString(possibleTiles));
+            //Debug.Log("Possible tiles(step " + i + "): " + debugToString(possibleTiles));
         }
 
         if (possibleTiles.Count > 0)

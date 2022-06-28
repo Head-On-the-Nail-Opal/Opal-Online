@@ -13,7 +13,7 @@ public class Glimmerpillar : OpalScript
         speed = 0;
         priority = 9;
         myName = "Glimmerpillar";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.6f;
+        transform.localScale = new Vector3(3f, 3f, 1);
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -23,7 +23,7 @@ public class Glimmerpillar : OpalScript
             GetComponent<SpriteRenderer>().flipX = false;
         }
         offsetX = 0;
-        offsetY = -0.1f;
+        offsetY = 0f;
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Pillar", 0, 0, 0, "<Passive>\n At the start of its turn, surrounding Enemy Opals lose -4 defense for 1 turn.");

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Snugbun : OpalScript
 {
-    private bool masochist = false;
+    private Vector3 panicPos = new Vector3(-100,-100,-100);
     override public void setOpal(string pl)
     {
         health = 20;
@@ -27,66 +27,50 @@ public class Snugbun : OpalScript
         offsetY = -0.2f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Group Snuggles", 0, 0, 0, "<Passive>\n Whenever Snugbun takes damage or is healed, it gains +1 attack for each Opal surrounding Snugbun.");
-        Attacks[1] = new Attack("Heavy Cuddles", 0, 1, 0, "Snugbun will gain attack equal to the damage it takes on the next attack that damages it.");
-        Attacks[2] = new Attack("Friendly Feint", 1, 1, 5, "Deal 1 extra damage for each Opal surrounding Snugbun. May move after attacking.");
-        Attacks[3] = new Attack("Bunny Hop", 3, 1, 0, "<Free Ability>\n Teleport up to 3 tiles away. Take 5 damage.");
-        Attacks[3].setFreeAction(true);
+        Attacks[0] = new Attack("Group Snuggles", 0, 0, 0, "<Passive>\n When Snugbun takes damage, or is healed, that damage or healing is also dealt to Opals adjacent to Snugbun.");
+        Attacks[1] = new Attack("Bunny Hop", 3, 1, 0, "<Free Ability>\n Teleport to the target tile, then take 4 damage.");
+        Attacks[2] = new Attack("Escape Plan", 3, 1, 0, "Choose a tile. After the next time you take damage (not on your turn), teleport to that tile.");
+        Attacks[3] = new Attack("Heavy Cuddles", 1, 1, 4, "Deal damage, target loses -3 defense before the damage is dealt.");
+        Attacks[1].setFreeAction(true);
         type1 = "Dark";
         type2 = "Dark";
     }
 
-    public override void prepAttack(int attackNum)
-    {
-        if (attackNum == 0)
-        {
-            moveAfter = false;
-        }
-        else if (attackNum == 1)
-        {
-            moveAfter = false;
-        }
-        else if (attackNum == 2)
-        {
-            moveAfter = true;
-        }
-        else if (attackNum == 3)
-        {
-            moveAfter = true;
-        }
-    }
-
     public override void onDamage(int dam)
     {
-        List<TileScript> friends = getSurroundingTiles(false);
-        int num = 0;
-        foreach (TileScript t in friends)
+        if (dam > 0 && !getDead())
         {
-            if (t.currentPlayer != null && t.currentPlayer.getMyName() != "Boulder")
+            foreach(TileScript t in getSurroundingTiles(true))
             {
-                num++;
+                if(t.currentPlayer != null)
+                {
+                    t.currentPlayer.takeDamage(dam, true, true);
+                }
             }
-        }
-        doTempBuff(0, -1, num);
-        if (masochist)
-        {
-            doTempBuff(0, -1, dam);
-            masochist = false;
+
+            if (panicPos != new Vector3(-100, -100, -100))
+            {
+                if (boardScript.tileGrid[(int)panicPos.x, (int)panicPos.z].currentPlayer == null)
+                {
+                    teleport((int)panicPos.x, (int)panicPos.z, 0);
+                    panicPos = new Vector3(-100, -100, -100);
+                }
+            }
         }
     }
 
     public override void onHeal(int heal)
     {
-        List<TileScript> friends = getSurroundingTiles(false);
-        int num = 0;
-        foreach (TileScript t in friends)
+        if(heal > 0)
         {
-            if (t.currentPlayer != null && t.currentPlayer.getMyName() != "Boulder")
+            foreach (TileScript t in getSurroundingTiles(true))
             {
-                num++;
+                if (t.currentPlayer != null)
+                {
+                    t.currentPlayer.doHeal(heal,false);
+                }
             }
         }
-        doTempBuff(0, -1, num);
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -98,25 +82,15 @@ public class Snugbun : OpalScript
         }
         else if (attackNum == 1)
         {
-            masochist = true;
             return 0;
         }
         else if (attackNum == 2)
         {
-            List<TileScript> friends = getSurroundingTiles(false);
-            int num = 0;
-            foreach(TileScript t in friends)
-            {
-                if(t.currentPlayer != null)
-                {
-                    num++;
-                }
-            }
-            return cA.getBaseDamage() + getAttack() + num;
+            return 0;
         }
         else if (attackNum == 3)
         {
-            return 0;
+            target.doTempBuff(1, -1, -3);
         }
         return cA.getBaseDamage() + getAttack();
     }
@@ -130,16 +104,18 @@ public class Snugbun : OpalScript
         }
         else if (attackNum == 1)
         {
+            doMove((int)target.getPos().x, (int)target.getPos().z, 0);
+            takeDamage(4, false, true);
             return 0;
         }
         else if (attackNum == 2)
         {
+            panicPos = new Vector3(target.getPos().x, 0, target.getPos().z);
             return 0;
         }
         else if (attackNum == 3)
         {
-            doMove((int)target.getPos().x, (int)target.getPos().z, 0);
-            takeDamage(5+getDefense(), true, true);
+            
             return 0;
         }
         return cA.getBaseDamage() + getAttack();
@@ -155,42 +131,22 @@ public class Snugbun : OpalScript
         }
         else if (attackNum == 1)
         {
-            return 0;
+            return 4;
         }
         else if (attackNum == 2)
         {
-            List<TileScript> friends = getSurroundingTiles(false);
-            int num = 0;
-            foreach (TileScript t in friends)
-            {
-                if (t.currentPlayer != null)
-                {
-                    num++;
-                }
-            }
-            return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense() + num;
+            return 0;
         }
         else if (attackNum == 3)
         {
-            return 5;
+            return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense() + 3;
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
     }
 
     public override int checkCanAttack(TileScript target, int attackNum)
     {
-        if(attackNum == 2)
-        {
-            if (target.currentPlayer != null)
-            {
-                return 0;
-            }
-            else
-            {
-                return -1;
-            }
-        }
-        if (attackNum == 3)
+        if(attackNum == 1 || attackNum == 2)
         {
             if(target.currentPlayer != null)
             {
@@ -198,7 +154,7 @@ public class Snugbun : OpalScript
             }
             else
             {
-                return 0;
+                return 1;
             }
         }
         return base.checkCanAttack(target, attackNum);

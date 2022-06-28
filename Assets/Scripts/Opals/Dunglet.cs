@@ -23,7 +23,6 @@ public class Dunglet : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        GetComponent<SpriteRenderer>().color = new Color(140f / 255f, 97f / 255f, 0 / 255f);
         offsetX = 0;
         offsetY = -0.1f;
         offsetZ = 0;
@@ -128,7 +127,23 @@ public class Dunglet : OpalScript
     {
         if (attackNum == 0)
         {
-            return 0;
+            if (getAttack() > 0)
+                return 0;
+            else
+                return -1;
+        }else if(attackNum == 2)
+        {
+            foreach(TileScript t in getSurroundingTiles(true))
+            {
+                if (t.getCurrentOpal() != null && t.getCurrentOpal().getMyName() == "Excremite")
+                    return 0;
+            }
+            return -1;
+        }else if (attackNum == 1)
+        {
+            if (target.getCurrentOpal() != null && target.getCurrentOpal().getMyName() == "Boulder")
+                return 0;
+            return -1;
         }
         if (target.currentPlayer != null)
         {

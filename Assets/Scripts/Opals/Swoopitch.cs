@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Terradactyl : OpalScript
+public class Swoopitch : OpalScript
 {
     int fu = 0;
     override public void setOpal(string pl)
@@ -13,8 +13,8 @@ public class Terradactyl : OpalScript
         defense = 2;
         speed = 3;
         priority = 2;
-        myName = "Terradactyl";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.6f;
+        myName = "Swoopitch";
+        transform.localScale = new Vector3(3.5f, 3.5f, 1);
         offsetX = 0;
         offsetY = 0;
         offsetZ = 0;
@@ -102,7 +102,6 @@ public class Terradactyl : OpalScript
         {
             if(fu != -1)
             {
-                print("du hello");
                 boardScript.setTile(target, "Boulder", false);
                 OpalScript temp = target.currentPlayer;
                 if(temp != null)

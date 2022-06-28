@@ -23,6 +23,7 @@ abstract public class OpalScript : MonoBehaviour {
     protected string type2;
     public Attack[] Attacks = new Attack[4];
     protected List<TempBuff> buffs = new List<TempBuff>();
+    private List<Enchantment> enchants = new List<Enchantment>();
     protected bool burning = false;
     protected bool poisoned = false;
     protected bool lifted = false;
@@ -45,6 +46,7 @@ abstract public class OpalScript : MonoBehaviour {
     protected int armor = 0;
     public bool display = false;
     protected List<ParticleSystem> armors = new List<ParticleSystem>();
+    protected ParticleSystem bubbles;
     private int matchID = -1;
     private int minionCount = 0;
     //private string myCharm;
@@ -57,6 +59,7 @@ abstract public class OpalScript : MonoBehaviour {
     private Coroutine curseFlash;
     private bool displayOpal = false;
     private bool damagedByPoison = false;
+    private List<TileScript> checkedFloods = new List<TileScript>();
 
     public bool shrouded = false;
     protected GroundScript boardScript;
@@ -72,6 +75,8 @@ abstract public class OpalScript : MonoBehaviour {
     public int poisonCounter = 4;
     private int skin = 0;
 
+    private bool tidal = false;
+
     private GameObject playerIndicator;
     private bool setTeam = false;
     private GameObject mySpot;
@@ -83,6 +88,9 @@ abstract public class OpalScript : MonoBehaviour {
 
     private Vector3 startTile;
     private bool takenDamage = false;
+    private bool tidalDelay = false;
+
+    private int succuumTurns = 0;
 
     private Vector3 coordinates = new Vector3();
 
@@ -266,7 +274,8 @@ abstract public class OpalScript : MonoBehaviour {
         {
             Destroy(child.gameObject);
         }
-        highlight.GetComponent<Animator>().runtimeAnimatorController = GetComponent<Animator>().runtimeAnimatorController;
+        if(highlight.GetComponent<Animator>() != null)
+            highlight.GetComponent<Animator>().runtimeAnimatorController = GetComponent<Animator>().runtimeAnimatorController;
         if(input != "")
         {
             highlight.GetComponent<Animator>().Play(input);
@@ -709,6 +718,13 @@ abstract public class OpalScript : MonoBehaviour {
         ParticleSystem inst = Instantiate<ParticleSystem>(temp, this.transform);
         inst.transform.localScale = transform.localScale;
         inst.transform.localRotation = Quaternion.Euler(0,90,35);
+    }
+
+    public void summonNewParticle(string name)
+    {
+        ParticleSystem temp = Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/" + name);
+        ParticleSystem inst = Instantiate<ParticleSystem>(temp);
+        inst.transform.position = transform.position;
     }
 
     public virtual void preFire(int attackNum, TileScript target)
@@ -1585,6 +1601,18 @@ abstract public class OpalScript : MonoBehaviour {
             poisonTimer = 3;
     }
 
+    private void triggerBubbled()
+    {
+        if (getEnchantmentValue("Bubbled") < 1)
+            return;
+        if (currentTile != null)
+        {
+            boardScript.setTilesRound(currentTile, getEnchantmentValue("Bubbled"), "Flood");
+            incrementEnchantment("Bubbled", -1, 5);
+        }
+        summonNewParticle("BubbleDamage");
+    }
+
     public Vector3 reduce(int amount)
     {
         int attackLoss = 0;
@@ -1649,6 +1677,35 @@ abstract public class OpalScript : MonoBehaviour {
         {
             doTempBuff(2, -1, (int)input.z);
         }
+    }
+
+    public void doBrutalDebuff()
+    {
+        List<TempBuff> newBuffs = new List<TempBuff>();
+
+        foreach(TempBuff t in buffs)
+        {
+            newBuffs.Add(t);
+        }
+
+        clearAllBuffs();
+
+        foreach(TempBuff b in newBuffs)
+        {
+            if(b.getTurnlength() == -1)
+                doTempBuff(b.getTargetStat(), 2, b.getAmount());
+        }
+    }
+
+    public int getTempTempBuff(int stat)
+    {
+        int output = 0;
+        foreach(TempBuff b in buffs)
+        {
+            if (b.getTargetStat() == stat && b.getTurnlength() > 0)
+                output += b.getAmount();
+        }
+        return output;
     }
 
     public bool isBuffed()
@@ -1972,6 +2029,7 @@ abstract public class OpalScript : MonoBehaviour {
             temp.setUp(-(dam - getDefense()), this);
             if (effect)
                 boardScript.callParticles("damage", transform.position);
+            
         }
         if(this.health <= 0)
         {
@@ -2013,6 +2071,8 @@ abstract public class OpalScript : MonoBehaviour {
             dead = true;
             StartCoroutine(shrinker());
         }
+        if(!dead)
+            triggerBubbled();
         onDamage(dam);
         onDamageItem(dam);
         damagedByPoison = false;
@@ -2151,6 +2211,51 @@ abstract public class OpalScript : MonoBehaviour {
             return opalTwo;
         }
         return null;
+    }
+
+    public List<OpalScript> getOpalsInSameFlood()
+    {
+        checkedFloods = new List<TileScript>();
+        return getOpalsInFlood(currentTile);
+    }
+
+    private List<OpalScript> getOpalsInFlood(TileScript flood)
+    {
+        List<OpalScript> output = new List<OpalScript>();
+
+        List<OpalScript> recurse = new List<OpalScript>();
+        if (!checkedFloods.Contains(flood) && flood.type == "Flood")
+        {
+            checkedFloods.Add(flood);
+            if (flood.currentPlayer != null && flood.currentPlayer != this)
+            {
+                output.Add(flood.currentPlayer);
+            }
+            for (int i = -1; i < 2; i++)
+            {
+                for (int j = -1; j < 2; j++)
+                {
+                    if (flood.getPos().x + i < 10 && flood.getPos().x + i > -1 && getPos().z + j < 10 && flood.getPos().z + j > -1 && Mathf.Abs(i) != Mathf.Abs(j))
+                    {
+                        recurse.AddRange(getOpalsInFlood(boardScript.tileGrid[(int)flood.getPos().x + i, (int)flood.getPos().z + j]));
+                    }
+                }
+            }
+        }
+        foreach(OpalScript o in recurse)
+        {
+            if (!output.Contains(o))
+            {
+                output.Add(o);
+                
+            }
+        }
+        return output;
+    }
+
+    public bool getTidal()
+    {
+        return tidal;
     }
 
     public virtual void onDeathTile(TileScript t)
@@ -2342,6 +2447,31 @@ abstract public class OpalScript : MonoBehaviour {
             if(a!= null)
                 a.getCurrentUse(-a.getCurrentUse(0));
         }
+
+        if (tidalDelay)
+            manageTidal();
+        else
+            tidalDelay = true;
+
+
+        bool foundSuccuum = false;
+        foreach(TileScript t in getSurroundingTiles(false))
+        {
+            if(t.getCurrentOpal() != null && t.getCurrentOpal().getMyName() == "Succuum" && t.getCurrentOpal().getTeam() != getTeam())
+            {
+                foundSuccuum = true;
+                succuumTurns++;
+                doTempBuff(0, -1, -3);
+                doTempBuff(2, -1, -1);
+            }
+        }
+        if(succuumTurns != 0 && !foundSuccuum)
+        {
+            doTempBuff(0, -1, 3*succuumTurns);
+            doTempBuff(2, -1, 1*succuumTurns);
+            succuumTurns = 0;
+        }
+
         onStart();
         onStartItem();
     }
@@ -2613,7 +2743,7 @@ abstract public class OpalScript : MonoBehaviour {
                     }
                     break;
                 case "Broken Doll":
-                    if (dam > 0)
+                    if (dam > 0 && dam > getDefense())
                     {
                         if (boardScript.getMyCursor().getCurrentOpal().getTeam() == getTeam())
                         {
@@ -2879,6 +3009,80 @@ abstract public class OpalScript : MonoBehaviour {
         return output;
     }
 
+    public void manageTidal()
+    {
+        tidal = !tidal;
+
+        foreach(Attack a in getAttacks())
+        {
+            if(a.getTidalD() != "")
+            {
+                string d = a.getDesc();
+                a.setDescription(a.getTidalD());
+                a.setTidalD(d);
+            }
+        }
+    }
+
+    public int setEnchantment(string name, int value, int max)
+    {
+        if(name == "Bubbled")
+        {
+            if (value > 0)
+            {
+                if (value > max)
+                    value = max;
+                if (bubbles == null)
+                {
+                    bubbles = Instantiate<ParticleSystem>(Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/BubblePassive"), transform);
+                }
+                var main = bubbles.main;
+                main.maxParticles = value;
+            }
+            else
+            {
+                Destroy(bubbles.gameObject);
+                bubbles = null;
+            }
+        }
+        foreach (Enchantment e in enchants)
+        {
+            if (e.getName() == name)
+            {
+                e.setValue(value);
+                return e.getValue();
+            }
+        }
+
+        enchants.Add(new Enchantment(name, value, max));
+        return value;
+    }
+
+    public int getEnchantmentValue(string name)
+    {
+        foreach (Enchantment e in enchants)
+        {
+            if(e.getName() == name)
+            {
+                return e.getValue();
+            }
+        }
+        return -1;
+    }
+
+    public int incrementEnchantment(string name, int inc, int max)
+    {
+        foreach (Enchantment e in enchants)
+        {
+            if (e.getName() == name)
+            {
+                return setEnchantment(name, e.getValue()+inc, max);
+            }
+        }
+
+        return setEnchantment(name, inc, max);
+    }
+
     public void setTempBuff(int targetStat, int turnLength, int targetNum)
     {
         int i = 1;
@@ -2966,6 +3170,16 @@ abstract public class OpalScript : MonoBehaviour {
         handleTempBuffs(false);
     }
 
+    public void clearBuffs(int target)
+    {
+        foreach (TempBuff t in buffs)
+        {
+            if(t.getTargetStat() == target)
+                t.clearStat();
+        }
+        handleTempBuffs(false);
+    }
+
     public TempBuff doTempBuff(int ts, int tl, int a, bool effect)
     {
         if (a > 0)
@@ -2984,6 +3198,7 @@ abstract public class OpalScript : MonoBehaviour {
         handleTempBuffs(false);
         return temp;
     }
+
 
     public TempBuff doTempBuff(int ts,int tl,int a)
     {
@@ -3061,5 +3276,45 @@ abstract public class OpalScript : MonoBehaviour {
             revealed = r;
         }
     }
+
+    public class Enchantment
+    {
+        string name;
+        int value;
+        int maxValue;
+
+        public Enchantment(string n, int v, int m)
+        {
+            name = n;
+            value = v;
+            maxValue = m;
+        }
+
+        public void setName(string n)
+        {
+            name = n;
+        }
+
+        public string getName()
+        {
+            return name;
+        }
+
+        public int getValue()
+        {
+            return value;
+        }
+
+        public void setValue(int v)
+        {
+            value = v;
+            if (value > maxValue)
+                value = maxValue;
+            if (value < 0)
+                value = 0;
+        }
+
+    }
+
 
 }

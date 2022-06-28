@@ -14,7 +14,7 @@ public class Betary : OpalScript
         speed = 1;
         priority = 8;
         myName = "Betary";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.8f;
+        transform.localScale = new Vector3(3.5f, 3.5f, 1);
         offsetX = 0;
         offsetY = -0.15f;
         offsetZ = 0;

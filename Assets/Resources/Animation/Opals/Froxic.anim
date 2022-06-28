@@ -3,8 +3,9 @@
 --- !u!74 &7400000
 AnimationClip:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: Froxic
   serializedVersion: 6
   m_Legacy: 0
@@ -19,9 +20,11 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: 21300000, guid: 1597b776afa134b4280940fe76696a99, type: 3}
+      value: {fileID: -8419507489162918513, guid: 9c30f14f7f0729b42839507b00e91e63,
+        type: 3}
     - time: 0.5
-      value: {fileID: 21300002, guid: 1597b776afa134b4280940fe76696a99, type: 3}
+      value: {fileID: -4328488422851404185, guid: 9c30f14f7f0729b42839507b00e91e63,
+        type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -41,8 +44,8 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     pptrCurveMapping:
-    - {fileID: 21300000, guid: 1597b776afa134b4280940fe76696a99, type: 3}
-    - {fileID: 21300002, guid: 1597b776afa134b4280940fe76696a99, type: 3}
+    - {fileID: -8419507489162918513, guid: 9c30f14f7f0729b42839507b00e91e63, type: 3}
+    - {fileID: -4328488422851404185, guid: 9c30f14f7f0729b42839507b00e91e63, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
@@ -67,5 +70,4 @@ AnimationClip:
   m_EulerEditorCurves: []
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-  m_GenerateMotionCurves: 0
   m_Events: []

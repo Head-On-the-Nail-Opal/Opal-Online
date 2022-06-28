@@ -16,7 +16,7 @@ public class Bombat : OpalScript
         speed = 0;
         priority = 0;
         myName = "Bombat";
-        transform.localScale = new Vector3(0.3f, 0.3f, 1) * 0.8f;
+        transform.localScale = new Vector3(3.5f, 3.5f, 1);
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;

@@ -13,6 +13,7 @@ public class Attack{
     int uses = 1;
     int currentUse = 0;
     bool freeAction = false;
+    string tidalDescription = "";
 
     /**
      * Official description of attack keywords
@@ -108,5 +109,15 @@ public class Attack{
     {
         currentUse += mod;
         return currentUse;
+    }
+
+    public void setTidalD(string d)
+    {
+        tidalDescription = d;
+    }
+
+    public string getTidalD()
+    {
+        return tidalDescription;
     }
 }

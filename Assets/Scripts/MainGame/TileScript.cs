@@ -993,6 +993,23 @@ public class TileScript : MonoBehaviour {
         return currentPlayer;
     }
 
+    public List<TileScript> getSurroundingTiles(bool adj)
+    {
+        List<TileScript> output = new List<TileScript>();
+        for (int i = -1; i < 2; i++)
+        {
+            for (int j = -1; j < 2; j++)
+            {
+                //print(getPos().x + i + " " + getPos().z + j);
+                if (getPos().x + i < 10 && getPos().x + i > -1 && getPos().z + j < 10 && getPos().z + j > -1 && !(i == 0 && j == 0) && (!adj || (Mathf.Abs(i) != Mathf.Abs(j))))
+                {
+                    output.Add(boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j]);
+                }
+            }
+        }
+        return output;
+    }
+
     public void determineShape()
     {
         if (type != "Flood")
@@ -1014,7 +1031,7 @@ public class TileScript : MonoBehaviour {
                 dec *= 10;
             }
         }
-        print("(X:" + gridPos.x + ",Y:" + gridPos.y + ") = " + shape);
+        //print("(X:" + gridPos.x + ",Y:" + gridPos.y + ") = " + shape);
         changeSpriteRenderer.sprite = connectedTileSprites[18];
         connectedTile.changeSprite(shape);
     }

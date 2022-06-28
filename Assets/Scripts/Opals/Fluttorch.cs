@@ -30,7 +30,7 @@ public class Fluttorch : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Building Flame", 0, 0, 0, "<Passive>\nAt the start of Fluttorch's turn it gains one more use of Cinder Wing.");
-        Attacks[1] = new Attack("Cinder Wing", 3, 4, 0, "<Free Ability>\nFly up to four tiles in a single direction. Place Flames on the tiles you fly over. Fluttorch has [1] uses of this ability.");
+        Attacks[1] = new Attack("Cinder Wing", 3, 4, 0, "<Free Ability>\nFly up to three tiles in a single direction. Place Flames on the tiles you fly over. Fluttorch has [1] uses of this ability.");
         Attacks[1].setFreeAction(true);
         Attacks[2] = new Attack("Healing Warmth", 2, 4, 0, "Heal a target by 3. Give them +2 attack and +1 speed for 1 turn. If you're standing in Flame, double this effect.");
         Attacks[3] = new Attack("Dragon's Breath",2,4,0, "Give a target burn and lift. If you're standing in Flame, deal 6 damage and push them back by 2 tiles.");

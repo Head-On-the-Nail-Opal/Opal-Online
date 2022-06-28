@@ -153,7 +153,11 @@ public class Teslamp : OpalScript
         {
             return 0;
         }
-        if (target.currentPlayer != null)
+        if (target.currentPlayer != null && attackNum == 3)
+        {
+            return 0;
+        }
+        if (target.currentPlayer != null && attackNum == 0 && target.type != "Grass")
         {
             return 0;
         }
