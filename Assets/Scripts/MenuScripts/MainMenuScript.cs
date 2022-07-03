@@ -41,6 +41,7 @@ public class MainMenuScript : MonoBehaviour {
     public OpalDisplay opletDisplay;
     public OpalDisplay selectionDisplay;
     private TeamDisplay teamDisplay;
+    private GameObject opalPlate;
     private bool opletBool = false;
     private int numTeams = 2;
     private int numOpals = 4;
@@ -88,6 +89,7 @@ public class MainMenuScript : MonoBehaviour {
         platePrefab = Resources.Load<PlateScript>("Prefabs/OpalPlate");
         teamDisplay = Resources.Load<TeamDisplay>("Prefabs/TeamDisplay");
         itemLabelPrefab = Resources.Load<ItemLabel>("Prefabs/ItemThing");
+        opalPlate = Resources.Load<GameObject>("Prefabs/OpalPlate2");
         glob = GameObject.Find("GlobalObject").GetComponent<GlobalScript>();
         mm = GameObject.Find("MultiplayerManager").GetComponent<MultiplayerManager>();
         lPage = GameObject.Find("LastPage");
@@ -1383,7 +1385,9 @@ public class MainMenuScript : MonoBehaviour {
 
     public void displayOpal(OpalScript o)
     {
+        o.gameObject.SetActive(true);
         selectionDisplay.setCurrentOpal(o);
+        
         if (o != null)
         {
             personalityTracker.text = "Current Personality\n" + o.getPersonality() + "\n" + getPersonalityStats(o.getPersonality());

@@ -112,6 +112,9 @@ public class MenuButtonScript : MonoBehaviour {
         }else if(purpose == "teams")
         {
             main.displayOpal(null, true);
+        }else if(purpose == "teamdetails")
+        {
+            mainCam.transform.position = target;
         }
         else if (purpose == "incTeam")
         {

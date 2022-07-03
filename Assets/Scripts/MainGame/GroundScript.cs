@@ -54,6 +54,7 @@ public class GroundScript : MonoBehaviour {
     private GameObject chargeLightning;
     private ParticleSystem chargeEffect;
     private List<GameObject> charges = new List<GameObject>();
+    private GameObject opalPlate2;
     private GameObject bluePlate;
     private GameObject redPlate;
     private GameObject greenPlate;
@@ -121,6 +122,8 @@ public class GroundScript : MonoBehaviour {
         bluePlate = Resources.Load<GameObject>("Prefabs/BluePlate");
         greenPlate = Resources.Load<GameObject>("Prefabs/GreenPlate");
         orangePlate = Resources.Load<GameObject>("Prefabs/OrangePlate");
+
+        opalPlate2 = Resources.Load<GameObject>("Prefabs/OpalPlate2");
 
         debuffEffect = Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/DebuffEffect");
 
@@ -988,8 +991,11 @@ public class GroundScript : MonoBehaviour {
             gameOpals.RemoveAt(num);
             gameOpals.Insert(0,myCursor.getCurrentOpal());
         }
+        int indent = 0;
         foreach (OpalScript o in gameOpals)
         {
+            if (i / 150f > 5)
+                break;
             if (gameWon)
                 return;
             if (!o.getDead() && !alreadyMoved.Contains(o.getID())) 
@@ -999,32 +1005,38 @@ public class GroundScript : MonoBehaviour {
                 opalTurns.Add(temp);
                 temp.healStatusEffects();
                 temp.doHighlight();
-                temp.transform.localPosition = new Vector3(835, 425 - i,0);
-                temp.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
-                temp.transform.localScale = new Vector3(100*temp.transform.localScale.x, 100 * temp.transform.localScale.y, 1);
-                GameObject pl;
-                if(o.getTeam() == "Red")
+                if (indent == 0)
                 {
-                    pl = Instantiate<GameObject>(redPlate,temp.transform);
-                    pl.transform.position = new Vector3(pl.transform.position.x, pl.transform.position.y - 0.00001f, pl.transform.position.z);
-                }
-                else if(o.getTeam() == "Blue")
-                {
-                    pl = Instantiate<GameObject>(bluePlate, temp.transform);
-                    pl.transform.position = new Vector3(pl.transform.position.x, pl.transform.position.y - 0.00001f, pl.transform.position.z);
-                }
-                else if (o.getTeam() == "Green")
-                {
-                    pl = Instantiate<GameObject>(greenPlate, temp.transform);
-                    pl.transform.position = new Vector3(pl.transform.position.x, pl.transform.position.y - 0.00001f, pl.transform.position.z);
+                    temp.transform.localPosition = new Vector3(862.5f, 442.5f - i * 0.96f, 0);
+                    indent++;
                 }
                 else
                 {
-                    pl = Instantiate<GameObject>(orangePlate, temp.transform);
-                    pl.transform.position = new Vector3(pl.transform.position.x, pl.transform.position.y - 0.00001f, pl.transform.position.z);
+                    temp.transform.localPosition = new Vector3(878, 283 - (i-150f) * 0.96f, 0);
+                }
+                temp.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
+                temp.transform.localScale = new Vector3(100*temp.transform.localScale.x, 100 * temp.transform.localScale.y, 1);
+                GameObject pl = Instantiate<GameObject>(opalPlate2, temp.transform);
+                pl.transform.position = new Vector3(pl.transform.position.x, pl.transform.position.y - 0.00001f, pl.transform.position.z);
+                if (o.getTeam() == "Red")
+                {
+                    pl.GetComponent<SpriteRenderer>().color = new Color(1, 0.2f, 0.2f);
+
+                }
+                else if(o.getTeam() == "Blue")
+                {
+                    pl.GetComponent<SpriteRenderer>().color = new Color(0.2f, 0.2f, 1); 
+                }
+                else if (o.getTeam() == "Green")
+                {
+                    pl.GetComponent<SpriteRenderer>().color = new Color(1, 0.2f, 0.2f); 
+                }
+                else
+                {
+                    pl.GetComponent<SpriteRenderer>().color = new Color(1, 0.4f, 0f);
                 }
                 pl.transform.localScale /= temp.transform.lossyScale.x;
-                pl.transform.localScale *= 0.8f;
+                pl.transform.localScale *= 5f;
                 pl.AddComponent<TurnHighlighter>();
                 pl.AddComponent<BoxCollider2D>();
                 pl.GetComponent<TurnHighlighter>().setUp(this, o.getID());

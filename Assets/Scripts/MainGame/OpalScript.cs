@@ -3205,6 +3205,96 @@ abstract public class OpalScript : MonoBehaviour {
         return doTempBuff(ts, tl, a, true);
     }
 
+    public Color getColorFromType(string type, bool first)
+    {
+        Color projColor = Color.white;
+        if (type == "Grass")
+        {
+            if (first)
+                return new Color(7 / 255f, 200 / 255f, 0);
+            return new Color(9 / 255f, 255 / 255f, 0);
+        }
+        else if (type == "Fire")
+        {
+            if (first)
+                return new Color(219 / 255f, 11 / 255f, 0);
+            return new Color(255 / 255f, 136 / 255f, 0);
+        }
+        else if (type == "Water")
+        {
+            if (first)
+                return new Color(0, 77 / 255f, 219 / 255f);
+            return new Color(0, 212 / 255f, 245 / 255f);
+        }
+        else if (type == "Light")
+        {
+            if (first)
+                return new Color(255 / 255f, 255 / 255f, 255 / 255f);
+            return new Color(255 / 255f, 254 / 255f, 240 / 255f);
+        }
+        else if (type == "Dark")
+        {
+            if (first)
+                return new Color(0, 0, 0);
+            return new Color(25 / 255f, 0, 71 / 255f);
+        }
+        else if (type == "Plague")
+        {
+            if (first)
+                return new Color(78 / 255f, 0, 22 / 255f);
+            return new Color(141 / 255f, 0, 222 / 255f);
+        }
+        else if (type == "Air")
+        {
+            if (first)
+                return new Color(255 / 255f, 251 / 255f, 201 / 255f);
+            return new Color(224 / 255f, 255 / 255f, 253 / 255f);
+        }
+        else if (type == "Ground")
+        {
+            if (first)
+                return new Color(235 / 255f, 121 / 255f, 0);
+            return new Color(89 / 255f, 66 / 255f, 42 / 255f);
+        }
+        else if (type == "Void")
+        {
+            if (first)
+                return new Color(105 / 255f, 105 / 255f, 105 / 255f);
+            return new Color(200 / 255f, 200 / 255f, 200 / 255f);
+        }
+        else if (type == "Metal")
+        {
+            if (first)
+                return new Color(191 / 255f, 182 / 255f, 163 / 255f);
+            return new Color(163 / 255f, 191 / 255f, 182 / 255f);
+        }
+        else if (type == "Electric")
+        {
+            if (first)
+                return new Color(255 / 255f, 255 / 255f, 102 / 255f);
+            return new Color(255 / 255f, 255 / 255f, 204 / 255f);
+        }
+        else if (type == "Laser")
+        {
+            if (first)
+                return new Color(255 / 255f, 0 / 255f, 0 / 255f);
+            return new Color(200 / 255f, 0 / 255f, 0 / 255f);
+        }
+        else if (type == "Swarm")
+        {
+            if (first)
+                return new Color(184 / 255f, 109 / 255f, 39 / 255f);
+            return new Color(149 / 255f, 166 / 255f, 36 / 255f);
+        }
+        else if (type == "Spirit")
+        {
+            if (first)
+                return new Color(157 / 255f, 0 / 255f, 166 / 255f);
+            return new Color(98 / 255f, 0 / 255f, 143 / 255f);
+        }
+        return projColor;
+    }
+
     public class TempBuff
     {
         //0 is attack, 1 is defense, 2 is speed
