@@ -14,7 +14,7 @@ public class Dunglet : OpalScript
         speed = 4;
         priority = 3;
         myName = "Dunglet";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.7f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1.2f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -27,10 +27,10 @@ public class Dunglet : OpalScript
         offsetY = -0.1f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Drop Off", 1, 0, 0, "Lose -1 attack and place a boulder. If your attack is less than one, do nothing instead.");
-        Attacks[1] = new Attack("Reclaim", 1, 1, 0, "Break a boulder and gain +1 attack.");
-        Attacks[2] = new Attack("Gather", 0, 1, 0, "If next to Excremite then gain +3 attack");
-        Attacks[3] = new Attack("Assist", 1, 1, 0, "Give target +1 attack and +3 defense. Lose -1 attack.");
+        Attacks[0] = new Attack("Drop Off", 1, 0, 0, "Lose -1 attack and place a boulder. If your attack is less than one, do nothing instead.",0,3);
+        Attacks[1] = new Attack("Reclaim", 1, 1, 0, "Break a boulder and gain +1 attack.",0,3);
+        Attacks[2] = new Attack("Gather", 0, 1, 0, "If next to Excremite then gain +3 attack",0,3);
+        Attacks[3] = new Attack("Assist", 1, 1, 0, "Give target +1 attack and +3 defense. Lose -1 attack.",0,3);
         type1 = "Ground";
         type2 = "Swarm";
     }

@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 1578826983895396}
   m_LocalRotation: {x: 0, y: -0.38268343, z: 0, w: 0.92387956}
   m_LocalPosition: {x: 0, y: 0.5, z: 0}
-  m_LocalScale: {x: 0.14, y: 0.14, z: 0.7}
+  m_LocalScale: {x: 3, y: 3, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -79,7 +79,7 @@ SpriteRenderer:
   m_Size: {x: 2.64, y: 4.46}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!95 &95876563722764494
@@ -92,7 +92,7 @@ Animator:
   m_GameObject: {fileID: 1578826983895396}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 1e0956dc31e1434428160aaa18ed7f30, type: 2}
+  m_Controller: {fileID: 9100000, guid: 4bd1a6174c8f4ee489840977f17c4b63, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -119,4 +119,11 @@ MonoBehaviour:
   evolvesInto: []
   evolvesFrom: []
   defaultStage: 1
-  deadSprite: {fileID: 21300000, guid: f27b13faafd300745a1c1bbec69520d9, type: 3}
+  attackFrame: {fileID: 3644289421095941790, guid: 76e491e124ae8b5429e16041dea58f24,
+    type: 3}
+  hurtFrame: {fileID: 5747121022845913232, guid: 76e491e124ae8b5429e16041dea58f24,
+    type: 3}
+  myBoulders: {fileID: 0}
+  isCorpse: 0
+  deadSprite: {fileID: -4317854613082655574, guid: 76e491e124ae8b5429e16041dea58f24,
+    type: 3}

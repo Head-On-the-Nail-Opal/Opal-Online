@@ -12,6 +12,7 @@ public class Projectile : MonoBehaviour{
     int r = 0;
     CursorScript cs;
     ParticleSystem hurtParticle;
+    float speed = 1;
 
     /**
      * Shape state
@@ -186,15 +187,19 @@ public class Projectile : MonoBehaviour{
         rainbow = true;
     }
 
+    public void setSpeed(float s)
+    {
+        speed = s;
+    }
+
     private IEnumerator shoot(OpalScript from, OpalScript target, int attackNum)
     {
-        float speed = 1;
         foreach (TileScript t in from.getSurroundingTiles(true))
         {
             if(t.currentPlayer == target)
             {
                 shape = 0;
-                speed = 5;
+                speed += 4;
             }
         }
         Vector3 mine = transform.position;
@@ -222,6 +227,7 @@ public class Projectile : MonoBehaviour{
                     tempProj.GetComponent<Renderer>().material.color = secondCol;
                 }
                 tempProj.setHead(false);
+                tempProj.setSpeed(speed);
                 tempProj.fire(from, target, attackNum);
             }
             transform.position = mine;
@@ -249,8 +255,8 @@ public class Projectile : MonoBehaviour{
         int i = 0;
         while (transform.position.x < theirs.x - 0.1f || transform.position.z < theirs.z - 0.1f || transform.position.x > theirs.x + 0.1f || transform.position.z > theirs.z + 0.1f)
         {
-            mine.x -= xdiff / 30;
-            mine.z -= zdiff / 30;
+            mine.x -= xdiff / 30 * speed;
+            mine.z -= zdiff / 30 * speed;
             if (shape == 1 || shape == 5)
             {
                 mine.y += 0.01f * (12 - i);
@@ -268,6 +274,7 @@ public class Projectile : MonoBehaviour{
                     tempProj.GetComponent<Renderer>().material.color = secondCol;
                 }
                 tempProj.setHead(false);
+                tempProj.setSpeed(speed);
                 tempProj.fire(from, target, attackNum);
             }
             transform.position = mine;

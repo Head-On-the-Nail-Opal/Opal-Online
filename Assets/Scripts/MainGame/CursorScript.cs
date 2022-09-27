@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class CursorScript : MonoBehaviour {
     public Camera orthoCam;
@@ -53,6 +54,8 @@ public class CursorScript : MonoBehaviour {
     private string lastCommand = "";
     private bool animating = false;
     private bool toggleShift = false;
+    private int shiftCooldown = 0;
+    private int maxShiftCooldown = 10;
     private bool tSkull = false;
 
     private Coroutine currentHighlight;
@@ -72,7 +75,7 @@ public class CursorScript : MonoBehaviour {
         targeter = Resources.Load<Target>("Prefabs/Targeter");
         warningPrefab = Resources.Load<GameObject>("Prefabs/Warning");
         placing = true;
-        currentProj = Resources.Load<Projectile>("Prefabs/ParticleProjectile");
+        currentProj = Resources.Load<Projectile>("Prefabs/Abilities/DefaultParticleProjectile");
         Cursor.visible = false;
         ts.enableTileScreen(false, "", -1);
         if(boardScript.getMult())
@@ -216,8 +219,31 @@ public class CursorScript : MonoBehaviour {
                     nextTurn();
                 }
             }
+
+            if(currentController == "AI" && roundNum == 0)
+            {
+                List<TileScript> myStart = new List<TileScript>();
+                foreach(TileScript t in boardScript.tileGrid)
+                {
+                    if (t.getTeam() == selectedPlayer.getTeam() && t.currentPlayer == null)
+                        myStart.Add(t);
+                }
+                TileScript temp = myStart[Random.Range(0,myStart.Count)];
+                myPos = temp.getPos();
+
+                if (boardScript.getMult())
+                {
+                    boardScript.getMM().sendMultiplayerData("place," + selectedPlayer.getMyName() + "," + (int)myPos.x + "," + (int)myPos.z + "," + currentOnlinePlayer);
+                }
+                selectedPlayer.setPos((int)myPos.x, (int)myPos.z);
+                selectedPlayer.setMyTurn(false);
+                selectedPlayer.updateTile();
+                selectedPlayer.getCurrentTile().standingOn(selectedPlayer);
+                nextTurn();
+            }
             return;
         }
+
 
         //End Turn
         if ((((Input.GetKeyDown(KeyCode.Return) && currentController == "keyboard") || ((currentController == "joystick 1" || currentController == "joystick 2" || currentController == "joystick 3" || currentController == "joystick 4") && Input.GetButtonUp("RBump" + addon)))) && (!boardScript.getMult() || boardScript.getOnlineTeam() == currentOnlinePlayer))
@@ -469,10 +495,14 @@ public class CursorScript : MonoBehaviour {
             ts.updateAttackScreen(selectedPlayer, attacking, boardScript.tileGrid[(int)myPos.x, (int)myPos.z]);
         }
 
-        if ((Input.GetKeyDown(KeyCode.LeftShift) && currentController == "keyboard") || (Input.GetButton("LBump" + addon) && (currentController == "joystick 1" || currentController == "joystick 2" || currentController == "joystick 3" || currentController == "joystick 4")))
+        if (shiftCooldown > 0)
+            shiftCooldown--;
+        if (shiftCooldown == 0 && (Input.GetKeyDown(KeyCode.LeftShift) && currentController == "keyboard") || (Input.GetButton("LBump" + addon) && (currentController == "joystick 1" || currentController == "joystick 2" || currentController == "joystick 3" || currentController == "joystick 4")))
         {
+            shiftCooldown = maxShiftCooldown;
             if (!toggleShift)
             {
+
                 ts.checkBuffs(selectedPlayer, tileFrom.currentPlayer);
                 if (attacking == -1)
                     ts.displayAttacks(selectedPlayer, tileFrom.currentPlayer);
@@ -496,7 +526,13 @@ public class CursorScript : MonoBehaviour {
             }
             else
             {
-                ts.displayAttacks(null, null);
+                if (attacking == -1)
+                    ts.displayAttacks(null, null);
+                else
+                {
+                    ts.displayAttacks(null, null);
+                    ts.updateAttackScreen(selectedPlayer, attacking, tileFrom);
+                }
                 ts.disableBuffs(selectedPlayer, tileFrom.currentPlayer);
                 foreach (OpalScript o in boardScript.gameOpals)
                 {
@@ -660,8 +696,14 @@ public class CursorScript : MonoBehaviour {
                                 boardScript.getMM().sendMultiplayerData("attack," + currentOnlinePlayer + "," + t.getTile().getPos().x + "," + t.getTile().getPos().z + "," + attacking);
                                 lastCommand = "attack," + currentOnlinePlayer + "," + t.getTile().getPos().x + "," + t.getTile().getPos().z + "," + attacking;
                             }
-                            if(!boardScript.getResetting())
-                                StartCoroutine(selectedPlayer.doAttackAnim(target, this, attacking, currentProj));
+                            if (!boardScript.getResetting())
+                            {
+                                if (selectedPlayer.Attacks[attacking].getProj() != null)
+                                    StartCoroutine(selectedPlayer.doAttackAnim(target, this, attacking, projToProjectile(selectedPlayer.Attacks[attacking].getProj())));
+                                else
+                                    StartCoroutine(selectedPlayer.doAttackAnim(target, this, attacking, currentProj));
+                                
+                            }
                             //Projectile tempProj = Instantiate(currentProj);
                             //tempProj.setUp(selectedPlayer.getAttacks()[attacking].getShape(),  selectedPlayer.getMainType());
                             //selectedPlayer.adjustProjectile(tempProj, attacking);
@@ -684,7 +726,13 @@ public class CursorScript : MonoBehaviour {
                                 lastCommand = "attack," + currentOnlinePlayer + "," + t.getTile().getPos().x + "," + t.getTile().getPos().z + "," + attacking;
                             }
                             if (!boardScript.getResetting())
-                                StartCoroutine(selectedPlayer.doAttackAnim(t.getTile(), this, attacking, currentProj));
+                            {
+                                if (selectedPlayer.Attacks[attacking].getProj() != null)
+                                    StartCoroutine(selectedPlayer.doAttackAnim(t.getTile(), this, attacking, projToProjectile(selectedPlayer.Attacks[attacking].getProj())));
+                                else
+                                    StartCoroutine(selectedPlayer.doAttackAnim(t.getTile(), this, attacking, currentProj));
+
+                            }
                             //Projectile tempProj = Instantiate(currentProj);
                             //tempProj.setUp(selectedPlayer.getAttacks()[attacking].getShape(), selectedPlayer.getMainType());
                             //selectedPlayer.adjustProjectile(tempProj, attacking);
@@ -965,6 +1013,7 @@ public class CursorScript : MonoBehaviour {
         foreach (TileScript t in boardScript.tileGrid)
         {
             clearGhosts(t);
+            t.updateConnection();
         }
         selectedPlayer.setMyTurn(true);
         selectedPlayer.StartOfTurn();
@@ -1104,7 +1153,15 @@ public class CursorScript : MonoBehaviour {
             return;
         }
         selectedPlayer.prepAttack(at);
-        Projectile tempProj = Instantiate(currentProj);
+
+
+        Projectile tempProj;
+        
+        if(selectedPlayer.Attacks[at].getProj() != null)
+            tempProj = projToProjectile(selectedPlayer.Attacks[at].getProj());
+        else
+            tempProj= Instantiate(currentProj);
+
         tempProj.setUp(selectedPlayer.getAttacks()[at].getShape(), selectedPlayer.getMainType());
         selectedPlayer.adjustProjectile(tempProj, at);
         if (boardScript.tileGrid[x, y].currentPlayer != null)
@@ -1133,7 +1190,13 @@ public class CursorScript : MonoBehaviour {
             return;
         }
         updatedPlayer.prepAttack(at);
-        Projectile tempProj = Instantiate(currentProj);
+        Projectile tempProj;
+
+        if (selectedPlayer.Attacks[at].getProj() != null)
+            tempProj = Instantiate(projToProjectile(selectedPlayer.Attacks[at].getProj()));
+        else
+            tempProj = Instantiate(currentProj);
+
         tempProj.setUp(updatedPlayer.getAttacks()[at].getShape(), updatedPlayer.getMainType());
         updatedPlayer.adjustProjectile(tempProj, at);
         if (boardScript.tileGrid[x, y].currentPlayer != null)
@@ -1621,6 +1684,11 @@ public class CursorScript : MonoBehaviour {
         return selectedPlayer;
     }
 
+    public string getCurrentController()
+    {
+        return currentController;
+    }
+
     public int getDistance()
     {
         return distance;
@@ -1655,7 +1723,55 @@ public class CursorScript : MonoBehaviour {
         nextTurn();
     }
 
-    private List<Vector2> Astar(Vector2 start, Vector2 end)
+    private Projectile projToProjectile(List<AbilityProj> p)
+    {
+        Projectile output = Instantiate<Projectile>(currentProj);
+        output.transform.position = new Vector3(-100, -100, -100);
+
+        if(p.Count > 0)
+        {
+            Destroy(output.GetComponent<ParticleSystem>());
+            foreach(AbilityProj a in p)
+            {
+                ParticleSystem temp = Instantiate<ParticleSystem>(Resources.Load<ParticleSystem>("Prefabs/Abilities/Projectiles/" + a.shapeName), output.transform);
+
+                ParticleSystemRenderer psr = temp.GetComponent<ParticleSystemRenderer>();
+                ParticleSystem.MainModule main = temp.GetComponent<ParticleSystem>().main;
+
+                psr.material = Resources.Load<Material>("Prefabs/Abilities/Particles/"+a.particleName);
+
+                main.startSize = a.particleMultiplier;
+
+                if (a.clr2 == null)
+                    main.startColor = a.clr;
+                else
+                {
+                    Gradient g = new Gradient();
+
+                    GradientColorKey a1 = new GradientColorKey();
+                    a1.color = a.clr;
+                    a1.time = 0;
+
+                    GradientColorKey a2 = new GradientColorKey();
+                    a2.color = a.clr2;
+                    a2.time = 1;
+
+                    GradientColorKey[] gcks = new GradientColorKey[] {a1, a2};
+                    GradientAlphaKey[] gaks = new GradientAlphaKey[] { };
+
+                    g.SetKeys(gcks, gaks);
+                    main.startColor = g;
+                }
+
+                output.setSpeed(a.speed);
+            }
+        }
+
+        return output;
+    }
+
+
+    public List<Vector2> Astar(Vector2 start, Vector2 end)
     {
         int attemptCounter = 0;
 

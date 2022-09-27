@@ -121,6 +121,7 @@ public class OpalTeam : MonoBehaviour
 
     private void displayPal(bool show)
     {
+        return;
         if(actualPalPlate == null)
         {
             actualPalPlate = Instantiate<GameObject>(palPlate, transform);
@@ -133,7 +134,8 @@ public class OpalTeam : MonoBehaviour
 
     private void destroyPal()
     {
-        Destroy(actualPalPlate.gameObject);
+        if(actualPalPlate != null)
+            Destroy(actualPalPlate.gameObject);
     }
 
     private void OnMouseUp()

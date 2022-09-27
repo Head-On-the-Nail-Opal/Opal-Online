@@ -410,11 +410,15 @@ public class GroundScript : MonoBehaviour {
         {
             for (int j = 0; j < 10; j++)
             {
-                TileScript temp;
+                TileScript temp = Instantiate<TileScript>(tilePrefab);
                 if ((int)(i + j) % 2 == 0)
-                    temp = Instantiate<TileScript>(tilePrefab);
+                {
+                    //light color
+                }
                 else
-                    temp = Instantiate<TileScript>(tilePrefab2);
+                {
+                    //dark color
+                }
                 temp.transform.SetParent(GameBoard);
                 temp.setCoordinates(i , j);
                 if (i != 10 && j != 10)
@@ -422,7 +426,13 @@ public class GroundScript : MonoBehaviour {
                     tileGrid[i, j] = temp;
                     temp.toggleStarting();
                 }
+                
             }
+        }
+        foreach(TileScript t in tileGrid)
+        {
+            t.updateConnection();
+            t.setRandomDecor();
         }
         sortOpals(gameOpals);
         nonSortedGameOpals.AddRange(gameOpals);
@@ -717,7 +727,7 @@ public class GroundScript : MonoBehaviour {
             if ((int)(x + y) % 2 == 0)
                 tempTile = Instantiate<TileScript>(tilePrefab);
             else
-                tempTile = Instantiate<TileScript>(tilePrefab2);
+                tempTile = Instantiate<TileScript>(tilePrefab);
             tempTile.transform.SetParent(GameBoard);
             tempTile.setCoordinates(x, y);
             tileGrid[x, y] = tempTile;
@@ -735,7 +745,8 @@ public class GroundScript : MonoBehaviour {
                 }
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
-                tempTile = Instantiate<TileScript>(fireTilePrefab);
+                tempTile = Instantiate<TileScript>(tilePrefab);
+                tempTile.type = "Fire";
                 tempTile.transform.SetParent(GameBoard);
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
@@ -750,7 +761,8 @@ public class GroundScript : MonoBehaviour {
             {
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
-                tempTile = Instantiate<TileScript>(miasmaTilePrefab);
+                tempTile = Instantiate<TileScript>(tilePrefab);
+                tempTile.type = "Miasma";
                 tempTile.transform.SetParent(GameBoard);
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
@@ -765,11 +777,13 @@ public class GroundScript : MonoBehaviour {
             {
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
-                tempTile = Instantiate<TileScript>(growthTilePrefab);
+                tempTile = Instantiate<TileScript>(tilePrefab);
+                tempTile.type = "Growth";
                 tempTile.transform.SetParent(GameBoard);
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
                 tempTile.standingOn(standing);
+                
                 if (standing != null)
                     standing.setCurrentTile(tempTile);
             }
@@ -780,7 +794,8 @@ public class GroundScript : MonoBehaviour {
             {
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
-                tempTile = Instantiate<TileScript>(floodTilePrefab);
+                tempTile = Instantiate<TileScript>(tilePrefab);
+                tempTile.type = "Flood";
                 tempTile.transform.SetParent(GameBoard);
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
@@ -854,6 +869,14 @@ public class GroundScript : MonoBehaviour {
                 }
             }
         }
+
+        tempTile.updateConnection();
+        tempTile.setRandomDecor();
+        foreach (TileScript t in tempTile.getSurroundingTiles(false))
+        {
+            t.updateConnection();
+        }
+
         foreach (string c in tileCharm)
         {
             if(c != "" && c != "None" && tileGrid[x,y] != replaced)
@@ -1133,6 +1156,13 @@ public class GroundScript : MonoBehaviour {
         OpalScript opalTwo = Instantiate<OpalScript>(b);
         opalTwo.setOpal(myCursor.getCurrentOpal().getTeam());
         opalTwo.setPos((int)target.getPos().x, (int)target.getPos().z);
+        if (myCursor.getCurrentOpal().myBoulders != null)
+        {
+            opalTwo.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+            opalTwo.GetComponent<SpriteRenderer>().enabled = true;
+            opalTwo.GetComponent<SpriteRenderer>().sprite = myCursor.getCurrentOpal().myBoulders;
+            opalTwo.transform.localScale = new Vector3(3, 3, 1);
+        }
         //opalTwo.transform.localPosition = new Vector3(opalTwo.transform.localPosition.x + 0.3f, opalTwo.transform.localPosition.y - 0.1f, opalTwo.transform.localPosition.z - 0.3f);
         opalTwo.setCurrentTile(target);
         target.standingOn(opalTwo);
@@ -1198,5 +1228,32 @@ public class GroundScript : MonoBehaviour {
     {
         //print(myCursor.getMoving());
         tileGrid[x, z].setRed(red, myCursor.getMoving());
+    }
+
+    public IEnumerator screenShake(int intensity, int length)
+    {
+        Camera target = Camera.main;
+        intensity *= 5;
+
+        bool up = false;
+        for (int i = 0; i < length/2 * 2; i++)
+        {
+            if (up) {
+                target.transform.position += Vector3.up * intensity * Time.deltaTime;
+                target.transform.position += Vector3.right * intensity * Time.deltaTime;
+            }
+            else {
+                target.transform.position -= Vector3.up * intensity * Time.deltaTime;
+                target.transform.position -= Vector3.right * intensity * Time.deltaTime;
+            }
+
+            if(i % 2 == 0)
+            {
+                up = !up;
+            }
+            yield return new WaitForFixedUpdate();
+            yield return new WaitForFixedUpdate();
+            yield return new WaitForFixedUpdate();
+        }
     }
 }

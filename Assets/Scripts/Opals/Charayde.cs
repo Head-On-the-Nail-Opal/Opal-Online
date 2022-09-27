@@ -13,7 +13,7 @@ public class Charayde : OpalScript
         speed = 3;
         priority = 3;
         myName = "Charayde";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.9f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1.2f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -27,9 +27,9 @@ public class Charayde : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Rain Wings", 0, 0, 0, "<Passive>\n Place Flood tiles down wherever you move.");
-        Attacks[1] = new Attack("Merciless Ray", 3, 4, 5, "Deal damage at range. Target loses all temporary buffs. Their current permanent buffs now last 2 turns. Charayde takes 5 damage from this ability.");
-        Attacks[2] = new Attack("Spinal Blade", 1, 3, 8, "<Water Rush>\nDeal damage, if the target is unbuffed then also heal 4 health.");
-        Attacks[3] = new Attack("Glide", 0, 1, 0, "Gain +1 speed and place Flood on adjacent tiles. Tidal: Gain +2 speed instead.");
+        Attacks[1] = new Attack("Merciless Ray", 3, 4, 5, "Deal damage at range. Target loses all temporary buffs. Their current permanent buffs now last 2 turns. Charayde takes 5 damage from this ability.",0,3);
+        Attacks[2] = new Attack("Spinal Blade", 1, 3, 8, "<Water Rush>\nDeal damage, if the target is unbuffed then also heal 4 health.",0,3);
+        Attacks[3] = new Attack("Glide", 0, 1, 0, "Gain +1 speed and place Flood on adjacent tiles. Tidal: Gain +2 speed instead.",0,3);
         Attacks[3].setTidalD("Gain +3 speed and place Flood on adjacent tiles. Tidal: Gain +1 speed instead.");
         type1 = "Water";
         type2 = "Dark";
@@ -39,6 +39,7 @@ public class Charayde : OpalScript
     {
         boardScript.setTile(x, y, "Flood", false);
         currentTile = boardScript.tileGrid[x, y];
+        StartCoroutine(playFrame("attack", 3));
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)

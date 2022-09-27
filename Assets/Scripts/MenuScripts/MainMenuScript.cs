@@ -120,6 +120,7 @@ public class MainMenuScript : MonoBehaviour {
             addNewOpal();
             glob.setFinishedGame(false); 
         }
+        setUpMenuBackground();
         //loadTeams();
     }
 
@@ -171,6 +172,24 @@ public class MainMenuScript : MonoBehaviour {
                             glob.setTeams(activeTeams[0], activeTeams[1], activeTeams[2], activeTeams[3]);
                             break;
                     }
+                    UnityEngine.SceneManagement.SceneManager.LoadScene("MainGame", UnityEngine.SceneManagement.LoadSceneMode.Single);
+                }
+            }
+            else if (waiting == 2)
+            {
+                if (activeTeams.Count > 0)
+                {
+                    glob.setMult(false);
+                    glob.setControllers("keyboard", "AI", "keyboard", "keyboard");
+                    glob.setNumPlayers(2);
+
+                    List<OpalScript> aiTeam = new List<OpalScript>();
+                    for(int i = 0; i < activeTeams[0].Count; i++)
+                    {
+                        aiTeam.Add(getRandomAIOpal());
+                    }
+
+                    glob.setTeams(aiTeam, activeTeams[0], null, null);
                     UnityEngine.SceneManagement.SceneManager.LoadScene("MainGame", UnityEngine.SceneManagement.LoadSceneMode.Single);
                 }
             }
@@ -802,6 +821,37 @@ public class MainMenuScript : MonoBehaviour {
         }
     }
 
+    private void setUpMenuBackground()
+    {
+        GameObject tempPrefab = Resources.Load<GameObject>("Prefabs/UIandMenu/TeamSelectionBackground");
+        LilOpalBox lilPrefab = Resources.Load<LilOpalBox>("Prefabs/UIandMenu/LilOpalBox");
+        for (int i = 0; i < 6; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                GameObject temp = Instantiate<GameObject>(tempPrefab);
+                temp.transform.position = new Vector3(-32.5f+2.8f*j, 3.61f - i * 1.4f, -0.5f);
+                temp.transform.localScale = new Vector3(4.4f, 4.4f, 0);
+            }
+        }
+
+        for (int i = 0; i < 6; i++)
+        {
+            LilOpalBox temp = Instantiate<LilOpalBox>(lilPrefab);
+            temp.transform.position = new Vector3(-16.875f - i * 1.5f, 4.2f, -0.51f);
+            temp.transform.localScale = new Vector3(5f, 5f, 0);
+            temp.setOpal(Resources.Load<OpalScript>("Prefabs/Opals/"+getRandomOpalName()));
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            LilOpalBox temp = Instantiate<LilOpalBox>(lilPrefab);
+            temp.transform.position = new Vector3(-24.6f, 2f - i*2.5f, -0.51f);
+            temp.transform.localScale = new Vector3(5f, 5f, 0);
+            temp.setOpal(Resources.Load<OpalScript>("Prefabs/Opals/" + getRandomOpalName()));
+        }
+    }
+
     public void addCurrentOpal()
     {
         if (selectionDisplay.getCurrentOpal() == null)
@@ -1312,9 +1362,9 @@ public class MainMenuScript : MonoBehaviour {
     public void setCurrentCharm(OpalScript op)
     {
         if (op.getCharms()[0] == null)
-            charmLabel.text = "Current Charm: None";
+            charmLabel.text = "None";
         else
-            charmLabel.text = "Current Charm: " +  op.getCharmsNames()[0];
+            charmLabel.text = "" +  op.getCharmsNames()[0];
     }
 
     public void setTeamDisplays()
@@ -1385,16 +1435,19 @@ public class MainMenuScript : MonoBehaviour {
 
     public void displayOpal(OpalScript o)
     {
-        o.gameObject.SetActive(true);
-        selectionDisplay.setCurrentOpal(o);
+        if (o != null)
+        {
+            o.gameObject.SetActive(true);
+            selectionDisplay.setCurrentOpal(o);
+        }
         
         if (o != null)
         {
-            personalityTracker.text = "Current Personality\n" + o.getPersonality() + "\n" + getPersonalityStats(o.getPersonality());
+            personalityTracker.text = "" + o.getPersonality() + "\n" + getPersonalityStats(o.getPersonality());
             if (o.getCharmsNames().Count == 0 || o.getCharmsNames()[0] == "None")
-                charmLabel.text = "Current Charm: None";
+                charmLabel.text = "None";
             else
-                charmLabel.text = "Current Charm: " + o.getCharmsNames()[0];
+                charmLabel.text = "" + o.getCharmsNames()[0];
         }
 
     }
@@ -1595,7 +1648,7 @@ public class MainMenuScript : MonoBehaviour {
         currentEditorTeam = teamNum;
         displayOpal(opals[0], true);
     }
-
+  
     public void deleteTeam(OpalTeam oT, int teamNum)
     {
         teams.RemoveAt(teamNum);
@@ -1652,7 +1705,7 @@ public class MainMenuScript : MonoBehaviour {
         }
         else if (int.Parse(pAttack) < 0)
         {
-            secondhalf = pAttack + " attack.";
+            secondhalf = pAttack + " attack ";
         }
 
         if (int.Parse(pDefense) > 0)
@@ -1661,7 +1714,7 @@ public class MainMenuScript : MonoBehaviour {
         }
         else if (int.Parse(pDefense) < 0)
         {
-            secondhalf += pDefense + " defense.";
+            secondhalf += pDefense + " defense ";
         }
 
         if (int.Parse(pSpeed) > 0)
@@ -1670,7 +1723,7 @@ public class MainMenuScript : MonoBehaviour {
         }
         else if (int.Parse(pSpeed) < 0)
         {
-            secondhalf = pSpeed + " speed.";
+            secondhalf = pSpeed + " speed ";
         }
 
         if (int.Parse(pPriority) > 0)
@@ -1679,7 +1732,7 @@ public class MainMenuScript : MonoBehaviour {
         }
         else if (int.Parse(pPriority) < 0)
         {
-            secondhalf = pPriority + " priority.";
+            secondhalf = pPriority + " priority ";
         }
         return firsthalf + secondhalf;
 
@@ -1687,7 +1740,7 @@ public class MainMenuScript : MonoBehaviour {
 
     public void setNextPersonality(bool reverse)
     {
-        print("du hello");
+
         if (!reverse)
         {
             personalityNum++;
@@ -1707,7 +1760,7 @@ public class MainMenuScript : MonoBehaviour {
         string[] temp = personalities[personalityNum].Split(';');
         string pName = temp[0];
         string stats = temp[1];
-        personalityTracker.text = "Current Personality\n" + pName + "\n" + getPersonalityStats(pName);
+        personalityTracker.text = "" + pName + "\n" + getPersonalityStats(pName);
         if (viewedOpal == null)
             return;
         viewedOpal.setPersonality(pName);
@@ -1732,15 +1785,21 @@ public class MainMenuScript : MonoBehaviour {
 
     public void updateTeamsText()
     {
-        if(waiting == -1 && chooseTeamsText.text != "Teams")
+        if (waiting == -1 && chooseTeamsText.text != "Teams")
         {
             chooseTeamsText.text = "Teams";
-        }else if(waiting == 0 && chooseTeamsText.text != "Choose 1 team!")
+        }
+        else if (waiting == 0 && chooseTeamsText.text != "Choose 1 team!")
         {
             chooseTeamsText.text = "Choose 1 team!";
-        }else if(waiting == 1 && chooseTeamsText.text != "Choose " + (2 - activeTeams.Count) + " teams!")
+        }
+        else if (waiting == 1 && chooseTeamsText.text != "Choose " + (2 - activeTeams.Count) + " teams!")
         {
-            chooseTeamsText.text = "Choose "+(2-activeTeams.Count)+" teams!";
+            chooseTeamsText.text = "Choose " + (2 - activeTeams.Count) + " teams!";
+        }
+        else if (waiting == 2 && chooseTeamsText.text != "Choose 1 team!")
+        {
+            chooseTeamsText.text = "Choose 1 team!";
         }
     }
 
@@ -1779,6 +1838,12 @@ public class MainMenuScript : MonoBehaviour {
     {
         activeTeams.Clear();
         waiting = 0;
+    }
+
+    public void startLocalAI()
+    {
+        activeTeams.Clear();
+        waiting = 2;
     }
 
     private void populateOpalScreen()
@@ -1968,5 +2033,15 @@ public class MainMenuScript : MonoBehaviour {
         reader.Close();
         loadTeams();
         populateOpalScreen();
+    }
+
+    public OpalScript getRandomAIOpal()
+    {
+        return Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/Ambush"));
+    }
+
+    private string getRandomOpalName()
+    {
+        return allOpals[Random.Range(0,allOpals.Length)].getMyName();
     }
 }

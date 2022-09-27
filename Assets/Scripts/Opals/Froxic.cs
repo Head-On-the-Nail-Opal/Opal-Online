@@ -16,7 +16,7 @@ public class Froxic : OpalScript
         speed = 2;
         priority = 9;
         myName = "Froxic";
-        transform.localScale = new Vector3(2f, 2f, 2) * 1.1f;
+        transform.localScale = new Vector3(3f, 3f, 2) * 1f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -30,10 +30,10 @@ public class Froxic : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Contaminate", 0, 0, 0, "<Passive>\nWhen Froxic takes damage, poison all Opals in the same body of water as it.");
-        Attacks[1] = new Attack("Secretion", 1, 3, 0, "<Water Rush>\nGive target +3 attack and +4 defense for 1 turn. Also heal them by 4. Has one more use for each teammate currently poisoned.");
-        Attacks[2] = new Attack("Neurotoxin", 1, 3, 0, "<Water Rush>\nIncrease target's poison damage by 3. Tidal: By 5 instead.");
+        Attacks[1] = new Attack("Secretion", 1, 3, 0, "<Water Rush>\nGive target +3 attack and +4 defense for 1 turn. Also heal them by 4. Has one more use for each teammate currently poisoned.",0,3);
+        Attacks[2] = new Attack("Neurotoxin", 1, 3, 0, "<Water Rush>\nIncrease target's poison damage by 3. Tidal: By 5 instead.",0,3);
         Attacks[2].setTidalD("<Water Rush>\nIncrease target's poison damage by 5. Tidal: By 3 instead.");
-        Attacks[3] = new Attack("Toxic Shock", 1, 4, 5, "Deal damage. If every living non-plague type Opal in the match is poisoned, deal 20 more damage.");
+        Attacks[3] = new Attack("Toxic Shock", 1, 4, 5, "Deal damage. If every living non-plague type Opal in the match is poisoned, deal 20 more damage.",0,3);
         type1 = "Plague";
         type2 = "Water";
     }
@@ -50,6 +50,7 @@ public class Froxic : OpalScript
            foreach(OpalScript o in getOpalsInSameFlood())
             {
                 o.setPoison(true);
+                StartCoroutine(playFrame("attack", 3));
             }
         }
 

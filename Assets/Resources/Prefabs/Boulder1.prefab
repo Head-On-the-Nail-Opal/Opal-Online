@@ -68,8 +68,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -1471104261
-  m_SortingLayer: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 2e067ec00fc5a4842bc9cd6efd1f28bf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -100,6 +100,9 @@ MonoBehaviour:
   evolvesInto: []
   evolvesFrom: []
   defaultStage: 1
+  attackFrame: {fileID: 0}
+  hurtFrame: {fileID: 0}
+  myBoulders: {fileID: 0}
 --- !u!1 &6318261603806987888
 GameObject:
   m_ObjectHideFlags: 0

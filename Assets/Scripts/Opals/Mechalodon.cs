@@ -13,24 +13,24 @@ public class Mechalodon : OpalScript
         speed = 2;
         priority = 2;
         myName = "Mechalodon";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.8f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1.3f;
         if (pl == "Red" || pl == "Green")
         {
-            GetComponent<SpriteRenderer>().flipX = false;
+            GetComponent<SpriteRenderer>().flipX = true;
         }
         else
         {
-            GetComponent<SpriteRenderer>().flipX = true;
+            GetComponent<SpriteRenderer>().flipX = false;
         }
         offsetX = 0;
         offsetY = 0f;
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Fish Outta", 0, 0, 0, "<Passive>\nWhen Mechalodon ends its turn outside of Flood, it loses all stat changes and armor. ");
-        Attacks[1] = new Attack("Submerge", 0, 1, 0, "Gain +1 armor, +2 attack and +1 speed. Tidal: +3 attack and +2 speed");
+        Attacks[1] = new Attack("Submerge", 0, 1, 0, "Gain +1 armor, +2 attack and +1 speed. Tidal: +3 attack and +2 speed",0,3);
         Attacks[1].setTidalD("Gain +1 armor, +3 attack and +2 speed. Tidal: +2 attack and +1 speed");
-        Attacks[2] = new Attack("Gnash", 1, 3, 4, "<Water Rush>\nDeal damage, add two damage for each point of Armor you have.");
-        Attacks[3] = new Attack("Teary Flop", 1, 1, 0,"Place a Flood under Mechalodon and on adjacent tiles. Then gain +2 attack.");
+        Attacks[2] = new Attack("Gnash", 1, 3, 4, "<Water Rush>\nDeal damage, add two damage for each point of Armor you have.",0,6);
+        Attacks[3] = new Attack("Teary Flop", 1, 1, 0,"Place a Flood under Mechalodon and on adjacent tiles. Then gain +2 attack.",0,3);
         type1 = "Water";
         type2 = "Metal";
         og = true;
@@ -59,7 +59,7 @@ public class Mechalodon : OpalScript
 
             addArmor(1);
             doTempBuff(0, -1, 2);
-            doTempBuff(2, -1, 1);  
+            doTempBuff(2, -1, 1);
             if (getTidal())
             {
                 doTempBuff(0, -1, 1);
@@ -73,7 +73,7 @@ public class Mechalodon : OpalScript
         }
         else if (attackNum == 3) //Gnash
         {
-            boardScript.setTile(target, "Flood", false);
+            boardScript.setTile(this, "Flood", false);
             foreach(TileScript t in getSurroundingTiles(false))
             {
                 boardScript.setTile(t, "Flood", false);

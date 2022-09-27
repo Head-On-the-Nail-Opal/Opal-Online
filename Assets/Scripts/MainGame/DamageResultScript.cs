@@ -10,7 +10,7 @@ public class DamageResultScript : MonoBehaviour {
 
     public void setUp(int amount, OpalScript myBoy)
     {
-        transform.position = myBoy.transform.position;
+        transform.position = myBoy.transform.position + new Vector3(0, 0.65f, 0);
         transform.rotation = myBoy.transform.rotation;
         transform.localScale /= 5;
         if (amount > 0)
@@ -30,7 +30,7 @@ public class DamageResultScript : MonoBehaviour {
 
     public void setUp(int num, int denom, OpalScript myBoy)
     {
-        transform.position = myBoy.transform.position;
+        transform.position = myBoy.transform.position + new Vector3(0,0.65f,0);
         transform.rotation = myBoy.transform.rotation;
         transform.localScale /= 5;
         body.text = num+"/"+denom;

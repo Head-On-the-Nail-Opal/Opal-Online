@@ -16,6 +16,13 @@ public class AttackScreen : MonoBehaviour
     private SpriteRenderer sr;
     private GroundScript board;
     private string textDescription;
+    public SpriteRenderer displayBackground;
+    public Text num;
+    private int myNum;
+
+    private bool isEnabled = false;
+
+    private bool justMe = false;
 
     private void Awake()
     {
@@ -23,6 +30,8 @@ public class AttackScreen : MonoBehaviour
         myPos = transform.localPosition;
         transform.position = new Vector3(-100, -100, -100);
         sr = GetComponent<SpriteRenderer>();
+        StartCoroutine(toggleScreen(false));
+        transform.localScale = new Vector3(30, 30, 2);
     }
 
     // Start is called before the first frame update
@@ -49,7 +58,7 @@ public class AttackScreen : MonoBehaviour
  * 7 = target all opals
  * */
 
-    public void updateScreen(OpalScript attacking, int attackNum, TileScript target)
+    public void updateScreen(OpalScript attacking, int attackNum, TileScript target, bool onlyOne)
     {
         bool checkText = false;
         name.text = "";
@@ -58,31 +67,53 @@ public class AttackScreen : MonoBehaviour
         range.text = "";
         mechanic.text = "";
         shape.text = "";
+        transform.localScale = new Vector3(30, 30, 2);
+        justMe = false;
+        transform.localPosition = myPos;
         if (attacking != null)
         {
-            if(attacking.getTeam() == "Red")
+            if (attacking.getTeam() == "Red")
             {
-                sr.color = new Color(1, 0.7f, 0.7f);
+                displayBackground.color = new Color(1, 0.7f, 0.7f);
             }else if (attacking.getTeam() == "Blue")
             {
-                sr.color = new Color(0.7f, 0.7f, 1);
+                displayBackground.color = new Color(0.7f, 0.7f, 1);
             }
             else if (attacking.getTeam() == "Green")
             {
-                sr.color = new Color(0f, 1, 0f);
+                displayBackground.color = new Color(0f, 1, 0f);
             }
             else if (attacking.getTeam() == "Orange")
             {
-                sr.color = new Color(1, 0.4f, 0f);
+                displayBackground.color = new Color(1, 0.4f, 0f);
+            }
+            displayBackground.enabled = true;
+
+            if (!isEnabled)
+            {
+                isEnabled = true;
+                //StartCoroutine(toggleScreen(true));
+            }
+            if (attackNum != -1 && onlyOne)
+            {
+                transform.localScale = new Vector3(45,45,2);
+                transform.localPosition = new Vector3(myPos.x+80, myPos.y-80, myPos.z+80);
+                justMe = true;
             }
         }
         if (attackNum == -1)
         {
-            //doattacking = false;
+            if (isEnabled)
+            {
+                isEnabled = false;
+                //StartCoroutine(toggleScreen(false));
+            }
+            
             transform.position = new Vector3(-100, -100, -100);
             return;
 
         }
+
 
         if(attacking.Attacks[attackNum].getDesc() != textDescription)
         {
@@ -90,7 +121,7 @@ public class AttackScreen : MonoBehaviour
             textDescription = attacking.Attacks[attackNum].getDesc();
         }
 
-        transform.localPosition = myPos;
+        
         name.text = attacking.Attacks[attackNum].aname;
         string[] desc = attacking.Attacks[attackNum].getDesc().Split('\n');
         if (desc.Length == 2)
@@ -107,6 +138,8 @@ public class AttackScreen : MonoBehaviour
             else
                 description.text = "" + desc[0];
         }
+        num.text = "Press " + (attackNum+1);
+        myNum = attackNum;
         range.text = "" + attacking.Attacks[attackNum].getRange();
         if(attacking.Attacks[attackNum].getRange() == 0 && attacking.Attacks[attackNum].getShape() == 0)
             shape.text = "Self Target";  
@@ -137,6 +170,31 @@ public class AttackScreen : MonoBehaviour
                     checkVocab += s + " ";
             }
             description.text = checkVocab;
+        }
+    }
+
+        public IEnumerator toggleScreen(bool enable)
+    {
+        if (enable)
+        {
+            displayBackground.enabled = true;
+            transform.localPosition = new Vector3(myPos.x-1000, myPos.y,myPos.z);
+            for(int i = 0; i < 10; i++)
+            {
+                transform.localPosition = new Vector3(transform.localPosition.x +100f, transform.localPosition.y, transform.localPosition.z);
+                yield return new WaitForFixedUpdate();
+            }
+        }
+        else
+        {
+            transform.localPosition = new Vector3(myPos.x, myPos.y, myPos.z);
+            for (int i = 0; i < 10; i++)
+            {
+                transform.localPosition = new Vector3(transform.localPosition.x - 100f, transform.localPosition.y, transform.localPosition.z);
+                yield return new WaitForFixedUpdate();
+            }
+            displayBackground.enabled = false;
+            num.text = "";
         }
     }
 }

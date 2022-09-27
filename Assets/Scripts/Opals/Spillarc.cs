@@ -14,9 +14,9 @@ public class Spillarc : OpalScript
         speed = 3;
         priority = 3;
         myName = "Spillarc";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.8f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         offsetX = 0;
-        offsetY = 0.15f;
+        offsetY = 0;
         offsetZ = 0;
         player = pl;
         if (pl == "Red" || pl == "Green")
@@ -28,10 +28,10 @@ public class Spillarc : OpalScript
             GetComponent<SpriteRenderer>().flipX = false;
         }
         Attacks[0] = new Attack("Prismatic Soothe", 0, 0, 0, "<Passive>\nWhen Spillarc moves to a Flood tile, adjacent Opals also in Flood gain +2 defense for 1 turn.");
-        Attacks[1] = new Attack("Refresh", 1, 3, 0, "<Free Ability> <Water Rush>\nHeal a target in Flood 2 health. (May use this twice a turn.)");
+        Attacks[1] = new Attack("Refresh", 1, 3, 0, "<Free Ability>\nHeal a target in Flood 2 health. (May use this twice a turn.)", 0, 3);
         Attacks[1].setFreeAction(true);
-        Attacks[2] = new Attack("Encolour", 1, 3, 0, "<Water Rush>\nGive the target +2 attack and +2 defense for 2 turns.");
-        Attacks[3] = new Attack("Water Down",0,1,0,"Overheal self by 6 health. Place flood at your feet and on adjacent tiles.");
+        Attacks[2] = new Attack("Encolour", 1, 3, 0, "Give the target +2 attack and +2 defense for 2 turns.", 0,3);
+        Attacks[3] = new Attack("Water Down",0,1,0,"Overheal self by 6 health. Place flood at your feet and on adjacent tiles.",0,3);
         type1 = "Water";
         type2 = "Light";
         og = true;
@@ -46,6 +46,7 @@ public class Spillarc : OpalScript
                 if(t.type == "Flood" && t.currentPlayer != null)
                 {
                     t.currentPlayer.doTempBuff(1, 1, 2);
+                    StartCoroutine(playFrame("attack", 3));
                 }
             }
         }

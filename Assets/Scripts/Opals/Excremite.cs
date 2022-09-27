@@ -21,9 +21,9 @@ public class Excremite : OpalScript
         speed = 1;
         priority = 6;
         myName = "Excremite";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 1.1f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1.3f;
         offsetX = 0;
-        offsetY = 0.1f;
+        offsetY = 0f;
         offsetZ = 0;
         player = pl;
         if (pl == "Red" || pl == "Green")
@@ -34,11 +34,11 @@ public class Excremite : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Crappy Load", 2, 4, 0, "Summon two Dunglets");
+        Attacks[0] = new Attack("Crappy Load", 2, 4, 0, "Summon two Dunglets",0,3);
         Attacks[0].setUses(2);
-        Attacks[1] = new Attack("Huck", 4, 1, 0, "Give an Opal +2 attack.");
-        Attacks[2] = new Attack("Smelly Bite", 3, 4, 6, "Deal 6 damage for each Boulder on surrounding tiles (0)");
-        Attacks[3] = new Attack("Rock Carapace", 0, 1, 0, "Surrounding Boulders gain +3 defense.");
+        Attacks[1] = new Attack("Huck", 4, 1, 0, "Give an Opal +2 attack.",0,3);
+        Attacks[2] = new Attack("Smelly Bite", 3, 4, 6, "Deal 6 damage for each Boulder on surrounding tiles (0)",0,3);
+        Attacks[3] = new Attack("Rock Carapace", 0, 1, 0, "Surrounding Boulders gain +3 defense.",0,3);
         type1 = "Ground";
         type2 = "Swarm";
     }

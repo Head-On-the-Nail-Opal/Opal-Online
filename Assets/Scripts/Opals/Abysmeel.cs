@@ -27,10 +27,10 @@ public class Abysmeel : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Crevice Creeper", 0, 0, 0, "<Passive>\n While in Flood, at the start of your turn gain +2 defense and +1 speed for each adjacent Boulder. It lasts for 2 turns.");
-        Attacks[1] = new Attack("Sharpen Teeth", 1, 3, 0, "<Water Rush>\n If the target is a Boulder, gain +1 attack. Use this twice.");
+        Attacks[1] = new Attack("Sharpen Teeth", 1, 3, 0, "<Water Rush>\n If the target is a Boulder, gain +1 attack. Use this twice.",0,3);
         Attacks[1].setUses(2);
-        Attacks[2] = new Attack("Toothy Maw", 2, 1, 6, "If the target has less than half health, gain +1 attack.");
-        Attacks[3] = new Attack("Sea Pillar",3, 1, 0, "Place two Boulders. If you place them in Flood, they will not sink. If you place them out of Flood, adjacent tiles turn to Flood.");
+        Attacks[2] = new Attack("Toothy Maw", 2, 1, 6, "If the target has less than half health, gain +1 attack.",0,3);
+        Attacks[3] = new Attack("Sea Pillar",3, 1, 0, "Place two Boulders. If you place them in Flood, they will not sink. If you place them out of Flood, adjacent tiles turn to Flood.",0,3);
         Attacks[3].setUses(2);
         type1 = "Water";
         type2 = "Ground";

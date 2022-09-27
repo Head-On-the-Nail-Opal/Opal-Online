@@ -13,7 +13,7 @@ public class Aquarican : OpalScript
         speed = 3;
         priority = 9;
         myName = "Aquarican";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.9f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -27,9 +27,9 @@ public class Aquarican : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Water Bowl", 0, 0, 0, "<Passive>\n On the start of its turn, if it's attack is less than 1, Aquarican takes 10 damage.");
-        Attacks[1] = new Attack("Refill", 0, 1, 0, "Remove the Flood tile at your feet and gain +6 attack.");
-        Attacks[2] = new Attack("Spout Snipe", 6, 4, 5, "Lose -4 attack after using this attack.");
-        Attacks[3] = new Attack("Refresh", 1, 3, 0, "<Water Rush>\n Give target Opal +4 attack and +1 speed for 1 turn. Gain +4 attack for 1 turn. Place a Flood at your feet.");
+        Attacks[1] = new Attack("Refill", 0, 1, 0, "Remove the Flood tile at your feet and gain +6 attack.",0,3);
+        Attacks[2] = new Attack("Spout Snipe", 6, 4, 5, "Lose -4 attack after using this attack.",0,3);
+        Attacks[3] = new Attack("Refresh", 1, 3, 0, "<Water Rush>\n Give target Opal +4 attack and +1 speed for 1 turn. Gain +4 attack for 1 turn. Place a Flood at your feet.",0,3);
         type1 = "Water";
         type2 = "Air";
     }

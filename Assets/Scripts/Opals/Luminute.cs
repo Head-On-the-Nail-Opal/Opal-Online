@@ -15,7 +15,7 @@ public class Luminute : OpalScript
         priority = 0;
         myName = "Luminute";
         //baseSize = new Vector3(0.2f, 0.2f, 1);
-        transform.localScale = new Vector3(0.2f, 0.24f, 1) * 0.8f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         offsetX = 0;
         offsetY = 0;
         offsetZ = 0;
@@ -29,10 +29,10 @@ public class Luminute : OpalScript
             GetComponent<SpriteRenderer>().flipX = false;
         }
         Attacks[0] = new Attack("Distracted", 0, 0, 0, "<Passive>\nEvery other turn Luminute will be unable to act");
-        Attacks[1] = new Attack("Overgrowth", 3, 1, 0, "Give an Opal +2 attack and defense. Place a growth under them. Has 2 uses.");
+        Attacks[1] = new Attack("Overgrowth", 3, 1, 0, "Give an Opal +2 attack and defense. Place a growth under them. Has 2 uses.",0,3);
         Attacks[1].setUses(2);
-        Attacks[2] = new Attack("Pretty Orb", 2, 1, 0, "Targets lose their next turn.", 1);
-        Attacks[3] = new Attack("Orb Sprouts", 0, 5, 0, "Overheal a target on any Growth by 15 health, they lose -4 speed for 1 turn.");
+        Attacks[2] = new Attack("Pretty Orb", 2, 1, 0, "Targets lose their next turn.", 1,3);
+        Attacks[3] = new Attack("Orb Sprouts", 0, 5, 0, "Overheal a target on any Growth by 15 health, they lose -4 speed for 1 turn.",0,3);
         type1 = "Light";
         type2 = "Grass";
     }

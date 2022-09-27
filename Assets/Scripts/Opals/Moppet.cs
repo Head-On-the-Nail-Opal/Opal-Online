@@ -15,7 +15,7 @@ public class Moppet : OpalScript
         speed = 2;
         priority = 4;
         myName = "Moppet";
-        transform.localScale = new Vector3(2.5f, 2.5f, 1);
+        transform.localScale = new Vector3(3f, 3f, 1)*0.7f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -25,13 +25,13 @@ public class Moppet : OpalScript
             GetComponent<SpriteRenderer>().flipX = false;
         }
         offsetX = 0;
-        offsetY = 0f;
+        offsetY = -0.1f;
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Sufferer's Bond", 0, 0, 0, "<Passive>\nMoppet takes burn damage and poison damage instead of Opals cursed by it.");
-        Attacks[1] = new Attack("Chain of Torment", 2, 1, 0, "Overheal an Opal by 4 and curse it.");
-        Attacks[2] = new Attack("Pain Share", 0, 1, 0, "Enemy Opals cursed by Moppet take the damage Moppet took since its last turn.");
-        Attacks[3] = new Attack("Masochism", 0, 1, 0, "Heal Moppet by 8 health. If Moppet is at full health, heal ally Opals cursed by Moppet instead.");
+        Attacks[1] = new Attack("Chain of Torment", 2, 1, 0, "Overheal an Opal by 4 and curse it.",0,3);
+        Attacks[2] = new Attack("Pain Share", 0, 1, 0, "Enemy Opals cursed by Moppet take the damage Moppet took since its last turn.",0,3);
+        Attacks[3] = new Attack("Masochism", 0, 1, 0, "Heal Moppet by 8 health. If Moppet is at full health, heal ally Opals cursed by Moppet instead.",0,3);
         type1 = "Spirit";
         type2 = "Light";
     }

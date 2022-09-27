@@ -13,7 +13,7 @@ public class Chardinal : OpalScript
         speed = 4;
         priority = 0;
         myName = "Chardinal";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.6f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1.2f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -26,10 +26,10 @@ public class Chardinal : OpalScript
         offsetY = 0f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Flaming Wreck", 1, 1, 5, "Place Flames adjacent to Chardinal, then push the target by 3 tiles.");
-        Attacks[1] = new Attack("Searing Flap", 2, 4, 0, "Push a target by 2 tiles. Burn them. If they are Lifted, burning damage is doubled.");
-        Attacks[2] = new Attack("Hot Air", 2, 4, 0, "Targets gain Lift, and the tiles they stand on turn to Flame", 1);
-        Attacks[3] = new Attack("Fire Feet", 3, 4, 0, "Target gains +4 speed for 1 turn. The tile they stand on turns to Flame.");
+        Attacks[0] = new Attack("Flaming Wreck", 1, 1, 5, "Place Flames adjacent to Chardinal, then push the target by 3 tiles.",0,3);
+        Attacks[1] = new Attack("Searing Flap", 2, 4, 0, "Push a target by 2 tiles. Burn them. If they are Lifted, burning damage is doubled.",0,3);
+        Attacks[2] = new Attack("Hot Air", 2, 4, 0, "Targets gain Lift, and the tiles they stand on turn to Flame", 1,3);
+        Attacks[3] = new Attack("Fire Feet", 3, 4, 0, "Target gains +4 speed for 1 turn. The tile they stand on turns to Flame.",0,3);
         type1 = "Fire";
         type2 = "Air";
     }

@@ -14,7 +14,7 @@ public class Tortquoise : OpalScript
         speed = 2;
         priority = 0;
         myName = "Tortquoise";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.7f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1.2f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -29,9 +29,9 @@ public class Tortquoise : OpalScript
         player = pl;
         Attacks[0] = new Attack("Hidey Shell", 0, 0, 0, "<Passive>\n Gain +10 defense for a turn, at the end of your turn, if you did not move this turn.");
         Attacks[1] = new Attack("Rocky Retreat", 1, 1, 5, "Move 1 tile in the opposite direction and place three Boulders between you and target. They have +5 defense.");
-        Attacks[2] = new Attack("Throw Stones", 3, 1, 0, "Place 2 Boulders within range.");
+        Attacks[2] = new Attack("Throw Stones", 3, 1, 0, "Place 2 Boulders within range.",0,3);
         Attacks[2].setUses(2);
-        Attacks[3] = new Attack("Crush", 1, 1, 10, "Place Boulders on tiles without Opals in area of attack.", 1);
+        Attacks[3] = new Attack("Crush", 1, 1, 10, "Place Boulders on tiles without Opals in area of attack.", 1,3);
         type1 = "Ground";
         type2 = "Ground";
     }
@@ -49,6 +49,20 @@ public class Tortquoise : OpalScript
         }
     }
 
+    private IEnumerator finishBoulders(TileScript t)
+    {
+        for(int i = 0; i < 12; i++)
+        {
+            yield return new WaitForFixedUpdate();
+        }
+
+        boardScript.setTile(t, "Boulder", false);
+        if (t.currentPlayer.getMyName() == "Boulder")
+        {
+            t.currentPlayer.doTempBuff(1, 1, 5);
+        }
+    }
+
     public override int getAttackEffect(int attackNum, OpalScript target)
     {
         Attack cA = Attacks[attackNum];
@@ -58,7 +72,7 @@ public class Tortquoise : OpalScript
         }
         else if (attackNum == 1)
         {
-            TileScript cT = currentTile;
+            TileScript cT = boardScript.tileGrid[(int)getPos().x,(int)getPos().z];
             string direct = "right";
             int dist = (int)getPos().x - (int)target.getPos().x;
             if (dist == 0)
@@ -78,6 +92,7 @@ public class Tortquoise : OpalScript
                 }
                 dist = Mathf.Abs(dist);
             }
+            StartCoroutine(playFrame("hurt",5));
             TileScript temp0 = null;
             TileScript temp1 = null;
             if (direct == "right")
@@ -113,11 +128,7 @@ public class Tortquoise : OpalScript
             {
                 temp1.currentPlayer.doTempBuff(1, 1, 5);
             }
-            boardScript.setTile(cT, "Boulder", false);
-            if(cT.currentPlayer.getMyName() == "Boulder")
-            {
-                cT.currentPlayer.doTempBuff(1, 1, 5);
-            }
+            StartCoroutine(finishBoulders(cT));
         }
         else if (attackNum == 2)
         {

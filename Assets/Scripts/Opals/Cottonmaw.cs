@@ -13,7 +13,7 @@ public class Cottonmaw : OpalScript
         speed = 3;
         priority = 2;
         myName = "Cottonmaw";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.7f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1.2f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -27,10 +27,10 @@ public class Cottonmaw : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Absorbent", 0, 0, 0, "<Passive>\n All incoming stat changes are doubled if Cottonmaw is standing on a Growth, then remove the Growth");
-        Attacks[1] = new Attack("Triple Snap", 1, 4, 1, "Deal 1 damage 3 times.");
+        Attacks[1] = new Attack("Triple Snap", 1, 4, 1, "Deal 1 damage 3 times.",0,3);
         Attacks[1].setUses(3);
-        Attacks[2] = new Attack("Harvest", 0, 1, 0, "If standing on a Growth then heal 4 health, and place Growths on adjacent tiles.");
-        Attacks[3] = new Attack("Triple Plant", 2, 1, 0,"Place Growths on 3 different tiles");
+        Attacks[2] = new Attack("Harvest", 0, 1, 0, "If standing on a Growth then heal 4 health, and place Growths on adjacent tiles.",0,3);
+        Attacks[3] = new Attack("Triple Plant", 2, 1, 0,"Place Growths on 3 different tiles",0,3);
         Attacks[3].setUses(3);
         type1 = "Grass";
         type2 = "Grass";

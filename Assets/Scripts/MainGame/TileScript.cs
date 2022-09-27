@@ -56,6 +56,9 @@ public class TileScript : MonoBehaviour {
     private List<Sprite> southeast = new List<Sprite>();
     private List<Sprite> southwest = new List<Sprite>();
 
+    private List<SpriteRenderer> parts = new List<SpriteRenderer>();
+    private SpriteRenderer decor;
+
 
     public void Awake()
     {
@@ -76,6 +79,19 @@ public class TileScript : MonoBehaviour {
         }
         setupTimer();
         showTimer(false);
+
+        foreach (SpriteRenderer s in GetComponentsInChildren<SpriteRenderer>())
+        {
+            if (s.gameObject.name == "NW" || s.gameObject.name == "NE" || s.gameObject.name == "SW" || s.gameObject.name == "SE")
+            {
+                parts.Add(s);
+            }
+            if(s.gameObject.name == "Decor")
+            {
+                decor = s;
+            }
+        }
+
         connectedTile = transform.GetChild(0).transform.GetComponentInChildren<ConnectedTile>();
         if(connectedTileSprites.Count > 0)
         {
@@ -235,63 +251,6 @@ public class TileScript : MonoBehaviour {
         else
         {
             transform.position = new Vector3(gridPos.x, -1f, gridPos.y);
-        }
-        if (type.Equals("Grass"))
-        {
-            if (Random.Range(0, 4) == 0)
-            {
-                int natureNum = Random.Range(0, 5);
-                if (natureNum == 0)
-                {
-                    onMe = Resources.Load<Nature>("Prefabs/Nature1");
-                }else if (natureNum == 1)
-                {
-                    onMe = Resources.Load<Nature>("Prefabs/Nature2");
-                }
-                else if(natureNum == 2)
-                {
-                    onMe = Resources.Load<Nature>("Prefabs/Nature3");
-                }
-                else if (natureNum == 3)
-                {
-                    onMe = Resources.Load<Nature>("Prefabs/Nature4");
-                }
-                else if (natureNum == 4)
-                {
-                    onMe = Resources.Load<Nature>("Prefabs/Nature5");
-                }
-                Nature temp = Instantiate<Nature>(onMe, this.transform);
-                int xRand = Random.Range(1, 3);
-                int zRand = Random.Range(1, 3);
-                temp.transform.localPosition = new Vector3(0.43f, 0.7f, -0.43f);
-                if(natureNum == 4)
-                    temp.transform.localPosition = new Vector3(0.48f, 0.72f, -0.48f);
-                temp.transform.localScale = new Vector3(0.2f, 0.1f, 0);
-                if(natureNum == 3)
-                {
-                    temp.transform.localScale = new Vector3(0.3f, 0.15f, 0);
-                    temp.transform.rotation = Quaternion.Euler(40, -45, 0);
-                    temp.transform.localPosition = new Vector3(0.44f, 0.70f, -0.44f);
-                }
-                if(natureNum == 4)
-                    temp.transform.localScale = new Vector3(0.25f, 0.125f, 0);
-                if (Random.Range(0, 2) == 0)
-                {
-                    temp.GetComponent<SpriteRenderer>().flipX = true;
-                    foreach(SpriteRenderer sr in temp.GetComponentsInChildren<SpriteRenderer>())
-                    {
-                        sr.flipX = true;
-                    }
-                    if(natureNum == 0 || natureNum == 1 || natureNum == 2)
-                        temp.transform.localPosition = new Vector3(0.5f, 0.72f, -0.5f);
-                    if(natureNum == 3)
-                    {
-                        
-                        temp.transform.localPosition = new Vector3(0.44f, 0.70f, -0.44f);
-                    }
-                }
-                onMe = temp;
-            }
         }
         if(type != "Grass" && type != "Boulder")
         {
@@ -602,14 +561,11 @@ public class TileScript : MonoBehaviour {
                 impassable = false;
             if (type.Equals("Miasma") && currentPlayer != null)
             {
-                //currentPlayer.doTempBuff(1, -1, -2, false);
                 currentPlayer.onMiasma(false);
                 currentPlayer.shrouded = false;
             }
             if (type.Equals("Growth") && currentPlayer != null)
             {
-                //currentPlayer.doTempBuff(0, -1, -2, false);
-                //currentPlayer.doTempBuff(1, -1, -2, false);
                 currentPlayer.onGrowth(false);
                 DestroyImmediate(currentEffect);
             }
@@ -637,7 +593,6 @@ public class TileScript : MonoBehaviour {
                 if (!player.shrouded)
                 {
                     player.setPoison(true);
-                    //player.doTempBuff(1, -1, 2, false);
                     currentPlayer.onMiasma(true);
                     player.shrouded = true;
                 }
@@ -647,12 +602,6 @@ public class TileScript : MonoBehaviour {
                 player.setPoison(false);
                 if (currentEffect == null)
                 {
-                    GameObject temp = Instantiate<GameObject>(GrowthEffect, this.transform);
-                    temp.transform.position = new Vector3(gridPos.x, -1f, gridPos.y);
-                    currentEffect = temp;
-                    player.setPoison(false);
-                    //player.doTempBuff(0, -1, 2, false);
-                    //player.doTempBuff(1, -1, 2, false);
                     currentPlayer.onGrowth(true);
                 }
             }
@@ -995,7 +944,10 @@ public class TileScript : MonoBehaviour {
 
     public List<TileScript> getSurroundingTiles(bool adj)
     {
+        
         List<TileScript> output = new List<TileScript>();
+        if (this == null)
+            return output;
         for (int i = -1; i < 2; i++)
         {
             for (int j = -1; j < 2; j++)
@@ -1012,6 +964,7 @@ public class TileScript : MonoBehaviour {
 
     public void determineShape()
     {
+        return;
         if (type != "Flood")
             return;
         string shape = "";
@@ -1032,230 +985,153 @@ public class TileScript : MonoBehaviour {
             }
         }
         //print("(X:" + gridPos.x + ",Y:" + gridPos.y + ") = " + shape);
-        changeSpriteRenderer.sprite = connectedTileSprites[18];
-        connectedTile.changeSprite(shape);
+        //changeSpriteRenderer.sprite = connectedTileSprites[18];
+        //connectedTile.changeSprite(shape);
     }
 
-    public void determineShapeALSOOLD()
+
+    public void updateConnection()
     {
-        string shape = "";
-        int dec = 1;
+        if (this == null)
+            return;
+        string setUp = getSurroundingTiles();
+
+        List<int> shapes = new List<int>();
+
+        shapes.Add(calcShape(int.Parse(setUp.Substring(0, 1)), int.Parse(setUp.Substring(1, 1)), int.Parse(setUp.Substring(3, 1)))); //NW
+
+        shapes.Add(calcShape(int.Parse(setUp.Substring(2, 1)), int.Parse(setUp.Substring(1, 1)), int.Parse(setUp.Substring(5, 1)))); //NE
+
+        shapes.Add(calcShape(int.Parse(setUp.Substring(6, 1)), int.Parse(setUp.Substring(7, 1)), int.Parse(setUp.Substring(3, 1)))); //SW
+
+        shapes.Add(calcShape(int.Parse(setUp.Substring(8, 1)), int.Parse(setUp.Substring(7, 1)), int.Parse(setUp.Substring(5, 1)))); //SE
+
+
+        if (true)
+        {
+            string endTag = "";
+            if (type == "Grass")
+            {
+                if (transform.position.x % 2 == 0 && transform.position.z % 2 != 0 || transform.position.x % 2 != 0 && transform.position.z % 2 == 0)
+                    endTag = "D";
+
+            }
+            for (int i = 0; i < 4; i++)
+            {
+                Rect r = new Rect(shapes[i] * 16, 8, 8, 8);
+
+                if (i == 1)
+                {
+                    r = new Rect(shapes[i] * 16 + 8, 8, 8, 8);
+                }
+                else if (i == 2)
+                {
+                    r = new Rect(shapes[i] * 16, 0, 8, 8);
+                }
+                else if (i == 3)
+                {
+                    r = new Rect(shapes[i] * 16 + 8, 0, 8, 8);
+                }
+                
+                Sprite tempS = Sprite.Create(Resources.Load<Texture2D>("SpriteSheets/Board4P/"+type+endTag), r, new Vector2(r.width / 16f, r.height / 16f));
+                parts[i].sprite = tempS;
+            }
+        }
+    }
+
+    private int calcShape(int num0, int num1, int num2)
+    {
+        if (num0 == 0 && num1 == 0 && num2 == 0)
+        {
+            return 0;
+        }
+
+        if (num0 == 1 && num1 == 1 && num2 == 1)
+        {
+            return 4;
+        }
+
+        if (num1 == 0 && num2 == 1)
+        {
+            return 1;
+        }
+        if (num1 == 1 && num2 == 0)
+        {
+            return 2;
+        }
+        if (num1 == 1 && num2 == 1)
+        {
+            return 3;
+        }
+
+        return 0;
+    }
+
+    private string getSurroundingTiles()
+    {
+        string output = "";
+
         for (int i = -1; i < 2; i++)
         {
             for (int j = -1; j < 2; j++)
             {
-                if (boardScript.getTileType((int)gridPos.x + i, (int)gridPos.y + j) == "Flood")
-                {
-                    shape += 4;
-                }
+                if (this == null)
+                    return output;
+                TileScript t = boardScript.getTile((int)transform.position.x + j, (int)transform.position.z - i);
+                if (t == this)
+                    output += 'X';
+                else if(t == null)
+                    output += '0';
+                else if (t.type == type)
+                    output += '1';
                 else
-                {
-                    shape += 1;
-                }
-                dec *= 10;
+                    output += '0';
             }
-        }
-        print("(X:" + gridPos.x + ",Y:" + gridPos.y + ") = " + shape);
-        changeSpriteRenderer.sprite = connectedTileSprites[18];
-
-        int dir0 = 0;
-        List<Sprite> maybeMe = new List<Sprite>();
-        List<Sprite> notMe = new List<Sprite>();
-        foreach(List<Sprite> ls in directions)
-        {
-            foreach(Sprite s in ls)
-            {
-                if (shape[dir0] == '4' && notMe.Contains(s)) //check its 
-                {
-                    if (maybeMe.Contains(s))
-                        maybeMe.Remove(s);
-                } else if (shape[dir0] == '1' && maybeMe.Contains(s))
-                {
-                    maybeMe.Remove(s);
-                    if (!notMe.Contains(s))
-                    {
-                        notMe.Add(s);
-                    }
-                }
-                else if (shape[dir0] == '4' && !maybeMe.Contains(s) && !notMe.Contains(s))
-                {
-                    maybeMe.Add(s);
-                }
-                else if (shape[dir0] == '1' && !notMe.Contains(s))
-                {
-                    notMe.Add(s);
-                    if (maybeMe.Contains(s))
-                        maybeMe.Remove(s);
-                }
-            }
-            dir0++;
         }
 
-        foreach(Sprite s in maybeMe)
-        {
-            if (notMe.Contains(s))
-            {
-                maybeMe.Remove(s);
-            }
-        }
-        if(maybeMe.Count >= 1)
-        {
-            changeSpriteRenderer.sprite = maybeMe[maybeMe.Count-1];
-        }
-        print(maybeMe.Count);
+        return output;
     }
 
-
-
-    public void determineShapeOLD() 
+    public void setRandomDecor()
     {
-        int shape = 0;
-        int dec = 1;
-        for(int i = -1; i < 2; i++)
-        {
-            for(int j = -1; j < 2; j++)
-            {
-                if(boardScript.getTileType((int)gridPos.x+i, (int)gridPos.y+j) == "Flood")
-                {
-                    shape += 4 * dec;
-                }
-                else
-                {
-                    shape += 1 * dec;
-                }
-                dec *= 10;
-            }
-        }
-        if(shape == 111141111)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[18];
-        }else if(shape == 444444444)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[6];
-        }
-        else if (shape == 441441111)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[0];
-        }
-        else if (shape == 144144111)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[2];
-        }
-        else if (shape == 111441441)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[10];
-        }
-        else if (shape == 111144144)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[12];
-        }
-        else if(shape == 144144144)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[7];
-        }
-        else if (shape == 441441441)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[5];
-        }
-        else if (shape == 111444444)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[11];
-        }
-        else if (shape == 444444111)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[1];
-        }
-        else if (shape == 141141111)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[3];
-        }
-        else if (shape == 141141444)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[8];
-        }
-        else if (shape == 444141141)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[8];
-        }
-        else if (shape == 111141141)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[13];
-        }else if(shape == 141141141)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[8];
-        }
-        else if(shape == 141444141)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[23];
-        }else if(shape == 111141444)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[13];
-        }
-        else if (shape == 444141111)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[3];
-        }
-        else if (shape == 411441411)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[15];
-        }
-        else if (shape == 114144114)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[17];
-        }else if(shape == 111441111)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[15];
-        }
-        else if (shape == 111144111)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[17];
-        }
-        else if (shape == 111444111)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[16];
-        }
-        else if (shape == 411441111)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[15];
-        }
-        else if (shape == 114144111)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[17];
-        }
-        else if (shape == 141444111)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[0];
-        }
-        else if (shape == 441141111)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[3];
-        }
-        else if (shape == 141441141)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[5];
-        }
-        else if (shape == 111441411)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[13];
+        switch (type) {
+            case "Grass":
+                if (Random.Range(0, 4) != 0)
+                    return;
+                break;
+            case "Growth":
+                break;
+            case "Flood":
+
+                break;
+            case "Miasma":
+                callParticleEffect("MiasmaGroundEffect");
+                break;
+            case "Fire":
+                callParticleEffect("BurningGroundEffect");
+                break;
+
         }
 
-        else if(shape == 111411411)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[11];
-        }
-        else if(shape == 111444141)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[15];
-        }
-        else if(shape == 111144114)
-        {
-            changeSpriteRenderer.sprite = connectedTileSprites[17];
-        }
+        Texture2D textures = Resources.Load<Texture2D>("SpriteSheets/Board4P/Decor-" + type);
+        if (textures == null)
+            return;
+        int rand = Random.Range(0, textures.width / 16);
 
-        else
-        {
-            print("(X:" + gridPos.x + ",Y:" + gridPos.y + ") = " + shape);
-        }
+        Rect r = new Rect(rand * 16, 0, 16, 16);
+
+        Sprite tempS = Sprite.Create(Resources.Load<Texture2D>("SpriteSheets/Board4P/Decor-" + type), r, new Vector2(r.width / 32, r.height / 16));
+        decor.sprite = tempS;
+        float randX = Random.Range(-3, 4) * 0.01f;
+        decor.transform.localPosition = new Vector3(0.1f + randX, 0.8f, -0.1f + randX);
+        if (Random.Range(0, 2) == 1)
+            decor.flipX = true;
     }
+
+    public void callParticleEffect(string name)
+    {
+        ParticleSystem ps = Instantiate<ParticleSystem>(Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/" + name), transform);
+    }
+
 
 }

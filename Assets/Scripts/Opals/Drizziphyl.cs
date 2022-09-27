@@ -14,7 +14,7 @@ public class Drizziphyl : OpalScript
         speed = 2;
         priority = 6;
         myName = "Drizziphyl";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.7f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         offsetX = 0;
         offsetY = 0f;
         offsetZ = 0;
@@ -27,12 +27,12 @@ public class Drizziphyl : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Shower", 0, 1, 0, "Adjacent tiles turn to Flood. Place a Growth under your feet. Buff adjacent Opals by +2 defense.");
-        Attacks[1] = new Attack("Hydrate", 1, 3, 0, "<Water Rush>\nHeal the target and self 2 health. Place a Growth under the target. May use up to 4 times.");
+        Attacks[0] = new Attack("Shower", 0, 1, 0, "Adjacent tiles turn to Flood. Place a Growth under your feet. Buff adjacent Opals by +2 defense.",0,3);
+        Attacks[1] = new Attack("Hydrate", 1, 3, 0, "<Water Rush>\nHeal the target and self 2 health. Place a Growth under the target. May use up to 4 times.",0,3);
         Attacks[1].setUses(4);
-        Attacks[2] = new Attack("Aquaspit", 1, 3, 3, "<Water Rush>\n Deal damage and place Flood below and adjacent to target. May use this twice.");
+        Attacks[2] = new Attack("Aquaspit", 1, 3, 3, "<Water Rush>\n Deal damage and place Flood below and adjacent to target. May use this twice.",0,3);
         Attacks[2].setUses(2);
-        Attacks[3] = new Attack("Wash", 1, 5, 0, "Place a Flood next to any Growth on the map. May use four times.");
+        Attacks[3] = new Attack("Wash", 1, 5, 0, "Place a Flood next to any Growth on the map. May use four times.",0,3);
         Attacks[3].setUses(4);
         type1 = "Grass";
         type2 = "Water";

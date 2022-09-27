@@ -13,7 +13,7 @@ public class Gilsplish : OpalScript
         speed = 2;
         priority = 0;
         myName = "Gilsplish";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.9f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1.3f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -27,10 +27,10 @@ public class Gilsplish : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Gills", 0, 0, 0, "<Passive>\n At the start of its turn, Gilsplish loses -10 health outside of Flood, or gains +5 health in Flood");
-        Attacks[1] = new Attack("Splish", 1, 3, 5, "<Water Rush> Deal damage, if Gilsplish is at full health, deal damage twice.");
-        Attacks[2] = new Attack("Splurt", 3, 4, 6, "Deal damage to the target. Tiles under and adjacent to them are Flooded. Tidal: This has +2 range, and you heal the damage it deals.");
+        Attacks[1] = new Attack("Splish", 1, 3, 5, "<Water Rush> Deal damage, if Gilsplish is at full health, deal damage twice.",0,3);
+        Attacks[2] = new Attack("Splurt", 3, 4, 6, "Deal damage to the target. Tiles under and adjacent to them are Flooded. Tidal: This has +2 range, and you heal the damage it deals.",0,3);
         Attacks[2].setTidalD("Deal damage to the target. Tiles under and adjacent to them are Flooded. You heal the damage it deals. Tidal: This has -2 range, and you don't heal");
-        Attacks[3] = new Attack("Flop", 0, 1, 0, "Gain +2 speed for 1 turn. Place Flood under Gilsplish and on adjacent tiles.");
+        Attacks[3] = new Attack("Flop", 0, 1, 0, "Gain +2 speed for 1 turn. Place Flood under Gilsplish and on adjacent tiles.",0,3);
         type1 = "Water";
         type2 = "Water";
     }

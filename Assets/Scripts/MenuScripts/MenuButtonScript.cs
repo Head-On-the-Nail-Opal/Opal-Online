@@ -109,7 +109,13 @@ public class MenuButtonScript : MonoBehaviour {
         {
             main.startMultiplayerGame();
             main.blueController = "keyboard";
-        }else if(purpose == "teams")
+        }
+        else if (purpose == "setup3")
+        {
+            main.startLocalAI();
+            main.blueController = "keyboard";
+        }
+        else if(purpose == "teams")
         {
             main.displayOpal(null, true);
         }else if(purpose == "teamdetails")

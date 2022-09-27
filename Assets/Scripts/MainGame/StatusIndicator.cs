@@ -53,7 +53,7 @@ public class StatusIndicator : MonoBehaviour
             for(int i = 1; i < num; i++)
             {
                 Transform temp = Instantiate<Transform>(tic,transform);
-                temp.transform.localPosition = new Vector3(tic.localPosition.x+1.333333f*i, tic.localPosition.y, tic.localPosition.z);
+                temp.transform.localPosition = new Vector3(tic.localPosition.x+0.06f*i, tic.localPosition.y, tic.localPosition.z);
                 tics.Add(temp);
             }
         }
@@ -70,19 +70,19 @@ public class StatusIndicator : MonoBehaviour
         if (!input)
         {
             amountHolder.text = "";
-            tic.GetComponent<MeshRenderer>().enabled = false;
+            tic.GetComponent<SpriteRenderer>().enabled = false;
             foreach(Transform t in tics)
             {
-                t.GetComponent<MeshRenderer>().enabled = false;
+                t.GetComponent<SpriteRenderer>().enabled = false;
             }
         }
         else
         {
             amountHolder.text = amount + "";
-            tic.GetComponent<MeshRenderer>().enabled = true;
+            tic.GetComponent<SpriteRenderer>().enabled = true;
             foreach (Transform t in tics)
             {
-                t.GetComponent<MeshRenderer>().enabled = true;
+                t.GetComponent<SpriteRenderer>().enabled = true;
             }
         }
     }
@@ -94,30 +94,31 @@ public class StatusIndicator : MonoBehaviour
             GetComponent<SpriteRenderer>().sprite = burning;
             Material temp = new Material(Shader.Find("Standard"));
             temp.color = Color.red;
-            tic.GetComponent<MeshRenderer>().material = temp;
+            tic.GetComponent<SpriteRenderer>().color = Color.red;
         }
         else if (type == "poisoned")
         {
             GetComponent<SpriteRenderer>().sprite = poisoned;
             Material temp = new Material(Shader.Find("Standard"));
             temp.color = new Color(1,0,1);
-            tic.GetComponent<MeshRenderer>().material = temp;
+            tic.GetComponent<SpriteRenderer>().color = Color.blue;
             amountHolder.color = Color.white;
         }
         else if (type == "lifted")
         {
             GetComponent<SpriteRenderer>().sprite = lifted;
+            tic.GetComponent<SpriteRenderer>().color = Color.white;
         }
         else if (type == "charge")
         {
             GetComponent<SpriteRenderer>().sprite = charge;
-            tic.GetComponent<MeshRenderer>().enabled = false;
+            tic.GetComponent<SpriteRenderer>().enabled = false;
         }
         else if (type == "armor")
         {
             GetComponent<SpriteRenderer>().sprite = armor;
             amountHolder.color = Color.white;
-            tic.GetComponent<MeshRenderer>().enabled = false;
+            tic.GetComponent<SpriteRenderer>().enabled = false;
         }
         myType = type;
     }

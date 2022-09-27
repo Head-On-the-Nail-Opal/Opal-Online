@@ -677,6 +677,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: BubblePassive
       objectReference: {fileID: 0}
+    - target: {fileID: 3576608704638240444, guid: 40f17b26a60ceda41b26a1f19585f239,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 40f17b26a60ceda41b26a1f19585f239, type: 3}
 --- !u!1001 &4950762389954581084

@@ -7,6 +7,8 @@ public class Reflectron : OpalScript
     bool diagonal = false;
     int damageTaken = 0;
 
+    public Sprite tempDamage;
+
 
     override public void setOpal(string pl)
     {
@@ -17,7 +19,7 @@ public class Reflectron : OpalScript
         speed = 5;
         priority = 2;
         myName = "Reflectron";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.9f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 0.9f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -33,28 +35,50 @@ public class Reflectron : OpalScript
         Attacks = new Attack[6];
         Attacks[0] = new Attack("Reflect", 0, 0, 0, "<Passive>\n Reflectron will duplicate Fragmatom's laser attacks. Bounced lasers deal double damage.");
         Attacks[1] = new Attack("Form Switch", 0, 1, 0, "Change between Diagonal Form or Cross Form");
-        Attacks[2] = new Attack("Empower", 0, 1, 0, "Overheal by 10");
-        Attacks[3] = new Attack("Heal Ray", 1, 6, 0, "Heal all Opals in a line 2 health");
+        Attacks[2] = new Attack("Empower", 0, 1, 0, "Overheal by 10",0,3);
+        Attacks[3] = new Attack("Heal Ray", 1, 6, 0, "Heal all Opals in a line 2 health",0,3);
         Attacks[4] = new Attack("Straight Reflection", 1, 6, 4,"");
         Attacks[5] = new Attack("Diagonal Reflection", 1, 8, 4, "");
         type1 = "Light";
         type2 = "Laser";
+        setUpAngle();
+    }
+
+    public void setUpAngle()
+    {
+        diagonal = !diagonal;
+        if (!diagonal)
+        {
+            Attacks[3] = new Attack("Heal Ray", 1, 8, 0, "Heal all Opals in a diagonal line 2 health");
+            anim.CrossFade("ReflectronX", 0);
+            doHighlight("ReflectronX");
+        }
+        else
+        {
+            Attacks[3] = new Attack("Heal Ray", 1, 6, 0, "Heal all Opals in a line 2 health");
+            anim.CrossFade("ReflectronT", 0);
+            doHighlight("ReflectronT");
+        }
     }
 
     public override void toggleMethod()
     {
         diagonal = !diagonal;
-        if (diagonal)
+        Sprite t = tempDamage;
+        tempDamage = attackFrame;
+        attackFrame = t;
+        hurtFrame = t;
+        if (!diagonal)
         {
             Attacks[3] = new Attack("Heal Ray", 1, 8, 0, "Heal all Opals in a diagonal line 2 health");
-            anim.CrossFade("ReflectronDiagonal", 0);
-            doHighlight("ReflectronDiagonal");
+            anim.CrossFade("ReflectronX", 0);
+            doHighlight("ReflectronX");
         }
         else
         {
             Attacks[3] = new Attack("Heal Ray", 1, 6, 0, "Heal all Opals in a line 2 health");
-            anim.CrossFade("Reflectron", 0);
-            doHighlight("Reflectron");
+            anim.CrossFade("ReflectronT", 0);
+            doHighlight("ReflectronT");
         }
     }
 
@@ -62,7 +86,7 @@ public class Reflectron : OpalScript
     {
         damageTaken = dam - getDefense();
         CursorScript c = boardScript.myCursor;
-        if (c.getCurrentOpal().getMyName() == "Fragmatom")
+        if (c.getCurrentOpal().getMyName() == "Glintrey")
         {
             if (!diagonal)
             {
@@ -138,17 +162,7 @@ public class Reflectron : OpalScript
         }
         else if (attackNum == 1)
         {
-            diagonal = !diagonal;
-            if (diagonal)
-            {
-                Attacks[3] = new Attack("Heal Ray", 1, 8, 0, "Heal all Opals in a diagonal line 2 health");
-                anim.CrossFade("ReflectronDiagonal",0);
-            }
-            else
-            {
-                Attacks[3] = new Attack("Heal Ray", 1, 6, 0, "Heal all Opals in a line 2 health");
-                anim.CrossFade("Reflectron", 0);
-            }
+            toggleMethod();
             return 0;
         }
         else if (attackNum == 2)

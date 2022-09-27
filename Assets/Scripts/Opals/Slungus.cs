@@ -14,7 +14,7 @@ public class Slungus : OpalScript
         speed = 2;
         priority = 4;
         myName = "Slungus";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.5f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 0.9f;
         offsetX = 0;
         offsetY = -0.15f;
         offsetZ = 0;
@@ -28,9 +28,9 @@ public class Slungus : OpalScript
             GetComponent<SpriteRenderer>().flipX = false;
         }
         Attacks[0] = new Attack("Toxic", 0, 0, 0, "<Passive>\n When Slungus is buffed, it is debuffed instead.");
-        Attacks[1] = new Attack("Spore Spit", 2, 1, 4,"Target is poisoned. Poison deals damage based on Slungus's negative attack stat.");
-        Attacks[2] = new Attack("Mush Rush", 2, 1, 0, "Buff an Opal's attack and defense by the inverse of your current stats.");
-        Attacks[3] = new Attack("Lifeshroom", 2, 1, 0, "Buff an Opal's attack and defense by 1. Lose -1 attack and -1 defense. Place Growths under both Opals.");
+        Attacks[1] = new Attack("Spore Spit", 2, 1, 4,"Target is poisoned. Poison deals damage based on Slungus's negative attack stat.",0,3);
+        Attacks[2] = new Attack("Mush Rush", 2, 1, 0, "Buff an Opal's attack and defense by the inverse of your current stats.",0,3);
+        Attacks[3] = new Attack("Lifeshroom", 2, 1, 0, "Buff an Opal's attack and defense by 1. Lose -1 attack and -1 defense. Place Growths under both Opals.",0,3);
         type1 = "Plague";
         type2 = "Grass";
     }

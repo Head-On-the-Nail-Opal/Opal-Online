@@ -90,6 +90,8 @@ abstract public class OpalScript : MonoBehaviour {
     private bool takenDamage = false;
     private bool tidalDelay = false;
 
+    private bool flooded = false;
+
     private int succuumTurns = 0;
 
     private Vector3 coordinates = new Vector3();
@@ -100,6 +102,16 @@ abstract public class OpalScript : MonoBehaviour {
     public List<OpalScript> evolvesInto = new List<OpalScript>();
     public List<OpalScript> evolvesFrom = new List<OpalScript>();
     public bool defaultStage = true;
+
+    private List<Behave> myPriorities = new List<Behave>();
+
+    private List<Behave> speciesPriorities = new List<Behave>();
+    private List<Behave> speciesAwareness = new List<Behave>();
+
+    public Sprite attackFrame;
+    public Sprite hurtFrame;
+    public Sprite myBoulders;
+    private Sprite defaultFrame;
 
     private void Awake()
     {
@@ -118,6 +130,7 @@ abstract public class OpalScript : MonoBehaviour {
         GameObject iDBody = GameObject.Find("ItemDescriptions");
         ItemDescriptions iD = iDBody.GetComponent<ItemDescriptions>();
         iD.setUp();
+        defaultFrame = GetComponent<SpriteRenderer>().sprite;
         //if(boardScript != null && !boardScript.getMult())
             //myCharm = iD.getRandomCharmName();
         onAwake();
@@ -876,6 +889,21 @@ abstract public class OpalScript : MonoBehaviour {
 
     //end changes
 
+    public List<Behave> getBehaviours()
+    {
+        return myPriorities;
+    }
+
+    public List<Behave> getSpeciesPriorities()
+    {
+        return speciesPriorities;
+    }
+
+    public List<Behave> getSpeciesAwareness()
+    {
+        return speciesAwareness;
+    }
+
     public string getVariant()
     {
         return variant;
@@ -1258,10 +1286,62 @@ abstract public class OpalScript : MonoBehaviour {
                 lastTile = currentTile;
                 onMove(totalDist);
                 onMove(x, y);
+                boardScript.myCursor.updateCurrentActually();
             }
             return (int)(Mathf.Abs(lastPos.x - x) + Mathf.Abs(lastPos.z - y));
         }
         return -1;
+    }
+
+    public IEnumerator playFrame(string action, int length)
+    {
+        if (length > 0 && myName != "Boulder")
+        {
+            if(anim == null)
+            {
+                anim = GetComponent<Animator>();
+            }
+            defaultFrame = GetComponent<SpriteRenderer>().sprite;
+            anim.enabled = false;
+            if (myHighlight != null)
+            {
+                myHighlight.GetComponent<Animator>().enabled = false;
+            }
+            if (action == "attack" && attackFrame != null)
+            {
+                GetComponent<SpriteRenderer>().sprite = attackFrame;
+                if (myHighlight != null)
+                    myHighlight.GetComponent<SpriteRenderer>().sprite = attackFrame;
+            }
+            else if (action == "hurt" && hurtFrame != null)
+            {
+                GetComponent<SpriteRenderer>().sprite = hurtFrame;
+                if (myHighlight != null)
+                    myHighlight.GetComponent<SpriteRenderer>().sprite = hurtFrame;
+            }
+
+
+            for (int i = 0; i < length * 6; i++)
+            {
+                yield return new WaitForFixedUpdate();
+            }
+
+            if (this != null)
+            {
+                if (myName != "Experiment42" || (GetComponent<Experiment42>() != null && GetComponent<Experiment42>().isCorpse == false))
+                {
+                    GetComponent<SpriteRenderer>().sprite = defaultFrame;
+                    if (myHighlight != null)
+                        myHighlight.GetComponent<SpriteRenderer>().sprite = defaultFrame;
+
+                    anim.enabled = true;
+                    if (myHighlight != null)
+                    {
+                        myHighlight.GetComponent<Animator>().enabled = true;
+                    }
+                }
+            }
+        }
     }
 
     public virtual void onMove(int distanceMoved)
@@ -1775,17 +1855,14 @@ abstract public class OpalScript : MonoBehaviour {
 
     virtual public void toggleFlood(bool flood)
     {
-        if(flood)
+        if(!flood && flooded)
         {
-            //transform.position = new Vector3(getPos().x, transform.position.y - 0.3f, getPos().z);
-            //if (mySpot != null)
-                //mySpot.transform.localPosition = new Vector3(0, 0f - offsetY, 0);
+            flooded = false;
         }
-        else
+        else if(!flooded && flood)
         {
-            //transform.position = new Vector3(getPos().x, getPos().y + getYOffset(), getPos().z);
-            //if(mySpot != null)
-                //mySpot.transform.localPosition = new Vector3(0, -1.0f - offsetY, 0);
+            currentTile.callParticleEffect("Minisplash");
+            flooded = true;
         }
     }
 
@@ -2009,8 +2086,24 @@ abstract public class OpalScript : MonoBehaviour {
             barriarraySurrounding().takeDamage(dam, mod, effect);
             return;
         }
-        if(!boardScript.getResetting())
+        if (!boardScript.getResetting())
+        {
             StartCoroutine(yowch());
+            StartCoroutine(playFrame("hurt", 5));
+            if(dam > 5)
+            {
+                StartCoroutine(boardScript.screenShake(1, 4));
+            }
+            else if(dam > 15)
+            {
+                StartCoroutine(boardScript.screenShake(2, 4));
+            }
+            else
+            {
+                StartCoroutine(boardScript.screenShake(1, 4));
+            }
+            
+        }
         if(!mod)
         {
             this.health -= dam;
@@ -2108,6 +2201,7 @@ abstract public class OpalScript : MonoBehaviour {
             yield return new WaitForFixedUpdate();
         }
         doAttack(target, cursor, attackNum, currentProj);
+        StartCoroutine(playFrame("attack", Attacks[attackNum].getAttackAnim()));
         for (int i = 0; i < 5; i++)
         {
             transform.position = new Vector3(transform.position.x - dir * speed, transform.position.y, transform.position.z);
@@ -2144,6 +2238,7 @@ abstract public class OpalScript : MonoBehaviour {
             yield return new WaitForFixedUpdate();
         }
         doAttack(target, cursor, attackNum, currentProj);
+        StartCoroutine(playFrame("attack", Attacks[attackNum].getAttackAnim()));
         for (int i = 0; i < 3; i++)
         {
             transform.position = new Vector3(transform.position.x - dir * speed, transform.position.y, transform.position.z);
@@ -2154,7 +2249,7 @@ abstract public class OpalScript : MonoBehaviour {
 
     public void doAttack(OpalScript target, CursorScript cursor, int attackNum, Projectile currentProj)
     {
-        Projectile tempProj = Instantiate(currentProj);
+        Projectile tempProj = currentProj;
         tempProj.setUp(getAttacks()[attackNum].getShape(), getMainType());
         adjustProjectile(tempProj, attackNum);
         tempProj.fire(this, target, attackNum);
@@ -2162,7 +2257,7 @@ abstract public class OpalScript : MonoBehaviour {
 
     public void doAttack(TileScript target, CursorScript cursor, int attackNum, Projectile currentProj)
     {
-        Projectile tempProj = Instantiate(currentProj);
+        Projectile tempProj = currentProj;
         tempProj.setUp(getAttacks()[attackNum].getShape(), getMainType());
         adjustProjectile(tempProj, attackNum);
         tempProj.fire(this, target, attackNum);
@@ -2463,6 +2558,7 @@ abstract public class OpalScript : MonoBehaviour {
                 succuumTurns++;
                 doTempBuff(0, -1, -3);
                 doTempBuff(2, -1, -1);
+                StartCoroutine(t.getCurrentOpal().playFrame("attack", 4));
             }
         }
         if(succuumTurns != 0 && !foundSuccuum)
@@ -3196,6 +3292,22 @@ abstract public class OpalScript : MonoBehaviour {
         onBuff(temp);
         buffs.Add(temp);
         handleTempBuffs(false);
+        if(a < 0 && tl !=0)
+        {
+            StartCoroutine(playFrame("hurt", 5));
+            if (a < -2)
+            {
+                StartCoroutine(boardScript.screenShake(1, 4));
+            }
+            else if (a < -4)
+            {
+                StartCoroutine(boardScript.screenShake(2, 4));
+            }
+            else
+            {
+                StartCoroutine(boardScript.screenShake(1, 4));
+            }
+        }
         return temp;
     }
 

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class FumePlume : OpalScript
 {
-    private int ashIncrement = 1;
     //(10,0,0,3,"FumePlume", 0.8f,0, 0, 0, "Red", "Fire", "Plague")
     override public void setOpal(string pl)
     {
@@ -15,7 +14,7 @@ public class FumePlume : OpalScript
         speed = 3;
         priority = 4;
         myName = "FumePlume";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.8f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         offsetX = 0;
         offsetY = 0.02f;
         offsetZ = 0;
@@ -28,10 +27,10 @@ public class FumePlume : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Smoke Screen", 0, 1, 0, "Place 2 miasma and 2 flame tiles surrounding you. If you're standing on a flame or miasma tile, spawn only that tile.");
-        Attacks[1] = new Attack("Exhaust", 4, 1, 6, "Place flames at your feet and miasma at the target's feet. If either are already occupied with said tiles then spawn on adjacent tiles.");
-        Attacks[2] = new Attack("Ash Breath", 2, 1, 0, "<Incremental>\nBurn and poison a target. If you're on a miasma or flame tile, the target loses 1 attack or defense respectively.");
-        Attacks[3] = new Attack("Furnace", 3, 1, 0, "<Free Ability>\n If standing on Miasma or Flame, place that tile. Lose 1 speed.");
+        Attacks[0] = new Attack("Smoke Screen", 0, 1, 0, "Place 2 miasma and 2 flame tiles surrounding you. If you're standing on a flame or miasma tile, spawn only that tile.",0,3);
+        Attacks[1] = new Attack("Exhaust", 4, 1, 6, "Place flames at your feet and miasma at the target's feet. If either are already occupied with said tiles then spawn on adjacent tiles.",0,3);
+        Attacks[2] = new Attack("Ash Breath", 2, 1, 0, "Burn and poison a target. If you're on a miasma or flame tile, the target loses 2 attack or defense respectively.",0,3);
+        Attacks[3] = new Attack("Furnace", 3, 1, 0, "<Free Ability>\n If standing on Miasma or Flame, place that tile. Lose 1 speed.",0,3);
         Attacks[3].setFreeAction(true);
         type1 = "Fire";
         type2 = "Plague";
@@ -94,14 +93,13 @@ public class FumePlume : OpalScript
             target.setPoison(true);
             if (getBoard().tileGrid[(int)getPos().x, (int)getPos().z].type == "Fire")
             {
-                target.doTempBuff(1, -1, -ashIncrement);
+                target.doTempBuff(1, -1, -2);
             }
             if (getBoard().tileGrid[(int)getPos().x, (int)getPos().z].type == "Miasma")
             {
-                target.doTempBuff(0, -1, -ashIncrement);
+                target.doTempBuff(0, -1, -2);
             }
-            ashIncrement++;
-            Attacks[2].setDescription("Incremental\nBurn and poison a target. If you're on a miasma or flame tile, the target loses "+ ashIncrement +" attack or defense respectively.");
+            Attacks[2].setDescription("Incremental\nBurn and poison a target. If you're on a miasma or flame tile, the target loses "+ -2 +" attack or defense respectively.");
             return 0;
         }
         else if (attackNum == 3) //Ash Breath

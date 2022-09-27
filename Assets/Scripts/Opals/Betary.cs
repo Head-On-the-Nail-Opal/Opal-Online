@@ -14,7 +14,7 @@ public class Betary : OpalScript
         speed = 1;
         priority = 8;
         myName = "Betary";
-        transform.localScale = new Vector3(3.5f, 3.5f, 1);
+        transform.localScale = new Vector3(3f, 3f, 1);
         offsetX = 0;
         offsetY = -0.15f;
         offsetZ = 0;
@@ -27,12 +27,12 @@ public class Betary : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Zap", 3, 4, 5, "<Free Ability>\nCosts 2 charge. Deal 5 damage.");
+        Attacks[0] = new Attack("Zap", 3, 4, 5, "<Free Ability>\nCosts 2 charge. Deal 5 damage.",0,3);
         Attacks[0].setFreeAction(true);
-        Attacks[1] = new Attack("Draw Power", 3, 4, 5, "<Free Ability>\n Costs 1 charge. If target is buffed then they are Reduced by 1 and Betary gains the stat loss.");
+        Attacks[1] = new Attack("Draw Power", 3, 4, 5, "<Free Ability>\n Costs 1 charge. If target is buffed then they are Reduced by 1 and Betary gains the stat loss.",0,3);
         Attacks[1].setFreeAction(true);
-        Attacks[2] = new Attack("Recharge", 0, 1, 0, "Costs 1 charge. Gain +3 charge and +1 speed.");
-        Attacks[3] = new Attack("Jump", 0, 1, 0, "Gain +1 charge.");
+        Attacks[2] = new Attack("Recharge", 0, 1, 0, "Costs 1 charge. Gain +3 charge and +1 speed.",0,3);
+        Attacks[3] = new Attack("Jump", 0, 1, 0, "Gain +1 charge.",0,3);
         type1 = "Electric";
         type2 = "Electric";
     }

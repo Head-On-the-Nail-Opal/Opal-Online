@@ -5,10 +5,19 @@ using UnityEngine;
 public class Experiment42 : OpalScript
 {
     int currentUpgrade = 1;
-    bool isCorpse = false;
+    public bool isCorpse = false;
 
     public Sprite deadSprite;
     private Sprite aliveSprite;
+
+    public void FixedUpdate()
+    {
+        if(isCorpse && GetComponent<SpriteRenderer>().sprite != deadSprite)
+        {
+            GetComponent<SpriteRenderer>().sprite = deadSprite;
+            print("du hello");
+        }
+    }
 
     override public void setOpal(string pl)
     {
@@ -19,7 +28,7 @@ public class Experiment42 : OpalScript
         speed = 3;
         priority = 2;
         myName = "Experiment42";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.7f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         offsetX = 0;
         offsetY = 0;
         offsetZ = 0;
@@ -33,9 +42,9 @@ public class Experiment42 : OpalScript
             GetComponent<SpriteRenderer>().flipX = false;
         }
         Attacks[0] = new Attack("Immortal", 0, 0, 0, "<Passive>\nAfter Experiment42 dies it leaves an unbreakable corpse. That corpse can return to being Experiment42.");
-        Attacks[1] = new Attack("Upgrade", 1, 1, 6, "Deal damage, and Experiment42 gains +" + currentUpgrade + " attack and +" + currentUpgrade + " defense.");
-        Attacks[2] = new Attack("Fortify", 0, 1, 0, "Gain +1 armor, lose -1 speed for 1 turn.");
-        Attacks[3] = new Attack("Tinker",0,1,0,"Upgrade provides an additional +1 attack and defense permanently. Take 5 damage.");
+        Attacks[1] = new Attack("Upgrade", 1, 1, 6, "Deal damage, and Experiment42 gains +" + currentUpgrade + " attack and +" + currentUpgrade + " defense.",0,3);
+        Attacks[2] = new Attack("Fortify", 0, 1, 0, "Gain +1 armor, lose -1 speed for 1 turn.",0,3);
+        Attacks[3] = new Attack("Tinker",0,1,0,"Upgrade provides an additional +1 attack and defense permanently. Take 5 damage.",0,3);
         type1 = "Metal";
         type2 = "Spirit";
         og = true;
@@ -50,6 +59,9 @@ public class Experiment42 : OpalScript
         Attacks[1] = new Attack("Impervious", 0, 0, 0, "<Passive>\n This corpse cannot be destroyed until every allied Opal is dead.");
         Attacks[2] = new Attack("Returning", 0, 1, 0, "Heal 5 health.");
         Attacks[3] = new Attack("Toxic Byproduct", 0, 1, 0, "Poison Opals on adjacent tiles.");
+
+        clearAllBuffs();
+        speed = 0;
 
         transform.localScale = new Vector3(3f, 3f, 1) * 1.1f;
 
@@ -74,6 +86,9 @@ public class Experiment42 : OpalScript
         Attacks[1] = new Attack("Upgrade", 1, 1, 8, "Deal damage, and Experiment42 gains +" + currentUpgrade + " attack and +" + currentUpgrade + " defense.");
         Attacks[2] = new Attack("Fortify", 0, 1, 0, "Gain +1 armor, lose -1 speed for 1 turn.");
         Attacks[3] = new Attack("Tinker", 0, 1, 0, "Upgrade provides an additional +1 attack and defense permanently. Take 5 damage.");
+
+        clearAllBuffs();
+        speed = 0;
 
         transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.7f;
 
@@ -156,7 +171,7 @@ public class Experiment42 : OpalScript
         }
         else if (attackNum == 1)
         {
-            return 0;
+            return Attacks[attackNum].getBaseDamage() + getAttack() + currentUpgrade - target.currentPlayer.getDefense();
         }
         else if (attackNum == 2)
         {

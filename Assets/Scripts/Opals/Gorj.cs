@@ -15,7 +15,7 @@ public class Gorj : OpalScript
         speed = 2;
         priority = 0;
         myName = "Gorj";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.9f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1.2f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -29,9 +29,9 @@ public class Gorj : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Soft Belly", 0, 0, 0, "<Passive>\nWhen Gorj takes damage while it is engorged it will spit it's victim out.");
-        Attacks[1] = new Attack("Consume", 1, 1, 0, "Consume an Opal. Gorj's speed is set to 2");
-        Attacks[2] = new Attack("Belly Laugh", 0, 1, 0, "Gain +3 defense. If engorged, deal 5 damage to the victim");
-        Attacks[3] = new Attack("Mulch Munch", 0, 1, 0, "Eat the ground beneath Gorj, each tile type affecting Gorj and it's victim differently.");
+        Attacks[1] = new Attack("Consume", 1, 1, 0, "Consume an Opal. Gorj's speed is set to 2",0,3);
+        Attacks[2] = new Attack("Belly Laugh", 0, 1, 0, "Gain +3 defense. If engorged, deal 5 damage to the victim",0,3);
+        Attacks[3] = new Attack("Mulch Munch", 0, 1, 0, "Eat the ground beneath Gorj, each tile type affecting Gorj and it's victim differently.",0,3);
         type1 = "Void";
         type2 = "Void";
     }
@@ -58,7 +58,9 @@ public class Gorj : OpalScript
                             break;
                         }
                     }
-                    transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.9f;
+                    transform.localScale = new Vector3(3f, 3f, 1) * 1.2f;
+                    anim.CrossFade("Gorj", 0);
+                    doHighlight("Gorj");
                 }
             }
             victims.Clear();
@@ -80,7 +82,9 @@ public class Gorj : OpalScript
             target.getCurrentTile().standingOn(null);
             target.setPos(-100,-100);
             setTempBuff(2, -1, 2);
-            transform.localScale *= 1.3f;
+            transform.localScale *= 1.1f;
+            anim.CrossFade("EnGorj", 0);
+            doHighlight("EnGorj");
             return 0;
         }
         else if (attackNum == 2)

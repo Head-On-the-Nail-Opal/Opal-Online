@@ -14,7 +14,7 @@ public class Bubbacle : OpalScript
         speed = 3;
         priority = 6;
         myName = "Bubbacle";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.7f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         offsetX = 0;
         offsetY = -0.1f;
         offsetZ = 0;
@@ -28,9 +28,10 @@ public class Bubbacle : OpalScript
             GetComponent<SpriteRenderer>().flipX = false;
         }
         Attacks[0] = new Attack("Frail", 0, 0, 0, "<Passive>\n When Bubbacle takes damage, place water tiles at its feet and on adjacent tiles.");
-        Attacks[1] = new Attack("Bubble Blast", 4, 4, 3, "Deal damage at range. Target gets 2 levels of Bubbled. When Bubbled Opals take damage, they spread water around them at a range equal to the amount of Bubbled levels they have (up to five). This reduces their Bubbled level by 1.");
-        Attacks[2] = new Attack("Pressure Wash", 3, 4, 4, "Deal damage at range. Before dealing damage, add Bubbacle’s defense buffs to its attack stat, and then clear its attack and defense buffs.");
-        Attacks[3] = new Attack("Pop Frequency", 0, 1, 0, "All Bubbled Opals take damage based on their bubble level. Bubbacle gains +1 defense for each for 2 turns.");
+        Attacks[1] = new Attack("Bubble Blast", 4, 4, 3, "Deal damage at range. Target gets 2 levels of Bubbled. When Bubbled Opals take damage, the bubbles pop and spill water. The more bubbles, the more water.",0,3);
+        Attacks[1].addProjectile("Default", "Bubble", 10, Color.white,0.9f);
+        Attacks[2] = new Attack("Pressure Wash", 3, 4, 4, "Deal damage at range. Before dealing damage, add Bubbacle’s defense buffs to its attack stat, and then clear its attack and defense buffs.",0,3);
+        Attacks[3] = new Attack("Pop Frequency", 0, 1, 0, "All Bubbled Opals take damage based on their bubble level. Bubbacle gains +1 defense for each for 2 turns.",0,3);
         type1 = "Water";
         type2 = "Water";
         og = true;

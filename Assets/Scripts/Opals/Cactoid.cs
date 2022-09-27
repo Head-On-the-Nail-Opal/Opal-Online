@@ -13,7 +13,7 @@ public class Cactoid : OpalScript
         speed = 2;
         priority = 5;
         myName = "Cactoid";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.7f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -26,12 +26,12 @@ public class Cactoid : OpalScript
         offsetY = -0.1f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Propogate", 4, 1, 0, "<Free Ability>\n Costs 1 charge. Place a Growth.");
+        Attacks[0] = new Attack("Propogate", 4, 1, 0, "<Free Ability>\n Costs 1 charge. Place a Growth.",0,3);
         Attacks[0].setFreeAction(true);
-        Attacks[1] = new Attack("Needles", 0, 1, 6, "<Free Ability>\n Costs 2 charge. Surrounding Opals take 6 damage.");
+        Attacks[1] = new Attack("Needles", 0, 1, 6, "<Free Ability>\n Costs 2 charge. Surrounding Opals take 6 damage.",0,3);
         Attacks[1].setFreeAction(true);
-        Attacks[2] = new Attack("Power Spike", 0, 5, 0, "Give an Opal standing on a Growth +2 attack and +2 charge.");
-        Attacks[3] = new Attack("Enriched Soil", 0, 1, 0, "Gain +2 charge if Cactoid is standing on Growth. Otherwise gain +1.");
+        Attacks[2] = new Attack("Power Spike", 0, 5, 0, "Give an Opal standing on a Growth +2 attack and +2 charge.",0,3);
+        Attacks[3] = new Attack("Enriched Soil", 0, 1, 0, "Gain +2 charge if Cactoid is standing on Growth. Otherwise gain +1.",0,3);
         type1 = "Grass";
         type2 = "Electric";
     }

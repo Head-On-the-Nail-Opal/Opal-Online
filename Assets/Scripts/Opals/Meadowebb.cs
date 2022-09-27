@@ -16,7 +16,7 @@ public class Meadowebb : OpalScript
         speed = 3;
         priority = 9;
         myName = "Meadowebb";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.6f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 0.9f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -30,9 +30,9 @@ public class Meadowebb : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Grassy Lair", 0, 0, 0, "<Passive>\nWhile Meadowebb is on Growth, if an Opal enters a surrounding tile, Meadowebb uses Munch on them.");
-        Attacks[1] = new Attack("Munch", 1, 1, 6, "Deal damage and place a growth tile at the feet of the target. If they're already on Growth, deal damage again.");
-        Attacks[2] = new Attack("Striking Stance", 0, 1, 0, "Gain +4 attack, +4 defense and -1 speed for 1 turn. Place a Growth underneath Meadowebb.");
-        Attacks[3] = new Attack("Gather Dew", 0, 1, 0, "Consume all Growths surrounding Meadowebb, then after the next time you take damage heal 2 health for each. ("+0+")");
+        Attacks[1] = new Attack("Munch", 1, 1, 6, "Deal damage and place a growth tile at the feet of the target. If they're already on Growth, deal damage again.",0,3);
+        Attacks[2] = new Attack("Striking Stance", 0, 1, 0, "Gain +4 attack, +4 defense and -1 speed for 1 turn. Place a Growth underneath Meadowebb.",0,3);
+        Attacks[3] = new Attack("Gather Dew", 0, 1, 0, "Consume all Growths surrounding Meadowebb, then after the next time you take damage heal 2 health for each. ("+0+")",0,3);
         type1 = "Grass";
         type2 = "Grass";
     }

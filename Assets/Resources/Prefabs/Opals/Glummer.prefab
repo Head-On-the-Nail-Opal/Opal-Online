@@ -120,3 +120,6 @@ MonoBehaviour:
   evolvesInto: []
   evolvesFrom: []
   defaultStage: 1
+  attackFrame: {fileID: 0}
+  hurtFrame: {fileID: 0}
+  myBoulders: {fileID: 0}

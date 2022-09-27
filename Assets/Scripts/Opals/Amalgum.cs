@@ -24,9 +24,9 @@ public class Amalgum : OpalScript
         speed = 0;
         priority = 9;
         myName = "Amalgum";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.8f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         offsetX = 0;
-        offsetY = -0.05f;
+        offsetY = 0f;
         offsetZ = 0;
         player = pl;
         if (pl == "Red" || pl == "Green")

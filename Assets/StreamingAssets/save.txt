@@ -1,9 +1,8 @@
 Please don't change this, it will be encrypted eventually.
-Ambush|None|Straight-Edge,Betary|None|Straight-Edge,Glummer|None|Straight-Edge,Wingnition|None|Straight-Edge,Swoopitch|None|Straight-Edge,
-Ambush|None|Straight-Edge,Glummer|None|Straight-Edge,Rekindle|None|Straight-Edge,Sentree|None|Straight-Edge,
-Bubbacle|None|Straight-Edge,Chardinal|None|Straight-Edge,Chasmcrawler|None|Straight-Edge,
-KnightLite|None|Straight-Edge,Aughtment|None|Straight-Edge,Fragmatom|None|Straight-Edge,Charayde|None|Straight-Edge,Drizziphyl|None|Straight-Edge,Butterflight|None|Straight-Edge,Experiment42|None|Straight-Edge,Nekrokrab|None|Straight-Edge,
-Duplimorph|None|Straight-Edge,Mistery|None|Straight-Edge,
+Charayde|None|Straight-Edge,Spillarc|None|Straight-Edge,
+Ambush|None|Straight-Edge,
+Bubbacle|None|Straight-Edge,
+Infernal|None|Straight-Edge,
 endTeams
-Abysmeel,Amalgum,Ambush,Aquarican,Aughtment,Barriarray,Beamrider,Betary,Bubbacle,Butterflight,Cactoid,Charayde,Chardinal,Chasmcrawler,Cottonmaw,Diamite,Drizziphyl,Duplimorph,Excremite,Experiment42,Finbow,Fluttorch,Fragmatom,Froxic,FumePlume,Gilsplish,Glorm,Glummer,Gorj,Grimmline,Groth,Hearthhog,Heatriarch,Hopscure,Hoviron,Inflicshun,Inseedious,Investigator,Jetjinn,KnightLite,Luminute,Meadowebb,Mechalodon,Mistery,Moppet,Nachteous,Nekrokrab,Oozwl,Oremordilla,Overgroink,Pebblepal,Prismin,Protectric,Puffsqueak,Rekindle,Scorpirad,Sentree,Shineode,Shocket,Slungus,Snugbun,Sorceraura,Spillarc,Spiritch,Strikel,Succuum,Swoopitch,Teslamp,Thermor,Tortquoise,Verminfection,Volcoco,Wingnition,Wobblestone,Woolloy,
+Abysmeel,Amalgum,Ambush,Aquarican,Aughtment,Barriarray,Beamrider,Betary,Bubbacle,Butterflight,Cactoid,Charayde,Chardinal,Chasmcrawler,Cottonmaw,Drizziphyl,Duplimorph,Excremite,Experiment42,Finbow,Fluttorch,Froxic,FumePlume,Gilsplish,Glintrey,Glorm,Glummer,Gorj,Grimmline,Groth,Hearthhog,Heatriarch,Hopscure,Hoviron,Infernal,Inflicshun,Inseedious,Investigator,KnightLite,Luminute,Meadowebb,Mechalodon,Mintick,Mistery,Moppet,Nachteous,Nekrokrab,Oozwl,Oremordilla,Overgroink,Pebblepal,Prismin,Protectric,Puffsqueak,Rekindle,Scorpirad,Sentree,Shineode,Shocket,Slungus,Snugbun,Sorceraura,Spillarc,Spiritch,Strikel,Succuum,Swoopitch,Teslamp,Thermor,Tortquoise,Verminfection,Volcoco,Wingnition,Wobblestone,Woolloy,
 endOpals

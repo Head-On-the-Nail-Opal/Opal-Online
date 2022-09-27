@@ -12,7 +12,7 @@ public class Ambush : OpalScript {
         speed = 4;
         priority = 9;
         myName = "Ambush";
-        transform.localScale = new Vector3(3f, 3f, 1);
+        transform.localScale = new Vector3(3f, 3f, 1)*0.85f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -25,13 +25,20 @@ public class Ambush : OpalScript {
         offsetY = -0.1f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Relocation", 0, 5, 0, "<Free Ability>\n Teleport from a Growth tile to any Growth tile.");
+        Attacks[0] = new Attack("Relocation", 0, 5, 0, "<Free Ability>\n Teleport from a Growth tile to any Growth tile.", 0,0);
+        Attacks[0].addProjectile("Default", "Default", 1, Color.black, 5);
         Attacks[0].setFreeAction(true);
-        Attacks[1] = new Attack("Seed Launch", 4, 1, 0, "Place a Growth at the feet of your target and at your feet.");
-        Attacks[2] = new Attack("Thorned Swipe", 1, 1, 8, "May move after using this ability.");
-        Attacks[3] = new Attack("Dimishing Wrap", 0, 1, 0, "Gain +1 attack for each adjacent Opal. Adjacent Opals lose -1 defense. May move after using this ability.", 1);
+        Attacks[1] = new Attack("Seed Launch", 4, 1, 0, "Place a Growth at the feet of your target and at your feet.",0,3);
+        Attacks[1].addProjectile("Single", "Default", 20, Color.green, 1);
+        Attacks[1].getTags().Add("Growth");
+        Attacks[2] = new Attack("Thorned Swipe", 1, 1, 8, "May move after using this ability.",0,3);
+        Attacks[2].getTags().Add("MoveAfter");
+        Attacks[3] = new Attack("Dimishing Wrap", 0, 1, 0, "Gain +1 attack for each adjacent Opal. Adjacent Opals lose -1 defense. May move after using this ability.", 1,3);
         type1 = "Grass";
         type2 = "Dark";
+
+        getSpeciesPriorities().AddRange(new List<Behave>{ new Behave("Growth-Teleport", 8, 1), new Behave("Safety", 7, 4), new Behave("Killer", 6, 1), new Behave("Green-Thumb", 5, 1) });
+        getSpeciesAwareness().AddRange(new List<Behave> { new Behave("Ambush-Wary", 8, 1) });
     }
 
     public override void prepAttack(int attackNum)

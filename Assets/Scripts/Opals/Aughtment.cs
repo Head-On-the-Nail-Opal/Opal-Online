@@ -17,7 +17,7 @@ public class Aughtment : OpalScript
         speed = 2;
         priority = 7;
         myName = "Aughtment";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.8f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -31,9 +31,9 @@ public class Aughtment : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Tinker", 0, 0, 0, "<Passive>\n When Aughtment uses one ability, the other is improved. <Warning> Do not upgrade past level 9...");
-        Attacks[1] = new Attack("Harm Arm", 1, 1, 1, "Deal 1 damage.");
-        Attacks[2] = new Attack("Warm Arm", 0, 1, 0, "Gain +1 defense");
-        Attacks[3] = new Attack("Two Arms!", 0, 1, 0, "Upgrade both of your arm abilities.");
+        Attacks[1] = new Attack("Harm Arm", 1, 1, 1, "Deal 1 damage.",0,3);
+        Attacks[2] = new Attack("Warm Arm", 0, 1, 0, "Gain +1 defense",0,3);
+        Attacks[3] = new Attack("Two Arms!", 0, 1, 0, "Upgrade both of your arm abilities.",0,3);
         type1 = "Void";
         type2 = "Metal";
         if(pl != null)
@@ -51,67 +51,67 @@ public class Aughtment : OpalScript
         switch (harmLevel)
         {
             case 0:
-                Attacks[1] = new Attack("Harm Arm [0]", 1, 1, 1, "Deal 1 damage.");
+                Attacks[1] = new Attack("Harm Arm [0]", 1, 1, 1, "Deal 1 damage.", 0, 3);
                 break;
             case 1:
-                Attacks[1] = new Attack("Harm Arm [1]", 1, 1, 2, "Deal 2 damage.");
+                Attacks[1] = new Attack("Harm Arm [1]", 1, 1, 2, "Deal 2 damage.", 0, 3);
                 break;
             case 2:
-                Attacks[1] = new Attack("Harm Arm [2]", 2, 4, 3, "Deal 3 damage.");
+                Attacks[1] = new Attack("Harm Arm [2]", 2, 4, 3, "Deal 3 damage.", 0, 3);
                 break;
             case 3:
-                Attacks[1] = new Attack("Harm Arm [3]", 2, 1, 4, "Deal 4 damage. Ignores line of sight.");
+                Attacks[1] = new Attack("Harm Arm [3]", 2, 1, 4, "Deal 4 damage. Ignores line of sight.", 0, 3);
                 break;
             case 4:
-                Attacks[1] = new Attack("Harm Arm [4]", 3, 4, 6, "Deal 6 damage.");
+                Attacks[1] = new Attack("Harm Arm [4]", 3, 4, 6, "Deal 6 damage.", 0, 3);
                 break;
             case 5:
-                Attacks[1] = new Attack("Harm Arm [5]", 3, 1, 8, "Deal 8 damage. Ignores line of sight.");
+                Attacks[1] = new Attack("Harm Arm [5]", 3, 1, 8, "Deal 8 damage. Ignores line of sight.", 0, 3);
                 break;
             case 6:
-                Attacks[1] = new Attack("Harm Arm [6]", 4, 4, 10, "Deal 10 damage. Hits Opals adjacent to target.", 1);
+                Attacks[1] = new Attack("Harm Arm [6]", 4, 4, 10, "Deal 10 damage. Hits Opals adjacent to target.", 1, 3);
                 break;
             case 7:
-                Attacks[1] = new Attack("Harm Arm [7]", 4, 1, 12, "Deal 12 damage. Ignores line of sight. Hits Opals adjacent to target.", 1);
+                Attacks[1] = new Attack("Harm Arm [7]", 4, 1, 12, "Deal 12 damage. Ignores line of sight. Hits Opals adjacent to target.", 1, 3);
                 break;
             case 8:
-                Attacks[1] = new Attack("Harm Arm [8]", 5, 1, 14, "Deal 14 damage. Ignores line of sight. Hits Opals adjacent to target.", 1);
+                Attacks[1] = new Attack("Harm Arm [8]", 5, 1, 14, "Deal 14 damage. Ignores line of sight. Hits Opals adjacent to target.", 1, 3);
                 break;
             case 9:
-                Attacks[1] = new Attack("Harm Arm [9]", 1, 6, 4444444, "Deal 4444444 damage to all Opals in a line. Die.");
+                Attacks[1] = new Attack("Harm Arm [9]", 1, 6, 4444444, "Deal 4444444 damage to all Opals in a line. Die.", 0, 3);
                 break;
         }
         switch (warmLevel)
         {
             case 0:
-                Attacks[2] = new Attack("Warm Arm [0]", 0, 1, 0, "Gain +1 defense");
+                Attacks[2] = new Attack("Warm Arm [0]", 0, 1, 0, "Gain +1 defense", 0, 3);
                 break;
             case 1:
-                Attacks[2] = new Attack("Warm Arm [1]", 0, 1, 0, "Gain +1 attack and +1 defense");
+                Attacks[2] = new Attack("Warm Arm [1]", 0, 1, 0, "Gain +1 attack and +1 defense", 0, 3);
                 break;
             case 2:
-                Attacks[2] = new Attack("Warm Arm [2]", 1, 1, 0, "Give target +1 attack and +1 defense");
+                Attacks[2] = new Attack("Warm Arm [2]", 1, 1, 0, "Give target +1 attack and +1 defense", 0, 3);
                 break;
             case 3:
-                Attacks[2] = new Attack("Warm Arm [3]", 2, 1, 0, "Give target +1 attack and +1 defense. Cure their status conditions.");
+                Attacks[2] = new Attack("Warm Arm [3]", 2, 1, 0, "Give target +1 attack and +1 defense. Cure their status conditions.", 0, 3);
                 break;
             case 4:
-                Attacks[2] = new Attack("Warm Arm [4]", 2, 1, 0, "Give target +2 attack and +2 defense. Cure their status conditions.");
+                Attacks[2] = new Attack("Warm Arm [4]", 2, 1, 0, "Give target +2 attack and +2 defense. Cure their status conditions.", 0, 3);
                 break;
             case 5:
-                Attacks[2] = new Attack("Warm Arm [5]", 3, 1, 0, "Give target +2 attack and +2 defense. Cure their status conditions.");
+                Attacks[2] = new Attack("Warm Arm [5]", 3, 1, 0, "Give target +2 attack and +2 defense. Cure their status conditions.", 0, 3);
                 break;
             case 6:
-                Attacks[2] = new Attack("Warm Arm [6]", 3, 1, 0, "Give target +2 attack and +2 defense. Cure their status conditions. Heal them by 6.");
+                Attacks[2] = new Attack("Warm Arm [6]", 3, 1, 0, "Give target +2 attack and +2 defense. Cure their status conditions. Heal them by 6.", 0, 3);
                 break;
             case 7:
-                Attacks[2] = new Attack("Warm Arm [7]", 4, 1, 0, "Give target +3 attack and +3 defense. Cure their status conditions. Heal them by 6.");
+                Attacks[2] = new Attack("Warm Arm [7]", 4, 1, 0, "Give target +3 attack and +3 defense. Cure their status conditions. Heal them by 6.", 0, 3);
                 break;
             case 8:
-                Attacks[2] = new Attack("Warm Arm [8]", 4, 1, 0, "Give target +3 attack and +3 defense. Cure their status conditions. Overheal them by 8.");
+                Attacks[2] = new Attack("Warm Arm [8]", 4, 1, 0, "Give target +3 attack and +3 defense. Cure their status conditions. Overheal them by 8.", 0, 3);
                 break;
             case 9:
-                Attacks[2] = new Attack("Warm Arm [9]", 1, 1, 0, "Give target +44 attack and +44 defense. Overheal them by 44. Die.");
+                Attacks[2] = new Attack("Warm Arm [9]", 1, 1, 0, "Give target +44 attack and +44 defense. Overheal them by 44. Die.", 0, 3);
                 break;
         }
 
@@ -128,7 +128,7 @@ public class Aughtment : OpalScript
         else if (attackNum == 2)
         {
             harmLevel++;
-            summonParticle("Upgrade");
+            //summonParticle("Upgrade");
             switch (warmLevel)
             {
                 case 0:
@@ -189,7 +189,7 @@ public class Aughtment : OpalScript
         else if (attackNum == 1)
         {
             warmLevel++;
-            summonParticle("Upgrade");
+            //summonParticle("Upgrade");
             if (harmLevel == 9)
             {
                 //takeDamage(getHealth(), false, true);
@@ -198,7 +198,7 @@ public class Aughtment : OpalScript
         {
             warmLevel++;
             harmLevel++;
-            summonParticle("Upgrade");
+            //summonParticle("Upgrade");
         }
         return cA.getBaseDamage() + getAttack();
     }

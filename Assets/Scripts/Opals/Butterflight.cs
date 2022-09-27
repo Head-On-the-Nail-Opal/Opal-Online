@@ -19,7 +19,7 @@ public class Butterflight : OpalScript
         speed = 5;
         priority = 3;
         myName = "Butterflight";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.6f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 0.8f;
         offsetX = 0;
         offsetY = 0.15f;
         offsetZ = 0;
@@ -32,12 +32,12 @@ public class Butterflight : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Pollinate", 1, 1, 0, "<Free Ability>\n Lose -2 defense and heal an Opal 4 health. Cannot use if below -5 defense.");
+        Attacks[0] = new Attack("Pollinate", 1, 1, 0, "<Free Ability>\n Lose -2 defense and heal an Opal 4 health. Cannot use if below -5 defense.",0,3);
         Attacks[0].setFreeAction(true);
-        Attacks[1] = new Attack("Breeze", 3, 1, 0, "Select a target Opal. Then choose a direction to push them 4 tiles.");
+        Attacks[1] = new Attack("Breeze", 3, 1, 0, "Select a target Opal. Then choose a direction to push them 4 tiles.",0,3);
         Attacks[1].setUses(2);
-        Attacks[2] = new Attack("Wind Shield", 0, 1, 0, "Gain +3 defense and Lift.");
-        Attacks[3] = new Attack("Sprint",1,1,0, "Buff a target's speed by your defense for 1 turn. They gain Lift.");
+        Attacks[2] = new Attack("Wind Shield", 0, 1, 0, "Gain +3 defense and Lift.",0,3);
+        Attacks[3] = new Attack("Sprint",1,1,0, "Buff a target's speed by your defense for 1 turn. They gain Lift.",0,3);
         Attacks[3].setFreeAction(true);
         type1 = "Air";
         type2 = "Light";

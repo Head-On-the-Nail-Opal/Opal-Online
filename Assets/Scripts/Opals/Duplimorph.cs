@@ -20,9 +20,9 @@ public class Duplimorph : OpalScript
         speed = 2;
         priority = 0;
         myName = "Duplimorph";
-        transform.localScale = transform.localScale;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         offsetX = 0;
-        offsetY = -0.1f;
+        offsetY = 0;
         offsetZ = 0;
         player = pl;
         if (pl == "Red" || pl == "Green")
@@ -33,10 +33,10 @@ public class Duplimorph : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Duplicate", 1, 0, 0, "Lose 7 health and create a Duplimorph clone");
-        Attacks[1] = new Attack("Insight", 0, 1, 0, "Gain +2 attack and +2 defense and overheal by 2.");
-        Attacks[2] = new Attack("Spectral Lunge", 1, 1, 0, "Deal 0 damage. Ignores defense. Die.");
-        Attacks[3] = new Attack("Bolster", 1, 1, 0, "<Free Ability>\n Take 5 damage. Target gains +2 attack and defense.");
+        Attacks[0] = new Attack("Duplicate", 1, 0, 0, "Lose 7 health and create a Duplimorph clone",0,3);
+        Attacks[1] = new Attack("Insight", 0, 1, 0, "Gain +2 attack and +2 defense and overheal by 2.",0,3);
+        Attacks[2] = new Attack("Spectral Lunge", 1, 1, 0, "Deal 0 damage. Ignores defense. Die.",0,3);
+        Attacks[3] = new Attack("Bolster", 1, 1, 0, "<Free Ability>\n Take 5 damage. Target gains +2 attack and defense.",0,3);
         Attacks[3].setFreeAction(true);
         type1 = "Void";
         type2 = "Swarm";

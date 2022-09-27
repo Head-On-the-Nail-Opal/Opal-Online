@@ -117,3 +117,9 @@ MonoBehaviour:
   display: 0
   shrouded: 0
   poisonCounter: 4
+  evolvesInto: []
+  evolvesFrom: []
+  defaultStage: 1
+  attackFrame: {fileID: 0}
+  hurtFrame: {fileID: 0}
+  myBoulders: {fileID: 0}

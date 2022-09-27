@@ -15,7 +15,7 @@ public class Beamrider : OpalScript
         speed = 2;
         priority = 3;
         myName = "Beamrider";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 1f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1.2f;
         offsetX = 0;
         offsetY = 0.15f;
         offsetZ = 0;
@@ -28,10 +28,10 @@ public class Beamrider : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Energy Blast", 1, 6, 0, "Deal 0 damage to all targets in a line. Ignores line of sight.");
+        Attacks[0] = new Attack("Energy Blast", 1, 6, 0, "Deal 0 damage to all targets in a line. Ignores line of sight.",0,3);
         Attacks[1] = new Attack("Warming Up", 0, 1, 0, "Gain +3 attack.");
         Attacks[2] = new Attack("Reboot", 0, 1, 0, "Gain +5 attack and +2 speed for 1 turn.");
-        Attacks[3] = new Attack("Big Red Button", 1, 6, 0, "Deal 0 damage to all targets in a line. Ignores line of sight. Double bonuses from attack, then remove all stat bonuses");
+        Attacks[3] = new Attack("Big Red Button", 1, 6, 0, "Deal 0 damage to all targets in a line. Ignores line of sight. Double bonuses from attack, then remove all stat bonuses",0,3);
         type1 = "Laser";
         type2 = "Laser";
     }

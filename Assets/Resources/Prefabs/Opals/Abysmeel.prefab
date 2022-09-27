@@ -117,3 +117,12 @@ MonoBehaviour:
   display: 0
   shrouded: 0
   poisonCounter: 4
+  evolvesInto: []
+  evolvesFrom: []
+  defaultStage: 1
+  attackFrame: {fileID: -7007013119091786424, guid: 6737ee0d9ad568b4b9f14ed10a5cbea4,
+    type: 3}
+  hurtFrame: {fileID: 9143691418682774815, guid: 6737ee0d9ad568b4b9f14ed10a5cbea4,
+    type: 3}
+  myBoulders: {fileID: 2049195253120730242, guid: 6737ee0d9ad568b4b9f14ed10a5cbea4,
+    type: 3}

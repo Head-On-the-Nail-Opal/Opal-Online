@@ -13,7 +13,7 @@ public class Barriarray : OpalScript
         speed = 2;
         priority = 4;
         myName = "Barriarray";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.9f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 0.8f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -27,9 +27,9 @@ public class Barriarray : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Group Cover", 0, 0, 0, "<Passive>\n When any Opal surrounding Barriarray takes damage, Barriarray takes that damage instead.");
-        Attacks[1] = new Attack("Shielding", 1, 1, 0, "Heal an Opal 5 health. If they are at full health give them +1 Armor.");
-        Attacks[2] = new Attack("Morale Recovery", 0, 1, 0, "For each surrounding Opal at full health, gain 4 health.");
-        Attacks[3] = new Attack("Defensive Burst", 0, 1, 0, "Gain +30 defense for 1 turn, and -15 defense for 3 turns.");
+        Attacks[1] = new Attack("Shielding", 1, 1, 0, "Heal an Opal 5 health. If they are at full health give them +1 Armor.",0,3);
+        Attacks[2] = new Attack("Morale Recovery", 0, 1, 0, "For each surrounding Opal at full health, gain 4 health.",0,3);
+        Attacks[3] = new Attack("Defensive Burst", 0, 1, 0, "Gain +30 defense for 1 turn, and -15 defense for 4 turns.",0,3);
         type1 = "Light";
         type2 = "Metal";
     }
@@ -44,7 +44,7 @@ public class Barriarray : OpalScript
                 temp++;
             }
         }
-        Attacks[2] = new Attack("Morale Recovery", 0, 1, 0, "For each surrounding Opal at full health, gain 4 health. Currently ("+temp*4+") health");
+        Attacks[2] = new Attack("Morale Recovery", 0, 1, 0, "For each surrounding Opal at full health, gain 4 health. Currently ("+temp*4+") health",0,3);
     }
 
     public override void onMove(int distanceMoved)
@@ -93,8 +93,8 @@ public class Barriarray : OpalScript
         }
         else if (attackNum == 3)
         {
-            doTempBuff(1, 1, 30);
-            doTempBuff(1, 3, -15);
+            doTempBuff(1, 2, 30);
+            doTempBuff(1, 4, -15);
             return 0;
         }
         return cA.getBaseDamage() + getAttack();
