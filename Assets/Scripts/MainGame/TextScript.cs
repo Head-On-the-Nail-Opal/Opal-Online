@@ -197,7 +197,7 @@ public class TextScript : MonoBehaviour {
         }
         if (displayCurrent == null)
         {
-            displayCurrent = Instantiate<OpalScript>(opal);
+            displayCurrent =  Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + opal.getMyName()));
             displayCurrent.setDisplayOpal();
             displayCurrent.doHighlight();
             //displayCurrent.setOpal(null);
@@ -268,7 +268,7 @@ public class TextScript : MonoBehaviour {
         if (opal.getLifted() == true)
         {
             liftIndicator.setEnable(true);
-            liftIndicator.setAmount(1);
+            liftIndicator.setAmount(opal.getLiftCount());
             liftIndicator.setTimer(opal.getLiftTimer());
         }
         else
@@ -385,7 +385,7 @@ public class TextScript : MonoBehaviour {
             }
             if (displaySelected == null)
             {
-                displaySelected = Instantiate<OpalScript>(opal);
+                displaySelected = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/"+opal.getMyName()));
                 displaySelected.setDisplayOpal();
                 displaySelected.doHighlight();
                 //displaySelected.setOpal(null);
@@ -454,7 +454,7 @@ public class TextScript : MonoBehaviour {
             if (opal.getLifted() == true)
             {
                 liftIndicator2.setEnable(true);
-                liftIndicator2.setAmount(1);
+                liftIndicator2.setAmount(opal.getLiftCount());
                 liftIndicator2.setTimer(opal.getLiftTimer());
             }
             else

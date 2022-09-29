@@ -73,6 +73,7 @@ abstract public class OpalScript : MonoBehaviour {
 
     private int burnCounter = 2;
     public int poisonCounter = 4;
+    private int liftCounter = 2;
     private int skin = 0;
 
     private bool tidal = false;
@@ -179,6 +180,8 @@ abstract public class OpalScript : MonoBehaviour {
     public void setDisplayOpal()
     {
         displayOpal = true;
+        
+        GetComponent<SpriteRenderer>().sprite = defaultFrame;
         foreach(SpriteRenderer sr in GetComponentsInChildren<SpriteRenderer>())
         {
             if(sr.name == "Highlight")
@@ -970,7 +973,7 @@ abstract public class OpalScript : MonoBehaviour {
     public int doFullMove(List<PathScript> paths, int totalDist)
     {
         int output = 0;
-        if(this.myName == "Hopscure" || getLifted())
+        if(this.myName == "Hopscure")
         {
             output += doMove((int)paths[paths.Count - 1].getPos().x, (int)paths[paths.Count - 1].getPos().z, totalDist);
             onMove(paths[paths.Count -1]);
@@ -1295,7 +1298,9 @@ abstract public class OpalScript : MonoBehaviour {
 
     public IEnumerator playFrame(string action, int length)
     {
-        if (length > 0 && myName != "Boulder")
+        if (displayOpal)
+            GetComponent<SpriteRenderer>().sprite = defaultFrame;
+        if (length > 0 && myName != "Boulder" && !displayOpal)
         {
             if(anim == null)
             {
@@ -1523,6 +1528,16 @@ abstract public class OpalScript : MonoBehaviour {
         return liftTimer;
     }
 
+    public int getLiftCount()
+    {
+        return liftCounter;
+    }
+
+    public void setLiftCount(int l)
+    {
+        liftCounter = l;
+    }
+
     public void setBurning(bool np)
     {
         setBurning(np, true);
@@ -1573,40 +1588,43 @@ abstract public class OpalScript : MonoBehaviour {
         {
             return;
         }
-        if (type1 != "Air" && type2 != "Air")
+
+        if (newLift && !lifted)
         {
-            if (newLift && !lifted)
+            onStatusCondition(false, false, true);
+            currentLift = Instantiate<ParticleSystem>(liftedParticle, this.transform);
+            liftTimer = 3;
+            liftCounter = 2;
+            if(haveCharm("Balloon of Light"))
             {
-                onStatusCondition(false, false, true);
-                currentLift = Instantiate<ParticleSystem>(liftedParticle, this.transform);
-                liftTimer = 3;
-                if(haveCharm("Balloon of Light"))
-                {
-                    doTempBuff(2, -1, 1);
-                    setCharmRevealed("Balloon of Light", true);
-                }else if(haveCharm("Floating Bandages"))
-                {
-                    setPoison(false);
-                    setBurning(false);
-                    setCharmRevealed("Floating Bandages", true);
-                }
-            }
-            else if (!newLift && lifted)
+                doTempBuff(2, -1, 1);
+                setCharmRevealed("Balloon of Light", true);
+            }else if(haveCharm("Floating Bandages"))
             {
-                DestroyImmediate(currentLift.gameObject);
-                currentLift = null;
-                if (haveCharm("Balloon of Light"))
-                {
-                    doTempBuff(2, -1, -1);
-                    setCharmRevealed("Balloon of Light", true);
-                }
+                setPoison(false);
+                setBurning(false);
+                setCharmRevealed("Floating Bandages", true);
             }
-            else if (newLift && lifted)
-            {
-                liftTimer = 3;
-            }
-            lifted = newLift;
         }
+        else if (!newLift && lifted)
+        {
+            DestroyImmediate(currentLift.gameObject);
+            currentLift = null;
+            if (type1 != "Air" && type2 != "Air")
+                takeDamage(liftCounter, false, true);
+            liftCounter = 2;
+            if (haveCharm("Balloon of Light"))
+            {
+                doTempBuff(2, -1, -1);
+                setCharmRevealed("Balloon of Light", true);
+            }
+        }
+        else if (newLift && lifted)
+        {
+            liftTimer = 3;
+        }
+        lifted = newLift;
+        
         
     }
 
@@ -2532,7 +2550,8 @@ abstract public class OpalScript : MonoBehaviour {
         if (lifted)
         {
             liftTimer--;
-            if (liftTimer == -1)
+            liftCounter += 2;
+            if (liftTimer == 0)
             {
                 setLifted(false);
             }
@@ -3278,6 +3297,9 @@ abstract public class OpalScript : MonoBehaviour {
 
     public TempBuff doTempBuff(int ts, int tl, int a, bool effect)
     {
+        int mod = 0;
+        if (getLifted())
+            mod = 1;
         if (a > 0)
         {
             if(effect)
@@ -3288,7 +3310,7 @@ abstract public class OpalScript : MonoBehaviour {
             if(effect)
                 boardScript.callParticles("debuff", transform.position);
         }
-        TempBuff temp = new TempBuff(ts, tl, a);
+        TempBuff temp = new TempBuff(ts, tl, a+mod);
         onBuff(temp);
         buffs.Add(temp);
         handleTempBuffs(false);

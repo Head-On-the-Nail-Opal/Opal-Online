@@ -1023,7 +1023,7 @@ public class GroundScript : MonoBehaviour {
                 return;
             if (!o.getDead() && !alreadyMoved.Contains(o.getID())) 
             {
-                OpalScript temp = Instantiate<OpalScript>(o, myCanvas.transform);
+                OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + o.getMyName()), myCanvas.transform);
                 temp.setDisplayOpal();
                 opalTurns.Add(temp);
                 temp.healStatusEffects();

@@ -58,6 +58,11 @@ public class TileScript : MonoBehaviour {
 
     private List<SpriteRenderer> parts = new List<SpriteRenderer>();
     private SpriteRenderer decor;
+    private Sprite decor1;
+    private Sprite decor2;
+    private Sprite trampled;
+    int anim = 0;
+    int animLength = 40;
 
 
     public void Awake()
@@ -624,6 +629,41 @@ public class TileScript : MonoBehaviour {
                 }
                 removeCharms(removedCharms);
             }
+
+            switch (type) {
+                case "Grass":
+                    if(player.getMainType() != "Grass" && player.getSecondType() != "Grass")
+                    {
+                        decor.sprite = trampled;
+                    }
+                    break;
+                case "Growth":
+                    if (player.getMainType() != "Grass" && player.getSecondType() != "Grass")
+                    {
+                        decor.sprite = trampled;
+                    }
+                    break;
+                case "Flood":
+                    if (player.getMainType() != "Water" && player.getSecondType() != "Water")
+                    {
+                        //decor.sprite = trampled;
+                    }
+                    break;
+                case "Miasma":
+                    if (player.getMainType() != "Plague" && player.getSecondType() != "Plague")
+                    {
+                        decor.sprite = trampled;
+                    }
+                    break;
+                case "Fire":
+                    if (player.getMainType() != "Fire" && player.getSecondType() != "Fire")
+                    {
+                        decor.sprite = trampled;
+                    }
+                    break;
+
+            }
+
         }
     }
 
@@ -1109,6 +1149,8 @@ public class TileScript : MonoBehaviour {
                 break;
             case "Fire":
                 callParticleEffect("BurningGroundEffect");
+                if (Random.Range(0, 2) != 0)
+                    return;
                 break;
 
         }
@@ -1116,15 +1158,23 @@ public class TileScript : MonoBehaviour {
         Texture2D textures = Resources.Load<Texture2D>("SpriteSheets/Board4P/Decor-" + type);
         if (textures == null)
             return;
-        int rand = Random.Range(0, textures.width / 16);
+        int rand = Random.Range(0, (textures.width / 16)/3);
 
-        Rect r = new Rect(rand * 16, 0, 16, 16);
+        Rect r = new Rect(rand * 16*3, 0, 16, 16);
 
         Sprite tempS = Sprite.Create(Resources.Load<Texture2D>("SpriteSheets/Board4P/Decor-" + type), r, new Vector2(r.width / 32, r.height / 16));
         decor.sprite = tempS;
+        decor1 = tempS;
+
+        r = new Rect(rand * 16 * 3 + 16, 0, 16, 16);
+        decor2 = Sprite.Create(Resources.Load<Texture2D>("SpriteSheets/Board4P/Decor-" + type), r, new Vector2(r.width / 32, r.height / 16));
+
+        r = new Rect(rand * 16 * 3 + 32, 0, 16, 16);
+        trampled = Sprite.Create(Resources.Load<Texture2D>("SpriteSheets/Board4P/Decor-" + type), r, new Vector2(r.width / 32, r.height / 16));
+
         float randX = Random.Range(-3, 4) * 0.01f;
         decor.transform.localPosition = new Vector3(0.1f + randX, 0.8f, -0.1f + randX);
-        if (Random.Range(0, 2) == 1)
+        if (Random.Range(0, 2) == 1 && type != "Flood")
             decor.flipX = true;
     }
 
@@ -1133,5 +1183,25 @@ public class TileScript : MonoBehaviour {
         ParticleSystem ps = Instantiate<ParticleSystem>(Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/" + name), transform);
     }
 
+    public void FixedUpdate()
+    {
+        if(anim == animLength)
+        {
+            anim = 0;
+            if(decor.sprite != trampled)
+            {
+                if(decor.sprite == decor1)
+                {
+                    decor.sprite = decor2;
+                }
+                else
+                {
+                    decor.sprite = decor1;
+                }
+            }
+        }
+
+        anim++;
+    }
 
 }

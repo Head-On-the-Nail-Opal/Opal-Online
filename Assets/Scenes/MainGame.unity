@@ -12914,7 +12914,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: eb061ee3aaadc1f43b61574e3b288442, type: 3}
+  m_Sprite: {fileID: -3188951185675228344, guid: 42c3ea42f6b42e34ea23434372803b30,
+    type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -12934,7 +12935,7 @@ Transform:
   m_GameObject: {fileID: 1165159231}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -1881.1869, y: -59.266735, z: 13.650556}
-  m_LocalScale: {x: 63, y: 63, z: 90}
+  m_LocalScale: {x: 900, y: 900, z: 90}
   m_Children:
   - {fileID: 1298662035}
   m_Father: {fileID: 518550068}
@@ -14448,8 +14449,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1298662034}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -2.2999997, z: -0.7999997}
-  m_LocalScale: {x: 0.8500004, y: 0.7493484, z: 0.80065155}
+  m_LocalPosition: {x: 0.056, y: -0.16, z: -0.8}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1165159233}
   m_RootOrder: 0
@@ -14492,7 +14493,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -4861352408055507510, guid: f6e29f46074605c44b0a2b1c0452fcf1,
+  m_Sprite: {fileID: -868865429525019548, guid: 42c3ea42f6b42e34ea23434372803b30,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -14516,9 +14517,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56b24504eb326d54f8e4cde9cb6825d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unpressed: {fileID: -4861352408055507510, guid: f6e29f46074605c44b0a2b1c0452fcf1,
+  unpressed: {fileID: -868865429525019548, guid: 42c3ea42f6b42e34ea23434372803b30,
     type: 3}
-  hover: {fileID: -1167829765342442476, guid: f6e29f46074605c44b0a2b1c0452fcf1, type: 3}
+  hover: {fileID: -8333873030201520711, guid: 42c3ea42f6b42e34ea23434372803b30, type: 3}
   boardScript: {fileID: 282840812}
 --- !u!135 &1298662038
 SphereCollider:
@@ -14531,8 +14532,8 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.366515
-  m_Center: {x: -0.08618811, y: -0.0000049823234, z: 2}
+  m_Radius: 0.1
+  m_Center: {x: 0, y: -0.0000049823234, z: 2}
 --- !u!54 &1298662039
 Rigidbody:
   m_ObjectHideFlags: 0

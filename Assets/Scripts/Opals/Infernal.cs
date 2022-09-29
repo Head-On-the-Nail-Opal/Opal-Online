@@ -9,7 +9,7 @@ public class Infernal : OpalScript
 
     override public void setOpal(string pl)
     {
-        health = 20;
+        health = 15;
         maxHealth = health;
         attack = 4;
         defense = 0;
