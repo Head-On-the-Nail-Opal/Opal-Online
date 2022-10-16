@@ -27,10 +27,10 @@ public class Brachiosh : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Brackish", 0, 0, 0, "<Passive>\nOn Brachiosh's death, all Opals cursed by Brachiosh that are standing in flood take 10 damage,");
-        Attacks[1] = new Attack("Brinestorm", 5, 1, 0, "Place a flood tile and curse the Opal standing on the target tile, twice");
+        Attacks[1] = new Attack("Brinestorm", 5, 1, 0, "Place a flood tile and curse the Opal standing on the target tile, twice",0,3);
         Attacks[1].setUses(2);
-        Attacks[2] = new Attack("Salt Bath", 0, 1, 0, "Cursed Opals currently standing in flood gain +3 to attack and defense.");
-        Attacks[3] = new Attack("Shower", 0, 1, 0, "Surrounding tiles become Flood");
+        Attacks[2] = new Attack("Salt Bath", 0, 1, 0, "Cursed Opals currently standing in flood gain +3 to attack and defense.",0,3);
+        Attacks[3] = new Attack("Shower", 0, 1, 0, "Surrounding tiles become Flood",0,3);
         type1 = "Water";
         type2 = "Spirit";
     }

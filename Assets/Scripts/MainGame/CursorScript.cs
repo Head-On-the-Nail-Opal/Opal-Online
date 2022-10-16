@@ -106,6 +106,7 @@ public class CursorScript : MonoBehaviour {
             {
                 print("Ghost Found; Tile Position: " + (int)myPos.x + "," + (int)myPos.z);
                 t.setImpassable(false);
+                t.standingOn(null);
             }
         }
     }

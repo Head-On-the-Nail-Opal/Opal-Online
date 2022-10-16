@@ -28,8 +28,8 @@ public class Oozwl : OpalScript
         player = pl;
         Attacks[0] = new Attack("Horrific Aura", 0, 0, 0, "<Passive>\n Opals cursed by Oozwl take double stat debuffs from poison and do not heal poison over time.");
         Attacks[1] = new Attack("Soulsap", 0, 0, 0, "<Passive>\n When an Opal cursed by Oozwl dies from poison, fully heal Oowzl and gain +2 speed.");
-        Attacks[2] = new Attack("Venomous Haunt", 2, 4, 0, "Poison and curse the target.");
-        Attacks[3] = new Attack("Miasma of Weakness", 0, 1, 0, "All enemies cursed by Oozwl lose -2 attack and defense. If they are poisoned, -3 instead.");
+        Attacks[2] = new Attack("Venomous Haunt", 2, 4, 0, "Poison and curse the target.",0,3);
+        Attacks[3] = new Attack("Weakening Memory", 0, 1, 0, "All enemies cursed by Oozwl lose -2 attack and defense for one turn. If they are poisoned, it lasts forever.",0,3);
         type1 = "Plague";
         type2 = "Spirit";
     }
@@ -59,13 +59,13 @@ public class Oozwl : OpalScript
                 {
                     if (o.getPoison())
                     {
-                        o.doTempBuff(0, -1, -3);
-                        o.doTempBuff(1, -1, -3);
+                        o.doTempBuff(0, -1, -2);
+                        o.doTempBuff(1, -1, -2);
                     }
                     else
                     {
-                        o.doTempBuff(0, -1, -2);
-                        o.doTempBuff(1, -1, -2);
+                        o.doTempBuff(0, 1, -2);
+                        o.doTempBuff(1, 1, -2);
                     }
                 }
             }

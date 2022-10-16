@@ -71,7 +71,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7829945757729306270, guid: 2b57b1f53e5e725448be36bbe80ad233,
+  m_Sprite: {fileID: -8138052590083143294, guid: 9b68d6f4cc897b4418c2708a7b0271d6,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -93,7 +93,7 @@ Animator:
   m_GameObject: {fileID: 6545678089236783918}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 1e0a3a3427e64eb4988285616509782e, type: 2}
+  m_Controller: {fileID: 9100000, guid: 1f333b424ff16be42a918fa67f53a9cc, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -120,5 +120,8 @@ MonoBehaviour:
   evolvesInto: []
   evolvesFrom: []
   defaultStage: 1
-  attackFrame: {fileID: 0}
-  hurtFrame: {fileID: 0}
+  attackFrame: {fileID: 8433677807727717399, guid: 9b68d6f4cc897b4418c2708a7b0271d6,
+    type: 3}
+  hurtFrame: {fileID: 3533576892802152994, guid: 9b68d6f4cc897b4418c2708a7b0271d6,
+    type: 3}
+  myBoulders: {fileID: 0}

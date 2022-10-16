@@ -1023,7 +1023,7 @@ public class GroundScript : MonoBehaviour {
                 return;
             if (!o.getDead() && !alreadyMoved.Contains(o.getID())) 
             {
-                OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + o.getMyName()), myCanvas.transform);
+                OpalScript temp = Instantiate<OpalScript>(o.getMyModel(), myCanvas.transform);
                 temp.setDisplayOpal();
                 opalTurns.Add(temp);
                 temp.healStatusEffects();
@@ -1038,7 +1038,8 @@ public class GroundScript : MonoBehaviour {
                     temp.transform.localPosition = new Vector3(878, 283 - (i-150f) * 0.96f, 0);
                 }
                 temp.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
-                temp.transform.localScale = new Vector3(100*temp.transform.localScale.x, 100 * temp.transform.localScale.y, 1);
+                temp.transform.localScale = o.transform.localScale * 170f;
+                //temp.transform.localScale = new Vector3(100*temp.transform.localScale.x, 100 * temp.transform.localScale.y, 1);
                 GameObject pl = Instantiate<GameObject>(opalPlate2, temp.transform);
                 pl.transform.position = new Vector3(pl.transform.position.x, pl.transform.position.y - 0.00001f, pl.transform.position.z);
                 if (o.getTeam() == "Red")

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Infernal : OpalScript
+public class Infermal : OpalScript
 {
 
     Vector3 startingTile;
@@ -15,7 +15,7 @@ public class Infernal : OpalScript
         defense = 0;
         speed = 3;
         priority = 6;
-        myName = "Infernal";
+        myName = "Infermal";
         transform.localScale = new Vector3(3f, 3f, 1) * 1.2f;
         if (pl == "Red" || pl == "Green")
         {

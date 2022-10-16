@@ -13,7 +13,7 @@ public class Rekindle : OpalScript
         speed = 2;
         priority = 0;
         myName = "Rekindle";
-        transform.localScale = new Vector3(0.2f,0.2f,1) * 0.9f;
+        transform.localScale = new Vector3(3f,3f,1) * 1.1f;
         offsetX = 0;
         offsetY = 0.1f;
         offsetZ = 0;
@@ -27,9 +27,9 @@ public class Rekindle : OpalScript
             GetComponent<SpriteRenderer>().flipX = false;
         }
         Attacks[0] = new Attack("Sole Focus", 0, 0, 0, "<Passive>\nRekindle can only curse one Opal at a time, when a second Opal is cursed, the previous Opal loses its curse.");
-        Attacks[1] = new Attack("Resurrect", 1, 1, 0, "If the Opal cursed by Rekindle is now dead, respawn it on the target tile. It is no longer cursed.");
-        Attacks[2] = new Attack("Fiery Presence", 0, 1, 0, "Surround the Opal cursed by Rekindle in Flames. They gain +4 attack for 1 turn.");
-        Attacks[3] = new Attack("Memorize", 1, 1, 0, "Curse the target Opal. Place Flames under Rekindle and the target. Rekindle loses -2 speed for 2 turns.");
+        Attacks[1] = new Attack("Resurrect", 1, 1, 0, "If the Opal cursed by Rekindle is now dead, respawn it on the target tile. It is no longer cursed.",0,3);
+        Attacks[2] = new Attack("Fiery Presence", 0, 1, 0, "Surround the Opal cursed by Rekindle in Flames. They gain +4 attack for 1 turn.",0,3);
+        Attacks[3] = new Attack("Memorize", 1, 1, 0, "Curse the target Opal. Place Flames under Rekindle and the target. Rekindle loses -2 speed for 2 turns.",0,3);
         type1 = "Fire";
         type2 = "Spirit";
         og = true;
@@ -39,7 +39,7 @@ public class Rekindle : OpalScript
     {
         if((cursed.Count > 0 && cursed[0].getDead()))
         {
-            Attacks[1] = new Attack("Resurrect", 1, 1, 0, "If the Opal cursed by Rekindle is now dead, respawn it on the target tile. It is no longer cursed. Currently will resurrect "+ cursed[0].getMyName()+".");
+            Attacks[1] = new Attack("Resurrect", 1, 1, 0, "If the Opal cursed by Rekindle is now dead, respawn it on the target tile. It is no longer cursed. Currently will resurrect "+ cursed[0].getMyName()+".",0,3);
         }
     }
 
@@ -111,7 +111,7 @@ public class Rekindle : OpalScript
             }
             cursed.Clear();
 
-            Attacks[1] = new Attack("Resurrect", 1, 1, 0, "If the Opal cursed by Rekindle is now dead, respawn it on the target tile. It is no longer cursed.");
+            Attacks[1] = new Attack("Resurrect", 1, 1, 0, "If the Opal cursed by Rekindle is now dead, respawn it on the target tile. It is no longer cursed.",0,3);
         }
         else if (attackNum == 2) //Healing Heat
         {

@@ -13,7 +13,7 @@ public class Overgroink : OpalScript
         speed = 3;
         priority = 0;
         myName = "Overgroink";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.9f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 0.9f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -27,9 +27,9 @@ public class Overgroink : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Nutritious", 0, 0, 0, "<Passive>\n At the start of its turn, if Overgroink is standing on a Growth, gain +2 attack and defense.");
-        Attacks[1] = new Attack("Boink", 2, 1, 6, "Lose all your buffs. If standing on Growth, only lose -2 attack and defense.");
-        Attacks[2] = new Attack("Transplant", 0, 1, 0, "Give adjacent Opals standing on Growths the buffs on Overgroink. Remove them from Overgroink. Clear surrounding Growths.");
-        Attacks[3] = new Attack("Nurture", 0, 1, 0, "Place Growths under your feet and on adjacent tiles. Gain +1 attack and defense.");
+        Attacks[1] = new Attack("Boink", 2, 1, 6, "Lose all your buffs. If standing on Growth, only lose -2 attack and defense.",0,3);
+        Attacks[2] = new Attack("Transplant", 0, 1, 0, "Give adjacent Opals standing on Growths the buffs on Overgroink. Remove them from Overgroink. Clear surrounding Growths.",0,3);
+        Attacks[3] = new Attack("Nurture", 0, 1, 0, "Place Growths under your feet and on adjacent tiles. Gain +1 attack and defense.",0,3);
         type1 = "Grass";
         type2 = "Grass";
     }
@@ -40,6 +40,7 @@ public class Overgroink : OpalScript
         {
             TempBuff test = doTempBuff(0, -1, 2);
             doTempBuff(1, -1, 2);
+            StartCoroutine(playFrame("attack", 5));
         }
 
     }

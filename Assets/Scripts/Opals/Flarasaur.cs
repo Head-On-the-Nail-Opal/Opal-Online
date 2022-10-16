@@ -27,9 +27,9 @@ public class Flarasaur : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Ignite", 0, 0, 0, "<Passive>\nOn Flaresaur's death, all Opals cursed by it will have their tiles enflamed.");
-        Attacks[1] = new Attack("Oil Spill", 3, 4, 0, "Curse all targets in the radius. They take damage from their burn.", 1);
-        Attacks[2] = new Attack("Grave Flame", 0, 1, 0, "Burn all Opals cursed by Flaresaur.");
-        Attacks[3] = new Attack("Engulf", 4, 4, 0, "Light the tiles surrounding and under the target on fire.");
+        Attacks[1] = new Attack("Oil Spill", 3, 4, 0, "Curse all targets in the radius. They take damage from their burn.", 1,3);
+        Attacks[2] = new Attack("Grave Flame", 0, 1, 0, "Burn all Opals cursed by Flaresaur.",0,3);
+        Attacks[3] = new Attack("Engulf", 4, 4, 0, "Light the tiles surrounding and under the target on fire.",0,3);
         type1 = "Fire";
         type2 = "Spirit";
     }

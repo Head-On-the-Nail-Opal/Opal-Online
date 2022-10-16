@@ -14,7 +14,7 @@ public class Nekrokrab : OpalScript
         speed = 1;
         priority = 0;
         myName = "Nekrokrab";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.9f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -24,7 +24,7 @@ public class Nekrokrab : OpalScript
             GetComponent<SpriteRenderer>().flipX = false;
         }
         offsetX = 0;
-        offsetY = 0f;
+        offsetY = -0.15f;
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Toxic Personality", 0, 0, 0, "<Passive>\n Any Opals in the same pool of Floods as Toxikrab at the start of its turn die.");
@@ -40,6 +40,7 @@ public class Nekrokrab : OpalScript
         foreach(OpalScript o in getOpalsInSameFlood())
         {
             o.takeDamage(o.getHealth(), false, true);
+            StartCoroutine(playFrame("attack", 6));
         }
     }
 

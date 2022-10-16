@@ -13,7 +13,7 @@ public class KnightLite : OpalScript
         speed = 2;
         priority = 7;
         myName = "KnightLite";
-        transform.localScale = new Vector3(3.5f, 3.5f, 1);
+        transform.localScale = new Vector3(3f, 3f, 1)*0.9f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -27,9 +27,9 @@ public class KnightLite : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Divine Touch", 0, 0, 0, "<Passive>\nOn the start of its turn, KnightLite gains attack equal to its current overheal");
-        Attacks[2] = new Attack("Blessing", 1, 1, 0, "Overheal a target by half your current attack.");
-        Attacks[1] = new Attack("Shield of Truth", 0, 1, 0, "Lose 10 health below your Armor and gain 2 Armor");
-        Attacks[3] = new Attack("Sword of Honor", 1, 1, 10, "Lose -1 armor. If no armor, then this attack does nothing. Overheal self by 5.");
+        Attacks[2] = new Attack("Blessing", 1, 1, 0, "Overheal a target by half your current attack.",0,3);
+        Attacks[1] = new Attack("Shield of Truth", 0, 1, 0, "Lose 10 health below your Armor and gain 2 Armor",0,3);
+        Attacks[3] = new Attack("Sword of Honor", 1, 1, 10, "Lose -1 armor. If no armor, then this attack does nothing. Overheal self by 5.",0,3);
         type1 = "Light";
         type2 = "Metal";
     }

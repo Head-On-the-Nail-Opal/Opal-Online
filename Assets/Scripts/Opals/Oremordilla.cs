@@ -13,7 +13,7 @@ public class Oremordilla : OpalScript
         speed = 2;
         priority = 4;
         myName = "Oremordilla";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.9f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 0.9f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -23,13 +23,13 @@ public class Oremordilla : OpalScript
             GetComponent<SpriteRenderer>().flipX = false;
         }
         offsetX = 0;
-        offsetY = 0f;
+        offsetY = -0.1f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Hidey Hole", 0, 1, 0, "Place Boulders on adjacent tiles");
-        Attacks[1] = new Attack("Balled Thrust", 1, 1, 4, "Take 1 damage. Deal more damage for each Armor on Oremordilla.");
-        Attacks[2] = new Attack("Roll Up", 0, 1, 0, "Gain +1 Defense and +1 Armor");
-        Attacks[3] = new Attack("Armor Plating", 0, 1, 0, "Gain +2 defense for each Armor, and lose all Armor.");
+        Attacks[0] = new Attack("Hidey Hole", 0, 1, 0, "Place Boulders on adjacent tiles",0,3);
+        Attacks[1] = new Attack("Balled Thrust", 1, 1, 4, "Take 1 damage. Deal more damage for each Armor on Oremordilla.",0,3);
+        Attacks[2] = new Attack("Roll Up", 0, 1, 0, "Gain +1 Defense and +1 Armor",0,3);
+        Attacks[3] = new Attack("Armor Plating", 0, 1, 0, "Gain +2 defense for each Armor, and lose all Armor.",0,3);
         type1 = "Ground";
         type2 = "Metal";
     }

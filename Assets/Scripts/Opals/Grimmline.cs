@@ -13,7 +13,7 @@ public class Grimmline : OpalScript
         speed = 3;
         priority = 0;
         myName = "Grimmline";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.9f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 0.9f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -26,12 +26,12 @@ public class Grimmline : OpalScript
         offsetY = 0f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Power Sap", 3, 4, 0, "<Free Ability>\nCosts 2 charge. Reduce the target by 2 and gain the stat loss. Steal up to 1 charge.");
+        Attacks[0] = new Attack("Power Sap", 3, 4, 0, "<Free Ability>\nCosts 2 charge. Reduce the target by 2 and gain the stat loss. Steal up to 1 charge.",0,3);
         Attacks[0].setFreeAction(true);
-        Attacks[1] = new Attack("Thieving Swipe", 2, 4, 2, "<Free Ability>\nCosts 1 charge. Steal up to 2 charge and then deal damage.");
+        Attacks[1] = new Attack("Thieving Swipe", 2, 4, 2, "<Free Ability>\nCosts 1 charge. Steal up to 2 charge and then deal damage.",0,3);
         Attacks[1].setFreeAction(true);
-        Attacks[2] = new Attack("Plot Demise", 0, 1, 0, "Gain +1 charge, +1 attack, and +1 speed.");
-        Attacks[3] = new Attack("Incoming Doom", 2, 4, 100, "Costs 10 charge. Deal 100 damage.");
+        Attacks[2] = new Attack("Plot Demise", 0, 1, 0, "Gain +1 charge, +1 attack, and +1 speed.",0,3);
+        Attacks[3] = new Attack("Incoming Doom", 2, 4, 100, "Costs 10 charge. Deal 100 damage.",0,3);
         type1 = "Electric";
         type2 = "Dark";
     }

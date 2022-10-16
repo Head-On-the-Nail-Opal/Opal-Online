@@ -13,7 +13,7 @@ public class Glimmerpillar : OpalScript
         speed = 0;
         priority = 9;
         myName = "Glimmerpillar";
-        transform.localScale = new Vector3(3f, 3f, 1);
+        transform.localScale = new Vector3(3f, 3f, 1)*0.8f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -27,9 +27,9 @@ public class Glimmerpillar : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Pillar", 0, 0, 0, "<Passive>\n At the start of its turn, surrounding Enemy Opals lose -4 defense for 1 turn.");
-        Attacks[1] = new Attack("Lamplight", 2, 1, 0, "Give a target +2 attack and +2 defense for 1 turn");
-        Attacks[2] = new Attack("Soothe", 0, 1, 0, "Surrounding allied Opals are healed by +2 health. Enemy opals lose -2 attack.");
-        Attacks[3] = new Attack("Intensify", 1, 1, 0, "Give a target +3 attack and +3 defense. Die.") ;
+        Attacks[1] = new Attack("Lamplight", 2, 1, 0, "Give a target +2 attack and +2 defense for 1 turn",0,3);
+        Attacks[2] = new Attack("Soothe", 0, 1, 0, "Surrounding allied Opals are healed by +2 health. Enemy opals lose -2 attack.",0,3);
+        Attacks[3] = new Attack("Intensify", 1, 1, 0, "Give a target +3 attack and +3 defense. Die.",0,3) ;
         type1 = "Swarm";
         type2 = "Light";
     }
@@ -43,6 +43,7 @@ public class Glimmerpillar : OpalScript
                 if (t.currentPlayer.getTeam() != getTeam())
                 {
                     t.currentPlayer.doTempBuff(1, 1, -4);
+                    StartCoroutine(playFrame("attack", 5));
                 }
             }
         }

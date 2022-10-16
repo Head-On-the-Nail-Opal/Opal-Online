@@ -29,10 +29,10 @@ public class Floweraptor : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Death's Shriek", 0, 0, 0, "<Passive>\n On Floweraptor's death, all Opals cursed by it lose -10 attack for 1 turn.");
-        Attacks[1] = new Attack("Bloom", 0, 1, 0, "Place a Growth at your feet and gain +1 speed.");
-        Attacks[2] = new Attack("Drain Nutrients", 0, 1, 0, "<Free Ability>\nOnce per turn, gain +2 attack for each cursed target. They each lose -2 attack.");
+        Attacks[1] = new Attack("Bloom", 0, 1, 0, "Place a Growth at your feet and gain +1 speed.",0,3);
+        Attacks[2] = new Attack("Drain Nutrients", 0, 1, 0, "<Free Ability>\nOnce per turn, gain +2 attack for each cursed target. They each lose -2 attack.",0,3);
         Attacks[2].setFreeAction(true);
-        Attacks[3] = new Attack("Stalk", 1, 1, 10, "Curse the target, you may move after attacking.");
+        Attacks[3] = new Attack("Stalk", 1, 1, 10, "Curse the target, you may move after attacking.",0,3);
         type1 = "Grass";
         type2 = "Spirit";
     }

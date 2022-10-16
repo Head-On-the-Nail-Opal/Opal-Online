@@ -14,7 +14,7 @@ public class Teslamp : OpalScript
         speed = 2;
         priority = 6;
         myName = "Teslamp";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.8f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         offsetX = 0;
         offsetY = 0f;
         offsetZ = 0;
@@ -27,13 +27,13 @@ public class Teslamp : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Grounded", 0, 1, 0, "<Free Ability>\nClear the tile at your feet and gain +2 charge. If there is no tile effect, this has no effect.");
+        Attacks[0] = new Attack("Grounded", 0, 1, 0, "<Free Ability>\nClear the tile at your feet and gain +2 charge. If there is no tile effect, this has no effect.",0,3);
         Attacks[0].setFreeAction(true);
-        Attacks[1] = new Attack("Shine", 4, 1, 0, "<Free Ability>\nCosts 1 charge. Clear a tile effect. Repeatable until Teslamp is out of charge. Targets heal all status effects.");
+        Attacks[1] = new Attack("Shine", 4, 1, 0, "<Free Ability>\nCosts 1 charge. Clear a tile effect. Repeatable until Teslamp is out of charge. Targets heal all status effects.",0,3);
         Attacks[1].setFreeAction(true);
-        Attacks[2] = new Attack("Spotlight", 2, 1, 0, "<Free Ability>\nCosts 2 charge. Give a target +1 attack and +1 defense. Repeatable until Teslamp is out of charge.");
+        Attacks[2] = new Attack("Spotlight", 2, 1, 0, "<Free Ability>\nCosts 2 charge. Give a target +1 attack and +1 defense. Repeatable until Teslamp is out of charge.",0,3);
         Attacks[2].setFreeAction(true);
-        Attacks[3] = new Attack("Burnout", 0, 1, 0, "Clear all status effects from Teslamp. Gain +1 charge for each.");
+        Attacks[3] = new Attack("Burnout", 0, 1, 0, "Clear all status effects from Teslamp. Gain +1 charge for each.",0,3);
         type1 = "Light";
         type2 = "Electric";
         og = true;

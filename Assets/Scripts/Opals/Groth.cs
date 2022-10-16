@@ -16,7 +16,7 @@ public class Groth : OpalScript
         speed = 1;
         priority = 4;
         myName = "Groth";
-        transform.localScale = new Vector3(3.5f, 3.5f, 1);
+        transform.localScale = new Vector3(3f, 3f, 1);
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -30,9 +30,9 @@ public class Groth : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Meditation", 0, 0, 0, "<Passive>\n While Groth remains in the same place it will grow larger amounts of growths around it.");
-        Attacks[1] = new Attack("Morale Boost", 0, 5, 0, "Give an Opal standing on Growth +5 attack and defense for 1 turn.");
-        Attacks[2] = new Attack("Resilience", 0, 1, 0, "Gain +1 defense for each turn spent meditating");
-        Attacks[3] = new Attack("Confident Strike", 2, 1, 0, "Deals more damage the longer Groth has been meditating.");
+        Attacks[1] = new Attack("Morale Boost", 0, 5, 0, "Give an Opal standing on Growth +5 attack and defense for 1 turn.",0,3);
+        Attacks[2] = new Attack("Resilience", 0, 1, 0, "Gain +1 defense for each turn spent meditating",0,3);
+        Attacks[3] = new Attack("Confident Strike", 2, 1, 0, "Deals more damage the longer Groth has been meditating.",0,3);
         type1 = "Grass";
         type2 = "Grass";
     }
@@ -43,12 +43,14 @@ public class Groth : OpalScript
         {
             meditationTurn++;
             boardScript.setTiles(currentTile, meditationTurn+1, "Growth");
+            StartCoroutine(playFrame("attack", 5));
         }
         else
         {
             meditationSpot = currentTile.getPos();
             meditationTurn = 0;
             boardScript.setTiles(currentTile, meditationTurn + 1, "Growth");
+            StartCoroutine(playFrame("attack", 5));
         }
     }
 

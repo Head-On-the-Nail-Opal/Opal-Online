@@ -19,7 +19,7 @@ public class Pebblepal : OpalScript
         speed = 0;
         priority = 9;
         myName = "Pebblepal";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.7f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 0.8f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -32,7 +32,7 @@ public class Pebblepal : OpalScript
         {
             cs = GameObject.Find("Cursor(Clone)").GetComponent<CursorScript>();
             myAura = Instantiate<ParticleSystem>(Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/RocklyAuraBuff"), transform);
-            myAura.transform.localScale = transform.localScale;
+            myAura.transform.localScale = transform.localScale/5;
             //myAura.transform.localRotation = Quaternion.Euler(0, 90, 35);
         }
         offsetX = 0;
@@ -42,7 +42,7 @@ public class Pebblepal : OpalScript
         Attacks[0] = new Attack("Rockly Aura", 0, 0, 0, "<Passive>\nAt the end of Pebblepal's turn, friendly Opals adjacent to Pebblepal gain +5 attack and defense for 1 turn");
         Attacks[1] = new Attack("Friend Boost", 0, 0, 0, "<Passive>\n Each Boulder adjacent to Pebblepal extends the range of its Rockly Aura ");
         Attacks[2] = new Attack("Indecisive", 0, 1, 0, "Rockly Aura deals debuffs to adjacent enemy Opals instead of buffing.");
-        Attacks[3] = new Attack("Roll", 1, 1, 0, "Move one tile over.");
+        Attacks[3] = new Attack("Roll", 1, 1, 0, "Move one tile over.",0,3);
         type1 = "Ground";
         type2 = "Air";
     }
@@ -116,7 +116,7 @@ public class Pebblepal : OpalScript
                 DestroyImmediate(myAura.gameObject);
                 myAura = Instantiate<ParticleSystem>(Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/RocklyAuraBuff"), transform);
             }
-            myAura.transform.localScale = transform.localScale;
+            myAura.transform.localScale = transform.localScale/5;
             //myAura.transform.localRotation = Quaternion.Euler(0, 90, 35);
             return 0;
         }

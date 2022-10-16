@@ -23,7 +23,7 @@ public class BuffMarker : MonoBehaviour
         if(internalAmount > -1)
             buffAmount.text = "+" + input;
         else
-            buffAmount.text = "-" + input;
+            buffAmount.text = "" + input;
     }
 
     public void adjustLength(string input)

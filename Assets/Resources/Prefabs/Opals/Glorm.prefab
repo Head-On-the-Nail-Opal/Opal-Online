@@ -76,7 +76,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 8.32, y: 8.32}
+  m_Size: {x: 0.32, y: 0.32}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 0
@@ -92,7 +92,7 @@ Animator:
   m_GameObject: {fileID: 1144673173448232}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e5ee925e0f332b54fafc6bd0f5daf18d, type: 2}
+  m_Controller: {fileID: 9100000, guid: a5ec8ec957c3a074cac979eec335bdca, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -119,6 +119,8 @@ MonoBehaviour:
   evolvesInto: []
   evolvesFrom: []
   defaultStage: 1
-  attackFrame: {fileID: 0}
-  hurtFrame: {fileID: 0}
+  attackFrame: {fileID: 1568725389810862923, guid: bf5b336cfbbf25342863bb54aa7b3f24,
+    type: 3}
+  hurtFrame: {fileID: 6578478782456319215, guid: bf5b336cfbbf25342863bb54aa7b3f24,
+    type: 3}
   myBoulders: {fileID: 0}

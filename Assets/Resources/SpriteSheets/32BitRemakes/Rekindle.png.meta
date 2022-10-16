@@ -1,13 +1,22 @@
 fileFormatVersion: 2
-guid: c95c46bf387cafc43a8a72500279f711
+guid: cf5351574522d4049ba3ad9f2c296d12
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2596704093302117275
-    second: Swoopitch1_0
+      213: -2508936760440499138
+    second: Rekindle_0
   - first:
-      213: -666527089316813792
-    second: Swoopitch1_1
+      213: 3896090168909568144
+    second: Rekindle_1
+  - first:
+      213: 7732991735777124692
+    second: Rekindle_2
+  - first:
+      213: -7183964679308298077
+    second: Rekindle_3
+  - first:
+      213: 6047698922860559644
+    second: Rekindle_4
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -116,7 +125,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Swoopitch1_0
+      name: Rekindle_0
       rect:
         serializedVersion: 2
         x: 0
@@ -130,14 +139,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1a162596c0e6d094b896c05946bf1dfd
-      internalID: 2596704093302117275
+      spriteID: 234ca935fa736304cba85d4414d25c58
+      internalID: -2508936760440499138
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Swoopitch1_1
+      name: Rekindle_1
       rect:
         serializedVersion: 2
         x: 32
@@ -151,8 +160,71 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4afa66b77b0bd4f45926e11cf423d468
-      internalID: -666527089316813792
+      spriteID: 919bafe9fc9945042a3ad054207b1bf1
+      internalID: 3896090168909568144
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rekindle_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3153a807618f55b42a99e8eaa458102a
+      internalID: 7732991735777124692
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rekindle_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8f7e870717e3da64ba8e617f393fab78
+      internalID: -7183964679308298077
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rekindle_4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 653ba7791ff57a9469dd916219ced500
+      internalID: 6047698922860559644
       vertices: []
       indices: 
       edges: []
@@ -160,7 +232,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 9532e4c04d1a861418e7bde93dbabb13
+    spriteID: 55a3a3e487ca90d41bad34cbfe71bcac
     internalID: 0
     vertices: []
     indices: 

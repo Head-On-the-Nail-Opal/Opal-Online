@@ -20,7 +20,7 @@ public class Heatriarch : OpalScript
         speed = 1;
         priority = 1;
         myName = "Heatriarch";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 1.5f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         offsetX = 0;
         offsetY = 0.2f;
         offsetZ = 0;
@@ -33,10 +33,10 @@ public class Heatriarch : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Hive Mother", 0, 1, 0, "Hatch a Heant on each adjacent Flame tile.", 1);
-        Attacks[1] = new Attack("Flame Nest", 0, 1, 0, "Light adjacent tiles on fire. Adjacent Opals gain +3 speed for their next turn.", 1);
-        Attacks[2] = new Attack("Agitating Bite", 2, 4, 0, "Target takes damage from their burn.");
-        Attacks[3] = new Attack("Flaming Spit", 4, 4, 0, "Burn all opals in radius.", 1);
+        Attacks[0] = new Attack("Hive Mother", 0, 1, 0, "Hatch a Heant on each adjacent Flame tile.", 1,3);
+        Attacks[1] = new Attack("Flame Nest", 0, 1, 0, "Light adjacent tiles on fire. Adjacent Opals gain +3 speed for their next turn.", 1,3);
+        Attacks[2] = new Attack("Agitating Bite", 2, 4, 0, "Target takes damage from their burn.",0,3);
+        Attacks[3] = new Attack("Flaming Spit", 4, 4, 0, "Burn all opals in radius.", 1,3);
         type1 = "Fire";
         type2 = "Swarm";
     }

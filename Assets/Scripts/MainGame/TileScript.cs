@@ -64,6 +64,8 @@ public class TileScript : MonoBehaviour {
     int anim = 0;
     int animLength = 40;
 
+    private GameObject myShadow;
+
 
     public void Awake()
     {
@@ -76,6 +78,9 @@ public class TileScript : MonoBehaviour {
         orangePlate = Resources.Load<GameObject>("Prefabs/OrangePlate");
         charmParticle = Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/Charm");
         myNormalColor = GetComponent<MeshRenderer>().material.color;
+
+        setUpShadow();
+
         if (changeTexture != null)
             changeSpriteRenderer = changeTexture.GetComponent<SpriteRenderer>();
         if(type == "Boulder")
@@ -245,6 +250,34 @@ public class TileScript : MonoBehaviour {
         }
     }
 
+    private void setUpShadow()
+    {
+        if (myShadow == null)
+        {
+            myShadow = Instantiate<GameObject>(Resources.Load<GameObject>("Prefabs/Shadow"), transform);
+            myShadow.transform.localPosition = new Vector3(0, 0.51f, 0);
+            myShadow.transform.localScale *= 3;
+            
+        }
+        myShadow.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.3f);
+        if(currentPlayer == null)
+        {
+            myShadow.GetComponent<SpriteRenderer>().enabled = false;
+        }
+        else if(currentPlayer.getMyName() == "Boulder")
+        {
+            //print("du hello");
+            //myShadow.transform.localScale *= 2;
+        }
+    }
+
+    public void setShadow(bool doShade)
+    {
+        myShadow.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.3f);
+        myShadow.GetComponent<SpriteRenderer>().enabled = doShade;
+
+    }
+
     public void setCoordinates(int row, int col)
     {
         gridPos.x = row;
@@ -317,6 +350,7 @@ public class TileScript : MonoBehaviour {
             }
             //isRed = false;
         }
+        setUpShadow();
     }
 
     public void highlightTwinPortal(bool toggle)
@@ -574,6 +608,11 @@ public class TileScript : MonoBehaviour {
                 currentPlayer.onGrowth(false);
                 DestroyImmediate(currentEffect);
             }
+            if (currentPlayer != null)
+            {
+                myShadow.GetComponent<SpriteRenderer>().enabled = false;
+                myShadow.transform.localScale /= currentPlayer.transform.localScale.x/2.5f;
+            }
         }
         currentPlayer = player;
         if (player != null)
@@ -615,7 +654,12 @@ public class TileScript : MonoBehaviour {
                 doTrap(player);
                 clearTrap();
             }
-            if(currentCharms.Count > 0)
+
+            
+            myShadow.GetComponent<SpriteRenderer>().enabled = true;
+            myShadow.transform.localScale *= player.transform.localScale.x/2.5f;
+
+            if (currentCharms.Count > 0)
             {
                 List<string> removedCharms = new List<string>();
                 foreach (string c in getCharms())

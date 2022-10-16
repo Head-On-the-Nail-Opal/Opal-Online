@@ -15,7 +15,7 @@ public class Glummer : OpalScript
         speed = 3;
         priority = 3;
         myName = "Glummer";
-        transform.localScale = new Vector3(3.5f, 3.5f, 1);
+        transform.localScale = new Vector3(3f, 3f, 1);
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -28,10 +28,10 @@ public class Glummer : OpalScript
         offsetY = 0f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Beacon", 1, 4, 0, "Spawn a Glimmerpillar.");
-        Attacks[1] = new Attack("Refraction", 1, 1, 0, "Give target +2 attack and +2 defense for each Glimmerpillar alive, for 1 turn.");
-        Attacks[2] = new Attack("Magnified Heal", 1, 1, 0, "Heal target 2 health for each Glimmerpillar alive. If there are 4 or more, overheal.");
-        Attacks[3] = new Attack("Larva Love",0,1,0,"Heal all Glimmerpillars by 10 health and heal their status effects.");
+        Attacks[0] = new Attack("Beacon", 1, 4, 0, "Spawn a Glimmerpillar.",0,3);
+        Attacks[1] = new Attack("Refraction", 1, 1, 0, "Give target +2 attack and +2 defense for each Glimmerpillar alive, for 1 turn.",0,3);
+        Attacks[2] = new Attack("Magnified Heal", 1, 1, 0, "Heal target 2 health for each Glimmerpillar alive. If there are 4 or more, overheal.",0,3);
+        Attacks[3] = new Attack("Larva Love",0,1,0,"Heal all Glimmerpillars by 10 health and heal their status effects.",0,3);
         type1 = "Swarm";
         type2 = "Light";
         glimmerpillarPrefab = Resources.Load<Glimmerpillar>("Prefabs/SubOpals/Glimmerpillar");

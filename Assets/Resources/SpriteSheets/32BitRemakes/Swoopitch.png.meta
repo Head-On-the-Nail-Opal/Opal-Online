@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c99140efa2073ad42b1be0098ab43863
+guid: 25efbbb078ff05e479b908decb95e6d5
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,15 @@ TextureImporter:
   - first:
       213: -7440322437236387130
     second: Swoopitch_1
+  - first:
+      213: 5584376837434899865
+    second: Swoopitch_2
+  - first:
+      213: -7316011081483339776
+    second: Swoopitch_3
+  - first:
+      213: 1872768379326669635
+    second: Swoopitch_4
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -130,7 +139,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e4aa86032fe509d4a97b653d4a8e10f6
+      spriteID: f32e1e4d70ea87e428d2334d26a53bc1
       internalID: -8778279775544564469
       vertices: []
       indices: 
@@ -151,8 +160,71 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 96ec80dad28c06c498123870b04859cd
+      spriteID: d9f163907dde4a648b707e3109560119
       internalID: -7440322437236387130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Swoopitch_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 840942c0f82233e449eabf862eb99727
+      internalID: 5584376837434899865
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Swoopitch_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9563e79e2f834714da7ac01bf7f2a55a
+      internalID: -7316011081483339776
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Swoopitch_4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e2bf3593922e20243a0b53c3b0fd0a15
+      internalID: 1872768379326669635
       vertices: []
       indices: 
       edges: []
@@ -160,7 +232,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 88f0af8a9ad485947b0c93120bb48576
+    spriteID: 1d7c6ff4517adaa46b3768c9070b9fc0
     internalID: 0
     vertices: []
     indices: 

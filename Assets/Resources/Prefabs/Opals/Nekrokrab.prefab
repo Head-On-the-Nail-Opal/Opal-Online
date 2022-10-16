@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3091118254766970172}
   - component: {fileID: 3091118254766970174}
   m_Layer: 0
-  m_Name: Toxikrab
+  m_Name: Nekrokrab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -71,7 +71,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 3422721987609211782, guid: f6b17877273080f429fb224b0fdc3d7d,
+  m_Sprite: {fileID: -2016528849439627458, guid: e9700c80fe5d77b489a184b4bf5fbc60,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -93,7 +93,7 @@ Animator:
   m_GameObject: {fileID: 3091118254766970170}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: b311ea025a564ea4a83d25071ccae6c4, type: 2}
+  m_Controller: {fileID: 9100000, guid: ff2217b5c4ab4e344a5c5275301d4ada, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -117,3 +117,11 @@ MonoBehaviour:
   display: 0
   shrouded: 0
   poisonCounter: 4
+  evolvesInto: []
+  evolvesFrom: []
+  defaultStage: 1
+  attackFrame: {fileID: -3736767571473385691, guid: e9700c80fe5d77b489a184b4bf5fbc60,
+    type: 3}
+  hurtFrame: {fileID: -2959659706038569032, guid: e9700c80fe5d77b489a184b4bf5fbc60,
+    type: 3}
+  myBoulders: {fileID: 0}

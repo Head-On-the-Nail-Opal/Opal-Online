@@ -29,10 +29,10 @@ public class Mistery : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Blanket Fog", 0, 0, 0, "<Passive>\nWhen Mistery dies, all Opals cursed by it lose -4 speed for 1 turn.");
-        Attacks[1] = new Attack("Misty Misery", 2, 1, 0, "<Free Ability>\nTwice per turn, place a mist trap, which deal 14 damage to Opals cursed by Mistery");
+        Attacks[1] = new Attack("Misty Misery", 2, 1, 0, "<Free Ability>\nTwice per turn, place a mist trap, which deal 14 damage to Opals cursed by Mistery",0,3);
         Attacks[1].setFreeAction(true);
-        Attacks[2] = new Attack("Condensed Grip", 3, 4, 6, "Curse the target Opal");
-        Attacks[3] = new Attack("Two Tone Screech", 0, 1, 0, "All cursed enemy Opals lose -2 defense. All cursed ally Opals gain +4 defense.");
+        Attacks[2] = new Attack("Condensed Grip", 3, 4, 6, "Curse the target Opal",0,3);
+        Attacks[3] = new Attack("Two Tone Screech", 0, 1, 0, "All cursed enemy Opals lose -2 defense. All cursed ally Opals gain +4 defense.",0,3);
         type1 = "Spirit";
         type2 = "Dark";
     }

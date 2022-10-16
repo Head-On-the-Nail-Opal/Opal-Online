@@ -197,13 +197,13 @@ public class TextScript : MonoBehaviour {
         }
         if (displayCurrent == null)
         {
-            displayCurrent =  Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + opal.getMyName()));
+            displayCurrent = Instantiate<OpalScript>(opal.getMyModel());
             displayCurrent.setDisplayOpal();
             displayCurrent.doHighlight();
             //displayCurrent.setOpal(null);
             displayCurrent.transform.position = new Vector3(5.228f, 3.6f, -10.078f);
             displayCurrent.transform.localRotation = Quaternion.Euler(40, -45, 0);
-            displayCurrent.transform.localScale *= 2;
+            displayCurrent.transform.localScale = opal.transform.localScale*2;
             displayCurrent.GetComponent<SpriteRenderer>().sortingLayerName = "UI Back";
             //displayCurrent.resetHighlight();
             //displayCurrent.transform.localScale *= 2;
@@ -385,13 +385,13 @@ public class TextScript : MonoBehaviour {
             }
             if (displaySelected == null)
             {
-                displaySelected = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/"+opal.getMyName()));
+                displaySelected = Instantiate<OpalScript>(opal.getMyModel());
                 displaySelected.setDisplayOpal();
                 displaySelected.doHighlight();
                 //displaySelected.setOpal(null);
                 displaySelected.transform.position = new Vector3(15.69f, 3.6f, 0.61f);
                 displaySelected.transform.localRotation = Quaternion.Euler(40, -45, 0);
-                displaySelected.transform.localScale *= 2;
+                displaySelected.transform.localScale = opal.transform.localScale*2;
                 
                 displaySelected.GetComponent<SpriteRenderer>().sortingLayerName = "UI Back";
                 //displaySelected.resetHighlight();

@@ -19,7 +19,7 @@ public class Hoviron : OpalScript
         speed = 3;
         priority = 1;
         myName = "Hoviron";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.7f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 0.9f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -32,11 +32,11 @@ public class Hoviron : OpalScript
         offsetY = 0f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Blast Off", 20, 1, 0, "<Free Ability>\nFly to any tile on the map. May use once per turn.");
+        Attacks[0] = new Attack("Blast Off", 20, 1, 0, "<Free Ability>\nFly to any tile on the map. May use once per turn.",0,3);
         Attacks[0].setFreeAction(true);
-        Attacks[1] = new Attack("Rocket Shot", 1, 1, 4, "Push target back two tiles. When you use Blast Off in the future, gain +2 attack for 1 turn.");
-        Attacks[2] = new Attack("Firepower", 0, 1, 0, "Gain +2 attack and +2 defense. Next time you use Blast Off, push Opals adjacent to your landing back two tiles and deal 2 damage to them.");
-        Attacks[3] = new Attack("Evasive Rockets", 0, 1, 0, "Gain +1 armor. When you use Blast Off in the future gain +1 speed for 2 turns.");
+        Attacks[1] = new Attack("Rocket Shot", 1, 1, 4, "Push target back two tiles. When you use Blast Off in the future, gain +2 attack for 1 turn.",0,3);
+        Attacks[2] = new Attack("Firepower", 0, 1, 0, "Gain +2 attack and +2 defense. Next time you use Blast Off, push Opals adjacent to your landing back two tiles and deal 2 damage to them.",0,3);
+        Attacks[3] = new Attack("Evasive Rockets", 0, 1, 0, "Gain +1 armor. When you use Blast Off in the future gain +1 speed for 2 turns.",0,3);
         type1 = "Metal";
         type2 = "Air";
         if (pl != null)
