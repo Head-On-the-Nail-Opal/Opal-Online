@@ -13,7 +13,7 @@ public class Protectric : OpalScript
         speed = 3;
         priority = 8;
         myName = "Protectric";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.8f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -23,15 +23,15 @@ public class Protectric : OpalScript
             GetComponent<SpriteRenderer>().flipX = false;
         }
         offsetX = 0;
-        offsetY = 0.1f;
+        offsetY = 0f;
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Conductor", 0, 0, 0, "<Passive>\n At the start of your turn, convert each Armor into 4 charge");
-        Attacks[1] = new Attack("Charged Disc", 4, 4, 0, "<Free Ability>\n Costs 2 charge. Gain +1 attack and then deal damage.");
+        Attacks[1] = new Attack("Charged Disc", 4, 4, 0, "<Free Ability>\n Costs 2 charge. Gain +1 attack and then deal damage.",0,3);
         Attacks[1].setFreeAction(true);
-        Attacks[2] = new Attack("Voltage Shield", 0, 1, 0, "<Free Ability>\n Costs 3 charge. Gain +1 Armor.");
+        Attacks[2] = new Attack("Voltage Shield", 0, 1, 0, "<Free Ability>\n Costs 3 charge. Gain +1 Armor.",0,3);
         Attacks[2].setFreeAction(true);
-        Attacks[3] = new Attack("Reserve Power", 0, 1, 0, "Gain +1 Armor.");
+        Attacks[3] = new Attack("Reserve Power", 0, 1, 0, "Gain +1 Armor.",0,3);
         type1 = "Metal";
         type2 = "Electric";
     }

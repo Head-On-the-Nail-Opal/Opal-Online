@@ -17,7 +17,7 @@ public class Volcoco : OpalScript
         speed = 1;
         priority = 6;
         myName = "Volcoco";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.9f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -27,14 +27,14 @@ public class Volcoco : OpalScript
             GetComponent<SpriteRenderer>().flipX = false;
         }
         offsetX = 0;
-        offsetY = 0f;
+        offsetY = -0.1f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Eruption", 1, 1, 5, "Deal 5 damage. This attack gains +1 range for each surrounding growth, and +2 damage for each surrounding fire.");
+        Attacks[0] = new Attack("Eruption", 1, 1, 5, "Deal 5 damage. This attack gains +1 range for each surrounding growth, and +2 damage for each surrounding fire.",0,3);
         Attacks[1] = new Attack("Ash Deposit", 0, 1, 0, "Surrounding Opals standing on fire take burn damage, surrounding opals standing on growth gain +2 attack and +2 defense");
         Attacks[2] = new Attack("Natural Cycle", 2, 1, 0, "Place a growth tile and then a fire tile. Then repeat.");
         Attacks[2].setUses(4);
-        Attacks[3] = new Attack("Heatleaf", 0, 5, 0, "Opal standing on a growth takes damage from their burn.");
+        Attacks[3] = new Attack("Heatleaf", 0, 5, 0, "Opal standing on a growth takes damage from their burn.",0,3);
         type1 = "Fire";
         type2 = "Grass";
     }
@@ -55,7 +55,7 @@ public class Volcoco : OpalScript
                 extraDamage++;
             }
         }
-        Attacks[0] = new Attack("Eruption", 1 + extraRange, 1, 5 + extraDamage*2, "This attack gains +1 range for each surrounding growth, and +2 damage for each surrounding fire.");
+        Attacks[0] = new Attack("Eruption", 1 + extraRange, 1, 5 + extraDamage*2, "This attack gains +1 range for each surrounding growth, and +2 damage for each surrounding fire.",0,3);
     }
 
     public override void onMove(int distanceMoved)
@@ -73,7 +73,7 @@ public class Volcoco : OpalScript
                 extraDamage++;
             }
         }
-        Attacks[0] = new Attack("Eruption", 1+extraRange, 1, 5+extraDamage*2, "This attack gains +1 range for each surrounding growth, and +2 damage for each surrounding fire.");
+        Attacks[0] = new Attack("Eruption", 1+extraRange, 1, 5+extraDamage*2, "This attack gains +1 range for each surrounding growth, and +2 damage for each surrounding fire.",0,3);
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)

@@ -14,7 +14,7 @@ public class Snugbun : OpalScript
         speed = 3;
         priority = 2;
         myName = "Snugbun";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.9f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -28,9 +28,9 @@ public class Snugbun : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Group Snuggles", 0, 0, 0, "<Passive>\n When Snugbun takes damage, or is healed, that damage or healing is also dealt to Opals adjacent to Snugbun.");
-        Attacks[1] = new Attack("Bunny Hop", 3, 1, 0, "<Free Ability>\n Teleport to the target tile, then take 4 damage.");
-        Attacks[2] = new Attack("Escape Plan", 3, 1, 0, "Choose a tile. After the next time you take damage (not on your turn), teleport to that tile.");
-        Attacks[3] = new Attack("Heavy Cuddles", 1, 1, 4, "Deal damage, target loses -3 defense before the damage is dealt.");
+        Attacks[1] = new Attack("Bunny Hop", 3, 1, 0, "<Free Ability>\n Teleport to the target tile, then take 4 damage.",0,3);
+        Attacks[2] = new Attack("Escape Plan", 3, 1, 0, "Choose a tile. After the next time you take damage (not on your turn), teleport to that tile.",0,3);
+        Attacks[3] = new Attack("Heavy Cuddles", 1, 1, 4, "Deal damage, target loses -3 defense before the damage is dealt.",0,3);
         Attacks[1].setFreeAction(true);
         type1 = "Dark";
         type2 = "Dark";
@@ -68,6 +68,7 @@ public class Snugbun : OpalScript
                 if (t.currentPlayer != null)
                 {
                     t.currentPlayer.doHeal(heal,false);
+                    playFrame("attack", 5);
                 }
             }
         }

@@ -14,7 +14,7 @@ public class Verminfection : OpalScript
         speed = 3;
         priority = 8;
         myName = "Verminfection";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.6f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -24,13 +24,13 @@ public class Verminfection : OpalScript
             GetComponent<SpriteRenderer>().flipX = false;
         }
         offsetX = 0;
-        offsetY = -0.1f;
+        offsetY = 0f;
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Infectious", 0, 0, 0, "<Passive>\nWhen Verminfection takes damage, it's poison is spread to surrounding Opals.");
-        Attacks[1] = new Attack("Bad Turn", 0, 1, 0, "Heal 8 health. Poison yourself. If already poisoned then raise damage taken when poisoned by 4.");
-        Attacks[2] = new Attack("Tainted Bite", 1, 1, 5, "Target gains all stat changes from Verminfection. Verminfection loses all stat changes.");
-        Attacks[3] = new Attack("Cough", 0, 1, 0, "<Free Ability> Take damage from your poison.");
+        Attacks[1] = new Attack("Bad Turn", 0, 1, 0, "Heal 8 health. Poison yourself. If already poisoned then raise damage taken when poisoned by 4.",0,3);
+        Attacks[2] = new Attack("Tainted Bite", 1, 1, 5, "Target gains all stat changes from Verminfection. Verminfection loses all stat changes.",0,3);
+        Attacks[3] = new Attack("Cough", 0, 1, 0, "<Free Ability> Take damage from your poison.",0,3);
         Attacks[3].setFreeAction(true);
         type1 = "Dark";
         type2 = "Dark";
@@ -49,6 +49,7 @@ public class Verminfection : OpalScript
     {
         if(dead == false && dam > 0 && poisoned)
         {
+            StartCoroutine(playFrame("attack", 5));
             for (int i = -1; i < 2; i++)
             {
                 for (int j = -1; j < 2; j++)

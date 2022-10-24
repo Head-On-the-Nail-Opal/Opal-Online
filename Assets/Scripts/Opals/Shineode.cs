@@ -13,7 +13,7 @@ public class Shineode : OpalScript
         speed = 2;
         priority = 4;
         myName = "Shineode";
-        transform.localScale = new Vector3(3.5f, 3.5f, 1);
+        transform.localScale = new Vector3(3f, 3f, 1);
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -26,11 +26,11 @@ public class Shineode : OpalScript
         offsetY = 0f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Shatter Geode", 3, 1, 0, "Destroy a boulder. Deal damage based on its defense to adjacent Opals.");
-        Attacks[1] = new Attack("Rock Drop", 4, 1, 0, "Place 3 boulders. They share your defense value.");
+        Attacks[0] = new Attack("Shatter Geode", 3, 1, 0, "Destroy a boulder. Deal damage based on its defense to adjacent Opals.",0,3);
+        Attacks[1] = new Attack("Rock Drop", 4, 1, 0, "Place 3 boulders. They share your defense value.",0,3);
         Attacks[1].setUses(3);
-        Attacks[2] = new Attack("Mineral Health", 2, 1, 0, "Heal a target by 5. If they're next to a boulder overheal.");
-        Attacks[3] = new Attack("Rocky Fortitude", 0, 1, 0, "Surrounding Opals and boulders, and Shineode, gain +2 defense.");
+        Attacks[2] = new Attack("Mineral Health", 2, 1, 0, "Heal a target by 5. If they're next to a boulder overheal.",0,3);
+        Attacks[3] = new Attack("Rocky Fortitude", 0, 1, 0, "Surrounding Opals and boulders, and Shineode, gain +2 defense.",0,3);
         type1 = "Ground";
         type2 = "Light";
     }

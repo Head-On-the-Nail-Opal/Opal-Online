@@ -17,9 +17,9 @@ public class Sorceraura : OpalScript
         priority = 7;
         myName = "Sorceraura";
         //baseSize = new Vector3(0.2f, 0.2f, 1);
-        transform.localScale = new Vector3(0.2f, 0.24f, 1) * 1f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         offsetX = 0;
-        offsetY = 0.2f;
+        offsetY = 0f;
         offsetZ = 0;
         player = pl;
         if (pl == "Red" || pl == "Green")
@@ -30,10 +30,10 @@ public class Sorceraura : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Energetic Blast", 4, 4, 0, "Heal Opals in an area by your attack. If your attack is negative, deal damage instead.", 1);
-        Attacks[1] = new Attack("Trick", 1, 1, 0, "Gain +3 attack. Target loses -3 attack.");
-        Attacks[2] = new Attack("Sleight of Hand", 1, 1, 0, "Invert your attack stat. Buff target by your new attack stat.");
-        Attacks[3] = new Attack("Turnaround", 2, 1, 0, "Damage an Opal by their attack stat.");
+        Attacks[0] = new Attack("Energetic Blast", 4, 4, 0, "Heal Opals in an area by your attack. If your attack is negative, deal damage instead.", 1,3);
+        Attacks[1] = new Attack("Trick", 1, 1, 0, "Gain +3 attack. Target loses -3 attack.",0,3);
+        Attacks[2] = new Attack("Sleight of Hand", 1, 1, 0, "Invert your attack stat. Buff target by your new attack stat.",0,3);
+        Attacks[3] = new Attack("Turnaround", 2, 1, 0, "Damage an Opal by their attack stat.",0,3);
         type1 = "Light";
         type2 = "Dark";
     }

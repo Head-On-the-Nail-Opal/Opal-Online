@@ -41,7 +41,7 @@ public class Chasmcrawler : OpalScript
             for(int j = -2; j < 3; j++)
             {
                 if(Mathf.Abs(i) != 2 || Mathf.Abs(j) != 2)
-                    getBoard().setTile((int)getPos().x+i, (int)getPos().z+j, "Boulder", false);
+                    getBoard().placeBoulder((int)getPos().x+i, (int)getPos().z+j, this);
             }
         }
     }

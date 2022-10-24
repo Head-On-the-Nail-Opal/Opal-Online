@@ -42,10 +42,10 @@ public class Woolloy : OpalScript
          * */
 
         Attacks[0] = new Attack("Scrap Alloy", 0, 0, 0, "<Passive>\nThe first tile cleared by Heavy Brush per turn provides a variety of passive effects.");
-        Attacks[1] = new Attack("Heavy Brush", 0, 1, 0, "<Free Ability>\n Clear the tile under Woolloy.");
+        Attacks[1] = new Attack("Heavy Brush", 0, 1, 0, "<Free Ability>\n Clear the tile under Woolloy.",0,3);
         Attacks[1].setFreeAction(true);
-        Attacks[2] = new Attack("Steel Scrub", 0, 1, 0, "Heal any status conditions on Woolloy and adjacent Opals. Heal each 4 health.");
-        Attacks[3] = new Attack("Polish", 1, 1, 0, "Give the target a copy of the buffs on Woolloy, they last for 1 turn.");
+        Attacks[2] = new Attack("Steel Scrub", 0, 1, 0, "Heal any status conditions on Woolloy and adjacent Opals. Heal each 4 health.",0,3);
+        Attacks[3] = new Attack("Polish", 1, 1, 0, "Give the target a copy of the buffs on Woolloy, they last for 1 turn.",0,3);
         type1 = "Metal";
         type2 = "Light";
     }
@@ -84,7 +84,7 @@ public class Woolloy : OpalScript
                 description += " Flood: Gain +1 speed for 1 turn when you start your turn on a Flood tile.";
             }
         }
-        Attacks[1] = new Attack("Heavy Brush", 0, 1, 0, description);
+        Attacks[1] = new Attack("Heavy Brush", 0, 1, 0, description,0,3);
         Attacks[1].setFreeAction(true);
     }
 
@@ -97,7 +97,7 @@ public class Woolloy : OpalScript
 
         if(currentTile != null)
         {
-            if(currentTile.type == "Growth" && numGrowth > 0)
+            if(numGrowth > 0)
             {
                 doTempBuff(0,-1,numGrowth);
                 doTempBuff(1, -1, numGrowth);

@@ -1140,61 +1140,29 @@ public class CursorScript : MonoBehaviour {
 
     public void doAttack(int x, int y, int at)
     {
-        if (boardScript.getResetting())
-        {
-            selectedPlayer.prepAttack(at);
-            if (boardScript.tileGrid[x, y].currentPlayer != null)
-            {
-                boardScript.tileGrid[x, y].currentPlayer.takeDamage(selectedPlayer.getAttackEffect(at, boardScript.tileGrid[x, y].currentPlayer), true, true);
-            }
-            else
-            {
-                selectedPlayer.getAttackEffect(at, boardScript.tileGrid[x, y]);
-            }
-            return;
-        }
-        selectedPlayer.prepAttack(at);
-
-
-        Projectile tempProj;
-        
-        if(selectedPlayer.Attacks[at].getProj() != null)
-            tempProj = projToProjectile(selectedPlayer.Attacks[at].getProj());
-        else
-            tempProj= Instantiate(currentProj);
-
-        tempProj.setUp(selectedPlayer.getAttacks()[at].getShape(), selectedPlayer.getMainType());
-        selectedPlayer.adjustProjectile(tempProj, at);
-        if (boardScript.tileGrid[x, y].currentPlayer != null)
-        {
-            tempProj.fire(selectedPlayer, boardScript.tileGrid[x, y].currentPlayer, at);
-        }
-        else
-        {
-            tempProj.fire(selectedPlayer, boardScript.tileGrid[x, y], at);
-        }
+        doAttack(x, y, at, selectedPlayer);
     }
 
     public void doAttack(int x, int y, int at, OpalScript updatedPlayer)
     {
         if (boardScript.getResetting())
         {
-            selectedPlayer.prepAttack(at);
+            updatedPlayer.prepAttack(at);
             if (boardScript.tileGrid[x, y].currentPlayer != null)
             {
-                boardScript.tileGrid[x, y].currentPlayer.takeDamage(selectedPlayer.getAttackEffect(at, boardScript.tileGrid[x, y].currentPlayer), true, true);
+                boardScript.tileGrid[x, y].currentPlayer.takeDamage(updatedPlayer.getAttackEffect(at, boardScript.tileGrid[x, y].currentPlayer), true, true);
             }
             else
             {
-                selectedPlayer.getAttackEffect(at, boardScript.tileGrid[x, y]);
+                updatedPlayer.getAttackEffect(at, boardScript.tileGrid[x, y]);
             }
             return;
         }
         updatedPlayer.prepAttack(at);
         Projectile tempProj;
 
-        if (selectedPlayer.Attacks[at].getProj() != null)
-            tempProj = Instantiate(projToProjectile(selectedPlayer.Attacks[at].getProj()));
+        if (updatedPlayer.Attacks[at].getProj() != null)
+            tempProj = Instantiate(projToProjectile(updatedPlayer.Attacks[at].getProj()));
         else
             tempProj = Instantiate(currentProj);
 

@@ -21,7 +21,7 @@ public class Numbskull : OpalScript
         speed = 3;
         priority = 7;
         myName = "Numbskull";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.9f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -35,9 +35,9 @@ public class Numbskull : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Haunting", 0, 0, 0, "<Passive>\n Enemy opals killed by Numbskull leave a Spiritch in their place.");
-        Attacks[1] = new Attack("Gambit", 0, 1, 10, "Deal damage in an area of effect. Die after using this attack.",1);
-        Attacks[2] = new Attack("Shade Grasp", 1, 1, 6, "You may move after using this ability.");
-        Attacks[3] = new Attack("Fateful Reward", 0, 1, 0, "Take 3 damage. Gain +3 attack.");
+        Attacks[1] = new Attack("Gambit", 0, 1, 10, "Deal damage in an area of effect. Die after using this attack.",1,3);
+        Attacks[2] = new Attack("Shade Grasp", 1, 1, 6, "You may move after using this ability.",0,3);
+        Attacks[3] = new Attack("Fateful Reward", 0, 1, 0, "Take 3 damage. Gain +3 attack.",0,3);
         type1 = "Dark";
         type2 = "Swarm";
     }

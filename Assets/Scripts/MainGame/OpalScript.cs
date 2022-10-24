@@ -1179,6 +1179,7 @@ abstract public class OpalScript : MonoBehaviour {
                         {
                             waddle -= 0.1f;
                         }
+                        
                         transform.position = new Vector3(transform.position.x + xVel * 0.1f, waddle, transform.position.z + yVel * 0.1f);
                         yield return new WaitForFixedUpdate();
                     }
@@ -1919,7 +1920,22 @@ abstract public class OpalScript : MonoBehaviour {
         {
             currentTile.callParticleEffect("Minisplash");
             flooded = true;
+            
         }
+        sinkOpal();
+    }
+
+    public void sinkOpal()
+    {
+        if (!flooded)
+        {
+            transform.position = new Vector3(transform.position.x, 0.5f + getYOffset(), transform.position.z);
+        }
+        else if (flooded)
+        {
+            transform.position = new Vector3(transform.position.x, 0.25f + getYOffset(), transform.position.z);
+        }
+
     }
 
     public IEnumerator shrinker()

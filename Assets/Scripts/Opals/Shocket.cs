@@ -13,7 +13,7 @@ public class Shocket : OpalScript
         speed = 4;
         priority = 8;
         myName = "Shocket";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.7f;
+        transform.localScale = new Vector3(3, 3f, 1) * 1f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -27,10 +27,10 @@ public class Shocket : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Powered Up", 0, 0, 0, "<Passive>\n Whenever Shocket is buffed or debuffed, it gains charge equal to the amount of stat change.");
-        Attacks[1] = new Attack("Jolt", 4, 4, 0, "<Free Ability>\n Costs 1 charge. Target loses -1 speed for 1 turn.");
+        Attacks[1] = new Attack("Jolt", 4, 4, 0, "<Free Ability>\n Costs 1 charge. Target loses -1 speed for 1 turn.",0,3);
         Attacks[1].setFreeAction(true);
-        Attacks[2] = new Attack("Power Trip", 0, 1, 0, "Shocket gains +2 attack and defense for each adjacent buffed Opal");
-        Attacks[3] = new Attack("Short Circuit", 3, 4, 4, "If target is buffed then they lose -3 speed for 1 turn.");
+        Attacks[2] = new Attack("Power Trip", 0, 1, 0, "Shocket gains +2 attack and defense for each adjacent buffed Opal",0,3);
+        Attacks[3] = new Attack("Short Circuit", 3, 4, 4, "If target is buffed then they lose -3 speed for 1 turn.",0,3);
         type1 = "Electric";
         type2 = "Metal";
     }
@@ -50,10 +50,10 @@ public class Shocket : OpalScript
         }
         else if (attackNum == 1) //Seed Launch
         {
-            if (getCharge() > 1)
+            if (getCharge() > 0)
             {
                 doCharge(-1);
-                target.doTempBuff(2, 1, 1);
+                target.doTempBuff(2, 1, -1);
             }
             return 0;
         }

@@ -21,7 +21,7 @@ public class Spiritch : OpalScript
         speed = 0;
         priority = 9;
         myName = "Spiritch";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.8f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         offsetX = 0;
         offsetY = 0f;
         offsetZ = 0;
@@ -35,8 +35,8 @@ public class Spiritch : OpalScript
             GetComponent<SpriteRenderer>().flipX = false;
         }
         Attacks[0] = new Attack("Restless", 0, 0, 0, "<Passive>\n On death, spawn a Numbskull to replace Spiritch.");
-        Attacks[1] = new Attack("Unholy", 0, 1, 0, "Adjacent Opals gain +2 attack. If they are Swarm types they gain +1 speed as well.", 1);
-        Attacks[2] = new Attack("Skull Roll", 1, 0, 0, "Spawn a Numbskull. Take 5 damage.");
+        Attacks[1] = new Attack("Unholy", 0, 1, 0, "Adjacent Opals gain +2 attack. If they are Swarm types they gain +1 speed as well.", 1,3);
+        Attacks[2] = new Attack("Skull Roll", 1, 0, 0, "Spawn a Numbskull. Take 5 damage.",0,3);
         Attacks[3] = new Attack("Control Fate", 0, 1, 0, "<Free Ability>\n Take 10 damage.");
         Attacks[3].setFreeAction(true);
         type1 = "Dark";

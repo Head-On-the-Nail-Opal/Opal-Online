@@ -18,9 +18,9 @@ public class Prismin : OpalScript
         priority = 2;
         myName = "Prismin";
         //baseSize = new Vector3(0.2f, 0.2f, 1);
-        transform.localScale = new Vector3(0.2f, 0.24f, 1) * 0.5f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         offsetX = 0;
-        offsetY = -0.08f;
+        offsetY = 0f;
         offsetZ = 0;
         player = pl;
         if (pl == "Red" || pl == "Green")
@@ -31,11 +31,11 @@ public class Prismin : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Restore", 1, 1, 0, "Fully heal the targeted Opal. Prismin has [1] use of this ability.");
-        Attacks[1] = new Attack("Regeneration", 0, 1, 0, "All surrounding Opals gain +4 attack and +4 defense for 1 turn. Heal them each by 3 health.");
-        Attacks[2] = new Attack("Relay", 1, 1, 0, "Give an Opal +3 attack, then give an Opal +3 defense.");
+        Attacks[0] = new Attack("Restore", 1, 1, 0, "Fully heal the targeted Opal. Prismin has [1] use of this ability.",0,5);
+        Attacks[1] = new Attack("Regeneration", 0, 1, 0, "All surrounding Opals gain +4 attack and +4 defense for 1 turn. Heal them each by 3 health.",0,3);
+        Attacks[2] = new Attack("Relay", 1, 1, 0, "Give an Opal +3 attack, then give an Opal +3 defense.",0,3);
         Attacks[2].setUses(2);
-        Attacks[3] = new Attack("Recover", 0, 1, 0, "Lose -10 health. Gain another use of Restore.");
+        Attacks[3] = new Attack("Recover", 0, 1, 0, "Lose -10 health. Gain another use of Restore.",0,3);
         type1 = "Light";
         type2 = "Light";
         og = true;
@@ -43,7 +43,7 @@ public class Prismin : OpalScript
 
     public override void onStart()
     {
-        Attacks[0] = new Attack("Restore", 1, 1, 0, "Fully heal the targeted Opal. Prismin has ["+restore+"] use of this ability.");
+        Attacks[0] = new Attack("Restore", 1, 1, 0, "Fully heal the targeted Opal. Prismin has ["+restore+"] use of this ability.",0,5);
         relay = 0;
     }
 
@@ -56,7 +56,7 @@ public class Prismin : OpalScript
             {
                 target.doHeal(target.getMaxHealth() - target.getHealth(), false);
                 restore--;
-                Attacks[0] = new Attack("Restore", 1, 1, 0, "Fully heal the targeted Opal. Prismin has [" + restore + "] use of this ability.");
+                Attacks[0] = new Attack("Restore", 1, 1, 0, "Fully heal the targeted Opal. Prismin has [" + restore + "] use of this ability.",0,5);
             }
             return 0;
         }
@@ -91,7 +91,7 @@ public class Prismin : OpalScript
         {
             takeDamage(10, false, true);
             restore++;
-            Attacks[0] = new Attack("Restore", 1, 1, 0, "Fully heal the targeted Opal. Prismin has ["+restore+"] use of this ability.");
+            Attacks[0] = new Attack("Restore", 1, 1, 0, "Fully heal the targeted Opal. Prismin has ["+restore+"] use of this ability.",0,5);
             return 0;
         }
         return cA.getBaseDamage() + getAttack();

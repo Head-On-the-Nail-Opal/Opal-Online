@@ -80,6 +80,7 @@ public class MenuButtonScript : MonoBehaviour {
         {
             mainCam.transform.position = new Vector3(0, 26, -10);
         }
+        
         //rend.material = pressed;
         if (pressedS != null)
         {
@@ -194,6 +195,13 @@ public class MenuButtonScript : MonoBehaviour {
                 else if (Input.GetMouseButtonDown(1))
                     main.setNextPersonality(true);
             }
+        }
+        if (purpose == "numTeams")
+        {
+            if (Input.GetMouseButtonDown(0))
+                main.incNumTeams();
+            else if (Input.GetMouseButtonDown(1))
+                main.decNumTeams();
         }
     }
 

@@ -24,6 +24,7 @@ public class MainMenuScript : MonoBehaviour {
     public string orangeController;
     public Text currentText;
     public Text teamText;
+    public Text numTeamsText;
     public Text chooseText;
     public Text opalCount;
     public Text dupeText;
@@ -156,12 +157,12 @@ public class MainMenuScript : MonoBehaviour {
             }
             else if (waiting == 1)
             {
-                if (activeTeams.Count > 1)
+                if (activeTeams.Count >= numTeams)
                 {
                     glob.setMult(false);
                     glob.setControllers("keyboard", "keyboard", "keyboard", "keyboard");
                     glob.setNumPlayers(activeTeams.Count);
-                    switch (activeTeams.Count) {
+                    switch (numTeams) {
                         case 2:
                             glob.setTeams(activeTeams[0], activeTeams[1], null, null);
                             break;
@@ -835,7 +836,7 @@ public class MainMenuScript : MonoBehaviour {
             }
         }
 
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < 5; i++)
         {
             LilOpalBox temp = Instantiate<LilOpalBox>(lilPrefab);
             temp.transform.position = new Vector3(-16.875f - i * 1.5f, 4.2f, -0.51f);
@@ -1461,6 +1462,26 @@ public class MainMenuScript : MonoBehaviour {
         }
     }
 
+    public void incNumTeams()
+    {
+        numTeams++;
+        if(numTeams > 4)
+        {
+            numTeams = 2;
+        }
+        numTeamsText.text = numTeams+"";
+    }
+
+    public void decNumTeams()
+    {
+        numTeams--;
+        if (numTeams < 2)
+        {
+            numTeams = 4;
+        }
+        numTeamsText.text = numTeams + "";
+    }
+
     public void incTeamNum()
     {
         if (currentTeamNumOpals.text != "8")
@@ -1793,9 +1814,9 @@ public class MainMenuScript : MonoBehaviour {
         {
             chooseTeamsText.text = "Choose 1 team!";
         }
-        else if (waiting == 1 && chooseTeamsText.text != "Choose " + (2 - activeTeams.Count) + " teams!")
+        else if (waiting == 1 && chooseTeamsText.text != "Choose " + (numTeams - activeTeams.Count) + " teams!")
         {
-            chooseTeamsText.text = "Choose " + (2 - activeTeams.Count) + " teams!";
+            chooseTeamsText.text = "Choose " + (numTeams - activeTeams.Count) + " teams!";
         }
         else if (waiting == 2 && chooseTeamsText.text != "Choose 1 team!")
         {
@@ -1843,7 +1864,7 @@ public class MainMenuScript : MonoBehaviour {
     public void startLocalAI()
     {
         activeTeams.Clear();
-        waiting = 2;
+        waiting = 1;
     }
 
     private void populateOpalScreen()

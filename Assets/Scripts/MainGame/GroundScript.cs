@@ -411,17 +411,9 @@ public class GroundScript : MonoBehaviour {
             for (int j = 0; j < 10; j++)
             {
                 TileScript temp = Instantiate<TileScript>(tilePrefab);
-                if ((int)(i + j) % 2 == 0)
-                {
-                    //light color
-                }
-                else
-                {
-                    //dark color
-                }
                 temp.transform.SetParent(GameBoard);
                 temp.setCoordinates(i , j);
-                if (i != 10 && j != 10)
+                if (i < 10 && i >= 0 && j < 10 && j >= 0)
                 {
                     tileGrid[i, j] = temp;
                     temp.toggleStarting();
@@ -434,6 +426,7 @@ public class GroundScript : MonoBehaviour {
             t.updateConnection();
             t.setRandomDecor();
         }
+        setUpSurroundings();
         sortOpals(gameOpals);
         nonSortedGameOpals.AddRange(gameOpals);
         switchCam = 1;
@@ -826,16 +819,7 @@ public class GroundScript : MonoBehaviour {
             }
             if (replaced.type != "Flood" || over)
             {
-                /*
-                replaced.standingOn(null);
-                replaced.setCoordinates(-100, -100);
-                tempTile = Instantiate<TileScript>(boulderTilePrefab);
-                tempTile.transform.SetParent(GameBoard);
-                tempTile.setCoordinates(x, y);
-                tileGrid[x, y] = tempTile;
-                tempTile.standingOn(standing);
-                */
-                placeBoulder(tileGrid[x, y]);
+                placeBoulder(tileGrid[x, y], myCursor.getCurrentOpal());
                 
             }
             else if (replaced.type == "Flood")
@@ -1053,7 +1037,7 @@ public class GroundScript : MonoBehaviour {
                 }
                 else if (o.getTeam() == "Green")
                 {
-                    pl.GetComponent<SpriteRenderer>().color = new Color(1, 0.2f, 0.2f); 
+                    pl.GetComponent<SpriteRenderer>().color = new Color(0.2f, 1, 0.2f); 
                 }
                 else
                 {
@@ -1147,8 +1131,24 @@ public class GroundScript : MonoBehaviour {
         return false;
     }
 
-    public void placeBoulder(TileScript target)
+    public void placeBoulder(int x, int y, OpalScript placed)
     {
+        if (x < 0 || x > 9 || y < 0 || y > 9)
+        {
+            return;
+        }
+        placeBoulder(tileGrid[x, y], placed);
+    }
+
+    public void placeBoulder(TileScript target, OpalScript placed)
+    {
+        if (target.currentPlayer != null || target.getFallen())
+            return;
+        if(target.type == "Flood")
+        {
+            setTile(target, "Grass", true);
+            return;
+        }
         OpalScript b = boulder;
         if (Random.Range(0,2)==0)
         {
@@ -1161,7 +1161,7 @@ public class GroundScript : MonoBehaviour {
         {
             opalTwo.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
             opalTwo.GetComponent<SpriteRenderer>().enabled = true;
-            opalTwo.GetComponent<SpriteRenderer>().sprite = myCursor.getCurrentOpal().myBoulders;
+            opalTwo.GetComponent<SpriteRenderer>().sprite = placed.myBoulders;
             opalTwo.transform.localScale = new Vector3(3, 3, 1);
         }
         //opalTwo.transform.localPosition = new Vector3(opalTwo.transform.localPosition.x + 0.3f, opalTwo.transform.localPosition.y - 0.1f, opalTwo.transform.localPosition.z - 0.3f);
@@ -1256,5 +1256,10 @@ public class GroundScript : MonoBehaviour {
             yield return new WaitForFixedUpdate();
             yield return new WaitForFixedUpdate();
         }
+    }
+
+    private void setUpSurroundings()
+    {
+
     }
 }

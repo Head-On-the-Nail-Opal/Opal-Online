@@ -93,7 +93,7 @@ Animator:
   m_GameObject: {fileID: 1789807412774808867}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: c7329438eccbef14db9be964244697b1, type: 2}
+  m_Controller: {fileID: 9100000, guid: 5d5bfbff73afc1e41af107118d415886, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -120,3 +120,8 @@ MonoBehaviour:
   evolvesInto: []
   evolvesFrom: []
   defaultStage: 1
+  attackFrame: {fileID: -3728745272371067170, guid: 28ef61f5b553cad4bbed037a4941c565,
+    type: 3}
+  hurtFrame: {fileID: -5873038639567249873, guid: 28ef61f5b553cad4bbed037a4941c565,
+    type: 3}
+  myBoulders: {fileID: 0}
