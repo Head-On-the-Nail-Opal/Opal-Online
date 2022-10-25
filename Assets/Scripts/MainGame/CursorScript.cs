@@ -57,6 +57,7 @@ public class CursorScript : MonoBehaviour {
     private int shiftCooldown = 0;
     private int maxShiftCooldown = 10;
     private bool tSkull = false;
+    private bool UIOn = true;
 
     private Coroutine currentHighlight;
 
@@ -172,6 +173,32 @@ public class CursorScript : MonoBehaviour {
         }
         //print("oof");
         moveCursor(myPos, orthoCam.WorldToScreenPoint(myPos), orthoCam.WorldToScreenPoint(reticle.transform.position));
+        if(currentController == "keyboard")
+        {
+            if(Input.GetButton("button 0"))
+            {
+                print("Joystick 1 input detected!");
+                attachController("joystick 1");
+            }else if (Input.GetButton("button 0 2"))
+            {
+                print("Joystick 2 input detected!");
+                attachController("joystick 2");
+            }
+            else if (Input.GetButton("button 0 3"))
+            {
+                print("Joystick 3 input detected!");
+                attachController("joystick 3");
+            }
+            else if (Input.GetButton("button 0 4"))
+            {
+                print("Joystick 4 input detected!");
+                attachController("joystick 4");
+            }
+            else
+            {
+                ts.resetControllerJoin();
+            }
+        }
         if(tileFrom != null)
         {
             tileFrom.highlightTwinPortal(false);
@@ -282,12 +309,9 @@ public class CursorScript : MonoBehaviour {
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Home))
+        if (Input.GetKeyDown(KeyCode.Equals))
         {
-            foreach(OpalScript o in boardScript.gameOpals)
-            {
-                StartCoroutine(o.dancer());
-            }
+            toggleUI();
         }
 
         if (toggleShift)
@@ -322,7 +346,7 @@ public class CursorScript : MonoBehaviour {
             }
         }
 
-        if ((currentController == "joystick 1" || currentController == "joystick 2" || currentController == "joystick 3" || currentController == "joystick 4") && Input.GetButtonUp("button 3" + addon))
+        if ((currentController == "joystick 1" || currentController == "joystick 2" || currentController == "joystick 3" || currentController == "joystick 4") && Input.GetButtonUp("button 2" + addon))
         {
             reticle.transform.position = new Vector3(selectedPlayer.getPos().x, 0, selectedPlayer.getPos().z);
             reticle.transform.position += reticle.transform.forward * (-10 + 0.5f*selectedPlayer.getPos().x - 0.5f*selectedPlayer.getPos().z);
@@ -498,7 +522,7 @@ public class CursorScript : MonoBehaviour {
 
         if (shiftCooldown > 0)
             shiftCooldown--;
-        if (shiftCooldown == 0 && (Input.GetKeyDown(KeyCode.LeftShift) && currentController == "keyboard") || (Input.GetButton("LBump" + addon) && (currentController == "joystick 1" || currentController == "joystick 2" || currentController == "joystick 3" || currentController == "joystick 4")))
+        if (shiftCooldown == 0 && (Input.GetKeyDown(KeyCode.LeftShift) && currentController == "keyboard") || (Input.GetButtonDown("button 3" + addon) && (currentController == "joystick 1" || currentController == "joystick 2" || currentController == "joystick 3" || currentController == "joystick 4")))
         {
             shiftCooldown = maxShiftCooldown;
             if (!toggleShift)
@@ -782,6 +806,37 @@ public class CursorScript : MonoBehaviour {
             boardScript.getMM().sendFullGameData(boardScript.generateString());
     }
 
+    private void attachController(string controller)
+    {
+        int progress = ts.doControllerJoin();
+        if(progress >= 100)
+        {
+            ts.resetControllerJoin();
+
+            currentController = controller;
+            boardScript.setCurrentController(controller, selectedPlayer.getTeam());
+
+            if (currentController == "joystick 2")
+            {
+                addon = " 2";
+            }
+            else if (currentController == "joystick 3")
+            {
+                addon = " 3";
+            }
+            else if (currentController == "joystick 4")
+            {
+                addon = " 4";
+            }
+            else
+            {
+                addon = "";
+            }
+
+            ts.toggleControllerTooltips(true);
+        }
+    }
+
     public void setAnimating(bool input)
     {
         animating = input;
@@ -1049,6 +1104,7 @@ public class CursorScript : MonoBehaviour {
         boardScript.diplayPath(false);
         ts.updateCurrent(selectedPlayer, distance);
         currentController = boardScript.getCurrentController(selectedPlayer.getTeam());
+        ts.toggleControllerTooltips(currentController != "keyboard");
         foreach(TileScript t in boardScript.tileGrid)
         {
             t.fixWeirdness();
@@ -1691,6 +1747,14 @@ public class CursorScript : MonoBehaviour {
         selectedPlayer.setMyTurn(false);
         nextTurn();
     }
+
+
+    private void toggleUI()
+    {
+        UIOn = !UIOn;
+        reticle.toggleMe(UIOn);    
+    }
+
 
     private Projectile projToProjectile(List<AbilityProj> p)
     {

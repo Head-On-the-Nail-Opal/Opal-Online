@@ -106,6 +106,17 @@ public class TextScript : MonoBehaviour {
 
     private bool buffAnimating = false;
 
+    public GameObject seeDetails;
+    public Sprite controllerDetails;
+    public Sprite keyboardDetails;
+
+    public GameObject endTurn;
+    public Sprite controllerEndTurn;
+    public Sprite keyboardEndTurn;
+
+    public GameObject controllerJoin;
+    private int joinDelay = 1;
+
     //private bool doattacking = false;
 
     // Use this for initialization
@@ -181,6 +192,8 @@ public class TextScript : MonoBehaviour {
         armorIndicator2.setEnable(false);
 
         bm = Resources.Load<BuffMarker>("Prefabs/UIandMenu/BuffMarker");
+
+        resetControllerJoin();
     }
 	
 	// Update is called once per frame
@@ -479,6 +492,12 @@ public class TextScript : MonoBehaviour {
                 currentDefenseToken.GetComponent<SpriteRenderer>().color = new Color(1, 0.1f, 0.1f);
                 currentSpeedToken.GetComponent<SpriteRenderer>().color = new Color(1, 0.1f, 0.1f);
 
+                seeDetails.GetComponent<SpriteRenderer>().color = new Color(1, 0.1f, 0.1f);
+                endTurn.GetComponent<SpriteRenderer>().color = new Color(1, 0.1f, 0.1f);
+                controllerJoin.GetComponent<SpriteRenderer>().color = new Color(1, 0.1f, 0.1f);
+                tileIndicator.GetComponent<SpriteRenderer>().color = new Color(1, 0.1f, 0.1f);
+
+
                 //outline.GetComponent<Renderer>().material.color = Color.red;
                 foreach (Transform t in outline.GetComponentInChildren<Transform>())
                 {
@@ -496,6 +515,7 @@ public class TextScript : MonoBehaviour {
                 selectedDefenseToken.GetComponent<SpriteRenderer>().color = new Color(1, 0.1f, 0.1f);
                 selectedSpeedToken.GetComponent<SpriteRenderer>().color = new Color(1, 0.1f, 0.1f);
 
+
                 foreach (Transform t in outline.GetComponentInChildren<Transform>())
                 {
                     //t.GetComponent<Renderer>().material.color = Color.red;
@@ -510,9 +530,15 @@ public class TextScript : MonoBehaviour {
                 currentScreen.GetComponent<SpriteRenderer>().material.color = new Color(0.4f, 0.4f, 1);
                 currentOpalDisplay.color = new Color(0.4f, 0.4f, 1);
 
-                currentAttackToken.GetComponent<SpriteRenderer>().color = new Color(0.1f, 0.1f, 1);
-                currentDefenseToken.GetComponent<SpriteRenderer>().color = new Color(0.1f, 0.1f, 1);
-                currentSpeedToken.GetComponent<SpriteRenderer>().color = new Color(0.1f, 0.1f, 1);
+                currentAttackToken.GetComponent<SpriteRenderer>().color = new Color(0.3f, 0.3f, 1);
+                currentDefenseToken.GetComponent<SpriteRenderer>().color = new Color(0.3f, 0.3f, 1);
+                currentSpeedToken.GetComponent<SpriteRenderer>().color = new Color(0.3f, 0.3f, 1);
+
+
+                seeDetails.GetComponent<SpriteRenderer>().color = new Color(0.3f, 0.3f, 1);
+                endTurn.GetComponent<SpriteRenderer>().color = new Color(0.3f, 0.3f, 1);
+                controllerJoin.GetComponent<SpriteRenderer>().color = new Color(0.3f, 0.3f, 1);
+                tileIndicator.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 1);
 
                 foreach (Transform t in outline.GetComponentInChildren<Transform>())
                 {
@@ -526,9 +552,9 @@ public class TextScript : MonoBehaviour {
                 targetScreen.GetComponent<SpriteRenderer>().material.color = new Color(0.4f, 0.4f, 1);
                 selectedOpalDisplay.color = new Color(0.4f, 0.4f, 1);
 
-                selectedAttackToken.GetComponent<SpriteRenderer>().color = new Color(0.1f, 0.1f, 1);
-                selectedDefenseToken.GetComponent<SpriteRenderer>().color = new Color(0.1f, 0.1f, 1);
-                selectedSpeedToken.GetComponent<SpriteRenderer>().color = new Color(0.1f, 0.1f, 1);
+                selectedAttackToken.GetComponent<SpriteRenderer>().color = new Color(0.3f, 0.3f, 1);
+                selectedDefenseToken.GetComponent<SpriteRenderer>().color = new Color(0.3f, 0.3f, 1);
+                selectedSpeedToken.GetComponent<SpriteRenderer>().color = new Color(0.3f, 0.3f, 1);
 
                 foreach (Transform t in outline.GetComponentInChildren<Transform>())
                 {
@@ -546,6 +572,11 @@ public class TextScript : MonoBehaviour {
                 currentAttackToken.GetComponent<SpriteRenderer>().color =  Color.green;
                 currentDefenseToken.GetComponent<SpriteRenderer>().color =  Color.green;
                 currentSpeedToken.GetComponent<SpriteRenderer>().color = Color.green;
+
+                seeDetails.GetComponent<SpriteRenderer>().color = Color.green;
+                endTurn.GetComponent<SpriteRenderer>().color = Color.green;
+                controllerJoin.GetComponent<SpriteRenderer>().color = Color.green;
+                tileIndicator.GetComponent<SpriteRenderer>().color = Color.green;
 
                 //outline.GetComponent<Renderer>().material.color = Color.blue;
                 foreach (Transform t in outline.GetComponentInChildren<Transform>())
@@ -580,6 +611,11 @@ public class TextScript : MonoBehaviour {
                 currentAttackToken.GetComponent<SpriteRenderer>().color = new Color(1, 0.4f, 0f);
                 currentDefenseToken.GetComponent<SpriteRenderer>().color = new Color(1, 0.4f, 0f);
                 currentSpeedToken.GetComponent<SpriteRenderer>().color = new Color(1, 0.4f, 0f);
+
+                seeDetails.GetComponent<SpriteRenderer>().color = new Color(1, 0.4f, 0f);
+                endTurn.GetComponent<SpriteRenderer>().color = new Color(1, 0.4f, 0f);
+                controllerJoin.GetComponent<SpriteRenderer>().color = new Color(1, 0.4f, 0f);
+                tileIndicator.GetComponent<SpriteRenderer>().color = new Color(1, 0.4f, 0f);
 
                 foreach (Transform t in outline.GetComponentInChildren<Transform>())
                 {
@@ -1273,8 +1309,41 @@ public class TextScript : MonoBehaviour {
         {
             b.hide(hideMe, justText);
         }
-
     }
 
+    public int doControllerJoin()
+    {
+        joinDelay += 2;
+        SpriteRenderer cJsr = controllerJoin.GetComponent<SpriteRenderer>();
+        cJsr.enabled = true;
+        Color cJclr = cJsr.color;
+        cJsr.color = new Color(cJclr.r, cJclr.g, cJclr.b,joinDelay / 100f);
+        return joinDelay;
+    }
+
+    public void resetControllerJoin()
+    {
+        if (joinDelay == 0)
+            return;
+        joinDelay = 0;
+        SpriteRenderer cJsr = controllerJoin.GetComponent<SpriteRenderer>();
+        Color cJclr = cJsr.color;
+        cJsr.color = new Color(cJclr.r, cJclr.g, cJclr.b, 0);
+        cJsr.enabled = false;
+    }
+
+    public void toggleControllerTooltips(bool controller)
+    {
+        if (controller)
+        {
+            endTurn.GetComponent<SpriteRenderer>().sprite = controllerEndTurn;
+            seeDetails.GetComponent<SpriteRenderer>().sprite = controllerDetails;
+        }
+        else
+        {
+            endTurn.GetComponent<SpriteRenderer>().sprite = keyboardEndTurn;
+            seeDetails.GetComponent<SpriteRenderer>().sprite = keyboardDetails;
+        }
+    }
 
 }

@@ -64,6 +64,10 @@ public class TileScript : MonoBehaviour {
     int anim = 0;
     int animLength = 40;
 
+    private bool showMyTimer = false;
+
+    
+
     private GameObject myShadow;
 
 
@@ -377,7 +381,7 @@ public class TileScript : MonoBehaviour {
 
     public void setTimer(int num)
     {
-        if (displayNum == null)
+        if (displayNum == null || !showMyTimer)
             return;
         if(num == 3)
         {
@@ -424,16 +428,47 @@ public class TileScript : MonoBehaviour {
         {
             showTimer(false);
         }
-        
+    }
+
+    public int getDecayTurn()
+    {
+        return decayTurn;
+    }
+
+    public void reduceDecay(int incr)
+    {
+        decayTurn--;
+        setTimer(decayTurn);
+        if (decayTurn < 1)
+        {
+            if (decayTurn <= 0 && type != "Grass")
+            {
+                boardScript.setTile((int)getPos().x, (int)getPos().z, "Grass", true);
+            }
+        }
+    }
+
+    public void resetDecay(int i)
+    {
+        decayTurn += i;
+        if (decayTurn > 3)
+            decayTurn = 3;
+        setTimer(decayTurn);
     }
 
     public void showTimer(bool show)
     {
         if (displayNum == null)
             return;
-        displayNum.SetActive(show);
-        if(show)
+        showMyTimer = show;
+        foreach (SpriteRenderer sr in displayNum.GetComponentsInChildren<SpriteRenderer>())
+        {
+            sr.enabled = show;
+        }
+        if (show)
+        {
             setTimer(decayTurn);
+        }
     }
 
 

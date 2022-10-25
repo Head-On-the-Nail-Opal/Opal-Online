@@ -7,6 +7,7 @@ public class ReticleScript : MonoBehaviour {
     public Sprite closed;
     private bool currentlyOpen = true;
     private SpriteRenderer sr;
+    private bool toggled = false;
 
 
 	// Use this for initialization
@@ -36,5 +37,18 @@ public class ReticleScript : MonoBehaviour {
     public bool getOpen()
     {
         return currentlyOpen;
+    }
+
+    public void toggleMe(bool t)
+    {
+        toggled = t;
+        if (toggled)
+        {
+            sr.enabled = false;
+        }
+        else
+        {
+            sr.enabled = true;
+        }
     }
 }

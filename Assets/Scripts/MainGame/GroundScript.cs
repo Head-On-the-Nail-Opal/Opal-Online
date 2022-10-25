@@ -693,7 +693,19 @@ public class GroundScript : MonoBehaviour {
         {
             return null;
         }
-        TileScript replaced = tileGrid[x, y];
+        if(tileGrid[x,y].getDecayTurn() != 1 && tileGrid[x, y].type != "Grass" && tileGrid[x, y].type != type && type != "Grass")
+        {
+            tileGrid[x, y].reduceDecay(1);
+            ParticleSystem temp = Instantiate<ParticleSystem>(Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/TilePuff"), tileGrid[x,y].transform);
+            return tileGrid[x,y];
+        }
+        if (tileGrid[x, y].type != "Grass" && tileGrid[x, y].type == type)
+        {
+            tileGrid[x, y].resetDecay(1);
+            return tileGrid[x, y];
+        }
+
+            TileScript replaced = tileGrid[x, y];
         bool wasFlood = false;
         if(replaced.type == "Flood")
         {
@@ -729,7 +741,7 @@ public class GroundScript : MonoBehaviour {
                 standing.setCurrentTile(tempTile);
         }
         else if (type.Equals("Fire")) {
-            if (replaced.type != "Miasma" && replaced.type != "Flood" && !(replaced.getCurrentOpal() != null && replaced.getCurrentOpal().getMyName() == "Boulder") || over)
+            if (!(replaced.getCurrentOpal() != null && replaced.getCurrentOpal().getMyName() == "Boulder") || over)
             {
                 if(replaced.getWet() == true)
                 {
@@ -750,7 +762,7 @@ public class GroundScript : MonoBehaviour {
         }
         else if (type.Equals("Miasma"))
         {
-            if (replaced.type != "Growth" && replaced.type != "Fire" && replaced.type != "Flood" && !(replaced.getCurrentOpal() != null && replaced.getCurrentOpal().getMyName() == "Boulder") || over)
+            if ( !(replaced.getCurrentOpal() != null && replaced.getCurrentOpal().getMyName() == "Boulder") || over)
             {
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
@@ -766,7 +778,7 @@ public class GroundScript : MonoBehaviour {
         }
         else if (type.Equals("Growth"))
         {
-            if (replaced.type != "Fire" && replaced.type != "Growth" && !(replaced.getCurrentOpal() != null && replaced.getCurrentOpal().getMyName() == "Boulder") || over)
+            if (!(replaced.getCurrentOpal() != null && replaced.getCurrentOpal().getMyName() == "Boulder") || over)
             {
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
@@ -783,7 +795,7 @@ public class GroundScript : MonoBehaviour {
         }
         else if (type.Equals("Flood"))
         {
-            if (!(replaced.getCurrentOpal() != null && replaced.getCurrentOpal().getMyName() == "Boulder") && replaced.type != "Spore" && replaced.type != "Growth" || over)
+            if (!(replaced.getCurrentOpal() != null && replaced.getCurrentOpal().getMyName() == "Boulder") || over)
             {
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
@@ -972,6 +984,27 @@ public class GroundScript : MonoBehaviour {
         return null;
     }
 
+    public string setCurrentController(string controller, string player)
+    {
+        if (player == "Red")
+        {
+            redController = controller;
+        }
+        else if (player == "Blue")
+        {
+            blueController = controller;
+        }
+        else if (player == "Green")
+        {
+            greenController = controller;
+        }
+        else if (player == "Orange")
+        {
+            orangeController = controller;
+        }
+        return null;
+    }
+
     public void updateTurnOrder(int currentTurn) //duplimorph ultra broke, minions don't delete on death
     {
         float i = 0;
@@ -1046,7 +1079,7 @@ public class GroundScript : MonoBehaviour {
                 pl.transform.localScale /= temp.transform.lossyScale.x;
                 pl.transform.localScale *= 5f;
                 pl.AddComponent<TurnHighlighter>();
-                pl.AddComponent<BoxCollider2D>();
+                pl.AddComponent<BoxCollider>();
                 pl.GetComponent<TurnHighlighter>().setUp(this, o.getID());
                 i += 150f;
             }
