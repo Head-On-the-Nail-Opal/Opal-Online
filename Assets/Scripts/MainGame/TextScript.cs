@@ -115,6 +115,8 @@ public class TextScript : MonoBehaviour {
     public Sprite keyboardEndTurn;
 
     public GameObject controllerJoin;
+
+    private bool isController = false;
     private int joinDelay = 1;
 
     //private bool doattacking = false;
@@ -644,6 +646,7 @@ public class TextScript : MonoBehaviour {
     {
         //updateAttackIndicator(attackNum);
 
+        attackScreen.toggleTooltip(true, -1);
         attackScreen.updateScreen(attacking, attackNum, target, true);
         attackScreen1.updateScreen(null, -1, null, false);
         attackScreen2.updateScreen(null, -1, null, false);
@@ -877,7 +880,10 @@ public class TextScript : MonoBehaviour {
         {
             if(current != null)
             {
+                
                 attackScreen.updateScreen(current, 0, null, false);
+                attackScreen.toggleTooltip(isController, 1);
+
                 attackScreen1.updateScreen(current, 1, null, false);
                 attackScreen2.updateScreen(current, 2, null, false);
                 attackScreen3.updateScreen(current, 3, null, false);
@@ -886,7 +892,10 @@ public class TextScript : MonoBehaviour {
         }
         else
         {
+            
             attackScreen.updateScreen(selected, 0, null, false);
+            attackScreen.toggleTooltip(isController, 1);
+
             attackScreen1.updateScreen(selected, 1, null, false);
             attackScreen2.updateScreen(selected, 2, null, false);
             attackScreen3.updateScreen(selected, 3, null, false);
@@ -1311,13 +1320,16 @@ public class TextScript : MonoBehaviour {
         }
     }
 
-    public int doControllerJoin()
+    public int doControllerJoin(bool placing)
     {
         joinDelay += 2;
         SpriteRenderer cJsr = controllerJoin.GetComponent<SpriteRenderer>();
         cJsr.enabled = true;
         Color cJclr = cJsr.color;
-        cJsr.color = new Color(cJclr.r, cJclr.g, cJclr.b,joinDelay / 100f);
+        float threshold = 500;
+        if (placing)
+            threshold = 100;
+        cJsr.color = new Color(cJclr.r, cJclr.g, cJclr.b,joinDelay / threshold);
         return joinDelay;
     }
 
@@ -1334,6 +1346,11 @@ public class TextScript : MonoBehaviour {
 
     public void toggleControllerTooltips(bool controller)
     {
+        isController = controller;
+        attackScreen.toggleTooltip(controller,1);
+        attackScreen1.toggleTooltip(controller,2);
+        attackScreen2.toggleTooltip(controller,3);
+        attackScreen3.toggleTooltip(controller,4);
         if (controller)
         {
             endTurn.GetComponent<SpriteRenderer>().sprite = controllerEndTurn;

@@ -19,6 +19,8 @@ public class AttackScreen : MonoBehaviour
     public SpriteRenderer displayBackground;
     public Text num;
     private int myNum;
+    private string myInfo;
+    private bool controller = false;
 
     private bool isEnabled = false;
 
@@ -138,7 +140,7 @@ public class AttackScreen : MonoBehaviour
             else
                 description.text = "" + desc[0];
         }
-        num.text = "Press " + (attackNum+1);
+        num.text = myInfo;
         myNum = attackNum;
         range.text = "" + attacking.Attacks[attackNum].getRange();
         if(attacking.Attacks[attackNum].getRange() == 0 && attacking.Attacks[attackNum].getShape() == 0)
@@ -195,6 +197,36 @@ public class AttackScreen : MonoBehaviour
             }
             displayBackground.enabled = false;
             num.text = "";
+        }
+    }
+
+    public void toggleTooltip(bool controller, int myNum)
+    {
+        this.controller = controller;
+        if (controller)
+        {
+            switch (myNum) {
+                case 1:
+                    myInfo = "dUP";
+                    break;
+                case 2:
+                    myInfo = "dRIGHT";
+                    break;
+                case 3:
+                    myInfo = "dDOWN";
+                    break;
+                case 4:
+                    myInfo = "dLEFT";
+                    break;
+                case -1:
+                    myInfo = "";
+                    break;
+            }
+
+        }
+        else
+        {
+            myInfo = "Press " + myNum;
         }
     }
 }

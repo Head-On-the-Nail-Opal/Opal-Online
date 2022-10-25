@@ -177,21 +177,21 @@ public class CursorScript : MonoBehaviour {
         {
             if(Input.GetButton("button 0"))
             {
-                print("Joystick 1 input detected!");
+                //print("Joystick 1 input detected!");
                 attachController("joystick 1");
             }else if (Input.GetButton("button 0 2"))
             {
-                print("Joystick 2 input detected!");
+                //print("Joystick 2 input detected!");
                 attachController("joystick 2");
             }
             else if (Input.GetButton("button 0 3"))
             {
-                print("Joystick 3 input detected!");
+                //print("Joystick 3 input detected!");
                 attachController("joystick 3");
             }
             else if (Input.GetButton("button 0 4"))
             {
-                print("Joystick 4 input detected!");
+                //print("Joystick 4 input detected!");
                 attachController("joystick 4");
             }
             else
@@ -808,8 +808,11 @@ public class CursorScript : MonoBehaviour {
 
     private void attachController(string controller)
     {
-        int progress = ts.doControllerJoin();
-        if(progress >= 100)
+        int progress = ts.doControllerJoin(placing);
+        int threshold = 500;
+        if (placing)
+            threshold = 100;
+        if(progress >= threshold)
         {
             ts.resetControllerJoin();
 
