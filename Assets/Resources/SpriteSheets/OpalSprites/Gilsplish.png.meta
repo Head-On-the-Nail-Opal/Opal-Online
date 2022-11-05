@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 5e43de26f69706d4493c9e79707bba65
+guid: 3afd2deaf07069d4f9b46da4dfd53716
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,12 @@ TextureImporter:
   - first:
       213: -8625952829141493518
     second: Gilsplish_1
+  - first:
+      213: 8519846454624250029
+    second: Gilsplish_2
+  - first:
+      213: 498566110025128835
+    second: Gilsplish_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 618c31012a179e54dbd444c04595ff4b
+      spriteID: bc26ff08cf60bdf4796c8e6ffb02c2d7
       internalID: -5631284899110514656
       vertices: []
       indices: 
@@ -140,10 +146,10 @@ TextureImporter:
       name: Gilsplish_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +157,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cc2122e851369f54f8191410afd66c77
+      spriteID: 6266df512fc3be84ebc2187a050818cb
       internalID: -8625952829141493518
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gilsplish_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1fd543f76d018ce4fba668cc94e8f2a5
+      internalID: 8519846454624250029
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gilsplish_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 415805db96bbb4640b9790ba15cd678a
+      internalID: 498566110025128835
       vertices: []
       indices: 
       edges: []
@@ -160,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 7c03c6398aa2a334b956f2418584fa30
+    spriteID: a6a75972e2f232e45814b984d6fe9b94
     internalID: 0
     vertices: []
     indices: 

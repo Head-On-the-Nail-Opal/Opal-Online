@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: e99f9537ba122c64788e9da38964acb9
+guid: 0f6d547189430f4418d1a9b14248e6bc
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,12 @@ TextureImporter:
   - first:
       213: 205836430332643286
     second: Teslamp_1
+  - first:
+      213: 255005433191613363
+    second: Teslamp_2
+  - first:
+      213: -3261662330297974738
+    second: Teslamp_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 384a2a1396a118f4c8fe7690ed234fcb
+      spriteID: e2cc0ee6e2e084a4db947400c490c645
       internalID: 7273079087959642557
       vertices: []
       indices: 
@@ -140,10 +146,10 @@ TextureImporter:
       name: Teslamp_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +157,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 010e44eeee519ed4c9d13971f75af110
+      spriteID: b44fea54581f2f248b4654bb49a4c36e
       internalID: 205836430332643286
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Teslamp_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 57beaeffee80bf54aa77d6726bea0440
+      internalID: 255005433191613363
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Teslamp_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c06dda1b63c38dd49af01f24e8248725
+      internalID: -3261662330297974738
       vertices: []
       indices: 
       edges: []
@@ -160,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: e5f8dff528289b646be64eb5348a4c88
+    spriteID: c317b5fcd495adc48a0d1a7c45664008
     internalID: 0
     vertices: []
     indices: 

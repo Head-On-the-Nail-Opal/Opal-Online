@@ -59,7 +59,7 @@ public class Gorj : OpalScript
                         }
                     }
                     transform.localScale = new Vector3(3f, 3f, 1) * 1.2f;
-                    anim.CrossFade("Gorj", 0);
+                    //anim.CrossFade("Gorj", 0);
                     doHighlight("Gorj");
                 }
             }
@@ -83,7 +83,7 @@ public class Gorj : OpalScript
             target.setPos(-100,-100);
             setTempBuff(2, -1, 2);
             transform.localScale *= 1.1f;
-            anim.CrossFade("EnGorj", 0);
+            //anim.CrossFade("EnGorj", 0);
             doHighlight("EnGorj");
             return 0;
         }

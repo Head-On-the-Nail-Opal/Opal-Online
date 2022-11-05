@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 29e54e1ad96e2664f92c555a77ecb773
+guid: f60c333262fb39549b8a9be8573531f5
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,12 @@ TextureImporter:
   - first:
       213: 9082483193785201661
     second: Chardinal_1
+  - first:
+      213: -5078558530539739183
+    second: Chardinal_2
+  - first:
+      213: 3941049908155211731
+    second: Chardinal_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e1d6de1b1f7a480489f57c049bdc0160
+      spriteID: 6da1b5cf71bc877409d37cf4a617bbe5
       internalID: -8968687799311819215
       vertices: []
       indices: 
@@ -140,10 +146,10 @@ TextureImporter:
       name: Chardinal_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +157,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1e65c8c727c4d5f4c991dd2a168e6080
+      spriteID: da8d96dcf0469bb4e8902c77a8c73288
       internalID: 9082483193785201661
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chardinal_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bd5da2ca682ad56459ba4dff79b628da
+      internalID: -5078558530539739183
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chardinal_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3d9a64872bf796b4db6a748e3d006df6
+      internalID: 3941049908155211731
       vertices: []
       indices: 
       edges: []
@@ -160,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: d15140dee160aa849a173085137845c5
+    spriteID: dbf8010b24cc0b04981adf95d79f891e
     internalID: 0
     vertices: []
     indices: 

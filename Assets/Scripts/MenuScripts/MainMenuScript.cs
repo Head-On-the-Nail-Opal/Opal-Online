@@ -73,6 +73,8 @@ public class MainMenuScript : MonoBehaviour {
     public ItemDescriptions iD;
     public Text description;
     public Text charmLabel;
+    public Text visualLabel;
+    private int currentVisual = -1;
     private OpalScript viewedOpal = null;
     private List<string> bannedCharms = new List<string>();
     private int waiting = -1;
@@ -1459,6 +1461,10 @@ public class MainMenuScript : MonoBehaviour {
         {
             teamOpalDisplay.setCurrentOpal(o);
             viewedOpal = o;
+            if (team)
+            {
+                visualLabel.text = o.getMyVisual();
+            }
         }
     }
 
@@ -1785,6 +1791,63 @@ public class MainMenuScript : MonoBehaviour {
         if (viewedOpal == null)
             return;
         viewedOpal.setPersonality(pName);
+    }
+
+    public void setNextVisual(bool reverse)
+    {
+        Texture2D[] tempTextures = Resources.LoadAll<Texture2D>("Spritesheets/Alternates/"+viewedOpal.getMyName());
+
+        List<Texture2D> textures = new List<Texture2D>();
+        textures.AddRange(tempTextures);
+
+        if(textures.Count == 0)
+        {
+            visualLabel.text = "Default";
+            return;
+        }
+
+
+        int target = -1;
+        for(int i = 0; i < textures.Count; i++)
+        {
+            if(textures[i].name == "Default")
+            {
+                target = i;
+            }
+        }
+        if (target != -1)
+            textures.RemoveAt(target);
+
+        int numTextures = textures.Count;
+
+        if (!reverse)
+        {
+            currentVisual++;
+            if (currentVisual >= textures.Count)
+            {
+                currentVisual = -1;
+            }
+        }
+        else
+        {
+            currentVisual--;
+            if (currentVisual <= -2)
+            {
+                currentVisual = textures.Count - 1;
+            }
+        }
+        if (currentVisual == -1)
+        {
+            visualLabel.text = "Default";
+            teamOpalDisplay.getCurrentOpalInstance().changeVisual("Default", true);
+        }
+        else
+        {
+            visualLabel.text = textures[currentVisual].name;
+            teamOpalDisplay.getCurrentOpalInstance().changeVisual(textures[currentVisual].name, true);
+            viewedOpal.changeVisual(textures[currentVisual].name, true);
+
+        }
     }
 
     private OpalScript findViewedOpal()

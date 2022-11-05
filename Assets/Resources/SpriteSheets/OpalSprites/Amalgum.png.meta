@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 055a37025034f1545934f25bced4fa13
+guid: 8fa08fada173aba469d4c61bb5b3e886
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -14,6 +14,24 @@ TextureImporter:
   - first:
       213: -3327341439336908078
     second: Amalgum_3
+  - first:
+      213: 8123815120349245071
+    second: Amalgum_4
+  - first:
+      213: 977770209024981533
+    second: Amalgum_5
+  - first:
+      213: 6731503553724816179
+    second: Amalgum_6
+  - first:
+      213: 7545466354077788314
+    second: Amalgum_7
+  - first:
+      213: 7375446452370822581
+    second: Amalgum_8
+  - first:
+      213: -6253603619673970676
+    second: Amalgum_9
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -126,9 +144,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -136,7 +154,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d553c85c0669ecd488edcb3492dd6ec7
+      spriteID: ef1871ff6ca32954eb160cef304d1b7e
       internalID: 7881068392230042742
       vertices: []
       indices: 
@@ -146,10 +164,10 @@ TextureImporter:
       name: Amalgum_1
       rect:
         serializedVersion: 2
-        x: 832
-        y: 832
-        width: 832
-        height: 832
+        x: 32
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -157,7 +175,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bddcb5e15e4c6b2438c61ecaf7f33735
+      spriteID: 61fad9a088e15a144931bdce296c9dfc
       internalID: -6603501819807031022
       vertices: []
       indices: 
@@ -167,10 +185,10 @@ TextureImporter:
       name: Amalgum_2
       rect:
         serializedVersion: 2
-        x: 0
+        x: 64
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -178,7 +196,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b475ac25d46f7a94986fb61627d0c0bb
+      spriteID: 4da5d3b72b69e594ba413242c870c4c8
       internalID: -6015965528971671710
       vertices: []
       indices: 
@@ -188,10 +206,10 @@ TextureImporter:
       name: Amalgum_3
       rect:
         serializedVersion: 2
-        x: 832
+        x: 96
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -199,8 +217,134 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 540784c6eb8679f4f847028405830001
+      spriteID: 83cb61b862e3440498f3c2c65be25af2
       internalID: -3327341439336908078
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Amalgum_4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f943abd638838534580c552ea086d3ba
+      internalID: 8123815120349245071
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Amalgum_5
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c360f77a6fa42784e9ae812293184f9a
+      internalID: 977770209024981533
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Amalgum_6
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 34f6e9dbce1c3284bbf87a1d5978b20b
+      internalID: 6731503553724816179
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Amalgum_7
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 40200b96774bdf34288844342c808641
+      internalID: 7545466354077788314
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Amalgum_8
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d14d8f81cbeb9074aa703683d94f63bf
+      internalID: 7375446452370822581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Amalgum_9
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 023a0f07793713648b2e7094c69c05f6
+      internalID: -6253603619673970676
       vertices: []
       indices: 
       edges: []
@@ -208,7 +352,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 7b3c38558048d244a9f7e0cbe068524e
+    spriteID: dda30bbce1e7d2d4081068fa275b43f8
     internalID: 0
     vertices: []
     indices: 

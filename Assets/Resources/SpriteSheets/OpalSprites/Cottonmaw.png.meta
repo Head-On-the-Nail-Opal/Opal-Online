@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: cdd58bbb947f36c468e3c9bfcde4ef07
+guid: b6531fa2501654f439252cca6d474e16
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,12 @@ TextureImporter:
   - first:
       213: 4800005670911508599
     second: Cottonmaw_1
+  - first:
+      213: -1666096450879727318
+    second: Cottonmaw_2
+  - first:
+      213: -1766047858331668354
+    second: Cottonmaw_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e3f7a775d271e3d4f9c5a35bed14f785
+      spriteID: 9fca3addaf4f84d45ab2bc4be05de452
       internalID: -359355692763761993
       vertices: []
       indices: 
@@ -140,10 +146,10 @@ TextureImporter:
       name: Cottonmaw_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +157,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 53b9ef95df24a814b96a4310a7ecd90b
+      spriteID: 8f37bcaf4bb092c4389d8fb8d47d980e
       internalID: 4800005670911508599
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cottonmaw_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 69ce2f936abd5e24c95f4677d5ac7829
+      internalID: -1666096450879727318
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cottonmaw_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a01e31a2a33461844a6719a347942006
+      internalID: -1766047858331668354
       vertices: []
       indices: 
       edges: []
@@ -160,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 9981b553668e34348a1656a6e7c5862a
+    spriteID: f84975eec3d39644ca61356db23ca334
     internalID: 0
     vertices: []
     indices: 

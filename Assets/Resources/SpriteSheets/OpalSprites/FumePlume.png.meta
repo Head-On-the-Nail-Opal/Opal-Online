@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 6cd300f021f25c74496295fdbd19b0ab
+guid: 5dfe0de697d32fa4d81b17bf29ba59a2
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,12 @@ TextureImporter:
   - first:
       213: -7764991999311485173
     second: FumePlume_1
+  - first:
+      213: 7579322491516847390
+    second: FumePlume_2
+  - first:
+      213: 8057859488184351588
+    second: FumePlume_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d5e81fc26b83ae34fa60501a3131de14
+      spriteID: a08afe1101cdd3048935abc26b75c5f5
       internalID: -322163512424723287
       vertices: []
       indices: 
@@ -140,10 +146,10 @@ TextureImporter:
       name: FumePlume_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +157,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 64059a7c64083b4459eefb167ed06e15
+      spriteID: c2437329562f9824fa4f530f41a8fe0f
       internalID: -7764991999311485173
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FumePlume_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d8424aca2db7da74c846c7f19dc6b814
+      internalID: 7579322491516847390
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FumePlume_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4adf6518749f5c94983441c7ece61b16
+      internalID: 8057859488184351588
       vertices: []
       indices: 
       edges: []
@@ -160,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: a53591da228c86b4e98eb73a35eb99cc
+    spriteID: 4e8a26ea95cb3e44e809a70fabc3ee5e
     internalID: 0
     vertices: []
     indices: 

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 6e0dfc8d60853a246b2cb6c0590e2702
+guid: 6737ee0d9ad568b4b9f14ed10a5cbea4
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,15 @@ TextureImporter:
   - first:
       213: 7576048648363604905
     second: Abysmeel_1
+  - first:
+      213: -7007013119091786424
+    second: Abysmeel_2
+  - first:
+      213: 9143691418682774815
+    second: Abysmeel_3
+  - first:
+      213: 2049195253120730242
+    second: Abysmeel_4
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -130,7 +139,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ad34d566bf812dc4288f016ac1178479
+      spriteID: baf3955c494923b44a0a24b53d8a4430
       internalID: -2119256424625893221
       vertices: []
       indices: 
@@ -151,8 +160,71 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c6e02ac813e56fa44978483899f05370
+      spriteID: 38d76cd5be569b44a860670dd8d6dd20
       internalID: 7576048648363604905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Abysmeel_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ad2b706821c10b140b7bcc331c12ad48
+      internalID: -7007013119091786424
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Abysmeel_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 95e44a2d08cce1743af864d8f1f85bd9
+      internalID: 9143691418682774815
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Abysmeel_4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dd4da6c72ee576141875831458a77f92
+      internalID: 2049195253120730242
       vertices: []
       indices: 
       edges: []
@@ -160,7 +232,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: c27c4a25cfb4cec47be426ecfd5d8bed
+    spriteID: ea035e8f32b78c643963dc913649600e
     internalID: 0
     vertices: []
     indices: 

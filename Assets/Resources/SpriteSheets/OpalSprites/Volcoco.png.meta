@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: cf6559ca06c8dc645b153b05b965838b
+guid: 15ee587f97dcd4541b50e116aa27410c
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,12 @@ TextureImporter:
   - first:
       213: 5924713176278095229
     second: Volcoco_1
+  - first:
+      213: -7020756505863357511
+    second: Volcoco_2
+  - first:
+      213: -2419849197379967632
+    second: Volcoco_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c28ddc8c529c629408efdb03fac86104
+      spriteID: 06219b5aea7611f4ab2853d21234dade
       internalID: -7375336839101197090
       vertices: []
       indices: 
@@ -140,10 +146,10 @@ TextureImporter:
       name: Volcoco_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +157,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9789d77978943aa4a8a417f5e595dd4d
+      spriteID: a557d5c9cd900ff46843d48251adee01
       internalID: 5924713176278095229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Volcoco_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 51f89e246893d414d8847a43cd5f61a7
+      internalID: -7020756505863357511
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Volcoco_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1d1ef2a7b3324314cb71deff4641bc71
+      internalID: -2419849197379967632
       vertices: []
       indices: 
       edges: []
@@ -160,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 83d08a739d970da408cddc78407d4d29
+    spriteID: 4aeb2cb9e37d9304a8ebb6106af797e7
     internalID: 0
     vertices: []
     indices: 

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8fe662800385ca640ae85232ccc43fc8
+guid: d03a206cd1a416c4ebe7476cce06acc0
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,12 @@ TextureImporter:
   - first:
       213: -6907822436212334388
     second: Moppet_1
+  - first:
+      213: 5254043529835740197
+    second: Moppet_2
+  - first:
+      213: 4004726268140935908
+    second: Moppet_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -130,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d7b87e9f9aac54144bfbd92ad62d00fa
+      spriteID: f3f1ced99a7aee74cb12210c0572a8d4
       internalID: 6743182840004422637
       vertices: []
       indices: 
@@ -151,8 +157,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 255960fd148772e48b140d84a552fd5c
+      spriteID: 2add14b25d4e7ee4aa2d0585b85ba821
       internalID: -6907822436212334388
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Moppet_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 96a27115ecdfe4a44a6cecce1641fb4d
+      internalID: 5254043529835740197
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Moppet_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4fa7c2a6d1d7beb46aa2fc6be8bc4d2b
+      internalID: 4004726268140935908
       vertices: []
       indices: 
       edges: []
@@ -160,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: d09f90b1826eb9b48bbdbbb62b529e9f
+    spriteID: b7249907b3fe6494ca4d9db25038d545
     internalID: 0
     vertices: []
     indices: 

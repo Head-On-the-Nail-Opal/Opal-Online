@@ -51,8 +51,7 @@ public class Inflicshun : OpalScript
         Attacks[3] = new Attack("Tune", 0, 1, 0, "Gain +1 attack",0,3);
         type1 = "Void";
         type2 = "Void";
-        anim = GetComponent<Animator>();
-        setUpInflicshun();
+        //anim = GetComponent<Animator>();
     }
 
     private void setUpInflicshun()
@@ -76,81 +75,46 @@ public class Inflicshun : OpalScript
 
     public void doFrame(string frame, bool active)
     {
-        if (active)
-        {
-            burningDefault = burningPart.GetComponent<SpriteRenderer>().sprite;
-            burningPart.GetComponent<Animator>().enabled = false;
-            poisonDefault = poisonPart.GetComponent<SpriteRenderer>().sprite;
-            poisonPart.GetComponent<Animator>().enabled = false;
-            liftedDefault = liftedPart.GetComponent<SpriteRenderer>().sprite;
-            liftedPart.GetComponent<Animator>().enabled = false;
-            if (frame == "attack")
-            {
-                burningPart.GetComponent<SpriteRenderer>().sprite = burningAttack;
-                poisonPart.GetComponent<SpriteRenderer>().sprite = poisonAttack;
-                liftedPart.GetComponent<SpriteRenderer>().sprite = liftedAttack;
-            }
-            else if(frame == "hurt")
-            {
-                burningPart.GetComponent<SpriteRenderer>().sprite = burningHurt;
-                poisonPart.GetComponent<SpriteRenderer>().sprite = poisonHurt;
-                liftedPart.GetComponent<SpriteRenderer>().sprite = liftedHurt;
-            }
-        }
-        else
-        {
-            burningPart.GetComponent<SpriteRenderer>().sprite = burningDefault;
-            burningPart.GetComponent<Animator>().enabled = true;
-            poisonPart.GetComponent<SpriteRenderer>().sprite = poisonDefault;
-            poisonPart.GetComponent<Animator>().enabled = true;
-            liftedPart.GetComponent<SpriteRenderer>().sprite = liftedDefault;
-            liftedPart.GetComponent<Animator>().enabled = true;
-            setVisuals();
-        }
+        
     }
 
     private void setVisuals()
     {
-        if (currentForm.Substring(0,1) == "1")
+        switch (currentForm)
         {
-            //burningPart.GetComponent<Animator>().CrossFade("Inflicshun-Burning", 0);
-            burningPart.GetComponent<SpriteRenderer>().enabled = true;
-            burningPart.GetComponent<Animator>().enabled = true;
+            case "000":
+                animCutoff = 0;
+                changeVisual(getMyVisual(), true);
+                break;
+            case "001":
+                animCutoff = 8;
+                changeVisual(getMyVisual(), true);
+                break;
+            case "010":
+                animCutoff = 4;
+                changeVisual(getMyVisual(), true);
+                break;
+            case "100":
+                animCutoff = 12;
+                changeVisual(getMyVisual(), true);
+                break;
+            case "011":
+                animCutoff = 16;
+                changeVisual(getMyVisual(), true);
+                break;
+            case "110":
+                animCutoff = 20;
+                changeVisual(getMyVisual(), true);
+                break;
+            case "101":
+                animCutoff = 24;
+                changeVisual(getMyVisual(), true);
+                break;
+            case "111":
+                animCutoff = 28;
+                changeVisual(getMyVisual(), true);
+                break;
         }
-        else
-        {
-            burningPart.GetComponent<SpriteRenderer>().enabled = false;
-            burningPart.GetComponent<Animator>().enabled = false;
-        }
-
-        if (currentForm.Substring(1, 1) == "1")
-        {
-            //poisonPart.GetComponent<Animator>().CrossFade("Inflicshun-Poison", 0);
-            poisonPart.GetComponent<SpriteRenderer>().enabled = true;
-            poisonPart.GetComponent<Animator>().enabled = true;
-        }
-        else
-        {
-            poisonPart.GetComponent<SpriteRenderer>().enabled = false;
-            poisonPart.GetComponent<Animator>().enabled = false;
-        }
-
-        if (currentForm.Substring(2, 1) == "1")
-        {
-            //liftedPart.GetComponent<Animator>().CrossFade("Inflicshun-Lifted", 0);
-            liftedPart.GetComponent<SpriteRenderer>().enabled = true;
-            liftedPart.GetComponent<Animator>().enabled = true;
-        }
-        else
-        {
-            liftedPart.GetComponent<SpriteRenderer>().enabled = false;
-            liftedPart.GetComponent<Animator>().enabled = false;
-        }
-        restartHighlight();
-        anim.Play("Inflicshun", -1, 0);
-        poisonPart.GetComponent<Animator>().Play("Inflicshun-Poison", -1, 0);
-        burningPart.GetComponent<Animator>().Play("Inflicshun-Burning",-1, 0);
-        liftedPart.GetComponent<Animator>().Play("Inflicshun-Lifted",-1, 0);
     }
 
     private void getForm()
@@ -219,7 +183,7 @@ public class Inflicshun : OpalScript
             //anim.Play("Inflicshun000", 0);
             currentForm = "000";
         }
-        doHighlight("Inflicshun");
+        //doHighlight("Inflicshun");
         //setVisuals();
     }
 
@@ -227,13 +191,13 @@ public class Inflicshun : OpalScript
     {
         getForm();
         setVisuals();
-        showHighlight();
+        //showHighlight();
     }
 
     public override void onMove(int distanceMoved)
     {
         getForm();
-        showHighlight();
+        //showHighlight();
         //setVisuals();
     }
 
@@ -241,7 +205,7 @@ public class Inflicshun : OpalScript
     {
         getForm();
         setVisuals();
-        showHighlight();
+        //showHighlight();
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)

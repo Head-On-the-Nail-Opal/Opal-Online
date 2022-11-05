@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 3cecf07820bbb6c4c9457d58eda1c06f
+guid: 9e75d47b5bac64b42a9b4e51edf14bc3
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,15 @@ TextureImporter:
   - first:
       213: 8564274804179975087
     second: Shineode_1
+  - first:
+      213: 3828914779521363114
+    second: Shineode_2
+  - first:
+      213: -6143258501311155489
+    second: Shineode_3
+  - first:
+      213: -4776173388122656746
+    second: Shineode_4
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -130,7 +139,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0010a8541729bf94c8cc7ec9debbcdae
+      spriteID: 643f3c97739fd444081215fc92e6855e
       internalID: -819280309110313120
       vertices: []
       indices: 
@@ -151,8 +160,71 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e79deb647ee92494a96e62865363f804
+      spriteID: ccbbc66df0dc9b849ad1280b37ac57bd
       internalID: 8564274804179975087
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shineode_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 581b8011583528641a1ad2033ce26971
+      internalID: 3828914779521363114
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shineode_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cd4fbde4441f8cb4ab432cdcc828650b
+      internalID: -6143258501311155489
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shineode_4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6601aa54b0637a440a574b9f97045c15
+      internalID: -4776173388122656746
       vertices: []
       indices: 
       edges: []
@@ -160,7 +232,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 41211a2cd1c85274191e60c5b1225c9e
+    spriteID: 9cbc2d70c60c5d4419ec2d7e94727684
     internalID: 0
     vertices: []
     indices: 

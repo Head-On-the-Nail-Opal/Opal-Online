@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 89999cee2f915ae4d8f6ae906607909e
+guid: 31fc6ada3d53c3f4c82b2b5767d080d2
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,12 @@ TextureImporter:
   - first:
       213: -8183689309202598272
     second: Drizziphyl_1
+  - first:
+      213: 7309899907592182303
+    second: Drizziphyl_2
+  - first:
+      213: 6752835670861827526
+    second: Drizziphyl_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 262ad263e5f541c41a208a6b9faeb0c0
+      spriteID: ca989ed8d901cdc47a6e251cf9ff9646
       internalID: -2284787138705004821
       vertices: []
       indices: 
@@ -140,10 +146,10 @@ TextureImporter:
       name: Drizziphyl_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +157,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 27093e12168632f40ae41e427aa0d7c4
+      spriteID: a393dc7e376677e4aa0d7a7f05590452
       internalID: -8183689309202598272
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Drizziphyl_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8d4c2ff0f5ee18a45b21e3bc7f96e8f6
+      internalID: 7309899907592182303
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Drizziphyl_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1db61ca1125a860458e29b18899f01c6
+      internalID: 6752835670861827526
       vertices: []
       indices: 
       edges: []
@@ -160,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 7304fe32e9af75f4ca687b9bb6523005
+    spriteID: 9e3781910a9809c489cc5e3588016424
     internalID: 0
     vertices: []
     indices: 

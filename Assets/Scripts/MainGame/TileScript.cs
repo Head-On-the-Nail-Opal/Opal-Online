@@ -69,7 +69,7 @@ public class TileScript : MonoBehaviour {
     
 
     private GameObject myShadow;
-
+    private bool shady = false;
 
     public void Awake()
     {
@@ -279,6 +279,7 @@ public class TileScript : MonoBehaviour {
     {
         myShadow.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.3f);
         myShadow.GetComponent<SpriteRenderer>().enabled = doShade;
+        shady = doShade;
 
     }
 
@@ -1264,6 +1265,10 @@ public class TileScript : MonoBehaviour {
 
     public void FixedUpdate()
     {
+        if(currentPlayer == null && shady)
+        {
+            setShadow(false);
+        }
         if(anim == animLength)
         {
             anim = 0;

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 7798a8831daf8d945977a804d20c09a1
+guid: 663d9dc569877b34fa28b2df64b1d67c
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,12 @@ TextureImporter:
   - first:
       213: -8891423340894686839
     second: Cactoid_1
+  - first:
+      213: -8158627324917652894
+    second: Cactoid_2
+  - first:
+      213: -6798579422087136348
+    second: Cactoid_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: df99922a93d552245a61a9490a982f5e
+      spriteID: 083569a3f2200074280d74bd7f6e1d36
       internalID: -7282482806382594676
       vertices: []
       indices: 
@@ -140,10 +146,10 @@ TextureImporter:
       name: Cactoid_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +157,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: be97a33201ed9a842acc5da59fa63974
+      spriteID: 0c37774f36e27d144bcd16b7e277babc
       internalID: -8891423340894686839
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cactoid_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4e4bd29117c2ac942b7ef393678dbacf
+      internalID: -8158627324917652894
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cactoid_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7cb740ab8705a334a99961046598b909
+      internalID: -6798579422087136348
       vertices: []
       indices: 
       edges: []
@@ -160,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 18dfbaf868a382245bf9dfec3dd3b791
+    spriteID: f43f68e9401d5d747ae53894484b98fc
     internalID: 0
     vertices: []
     indices: 

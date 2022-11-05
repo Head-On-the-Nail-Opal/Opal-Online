@@ -124,6 +124,7 @@ MonoBehaviour:
   hurtFrame: {fileID: 5747121022845913232, guid: 76e491e124ae8b5429e16041dea58f24,
     type: 3}
   myBoulders: {fileID: 0}
+  doBoulders: 1
   isCorpse: 0
   deadSprite: {fileID: -4317854613082655574, guid: 76e491e124ae8b5429e16041dea58f24,
     type: 3}

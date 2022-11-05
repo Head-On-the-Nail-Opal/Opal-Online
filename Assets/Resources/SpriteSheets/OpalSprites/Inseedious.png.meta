@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c6b6d56cfacd4804f9dd068abb4fae0c
+guid: eec36e41189566849800f2d23f1f9a6b
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,12 @@ TextureImporter:
   - first:
       213: 8794009143528491688
     second: Inseedious_1
+  - first:
+      213: 95628974283222655
+    second: Inseedious_2
+  - first:
+      213: -7620500442653767721
+    second: Inseedious_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f39342b0a6e3a68459becebe24cfcf2d
+      spriteID: 6644207f4345ca44b8a21e986b7ffdb2
       internalID: -4749648897113461841
       vertices: []
       indices: 
@@ -140,10 +146,10 @@ TextureImporter:
       name: Inseedious_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +157,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7199a16dd501b1f4d8cf9253a1910928
+      spriteID: ad6a4ac0e0bae7b409c9e4f24f910e86
       internalID: 8794009143528491688
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inseedious_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 735da5dd7b4adc342a8a8ac86b027525
+      internalID: 95628974283222655
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inseedious_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0a2a9b31bbd8a414599a608388ebb4ba
+      internalID: -7620500442653767721
       vertices: []
       indices: 
       edges: []
@@ -160,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: b369d95d73ff852439c049d6776d8414
+    spriteID: 22d731dfe37c9b64db635ea8ddfb026b
     internalID: 0
     vertices: []
     indices: 

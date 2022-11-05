@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f5e0abbd8895967489bbd22d07eb7d0b
+guid: d1fd62e3accd1d7429bf6ba349570821
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,12 @@ TextureImporter:
   - first:
       213: 3725905162966614322
     second: Sorceraura_1
+  - first:
+      213: -2064037087512177973
+    second: Sorceraura_2
+  - first:
+      213: 1146877202366606724
+    second: Sorceraura_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 00ea41dd5f41abe4199b2a837f97bf22
+      spriteID: 48d70ee9fc2bfb24ebb2e5460caae39a
       internalID: -7291549708313223761
       vertices: []
       indices: 
@@ -140,10 +146,10 @@ TextureImporter:
       name: Sorceraura_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +157,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ddd0d6a2c982e9b4695c9a480332288b
+      spriteID: 57240042cff43d34fb3ada45968d6fb6
       internalID: 3725905162966614322
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sorceraura_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 871f55a62c3e56b49a21a9645f00a632
+      internalID: -2064037087512177973
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sorceraura_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 65d141167fab6e94a8c1f2cece49e1e5
+      internalID: 1146877202366606724
       vertices: []
       indices: 
       edges: []
@@ -160,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: a4fee1b1b36a6d748ae800abb6cba4f6
+    spriteID: e9501a620001c624b94a558340ea5c6d
     internalID: 0
     vertices: []
     indices: 

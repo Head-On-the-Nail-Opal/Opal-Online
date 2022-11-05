@@ -195,6 +195,7 @@ public class MenuButtonScript : MonoBehaviour {
                 else if (Input.GetMouseButtonDown(1))
                     main.setNextPersonality(true);
             }
+            
         }
         if (purpose == "numTeams")
         {
@@ -202,6 +203,14 @@ public class MenuButtonScript : MonoBehaviour {
                 main.incNumTeams();
             else if (Input.GetMouseButtonDown(1))
                 main.decNumTeams();
+        }
+        else if (purpose == "visuals")
+        {
+            //transform.GetComponent<Text>().color = new Color(1f, 0f, 0f);
+            if (Input.GetMouseButtonDown(0))
+                main.setNextVisual(false);
+            else if (Input.GetMouseButtonDown(1))
+                main.setNextVisual(true);
         }
     }
 

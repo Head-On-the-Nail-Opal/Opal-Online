@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: cdf9087587e62b347b25a7ec0a668420
+guid: c1ac26350425cae4d99a37058729157f
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,12 @@ TextureImporter:
   - first:
       213: 8675618529107152359
     second: Barriarray_1
+  - first:
+      213: 8293278693117713609
+    second: Barriarray_2
+  - first:
+      213: 6235863451074023159
+    second: Barriarray_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e98e871e3a587c244bb2f996ee9e0c0f
+      spriteID: e505e28c0d4bcbb4a8e95522ec4a4438
       internalID: -8822357360747188008
       vertices: []
       indices: 
@@ -140,10 +146,10 @@ TextureImporter:
       name: Barriarray_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +157,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6ea1acfd9a01e9241b76b0d03782116a
+      spriteID: 79fda36d4ea2533449a90e27c7959e48
       internalID: 8675618529107152359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Barriarray_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: be557f36ad653e249aa3607d999105b5
+      internalID: 8293278693117713609
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Barriarray_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 603c92556e5114441b1620af3a991434
+      internalID: 6235863451074023159
       vertices: []
       indices: 
       edges: []
@@ -160,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: c3eaf56db59784643b586be1bbc0d5dc
+    spriteID: 4f6340ee4cc4cf449a4031e40bf11c5a
     internalID: 0
     vertices: []
     indices: 

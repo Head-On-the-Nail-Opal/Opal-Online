@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 46902240f67356246a3dc32b5303ccfd
+guid: 8103a126bdba57e47b43420cf760ad1d
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,15 @@ TextureImporter:
   - first:
       213: -4276507195015889405
     second: Tortquoise_1
+  - first:
+      213: 1162713372500271185
+    second: Tortquoise_2
+  - first:
+      213: -4609724026965713089
+    second: Tortquoise_3
+  - first:
+      213: 5358119225795726188
+    second: Tortquoise_4
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +129,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +139,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 107d40aff5198854fb0fce8939dec130
+      spriteID: 633106dba3cc21d418e30a149d55cda8
       internalID: 5982339725694951566
       vertices: []
       indices: 
@@ -140,10 +149,10 @@ TextureImporter:
       name: Tortquoise_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +160,71 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ca21a2c5bb9d81d458780e75b32c31c8
+      spriteID: b1a85b99405d0374d9afa438ef379ef7
       internalID: -4276507195015889405
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tortquoise_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c7e819c329fd9bc4ab2d841f46ce6de4
+      internalID: 1162713372500271185
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tortquoise_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8c0bda583c777ff4a83c9242e0865a14
+      internalID: -4609724026965713089
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tortquoise_4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d92bb856de602d049b96d01202be66e4
+      internalID: 5358119225795726188
       vertices: []
       indices: 
       edges: []
@@ -160,7 +232,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 0563d6c69029b574db761432ad156401
+    spriteID: 2b7b0b9bfc5bb9a429eabfa3f008ba95
     internalID: 0
     vertices: []
     indices: 

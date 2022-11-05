@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b467b78feff962d45a95caee893e8a4f
+guid: b3c755e7ce398d642a531f5346e51231
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,24 @@ TextureImporter:
   - first:
       213: 4199699087416295948
     second: Heatriarch_1
+  - first:
+      213: 9139852325140819416
+    second: Heatriarch_2
+  - first:
+      213: 4585843322807087318
+    second: Heatriarch_3
+  - first:
+      213: 633249650253405907
+    second: Heatriarch_4
+  - first:
+      213: -5254760812549485415
+    second: Heatriarch_5
+  - first:
+      213: 7624453663804958965
+    second: Heatriarch_6
+  - first:
+      213: -6048655570804750875
+    second: Heatriarch_7
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +138,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +148,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 220b206ebe58df340bf1572ccc0d6f0a
+      spriteID: 070f654c2a308464696c13c85cc192dd
       internalID: -3730793667193441596
       vertices: []
       indices: 
@@ -140,10 +158,10 @@ TextureImporter:
       name: Heatriarch_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +169,134 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cf95d5693b17b5946befb4c8f31dceaa
+      spriteID: 53321352f0ce3904f9dd32d8d911b5c6
       internalID: 4199699087416295948
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Heatriarch_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6de4f2c981f23a44b9a71f216efbc536
+      internalID: 9139852325140819416
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Heatriarch_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a4d057fc94e80e14b9759c4f510c7c90
+      internalID: 4585843322807087318
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Heatriarch_4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5361d5b8ca0c2df479fb1f9af3b14230
+      internalID: 633249650253405907
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Heatriarch_5
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2add4b647f4a78c4d9b04cf8ac779ceb
+      internalID: -5254760812549485415
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Heatriarch_6
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 41558d55438fbb34d89e97882649c2d2
+      internalID: 7624453663804958965
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Heatriarch_7
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4120fc7de4063d3469a1d349c57cdbb5
+      internalID: -6048655570804750875
       vertices: []
       indices: 
       edges: []
@@ -160,7 +304,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: ab01e83c610db964a9717ca7ca4b51ef
+    spriteID: 8231dbfb29155f24e806c56710a808d4
     internalID: 0
     vertices: []
     indices: 

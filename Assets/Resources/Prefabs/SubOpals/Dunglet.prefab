@@ -80,7 +80,7 @@ SpriteRenderer:
   m_Size: {x: 0.32, y: 0.32}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!95 &95435041729961566
@@ -126,3 +126,4 @@ MonoBehaviour:
     type: 3}
   myBoulders: {fileID: 6844152519219085815, guid: 16688df503c73fe4e99709501a0ebff7,
     type: 3}
+  doBoulders: 1

@@ -72,12 +72,12 @@ public class Amalgum : OpalScript
         {
             if (currentUse == 0)
             {
-                tempAmal = (Amal)spawnOplet(amalPrefab, target);
+                tempAmal = (Amal)spawnOplet(amalPrefab, target, 2);
                 currentUse = 1;
             }
             else
             {
-                Gum tempGum = (Gum)spawnOplet(gumPrefab, target);
+                Gum tempGum = (Gum)spawnOplet(gumPrefab, target, 6);
                 tempAmal.setTwin(tempGum);
                 tempGum.setTwin(tempAmal);
                 takeDamage(getHealth(), false, false);

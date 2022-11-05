@@ -50,14 +50,18 @@ public class Reflectron : OpalScript
         if (!diagonal)
         {
             Attacks[3] = new Attack("Heal Ray", 1, 8, 0, "Heal all Opals in a diagonal line 2 health");
-            anim.CrossFade("ReflectronX", 0);
-            doHighlight("ReflectronX");
+            //anim.CrossFade("ReflectronX", 0);
+            //doHighlight("ReflectronX");
+            animCutoff = 4;
+            changeVisual(getMyVisual(), true);
         }
         else
         {
             Attacks[3] = new Attack("Heal Ray", 1, 6, 0, "Heal all Opals in a line 2 health");
-            anim.CrossFade("ReflectronT", 0);
-            doHighlight("ReflectronT");
+            //anim.CrossFade("ReflectronT", 0);
+            //doHighlight("ReflectronT");
+            animCutoff = 8;
+            changeVisual(getMyVisual(), true);
         }
     }
 
@@ -71,14 +75,18 @@ public class Reflectron : OpalScript
         if (!diagonal)
         {
             Attacks[3] = new Attack("Heal Ray", 1, 8, 0, "Heal all Opals in a diagonal line 2 health");
-            anim.CrossFade("ReflectronX", 0);
-            doHighlight("ReflectronX");
+            // anim.CrossFade("ReflectronX", 0);
+            //doHighlight("ReflectronX");
+            animCutoff = 8;
+            changeVisual(getMyVisual(), true);
         }
         else
         {
             Attacks[3] = new Attack("Heal Ray", 1, 6, 0, "Heal all Opals in a line 2 health");
-            anim.CrossFade("ReflectronT", 0);
-            doHighlight("ReflectronT");
+            //anim.CrossFade("ReflectronT", 0);
+            //doHighlight("ReflectronT");
+            animCutoff = 4;
+            changeVisual(getMyVisual(), true);
         }
     }
 

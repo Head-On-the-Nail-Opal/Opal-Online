@@ -14,6 +14,7 @@ public class Succuum : OpalScript {
         priority = 1;
         myName = "Succuum";
         transform.localScale = new Vector3(3f, 3f, 1)*1.25f;
+        animFrames = 3;
         offsetX = 0;
         offsetY = 0.15f;
         offsetZ = 0;

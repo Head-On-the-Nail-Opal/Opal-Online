@@ -213,6 +213,8 @@ public class TextScript : MonoBehaviour {
         if (displayCurrent == null)
         {
             displayCurrent = Instantiate<OpalScript>(opal.getMyModel());
+            displayCurrent.setOpal(opal.getTeam());
+            displayCurrent.setDetails(opal);
             displayCurrent.setDisplayOpal();
             displayCurrent.doHighlight();
             //displayCurrent.setOpal(null);
@@ -401,6 +403,8 @@ public class TextScript : MonoBehaviour {
             if (displaySelected == null)
             {
                 displaySelected = Instantiate<OpalScript>(opal.getMyModel());
+                displaySelected.setOpal(opal.getTeam());
+                displaySelected.setDetails(opal);
                 displaySelected.setDisplayOpal();
                 displaySelected.doHighlight();
                 //displaySelected.setOpal(null);

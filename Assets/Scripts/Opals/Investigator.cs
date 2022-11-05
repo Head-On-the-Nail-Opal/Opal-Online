@@ -150,7 +150,7 @@ public class Investigator : OpalScript
             if (discovering && !summoned.Contains(floweraptorPrefab))
             {
                 summoned.Add(floweraptorPrefab);
-                spawnOplet(floweraptorPrefab,target);
+                spawnOplet(floweraptorPrefab,target,8);
                 discovering = false;
                 switchAbilties();
             }
@@ -172,7 +172,7 @@ public class Investigator : OpalScript
             else if(!summoned.Contains(flarasaurPrefab))
             {
                 summoned.Add(flarasaurPrefab);
-                spawnOplet(flarasaurPrefab, target);
+                spawnOplet(flarasaurPrefab, target, 4);
                 discovering = false;
                 switchAbilties();
             }
@@ -182,7 +182,7 @@ public class Investigator : OpalScript
             if (discovering && !summoned.Contains(brachioshPrefab))
             {
                 summoned.Add(brachioshPrefab);
-                spawnOplet(brachioshPrefab, target);
+                spawnOplet(brachioshPrefab, target,12);
                 discovering = false;
                 switchAbilties();
             }

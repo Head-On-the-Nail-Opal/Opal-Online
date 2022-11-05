@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 9bb26856a7c000440a19d241e7947c22
+guid: 10bf99c09afd64642844f87300535fd7
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,12 @@ TextureImporter:
   - first:
       213: 1331992869745492047
     second: Thermor_1
+  - first:
+      213: 3376219228616379923
+    second: Thermor_2
+  - first:
+      213: -3675709946253356716
+    second: Thermor_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3fb1b53a474e25f47a9650d9a2f807f5
+      spriteID: 9ae6fe9e769ea814791c46a81a7b3a63
       internalID: 6908437221295107429
       vertices: []
       indices: 
@@ -140,10 +146,10 @@ TextureImporter:
       name: Thermor_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +157,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 191a28eab0c19544c9fb216cd70885c9
+      spriteID: 20fab95229d124443be4828e56c1f038
       internalID: 1331992869745492047
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Thermor_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 70fc8f66d8d231d4b8b2368e7fdee10f
+      internalID: 3376219228616379923
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Thermor_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 84cc2e4f842c5e04eaf3017e511fe876
+      internalID: -3675709946253356716
       vertices: []
       indices: 
       edges: []
@@ -160,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: bd7bfca9ab9cdf74eaa446c8cf51a039
+    spriteID: 44a9b5e72720a904980127a7f8f3a779
     internalID: 0
     vertices: []
     indices: 

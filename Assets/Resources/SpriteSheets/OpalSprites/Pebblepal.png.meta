@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f036ed664f87b274bab08c9f30025704
+guid: 018f5244d14a5814eb02cd9b9b70de1d
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,12 @@ TextureImporter:
   - first:
       213: -3248427440040850772
     second: Pebblepal_1
+  - first:
+      213: -7078087940064918587
+    second: Pebblepal_2
+  - first:
+      213: -4618115525008982678
+    second: Pebblepal_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 689896ae1f548754eabd09e35515de3d
+      spriteID: c4341f2db3d13494ba2a95cbd9885ac1
       internalID: 4862794334887123696
       vertices: []
       indices: 
@@ -140,10 +146,10 @@ TextureImporter:
       name: Pebblepal_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +157,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 230ebb929f48b0e428431ec28c2f91e1
+      spriteID: 50e0e2dd82515b54d9ff7fc3da41fa6d
       internalID: -3248427440040850772
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pebblepal_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 710b616d902fb5b4e8f331662d082d58
+      internalID: -7078087940064918587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pebblepal_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d50acf4388695b64caceea5cd61684d8
+      internalID: -4618115525008982678
       vertices: []
       indices: 
       edges: []
@@ -160,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 48fe309354e148b42b409c5800a3ee6e
+    spriteID: d7f2c939dd0da5e4195b35be31a95777
     internalID: 0
     vertices: []
     indices: 

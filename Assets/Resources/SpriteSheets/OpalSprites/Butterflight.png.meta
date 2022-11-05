@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 9c8a923a0dbedae4094cc9f1bb999a71
+guid: 5e35fdbe1c014624b868353e91f156ab
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,12 @@ TextureImporter:
   - first:
       213: 4463598693485627089
     second: Butterflight_1
+  - first:
+      213: -749641038192915947
+    second: Butterflight_2
+  - first:
+      213: -4997547164867618916
+    second: Butterflight_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c0e1f89837c2bec46ab8718444183977
+      spriteID: e8e3ce97cf19ce94bb35c303686ac544
       internalID: -5136107107926288713
       vertices: []
       indices: 
@@ -140,10 +146,10 @@ TextureImporter:
       name: Butterflight_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +157,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 100f7ad318a8ddb4d83307a1a263119e
+      spriteID: c8ceebdf518e91544a20782726400e67
       internalID: 4463598693485627089
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Butterflight_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bf6ee2d9ac8d7844cad15e7deef519c3
+      internalID: -749641038192915947
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Butterflight_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 21eacc234f7afbe4fb18e95d5ec6ab4d
+      internalID: -4997547164867618916
       vertices: []
       indices: 
       edges: []
@@ -160,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 3a2f04dc74c226143b8c4677588bc37f
+    spriteID: 9c404c0697457314294f2de44442dd3b
     internalID: 0
     vertices: []
     indices: 

@@ -124,3 +124,4 @@ MonoBehaviour:
   hurtFrame: {fileID: 1905474371835179832, guid: 050ef7e21f4d24342939c32a0d847137,
     type: 3}
   myBoulders: {fileID: 0}
+  doBoulders: 0

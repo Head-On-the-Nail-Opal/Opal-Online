@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 1578714bedd94f347b224a876b4ac86a
+guid: fba3feb6661fb1f46bbc39bc257ed391
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,12 @@ TextureImporter:
   - first:
       213: 5526683583089565555
     second: Bubbacle_1
+  - first:
+      213: 4353633731640163157
+    second: Bubbacle_2
+  - first:
+      213: -7936628915575327215
+    second: Bubbacle_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0d454ee7c74e39e4dae99885d56160a9
+      spriteID: de66d13419211f641a590502c60b98ef
       internalID: 3188540207520179430
       vertices: []
       indices: 
@@ -140,10 +146,10 @@ TextureImporter:
       name: Bubbacle_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +157,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8b115bd1bc74fc1478a812e8a52fd92a
+      spriteID: f73a7235ebf116640b300242e80b1aea
       internalID: 5526683583089565555
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Bubbacle_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a02364e56d46bba41827680945445b7c
+      internalID: 4353633731640163157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Bubbacle_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 16ba76579bd6ee547af3e39c85f5b826
+      internalID: -7936628915575327215
       vertices: []
       indices: 
       edges: []
@@ -160,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 1c8fd3c5fd3898f429bd3f23dbd8f3ee
+    spriteID: ced47756ed573d843a983cb7cfedeb44
     internalID: 0
     vertices: []
     indices: 

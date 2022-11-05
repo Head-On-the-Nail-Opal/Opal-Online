@@ -16,6 +16,7 @@ public class Mistery : OpalScript
         priority = 1;
         myName = "Mistery";
         transform.localScale = new Vector3(3.5f, 3.5f, 1);
+        animFrames = 3;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;

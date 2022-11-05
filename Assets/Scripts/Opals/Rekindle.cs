@@ -18,6 +18,7 @@ public class Rekindle : OpalScript
         offsetY = 0.1f;
         offsetZ = 0;
         player = pl;
+        animFrames = 3;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;

@@ -311,10 +311,10 @@ public class GroundScript : MonoBehaviour {
         {
             //print(o.GetType());
             OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + o.GetType()));
+            temp.setOpal("Blue");
             temp.setDetails(o);
             temp.GetComponent<SpriteRenderer>().flipX = false;
             temp.transform.rotation = Quaternion.Euler(40,-45,0);
-            temp.setOpal("Blue");
             //temp.setPersonality(o.getPersonality());
             temp.setPos(-100, -100);
             p2Opals.Add(temp);
@@ -1041,6 +1041,7 @@ public class GroundScript : MonoBehaviour {
             if (!o.getDead() && !alreadyMoved.Contains(o.getID())) 
             {
                 OpalScript temp = Instantiate<OpalScript>(o.getMyModel(), myCanvas.transform);
+                temp.setOpal(o.getTeam());
                 temp.setDisplayOpal();
                 opalTurns.Add(temp);
                 temp.healStatusEffects();

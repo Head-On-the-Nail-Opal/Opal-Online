@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4b2cfbe51b31d4843a2b720e2a749440
+guid: fc932e5a84026264c8037dc117853422
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,15 @@ TextureImporter:
   - first:
       213: -2751560350754459240
     second: Oremordilla_1
+  - first:
+      213: -7775657928407654367
+    second: Oremordilla_2
+  - first:
+      213: 5575149904910005938
+    second: Oremordilla_3
+  - first:
+      213: 5821826591067693750
+    second: Oremordilla_4
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +129,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +139,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 50b73a289f6dfd14595bffd3b2099a4d
+      spriteID: 3ed02e76f2298bc42a7ae1bac0b9d88c
       internalID: 232603267273190883
       vertices: []
       indices: 
@@ -140,10 +149,10 @@ TextureImporter:
       name: Oremordilla_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +160,71 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 89c3b6250e70c8341b1af39ac14191e9
+      spriteID: 428d12c592401dd4d9e49755505a6287
       internalID: -2751560350754459240
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Oremordilla_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 694425a58d2f30e4e8a52e6d6a606a06
+      internalID: -7775657928407654367
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Oremordilla_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 445355e6c2350d54e95304f96a9093cc
+      internalID: 5575149904910005938
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Oremordilla_4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6c1b59c96fa378443acc169aa0e367ce
+      internalID: 5821826591067693750
       vertices: []
       indices: 
       edges: []
@@ -160,7 +232,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 10b4a80758ec3014f8a2f4b3cc663479
+    spriteID: 8918450787d86544ebb0698cbca4a897
     internalID: 0
     vertices: []
     indices: 

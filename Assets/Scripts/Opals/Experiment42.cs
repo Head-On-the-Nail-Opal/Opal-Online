@@ -8,16 +8,7 @@ public class Experiment42 : OpalScript
     public bool isCorpse = false;
 
     public Sprite deadSprite;
-    private Sprite aliveSprite;
-
-    public void FixedUpdate()
-    {
-        if(isCorpse && GetComponent<SpriteRenderer>().sprite != deadSprite)
-        {
-            GetComponent<SpriteRenderer>().sprite = deadSprite;
-            print("du hello");
-        }
-    }
+    private List<Sprite> aliveSprites;
 
     override public void setOpal(string pl)
     {
@@ -50,7 +41,7 @@ public class Experiment42 : OpalScript
         og = true;
     }
 
-    private void corpse(TileScript target)
+    public void corpse(TileScript target)
     {
         health = 1;
         maxHealth = 10;
@@ -63,12 +54,11 @@ public class Experiment42 : OpalScript
         clearAllBuffs();
         speed = 0;
 
-        transform.localScale = new Vector3(3f, 3f, 1) * 1.1f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
 
-        aliveSprite = GetComponent<SpriteRenderer>().sprite;
-        GetComponent<SpriteRenderer>().sprite = deadSprite;
-
-        GetComponent<Animator>().enabled = false;
+        pauseAnim = true;
+        pauseFrame = true;
+        GetComponent<SpriteRenderer>().sprite = myBoulders;
 
         doHighlight();
         if (boardScript.myCursor.getCurrentOpal() == this)
@@ -88,14 +78,12 @@ public class Experiment42 : OpalScript
         Attacks[3] = new Attack("Tinker", 0, 1, 0, "Upgrade provides an additional +1 attack and defense permanently. Take 5 damage.");
 
         clearAllBuffs();
-        speed = 0;
+        speed = 3;
 
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.7f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
 
-        GetComponent<SpriteRenderer>().sprite = aliveSprite;
-
-        GetComponent<Animator>().enabled = true;
-        GetComponent<Animator>().Play("Experiment42", -1, 0);
+        pauseAnim = false;
+        pauseFrame = false;
 
         doHighlight();
         if (boardScript.myCursor.getCurrentOpal() == this)

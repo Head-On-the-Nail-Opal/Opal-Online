@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8bfb38cb42b18754a9655354dc0258ab
+guid: e6779bef28539494882a85bc5fb27356
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -126,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -136,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: adb73453b74168c4eb76a8e77a28b1a7
+      spriteID: 9469200e31b0d434dba18fffc8d26ed9
       internalID: 2613018207077286180
       vertices: []
       indices: 
@@ -146,10 +146,10 @@ TextureImporter:
       name: Finbow_1
       rect:
         serializedVersion: 2
-        x: 832
-        y: 832
-        width: 832
-        height: 832
+        x: 32
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -157,7 +157,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1627e25ef71a17e4f8e261151ca771aa
+      spriteID: c52c8d9bc423ed446814931b01a79761
       internalID: -6978446299910776514
       vertices: []
       indices: 
@@ -167,10 +167,10 @@ TextureImporter:
       name: Finbow_2
       rect:
         serializedVersion: 2
-        x: 0
+        x: 64
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -178,7 +178,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 144d912e94ac99e4ea477783c62bf2ce
+      spriteID: c793496e63c8d33429e7e69266d6548d
       internalID: -734788139129043114
       vertices: []
       indices: 
@@ -188,10 +188,10 @@ TextureImporter:
       name: Finbow_3
       rect:
         serializedVersion: 2
-        x: 832
+        x: 96
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -199,7 +199,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 312cbc5fea90a6d4c93ce3e69f7cc7cb
+      spriteID: 10291216152864d408e696c44fe4b27f
       internalID: 3456815820858628486
       vertices: []
       indices: 
@@ -208,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: f6cf2f7068b9ed24999f8e9f899a7f30
+    spriteID: adae94a8c218c1649bd863acb43530d8
     internalID: 0
     vertices: []
     indices: 

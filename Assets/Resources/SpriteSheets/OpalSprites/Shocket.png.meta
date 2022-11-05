@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 9434f8cbaa7957f41a328dfe6716caf9
+guid: 2aa729796c6001246b96fd84d516e4b7
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,12 @@ TextureImporter:
   - first:
       213: 6460211639637353556
     second: Shocket_1
+  - first:
+      213: -5015597591433548882
+    second: Shocket_2
+  - first:
+      213: -8784506788752933157
+    second: Shocket_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 58e972955609b6f4395ab3f85111e957
+      spriteID: 3aed3c11f917b0e4e8ee2e04017b8a0d
       internalID: -4213164866632783622
       vertices: []
       indices: 
@@ -140,10 +146,10 @@ TextureImporter:
       name: Shocket_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +157,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cc5b8310f3fbd98439c6aa140624cc7f
+      spriteID: b5a89cca21a819249859d4fd84a1d12e
       internalID: 6460211639637353556
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shocket_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ab6b06fe18f8b054292193aa8be76d2a
+      internalID: -5015597591433548882
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shocket_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 67d39dea78ed6f74888f160893e42c7f
+      internalID: -8784506788752933157
       vertices: []
       indices: 
       edges: []
@@ -160,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: de96e21a57e7c094fbb0f20401c3c50f
+    spriteID: 4cdaaf60cdbb2f2498a80c3beff2a956
     internalID: 0
     vertices: []
     indices: 

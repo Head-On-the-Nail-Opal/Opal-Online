@@ -39,7 +39,7 @@ public class Spiritch : OpalScript
         Attacks[2] = new Attack("Skull Roll", 1, 0, 0, "Spawn a Numbskull. Take 5 damage.",0,3);
         Attacks[3] = new Attack("Control Fate", 0, 1, 0, "<Free Ability>\n Take 10 damage.");
         Attacks[3].setFreeAction(true);
-        type1 = "Dark";
+        type1 = "Spirit";
         type2 = "Swarm";
     }
 

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a2d66b81dd6bf2c4987d0c4558a04e80
+guid: bf5b336cfbbf25342863bb54aa7b3f24
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,12 @@ TextureImporter:
   - first:
       213: 6845706539280482025
     second: Glorm_1
+  - first:
+      213: 1568725389810862923
+    second: Glorm_2
+  - first:
+      213: 6578478782456319215
+    second: Glorm_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 21c7f7b7751ef004686c2de4b117ca5f
+      spriteID: 02d0e0e72d4f9a046a50b96c705430aa
       internalID: 7821018244700588991
       vertices: []
       indices: 
@@ -140,10 +146,10 @@ TextureImporter:
       name: Glorm_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +157,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0addec176c45010448b7f1657d360385
+      spriteID: abe2344e9eb7e574e8264821b7ae080e
       internalID: 6845706539280482025
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Glorm_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c67507e4662de5647a9da08e3d8bf84a
+      internalID: 1568725389810862923
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Glorm_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eb2e9265ce3ffdd4d9963c6b16dc60e5
+      internalID: 6578478782456319215
       vertices: []
       indices: 
       edges: []
@@ -160,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 9c3caa80fab8a4a4ba5aa18ff56e9639
+    spriteID: 5101ef9468070af45a09e20317208a07
     internalID: 0
     vertices: []
     indices: 

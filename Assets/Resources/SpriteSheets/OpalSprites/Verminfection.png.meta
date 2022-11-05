@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 3b3d561da4c6e7d4b91f154296d88aca
+guid: 32dbf60a802b1414b8b6b08a74a4dea9
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,12 @@ TextureImporter:
   - first:
       213: -6180366786191663372
     second: Verminfection_1
+  - first:
+      213: 3560662070950485787
+    second: Verminfection_2
+  - first:
+      213: -7599486155698624810
+    second: Verminfection_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4c215eb06d1dff94088720b96bfd1903
+      spriteID: 98f837207ae8071499e1ab018981d35d
       internalID: 6807171637457028261
       vertices: []
       indices: 
@@ -140,10 +146,10 @@ TextureImporter:
       name: Verminfection_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +157,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1e85c004312d2814d8ea2542f5ded9a2
+      spriteID: b4a7afb5a6df6cd4f8421ec71f6ffbed
       internalID: -6180366786191663372
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Verminfection_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ab127224c64119f498d011c40b1689d7
+      internalID: 3560662070950485787
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Verminfection_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e519aad9fd5558941a9a984b45e38050
+      internalID: -7599486155698624810
       vertices: []
       indices: 
       edges: []
@@ -160,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 70f99828197166c4e84a4940e73e0ba9
+    spriteID: 6e7c473195e731341942e1be0289295f
     internalID: 0
     vertices: []
     indices: 

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f2923b6d8fada8049bc56bbbe20a075a
+guid: c9fde7025631a1e4ba81d13e5e4ca09e
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,12 @@ TextureImporter:
   - first:
       213: -5828655032998825936
     second: Duplimorph_1
+  - first:
+      213: 4507033412259097415
+    second: Duplimorph_2
+  - first:
+      213: -5711477921674879733
+    second: Duplimorph_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d75757a8ea7095e4fae19912ca333f24
+      spriteID: 42f6b738ea3efbb40806e4dfe1da5e0c
       internalID: -2062428702465520227
       vertices: []
       indices: 
@@ -140,10 +146,10 @@ TextureImporter:
       name: Duplimorph_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +157,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e5f1a8148fa96a1469a2726ec800617d
+      spriteID: e4bf158dc4799a9478ef3e507c3a809c
       internalID: -5828655032998825936
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Duplimorph_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fabe38c430b5b0c498b8097bb74f354b
+      internalID: 4507033412259097415
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Duplimorph_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: db04f5aafbfaf7d40b0a08efb0b1ba11
+      internalID: -5711477921674879733
       vertices: []
       indices: 
       edges: []
@@ -160,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 83aef77c1b9193441a64d8872fe0527c
+    spriteID: d94b7ac428a03c24ca86c27b4eab10b1
     internalID: 0
     vertices: []
     indices: 

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 156f354149c9a4d429e04c9e50ee7a36
+guid: a3f03d6d2bb01aa4fa056f7ec388e9a5
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,12 @@ TextureImporter:
   - first:
       213: 814798342995190610
     second: Betary_1
+  - first:
+      213: 1636788834152892155
+    second: Betary_2
+  - first:
+      213: 2044805199888677356
+    second: Betary_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 353892d38f6b75c44a17eb59bbadf1ac
+      spriteID: 05fd29e967fd3444b99708104e24ae0d
       internalID: 2791080624077781948
       vertices: []
       indices: 
@@ -140,10 +146,10 @@ TextureImporter:
       name: Betary_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +157,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 992e07c4b0100f64880e6aeb001864ab
+      spriteID: 761de0c67e0dc134095eaf17b095d886
       internalID: 814798342995190610
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Betary_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: da089e3bbcf7ccd419772afe305d1001
+      internalID: 1636788834152892155
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Betary_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 969c50c26126b7d46915746ee26020ed
+      internalID: 2044805199888677356
       vertices: []
       indices: 
       edges: []
@@ -160,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 5eb7d0480bb105a4c9593b0de9bec074
+    spriteID: 5f1c1f056669754418a658b6dc4f9e88
     internalID: 0
     vertices: []
     indices: 

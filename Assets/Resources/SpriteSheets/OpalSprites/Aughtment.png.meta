@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d4c6df891b9289a4b84a9362079fdd0b
+guid: 021f3b19caca16e4c9416bc6bfe86708
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,12 @@ TextureImporter:
   - first:
       213: 7076273253310316973
     second: Aughtment_1
+  - first:
+      213: -3290699866445836897
+    second: Aughtment_2
+  - first:
+      213: -1822037322762751275
+    second: Aughtment_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 15aec2c01f4644243821c51aa75c9d50
+      spriteID: a6d41f0fb52e33c489453175fe07ebc8
       internalID: -6498613408815223007
       vertices: []
       indices: 
@@ -140,10 +146,10 @@ TextureImporter:
       name: Aughtment_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +157,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c701aa5141f3ce543a9dea06fc869825
+      spriteID: 95694138880690042802bdd89b78915c
       internalID: 7076273253310316973
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aughtment_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7b721ffbb51c9334ca5243fd9b2e909a
+      internalID: -3290699866445836897
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aughtment_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4f8364497ffa330499ea38b030bcfe45
+      internalID: -1822037322762751275
       vertices: []
       indices: 
       edges: []
@@ -160,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 0ab048628f1c1e84b8176a78f108a304
+    spriteID: d33404e61d7196e4f973922450c60dc3
     internalID: 0
     vertices: []
     indices: 

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a50089d47387e0946a0360aeffdfe784
+guid: 4d46354933b6ec7408cb8d6923f8afdc
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,12 @@ TextureImporter:
   - first:
       213: 3899593100395734551
     second: Beamrider_1
+  - first:
+      213: -8811576461400624093
+    second: Beamrider_2
+  - first:
+      213: 8155275848936752366
+    second: Beamrider_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b6a3dac4e7806ff4c81936960986d553
+      spriteID: 3a584221adca48241b85e05043a5bb23
       internalID: -5394984561532799632
       vertices: []
       indices: 
@@ -140,10 +146,10 @@ TextureImporter:
       name: Beamrider_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +157,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4c8ee220e835c9c409388c48b83874b8
+      spriteID: 0130a763f885dc441a437982ef80ce6d
       internalID: 3899593100395734551
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Beamrider_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9aef4ef3c32deaa4caa945932afcbd79
+      internalID: -8811576461400624093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Beamrider_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7a3bababb3b102940bada340cc80fbf2
+      internalID: 8155275848936752366
       vertices: []
       indices: 
       edges: []
@@ -160,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 2b0937e37ed0d5a4288af52c33c2e115
+    spriteID: 6bd54695d37f0da41915273ab24db78e
     internalID: 0
     vertices: []
     indices: 

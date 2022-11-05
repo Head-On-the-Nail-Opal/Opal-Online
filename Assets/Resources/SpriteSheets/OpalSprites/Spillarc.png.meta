@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 1bea1c59bb7cf584bbeeda71aa310f85
+guid: aa1011eed66bf314ebe8f05fdfdada4a
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -14,78 +14,6 @@ TextureImporter:
   - first:
       213: -735561608736665751
     second: Spillarc_3
-  - first:
-      213: 1530070349827777623
-    second: Spillarc_4
-  - first:
-      213: 163632946976444507
-    second: Spillarc_5
-  - first:
-      213: 8246338941523624788
-    second: Spillarc_6
-  - first:
-      213: -7265458513331243362
-    second: Spillarc_7
-  - first:
-      213: 3548186370838912950
-    second: Spillarc_8
-  - first:
-      213: -597712369332048258
-    second: Spillarc_9
-  - first:
-      213: 1340202595890016354
-    second: Spillarc_10
-  - first:
-      213: -2905660388938739101
-    second: Spillarc_11
-  - first:
-      213: -3205698974742440312
-    second: Spillarc_12
-  - first:
-      213: -1736264571396016671
-    second: Spillarc_13
-  - first:
-      213: -6766100383265211830
-    second: Spillarc_14
-  - first:
-      213: -1554614350182088475
-    second: Spillarc_15
-  - first:
-      213: -8298217508068088520
-    second: Spillarc_16
-  - first:
-      213: 4612913945326137922
-    second: Spillarc_17
-  - first:
-      213: 2082061981956524763
-    second: Spillarc_18
-  - first:
-      213: 5617130818521905029
-    second: Spillarc_19
-  - first:
-      213: -8164308919729382470
-    second: Spillarc_20
-  - first:
-      213: 8915862619470897465
-    second: Spillarc_21
-  - first:
-      213: 7895403223899095435
-    second: Spillarc_22
-  - first:
-      213: 7130805947835978844
-    second: Spillarc_23
-  - first:
-      213: -1522716963939559808
-    second: Spillarc_24
-  - first:
-      213: -472144261624303512
-    second: Spillarc_25
-  - first:
-      213: 7672363263404634105
-    second: Spillarc_26
-  - first:
-      213: -2911761968264820848
-    second: Spillarc_27
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -198,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 4160
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -208,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 23259b5208f6a014383bb800855ba904
+      spriteID: 7687d07fe766fa74fbb5b8bd6c3ffea3
       internalID: 5724466356571714680
       vertices: []
       indices: 
@@ -218,10 +146,10 @@ TextureImporter:
       name: Spillarc_1
       rect:
         serializedVersion: 2
-        x: 832
-        y: 4160
-        width: 832
-        height: 832
+        x: 32
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -229,7 +157,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: eae16326597e10547a0f5f495d4f710b
+      spriteID: 9c8e137e00245af4e844bc5bbc9e0a0b
       internalID: 3246781316567798055
       vertices: []
       indices: 
@@ -239,10 +167,10 @@ TextureImporter:
       name: Spillarc_2
       rect:
         serializedVersion: 2
-        x: 1664
-        y: 4160
-        width: 832
-        height: 832
+        x: 64
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -250,7 +178,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 12ea0174b71d1b046b6e5e075b45ce10
+      spriteID: 0fb95f55fa32c4b4ea71264c55cb5804
       internalID: -1035978034292961468
       vertices: []
       indices: 
@@ -260,10 +188,10 @@ TextureImporter:
       name: Spillarc_3
       rect:
         serializedVersion: 2
-        x: 2496
-        y: 4160
-        width: 832
-        height: 832
+        x: 96
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -271,512 +199,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 12ea1701919743a478155eb143091ee2
+      spriteID: afa86a90015e0554b93314a16a6457b8
       internalID: -735561608736665751
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Spillarc_4
-      rect:
-        serializedVersion: 2
-        x: 3328
-        y: 4160
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b90b136186cce9f45bb43663fb8188c6
-      internalID: 1530070349827777623
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Spillarc_5
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 3328
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 1d587076bce74cc46a8a2a8e5d149c48
-      internalID: 163632946976444507
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Spillarc_6
-      rect:
-        serializedVersion: 2
-        x: 832
-        y: 3328
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e5964a4ea1a0d384481ed4355ca72c7e
-      internalID: 8246338941523624788
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Spillarc_7
-      rect:
-        serializedVersion: 2
-        x: 1664
-        y: 3328
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: dce11cfd0807bf44bb8ff6eb1d24f108
-      internalID: -7265458513331243362
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Spillarc_8
-      rect:
-        serializedVersion: 2
-        x: 2496
-        y: 3328
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: fae9a0718aac850428899bec3a1d38b9
-      internalID: 3548186370838912950
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Spillarc_9
-      rect:
-        serializedVersion: 2
-        x: 3328
-        y: 3328
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 68eda0ad5f849434a80ce6778be12c18
-      internalID: -597712369332048258
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Spillarc_10
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 2496
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 032ab5f6ee449c44298a1d5862fc3e68
-      internalID: 1340202595890016354
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Spillarc_11
-      rect:
-        serializedVersion: 2
-        x: 832
-        y: 2496
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f4dcbb1a0fdd7d941a5a24092ea3a043
-      internalID: -2905660388938739101
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Spillarc_12
-      rect:
-        serializedVersion: 2
-        x: 1664
-        y: 2496
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e31b08046ab07304f8747b21c77fa91b
-      internalID: -3205698974742440312
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Spillarc_13
-      rect:
-        serializedVersion: 2
-        x: 2496
-        y: 2496
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 1427036abec74304884a9afa41d83a9d
-      internalID: -1736264571396016671
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Spillarc_14
-      rect:
-        serializedVersion: 2
-        x: 3328
-        y: 2496
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4e739e2756c35114397e34a49edf0e49
-      internalID: -6766100383265211830
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Spillarc_15
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 1664
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: fce056f673ada13438f518191d71d36c
-      internalID: -1554614350182088475
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Spillarc_16
-      rect:
-        serializedVersion: 2
-        x: 832
-        y: 1664
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b160a21c30dda604b97483ee44bb3666
-      internalID: -8298217508068088520
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Spillarc_17
-      rect:
-        serializedVersion: 2
-        x: 1664
-        y: 1664
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 849b15cc3a710b04f987a48b213f3841
-      internalID: 4612913945326137922
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Spillarc_18
-      rect:
-        serializedVersion: 2
-        x: 2496
-        y: 1664
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 22af849e17064874f86bb40471f70c2e
-      internalID: 2082061981956524763
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Spillarc_19
-      rect:
-        serializedVersion: 2
-        x: 3328
-        y: 1664
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d5143b6b04beeb640a9cb1784b9f0da8
-      internalID: 5617130818521905029
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Spillarc_20
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 832
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3e140e31e73dd8b4aa2ede297fa4372e
-      internalID: -8164308919729382470
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Spillarc_21
-      rect:
-        serializedVersion: 2
-        x: 832
-        y: 832
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 74744ca2551d85f4d9cbf178a784fae2
-      internalID: 8915862619470897465
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Spillarc_22
-      rect:
-        serializedVersion: 2
-        x: 1664
-        y: 832
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 67e37626c48be9c488cafbb32530e1f6
-      internalID: 7895403223899095435
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Spillarc_23
-      rect:
-        serializedVersion: 2
-        x: 2496
-        y: 832
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3bcaaeb28bd09aa47a7cae01506d9b65
-      internalID: 7130805947835978844
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Spillarc_24
-      rect:
-        serializedVersion: 2
-        x: 3328
-        y: 832
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 579a0b366411d8f43b7685bbeef4e011
-      internalID: -1522716963939559808
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Spillarc_25
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a3ae6f51ff032b44cac99c6b84e18a1f
-      internalID: -472144261624303512
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Spillarc_26
-      rect:
-        serializedVersion: 2
-        x: 832
-        y: 0
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 20f57947bd01baf4d9717bfeb56cf235
-      internalID: 7672363263404634105
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Spillarc_27
-      rect:
-        serializedVersion: 2
-        x: 1664
-        y: 0
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 49b77402c8cffdf438d597550db73a54
-      internalID: -2911761968264820848
       vertices: []
       indices: 
       edges: []
@@ -784,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 8bc1064ea744c524cbe70d038a64a842
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 

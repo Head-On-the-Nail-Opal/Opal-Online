@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 231ef992569f0b942868ccf896ad08b3
+guid: 01a7d1d47ed02da4a99dbdda20694b4f
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -14,42 +14,6 @@ TextureImporter:
   - first:
       213: 2463393672764272341
     second: Sentree_3
-  - first:
-      213: -4239863218669373130
-    second: Sentree_4
-  - first:
-      213: -521459412561878891
-    second: Sentree_5
-  - first:
-      213: -8602290537426542978
-    second: Sentree_6
-  - first:
-      213: 3043884706120558531
-    second: Sentree_7
-  - first:
-      213: 2241710797323987025
-    second: Sentree_8
-  - first:
-      213: 6781381599192287598
-    second: Sentree_9
-  - first:
-      213: 1125899761782223280
-    second: Sentree_10
-  - first:
-      213: 6348584145973427332
-    second: Sentree_11
-  - first:
-      213: -2190941967157865275
-    second: Sentree_12
-  - first:
-      213: 6027442222738342711
-    second: Sentree_13
-  - first:
-      213: 2208270150807115816
-    second: Sentree_14
-  - first:
-      213: -3365697717664200741
-    second: Sentree_15
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -162,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 2496
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -172,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7641b111e48cabb4fb6452d8a989ad53
+      spriteID: e7b5222bff38bd248a8980549789c187
       internalID: -3610504181026090429
       vertices: []
       indices: 
@@ -182,10 +146,10 @@ TextureImporter:
       name: Sentree_1
       rect:
         serializedVersion: 2
-        x: 832
-        y: 2496
-        width: 832
-        height: 832
+        x: 32
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -193,7 +157,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3749bf4de715fa949ba00108fb5d902e
+      spriteID: 744ac6d7544cd424bbb9f682e743ce1a
       internalID: 8195616668351168139
       vertices: []
       indices: 
@@ -203,10 +167,10 @@ TextureImporter:
       name: Sentree_2
       rect:
         serializedVersion: 2
-        x: 1664
-        y: 2496
-        width: 832
-        height: 832
+        x: 64
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -214,7 +178,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f5435f925d05a004eb54d82033934fc8
+      spriteID: 6db90e4e4f02e9541870a084a2f92b5a
       internalID: 7292553496019803241
       vertices: []
       indices: 
@@ -224,10 +188,10 @@ TextureImporter:
       name: Sentree_3
       rect:
         serializedVersion: 2
-        x: 2496
-        y: 2496
-        width: 832
-        height: 832
+        x: 96
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -235,260 +199,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9570e7fee8d80054686ca14313766a10
+      spriteID: 562d9c33d4ee2274e95707c018c666a8
       internalID: 2463393672764272341
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Sentree_4
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 1664
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 956d8e57da341414ea547be8c27a2ca1
-      internalID: -4239863218669373130
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Sentree_5
-      rect:
-        serializedVersion: 2
-        x: 832
-        y: 1664
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 839bb72cdca74fc46a32e138193fb970
-      internalID: -521459412561878891
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Sentree_6
-      rect:
-        serializedVersion: 2
-        x: 1664
-        y: 1664
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 05085798f2700844eb4172e75da21ba5
-      internalID: -8602290537426542978
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Sentree_7
-      rect:
-        serializedVersion: 2
-        x: 2496
-        y: 1664
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 1e16f1fc7b36940439bdd4975586021e
-      internalID: 3043884706120558531
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Sentree_8
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 832
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8fba04a8a3451c44ba01258f3c08fddf
-      internalID: 2241710797323987025
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Sentree_9
-      rect:
-        serializedVersion: 2
-        x: 832
-        y: 832
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: de02adba498852744a843560a90202d6
-      internalID: 6781381599192287598
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Sentree_10
-      rect:
-        serializedVersion: 2
-        x: 1664
-        y: 832
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bc2378e3b4f4276478ce341cee9a94ac
-      internalID: 1125899761782223280
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Sentree_11
-      rect:
-        serializedVersion: 2
-        x: 2496
-        y: 832
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3c98c2020d609894b920258ffbe9eb88
-      internalID: 6348584145973427332
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Sentree_12
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3834c48c880307143a91505eb4599e3a
-      internalID: -2190941967157865275
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Sentree_13
-      rect:
-        serializedVersion: 2
-        x: 832
-        y: 0
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3e1395567b10f4f419fe888886c7e9aa
-      internalID: 6027442222738342711
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Sentree_14
-      rect:
-        serializedVersion: 2
-        x: 1664
-        y: 0
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 1c4a246fd6bf77b49bbefa8ab07a22d9
-      internalID: 2208270150807115816
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Sentree_15
-      rect:
-        serializedVersion: 2
-        x: 2496
-        y: 0
-        width: 832
-        height: 832
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 019d425cd769e6041839d2656af070ab
-      internalID: -3365697717664200741
       vertices: []
       indices: 
       edges: []
@@ -496,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: e7c16a711c6666f4ead08ddc266a85e1
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 

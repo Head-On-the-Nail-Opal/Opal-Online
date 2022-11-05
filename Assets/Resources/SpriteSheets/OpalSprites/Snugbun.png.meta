@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 920d5bd4529125a45a82bceed907b038
+guid: b463718d27188b940b252319eb74bbcb
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,12 @@ TextureImporter:
   - first:
       213: 3751798882416124592
     second: Snugbun_1
+  - first:
+      213: 7505374228789250645
+    second: Snugbun_2
+  - first:
+      213: 7579000580321910114
+    second: Snugbun_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f8d42f041194f2842aa4f0c57cd874a6
+      spriteID: 32d4c876f91923c41a1f1190fd250f7f
       internalID: -432139567661483547
       vertices: []
       indices: 
@@ -140,10 +146,10 @@ TextureImporter:
       name: Snugbun_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +157,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a3ced8fa88c5a9d4a832071702de092e
+      spriteID: 3be86b92588d84040b797ac32edb7d1d
       internalID: 3751798882416124592
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Snugbun_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e0d6cf78c1dad6f48b7858480cf5fefc
+      internalID: 7505374228789250645
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Snugbun_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6521c11d8bd920740b3dc85decf066cd
+      internalID: 7579000580321910114
       vertices: []
       indices: 
       edges: []
@@ -160,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: e32cc1f0ff7ed1742bcba097b27a07d0
+    spriteID: c2d309049b184c641b628b01cdecfbb6
     internalID: 0
     vertices: []
     indices: 

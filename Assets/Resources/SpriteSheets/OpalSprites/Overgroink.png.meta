@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 6a8a002cb59f2f247a9f67be12936250
+guid: b751abaa0683cdf41bb74997bc409567
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -8,6 +8,12 @@ TextureImporter:
   - first:
       213: 9107009409561396998
     second: Overgroink_1
+  - first:
+      213: 7353016953985870180
+    second: Overgroink_2
+  - first:
+      213: 8019846361799903602
+    second: Overgroink_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -120,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 832
-        width: 832
-        height: 832
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,7 +136,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ce0559bdeaab3304c802b1cd5653fc40
+      spriteID: a172da1c184b6b643b07fd7b438dfcf3
       internalID: 6509633054368952185
       vertices: []
       indices: 
@@ -140,10 +146,10 @@ TextureImporter:
       name: Overgroink_1
       rect:
         serializedVersion: 2
-        x: 0
+        x: 32
         y: 0
-        width: 832
-        height: 832
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,8 +157,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 57631a209ff8a4e458625fc508020381
+      spriteID: 99d936ec8456b264eba5f424d7e10715
       internalID: 9107009409561396998
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Overgroink_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c4ca9e241b9be744f828df43a4e9d0a2
+      internalID: 7353016953985870180
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Overgroink_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 479b987529ab8ab40bd3bf4d1f58cec2
+      internalID: 8019846361799903602
       vertices: []
       indices: 
       edges: []
@@ -160,7 +208,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 5b938b3967c94d84d986eac647558666
+    spriteID: 425baf0f4426a334c986c426441c931f
     internalID: 0
     vertices: []
     indices: 
