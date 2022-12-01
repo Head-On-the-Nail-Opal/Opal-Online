@@ -1,12 +1,18 @@
 fileFormatVersion: 2
 guid: abbc8ceb2b9807749b11d3cab05b4a66
 TextureImporter:
-  fileIDToRecycleName:
-    21300000: Flowers_0
-    21300002: Flowers_1
-    21300004: Flowers_2
+  internalIDToNameTable:
+  - first:
+      213: 21300000
+    second: Flowers_0
+  - first:
+      213: 21300002
+    second: Flowers_1
+  - first:
+      213: 21300004
+    second: Flowers_2
   externalObjects: {}
-  serializedVersion: 5
+  serializedVersion: 11
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -24,6 +30,8 @@ TextureImporter:
     heightScale: 0.25
     normalMapFilter: 0
   isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -32,12 +40,12 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: -1
-    aniso: -1
-    mipBias: -1
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
     wrapU: 1
     wrapV: 1
-    wrapW: -1
+    wrapW: 0
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -58,8 +66,9 @@ TextureImporter:
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  applyGammaDecoding: 1
   platformSettings:
-  - serializedVersion: 2
+  - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -70,7 +79,8 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-  - serializedVersion: 2
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 3
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -81,7 +91,8 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-  - serializedVersion: 2
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 3
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -92,6 +103,7 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -111,6 +123,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 1874f757c6cdb774fbe2804df67ad691
+      internalID: 21300000
       vertices: []
       indices: 
       edges: []
@@ -131,6 +144,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 35836f688c587ae4ca1042b7eb59473f
+      internalID: 21300002
       vertices: []
       indices: 
       edges: []
@@ -151,6 +165,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 657639ff08b725047b100b2195d7bc20
+      internalID: 21300004
       vertices: []
       indices: 
       edges: []
@@ -159,11 +174,15 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 89b569a8f6ce0c644932aa1f0213cc89
+    internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
+    secondaryTextures: []
   spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

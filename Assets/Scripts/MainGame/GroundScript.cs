@@ -98,6 +98,10 @@ public class GroundScript : MonoBehaviour {
 
     public Vocabulary vocab;
 
+    private GroundScript AIBoard;
+    private bool secondary = false;
+    private bool madeBoard = false;
+
     private void Awake()
     {
         me = this;
@@ -182,10 +186,16 @@ public class GroundScript : MonoBehaviour {
         }
     }
 
+    public void setSecondary(bool s)
+    {
+        secondary = s;
+    }
+
     public void Update()
     {
         if(!setUp && glob.getMult() && mm.getTeamOne() != "" && mm.getTeamTwo() != "" && (numTeams < 3 || mm.getTeamThree() != "") && (numTeams < 4 || mm.getTeamFour() != ""))
         {
+           
             print(mm.getTeamOne() + " vs " + mm.getTeamTwo());
             setUp = true;
             
@@ -425,6 +435,13 @@ public class GroundScript : MonoBehaviour {
         {
             t.updateConnection();
             t.setRandomDecor();
+        }
+        foreach(OpalScript o in gameOpals)
+        {
+            if(glob.getOverload(o.getTeam()).Contains(o.getMainType()) || glob.getOverload(o.getTeam()).Contains(o.getSecondType()))
+            {
+                o.setOverloaded(true);
+            }
         }
         setUpSurroundings();
         sortOpals(gameOpals);

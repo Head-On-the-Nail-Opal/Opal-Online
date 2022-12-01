@@ -167,14 +167,18 @@ public class MainMenuScript : MonoBehaviour {
                     switch (numTeams) {
                         case 2:
                             glob.setTeams(activeTeams[0], activeTeams[1], null, null);
+                            glob.setOverloads(calculateTypeOverload(activeTeams[0]), calculateTypeOverload(activeTeams[1]), null, null);
                             break;
                         case 3:
                             glob.setTeams(activeTeams[0], activeTeams[1], activeTeams[2], null);
+                            glob.setOverloads(calculateTypeOverload(activeTeams[0]), calculateTypeOverload(activeTeams[1]), calculateTypeOverload(activeTeams[2]), null);
                             break;
                         case 4:
                             glob.setTeams(activeTeams[0], activeTeams[1], activeTeams[2], activeTeams[3]);
+                            glob.setOverloads(calculateTypeOverload(activeTeams[0]), calculateTypeOverload(activeTeams[1]), calculateTypeOverload(activeTeams[2]), calculateTypeOverload(activeTeams[3]));
                             break;
                     }
+                    
                     UnityEngine.SceneManagement.SceneManager.LoadScene("MainGame", UnityEngine.SceneManagement.LoadSceneMode.Single);
                 }
             }
@@ -2127,5 +2131,59 @@ public class MainMenuScript : MonoBehaviour {
     private string getRandomOpalName()
     {
         return allOpals[Random.Range(0,allOpals.Length)].getMyName();
+    }
+
+    public List<string> calculateTypeOverload(List<OpalScript> opals)
+    {
+        if (opals == null)
+            return null;
+        Dictionary<string, int> typeFrequency = new Dictionary<string, int>();
+        List<string> allTypes = new List<string>();
+
+        foreach (OpalScript o in opals)
+        {
+            if (typeFrequency.ContainsKey(o.getMainType()))
+            {
+                typeFrequency[o.getMainType()] += 2;
+            }
+            else
+            {
+                typeFrequency.Add(o.getMainType(), 2);
+            }
+
+            if (typeFrequency.ContainsKey(o.getSecondType()))
+            {
+                if (o.getMainType() != o.getSecondType())
+                {
+                    typeFrequency[o.getSecondType()] += 1;
+                }
+            }
+            else
+            {
+                if(o.getMainType() != o.getSecondType())
+                {
+                    typeFrequency.Add(o.getSecondType(), 1);
+                }
+            }
+
+            if (!allTypes.Contains(o.getMainType()))
+            {
+                allTypes.Add(o.getMainType());
+            }
+            if (!allTypes.Contains(o.getSecondType()))
+            {
+                allTypes.Add(o.getSecondType());
+            }
+        }
+        List<string> overloads = new List<string>();
+        foreach(string s in allTypes)
+        {
+            if(typeFrequency[s] > 5)
+            {
+                if(!overloads.Contains(s))
+                    overloads.Add(s);
+            }
+        }
+        return overloads;
     }
 }

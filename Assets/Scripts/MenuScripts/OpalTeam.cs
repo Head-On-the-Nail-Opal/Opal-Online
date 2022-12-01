@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class OpalTeam : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class OpalTeam : MonoBehaviour
     private BoxCollider2D bC;
     private GameObject palPlate;
     private GameObject actualPalPlate;
+    public Text dangerText;
+    private bool expanded = false;
     // Start is called before the first frame update
     void Awake()
     {
@@ -71,9 +74,10 @@ public class OpalTeam : MonoBehaviour
         }
         bc.size = new Vector2(1f, 1f);
         //bc.offset = new Vector2(-(3f*1.2f-num*1.2f)-(num*1.2f)/2, 0);
-        bc.offset = new Vector2(-3, 0); ;
+        bc.offset = new Vector2(-3, 0); 
         displayTeamTypes(true);
         displayPal(true);
+        setLimitations();
     }
 
     private void displayTeamTypes(bool show)
@@ -190,10 +194,12 @@ public class OpalTeam : MonoBehaviour
 
     private void expand(bool over)
     {
+        expanded = over;
         if (over)
         {
             displayTeamTypes(false);
             displayPal(false);
+            
             int i = 0;
             foreach (OpalScript o in opals)
             {
@@ -243,6 +249,7 @@ public class OpalTeam : MonoBehaviour
             displayTeamTypes(true);
             displayPal(true);
         }
+        setLimitations();
     }
 
     private void OnMouseOver()
@@ -285,6 +292,28 @@ public class OpalTeam : MonoBehaviour
             Destroy(g.gameObject);
         }
         backgrounds.Clear();
+        Destroy(dangerText);
         Destroy(gameObject);
+    }
+
+    private void setLimitations()
+    {
+        List<string> types = mms.calculateTypeOverload(opals);
+        if(types.Count > 0)
+        {
+            int i = 0;
+            foreach(OpalScript o in opals)
+            {
+                if(types.Contains(o.getMainType()) || types.Contains(o.getSecondType()) || (!expanded && i == backgrounds.Count-1)){
+                    backgrounds[i].GetComponent<SpriteRenderer>().color = Color.red;
+                }
+                i++;
+            }
+            dangerText.text = "DANGER: TYPE OVERLOAD\nUNSTABLE OPALS LOSE FIRST TURN";
+        }
+        else
+        {
+            dangerText.text = "";
+        }
     }
 }

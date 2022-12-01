@@ -1058,8 +1058,8 @@ public class CursorScript : MonoBehaviour {
             return;
         }
         if(roundNum > 0)
-            checkWin(); 
-        if (selectedPlayer.getSkipTurn())
+            checkWin();
+        if (selectedPlayer.getSkipTurn() || (selectedPlayer.getOverloaded() && roundNum == 1))
         {
             //selectedPlayer.setSkipTurn(false);
             nextTurn();

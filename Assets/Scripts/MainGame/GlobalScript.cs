@@ -10,6 +10,11 @@ public class GlobalScript : MonoBehaviour {
     private List<OpalScript> greenTeam = new List<OpalScript>();
     private List<OpalScript> orangeTeam = new List<OpalScript>();
 
+    private List<string> redOverloads = new List<string>();
+    private List<string> blueOverloads = new List<string>();
+    private List<string> greenOverloads = new List<string>();
+    private List<string> orangeOverloads = new List<string>();
+
 
     private string blueController;
     private string redController;
@@ -74,6 +79,14 @@ public class GlobalScript : MonoBehaviour {
         //blueTeam = bT;
     }
 
+    public void setOverloads(List<string> rOverloads, List<string> bOverloads, List<string> gOverloads, List<string> oOverloads)
+    {
+        redOverloads = rOverloads;
+        blueOverloads = bOverloads;
+        greenOverloads = gOverloads;
+        orangeOverloads = oOverloads;
+    }
+
     public void setNumPlayers(int np)
     {
         //print("wow!");
@@ -92,6 +105,22 @@ public class GlobalScript : MonoBehaviour {
         redController = red;
         greenController = green;
         orangeController = orange;
+    }
+
+    public List<string> getOverload(string team)
+    {
+        switch (team)
+        {
+            case "Red":
+                return redOverloads;
+            case "Blue":
+                return blueOverloads;
+            case "Green":
+                return greenOverloads;
+            case "Orange":
+                return orangeOverloads;
+        }
+        return null;
     }
 
     public List<OpalScript> getBlueTeam()

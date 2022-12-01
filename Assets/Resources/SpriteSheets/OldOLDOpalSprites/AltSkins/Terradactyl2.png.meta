@@ -1,13 +1,21 @@
 fileFormatVersion: 2
 guid: b2cbb45a40d787141a6efd217c4a0a9e
 TextureImporter:
-  fileIDToRecycleName:
-    21300000: Terradactyl2_0
-    21300002: Terradactyl2_1
-    21300004: Terradactyl2_2
-    21300006: Terradactyl2_3
+  internalIDToNameTable:
+  - first:
+      213: 21300000
+    second: Terradactyl2_0
+  - first:
+      213: 21300002
+    second: Terradactyl2_1
+  - first:
+      213: 21300004
+    second: Terradactyl2_2
+  - first:
+      213: 21300006
+    second: Terradactyl2_3
   externalObjects: {}
-  serializedVersion: 5
+  serializedVersion: 11
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -25,6 +33,8 @@ TextureImporter:
     heightScale: 0.25
     normalMapFilter: 0
   isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -33,12 +43,12 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: -1
-    aniso: -1
-    mipBias: -1
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
     wrapU: 1
     wrapV: 1
-    wrapW: -1
+    wrapW: 0
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -59,8 +69,9 @@ TextureImporter:
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  applyGammaDecoding: 1
   platformSettings:
-  - serializedVersion: 2
+  - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -71,7 +82,8 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-  - serializedVersion: 2
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 3
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -82,7 +94,8 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-  - serializedVersion: 2
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 3
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -93,6 +106,7 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -112,6 +126,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: c4569d8e03ac4d44fafb9d69e3e5e5fb
+      internalID: 21300000
       vertices: []
       indices: 
       edges: []
@@ -132,6 +147,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 292f3a2b2a0aac6409ebc700d2874662
+      internalID: 21300002
       vertices: []
       indices: 
       edges: []
@@ -152,6 +168,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 0c032eecc6d15364b8c95f62e2c1c256
+      internalID: 21300004
       vertices: []
       indices: 
       edges: []
@@ -172,6 +189,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 35c881a809c69344387ef3f8ae8300cf
+      internalID: 21300006
       vertices: []
       indices: 
       edges: []
@@ -180,11 +198,15 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 6428dcf71742ca94cabc3da8102a0e56
+    internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
+    secondaryTextures: []
   spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

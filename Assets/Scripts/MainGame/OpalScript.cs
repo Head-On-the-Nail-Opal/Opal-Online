@@ -132,6 +132,8 @@ abstract public class OpalScript : MonoBehaviour {
 
     protected bool pauseFrame = false;
 
+    private bool overloaded = false;
+
     private void Awake()
     {
         GameObject board = GameObject.Find("Main Camera");
@@ -915,6 +917,16 @@ abstract public class OpalScript : MonoBehaviour {
     public int getID()
     {
         return matchID;
+    }
+
+    public void setOverloaded(bool o)
+    {
+        overloaded = o;
+    }
+
+    public bool getOverloaded()
+    {
+        return overloaded;
     }
 
     public void showSpot(bool show)
