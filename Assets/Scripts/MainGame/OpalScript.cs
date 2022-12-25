@@ -2559,7 +2559,8 @@ abstract public class OpalScript : MonoBehaviour {
         }
         else if(!flooded && flood)
         {
-            currentTile.callParticleEffect("Minisplash");
+            if(currentTile != null)
+                currentTile.callParticleEffect("Minisplash");
             flooded = true;
             
         }
@@ -3005,7 +3006,6 @@ abstract public class OpalScript : MonoBehaviour {
         {
             if (o.GetType() == oplet.GetType() && o.getDead() != true && o.getTeam() == getTeam())
             {
-                //print("du hello");
                 minionCount++;
             }
         }
@@ -3096,6 +3096,11 @@ abstract public class OpalScript : MonoBehaviour {
     public bool getTidal()
     {
         return tidal;
+    }
+
+    public int getMinionCount()
+    {
+        return minionCount;
     }
 
     public virtual void onDeathTile(TileScript t)

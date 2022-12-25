@@ -36,6 +36,10 @@ public class Hearthhog : OpalScript {
         Attacks[3] = new Attack("Flame Shield", 0, 1, 0, "Gain +1 defense for each point of attack you have, for 1 turn.");
         type1 = "Fire";
         type2 = "Fire";
+
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Cautious", 1, 3), new Behave("Line-Up", 1, 5),
+            new Behave("Safety", 0,1), new Behave("Hot-Headed", 0, 10) });
     }
 
     public override void onStart()
@@ -187,6 +191,10 @@ public class Hearthhog : OpalScript {
         {
             return 0;
         }
+        else if (attackNum == 3)
+        {
+            return 0;
+        }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
     }
 
@@ -201,5 +209,40 @@ public class Hearthhog : OpalScript {
             return 0;
         }
         return -1;
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (atNum == 0)
+        {
+            return false;
+        }
+        else if (atNum == 1)
+        {
+            if((useAdjacentToOpal(target, true) && currentTile.type == "Fire") || (target.currentPlayer != null && target.currentPlayer.getTeam() != getTeam()))
+            {
+                return true;
+            }
+        }
+        else if (atNum == 2)
+        {
+            int total = 0;
+            foreach(TileScript t in getSurroundingTiles(true))
+            {
+                if (t.type == "Fire")
+                    total++;
+            }
+            return total < 3;
+        }
+        else if (atNum == 3)
+        {
+            return false;
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
+        return 3;
     }
 }

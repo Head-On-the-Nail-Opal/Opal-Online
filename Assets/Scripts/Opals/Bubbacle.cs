@@ -35,6 +35,10 @@ public class Bubbacle : OpalScript
         type1 = "Water";
         type2 = "Water";
         og = true;
+
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Cautious", 1, 3), new Behave("Line-Up", 1, 5),
+            new Behave("Safety", 0,1) });
     }
 
     public override void onDamage(int dam)
@@ -126,5 +130,44 @@ public class Bubbacle : OpalScript
             return target.currentPlayer.getEnchantmentValue("Bubbled");
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (atNum == 0)
+        {
+            return false;
+        }
+        else if (atNum == 1)
+        {
+            if (target.currentPlayer != null && target.currentPlayer.getTeam() != getTeam())
+            {
+                return true;
+            }
+        }
+        else if (atNum == 2)
+        {
+            if (target.currentPlayer != null && target.currentPlayer.getTeam() != getTeam() && getDefense() > 8)
+            {
+                return true;
+            }
+        }
+        else if (atNum == 3)
+        {
+            int result = 0;
+            foreach (OpalScript o in boardScript.gameOpals)
+            {
+                if (o.getEnchantmentValue("Bubbled") > 0)
+                    result += 1;
+            }
+            if (result > 2)
+                return true;
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
+        return 4;
     }
 }

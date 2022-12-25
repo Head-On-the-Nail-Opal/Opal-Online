@@ -43,7 +43,7 @@ public class Duplimorph : OpalScript
 
         getSpeciesPriorities().AddRange(new List<Behave>{
             new Behave("Weasely", 1, 4),
-            new Behave("Acrophobic", 0,1) });
+            new Behave("Safety", 0, 1) });
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -147,7 +147,7 @@ public class Duplimorph : OpalScript
     {
         if (atNum == 0)
         {
-            if (health > 7 && minionCount < 4 && !boardScript.myCursor.tileIsFalling((int)target.getPos().x, (int)target.getPos().z)) //needs to check better
+            if (health > 7 && canSpawnOplet() && !boardScript.myCursor.tileIsFalling((int)target.getPos().x, (int)target.getPos().z)) //needs to check better
                 return true;
         }
         else if (atNum == 1 && !useAdjacentToOpal(target, true))
@@ -172,5 +172,16 @@ public class Duplimorph : OpalScript
     public override int getMaxRange()
     {
         return 1;
+    }
+
+    private bool canSpawnOplet()
+    {
+        foreach(OpalScript o in boardScript.gameOpals)
+        {
+            if (o.getTeam() == getTeam() && o.getMyName() == "Duplimorph")
+                if (o.getMinionCount() == 4)
+                    return false;
+        }
+        return true;
     }
 }

@@ -39,7 +39,7 @@ public class Ambush : OpalScript {
 
         getSpeciesPriorities().AddRange(new List<Behave>{ 
             new Behave("Cautious", 1, 3), new Behave("Ambush", 1, 10),
-            new Behave("Acrophobic", 0,1), new Behave("Green-Thumb", 0, 5) });
+            new Behave("Safety", 0,1), new Behave("Green-Thumb", 0, 5) });
         getSpeciesAwareness().AddRange(new List<Behave> { new Behave("Ambush-Wary", 0, 1) });
     }
 
@@ -203,7 +203,7 @@ public class Ambush : OpalScript {
         }
         else if(atNum == 1)
         {
-            if(useAdjacentToOpal(target, true) && target.type != "Growth" && !useAdjacentToOpal(currentTile, true) && target.currentPlayer == null && !boardScript.myCursor.tileIsFalling((int)target.getPos().x, (int)target.getPos().z))
+            if(useAdjacentToOpal(target, true) && target.type == "Grass" && !useAdjacentToOpal(currentTile, true) && target.currentPlayer == null && !boardScript.myCursor.tileIsFalling((int)target.getPos().x, (int)target.getPos().z))
             {
                 return true;
             }

@@ -82,16 +82,19 @@ public class OpalBrain : MonoBehaviour
         float max = Mathf.NegativeInfinity;
         for (int i = 0; i < possibleTargets.Count; i++)
         {
-            targetScore.Add(calculateScore(mainGame.tileGrid, mainGame.tileGrid[(int)possibleTargets[i].x, (int)possibleTargets[i].y]));
-            if (targetScore[i] > max)
+            if (possibleTargets[i].x < 10 && possibleTargets[i].x > -1 && possibleTargets[i].y < 10 && possibleTargets[i].y > -1)
             {
-                max = targetScore[i];
-                bestTargets.Clear();
-                bestTargets.Add(possibleTargets[i]);
-            }
-            else if (targetScore[i] == max)
-            {
-                bestTargets.Add(possibleTargets[i]);
+                targetScore.Add(calculateScore(mainGame.tileGrid, mainGame.tileGrid[(int)possibleTargets[i].x, (int)possibleTargets[i].y]));
+                if (targetScore[i] > max)
+                {
+                    max = targetScore[i];
+                    bestTargets.Clear();
+                    bestTargets.Add(possibleTargets[i]);
+                }
+                else if (targetScore[i] == max)
+                {
+                    bestTargets.Add(possibleTargets[i]);
+                }
             }
         }
         if (bestTargets.Count != 0)
@@ -225,6 +228,9 @@ public class OpalBrain : MonoBehaviour
                     case "Acrophobic":
                         output += doAcrophobic(t) * b.getIntensity();
                         break;
+                    case "Safety":
+                        output += doSafety(t) * b.getIntensity();
+                        break;
                     case "Close-Combat":
                         output += doCloseCombat(t) * b.getIntensity();
                         break;
@@ -236,6 +242,12 @@ public class OpalBrain : MonoBehaviour
                         break;
                     case "Weasely":
                         output += doWeasely(t) * b.getIntensity();
+                        break;
+                    case "Hot-Headed":
+                        output += doHotHeaded(t) * b.getIntensity();
+                        break;
+                    case "Line-Up":
+                        output += doLineUp(t) * b.getIntensity();
                         break;
                 }
             }
@@ -302,6 +314,13 @@ public class OpalBrain : MonoBehaviour
         return 0;
     }
 
+    private int doHotHeaded(TileScript t)
+    {
+        if (t.type == "Fire")
+            return 1;
+        return 0;
+    }
+
     private int doAmbush(TileScript t)
     {
         if(t.type == "Growth")
@@ -317,25 +336,67 @@ public class OpalBrain : MonoBehaviour
 
     private int doWeasely(TileScript target)
     {
-        int mult = -1;
-        if(myCursor.getCurrentOpal().getAttack() < 10 || myCursor.getCurrentOpal().getHealth() < 4)
+
+        if (myCursor.getCurrentOpal().getAttack() < 10 || myCursor.getCurrentOpal().getHealth() < 4)
         {
-            mult = 1;
+            return doCloseCombat(target);
+        }
+        else
+        {
+            return doCautious(target);
+        }
+    }
+
+    private int doSafety(TileScript target)
+    {
+        int output = 0;
+        output += doAcrophobic(target);
+
+        if(myCursor.getCurrentOpal().getMainType() != "Fire" && myCursor.getCurrentOpal().getSecondType() != "Fire")
+        {
+            if (target.type == "Fire")
+                output -= 15;
         }
 
-        int output = 0;
-        foreach (TileScript t in mainGame.tileGrid)
+        if (myCursor.getCurrentOpal().getMainType() != "Plague" && myCursor.getCurrentOpal().getSecondType() != "Plague")
         {
-            if (t.getCurrentOpal() != null && t.getCurrentOpal().getTeam() != myCursor.getCurrentOpal().getTeam())
+            if (target.type == "Miasma")
+                output -= 15;
+        }
+
+        if (myCursor.getCurrentOpal().getPoison())
+            if (target.type == "Growth")
+                output += 10;
+
+        if (myCursor.getCurrentOpal().getBurning())
+            if (target.type == "Flood")
+                output += 10;
+        return output;
+    }
+
+    private int doLineUp(TileScript target)
+    {
+        int output = 0;
+        for(int i = -3; i < 4; i++)
+        {
+            if (target.getPos().x + i > -1 && target.getPos().x + i < 10)
             {
-                int range = t.getCurrentOpal().getMaxRange() + t.getCurrentOpal().getSpeed();
-                if ((int)(Mathf.Abs(target.getPos().x - t.getPos().x) + Mathf.Abs(target.getPos().z - t.getPos().z)) - range > 0)
-                    output +=  -(int)(Mathf.Abs(target.getPos().x - t.getPos().x) + Mathf.Abs(target.getPos().z - t.getPos().z));
-                else
-                    output += (int)(Mathf.Abs(target.getPos().x - t.getPos().x) + Mathf.Abs(target.getPos().z - t.getPos().z)) - range;
+                TileScript t = mainGame.tileGrid[(int)target.getPos().x + i, (int)target.getPos().z];
+                if(t.currentPlayer != null && t.currentPlayer.getTeam() != mainGame.getCurrentOpal().getTeam())
+                {
+                    output += 2;
+                }
+            }
+            if (target.getPos().z + i > -1 && target.getPos().z + i < 10)
+            {
+                TileScript t = mainGame.tileGrid[(int)target.getPos().x, (int)target.getPos().z + i];
+                if (t.currentPlayer != null && t.currentPlayer.getTeam() != mainGame.getCurrentOpal().getTeam())
+                {
+                    output += 2;
+                }
             }
         }
-        return output * mult;
+        return output;
     }
 
     public IEnumerator doStateBasedMove()
