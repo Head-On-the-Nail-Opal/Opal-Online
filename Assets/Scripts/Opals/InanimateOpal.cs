@@ -34,7 +34,7 @@ public class InanimateOpal : OpalScript
         speed = 0;
         priority = 0;
         myName = "Boulder";
-        transform.localScale = new Vector3(0.12f, 0.12f, 1);
+        transform.localScale = new Vector3(0.3f, 0.3f, 1);
         ///transform.position = new Vector3(transform.position.x + 0.3f, transform.position.y-0.3f, transform.position.z - 0.3f);
         //offsetX = 0.6f;
         offsetY = -0.2f;

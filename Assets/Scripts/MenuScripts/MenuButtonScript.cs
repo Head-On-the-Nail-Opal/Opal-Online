@@ -11,6 +11,7 @@ public class MenuButtonScript : MonoBehaviour {
     //private Material hover;
     public Sprite unpressedS;
     public Sprite pressedS;
+    public bool toggle = false;
     public string setMenuState;
     private GameObject mainCam;
     private MainMenuScript main;
@@ -84,7 +85,11 @@ public class MenuButtonScript : MonoBehaviour {
         //rend.material = pressed;
         if (pressedS != null)
         {
-            sR.sprite = pressedS;
+            if (toggle && sR.sprite == pressedS)
+                sR.sprite = unpressedS;
+            else 
+                sR.sprite = pressedS;
+
         }
         else
         {
@@ -178,7 +183,8 @@ public class MenuButtonScript : MonoBehaviour {
         //rend.material = hover;
         if (pressedS != null)
         {
-            sR.sprite = pressedS;
+            if (!toggle)
+                sR.sprite = pressedS;
         }
         else
         {
@@ -219,7 +225,10 @@ public class MenuButtonScript : MonoBehaviour {
         //rend.material = unpressed;
         if(unpressedS != null)
         {
-            sR.sprite = unpressedS;
+            if(!toggle)
+                sR.sprite = unpressedS;
+            else
+                sR.color += new Color(0.1f, 0.1f, 0.1f, 0);
         }
         else
         {
@@ -232,6 +241,29 @@ public class MenuButtonScript : MonoBehaviour {
             {
                 transform.GetComponent<Text>().color = new Color(1f, 1f, 1f);
             }
+        }
+    }
+
+    private void OnMouseEnter()
+    {
+        if(toggle)
+            sR.color -= new Color(0.1f, 0.1f, 0.1f, 0);
+    }
+
+    public bool getToggle()
+    {
+        return sR.sprite == pressedS;
+    }
+
+    public void setToggle(bool t)
+    {
+        if (t)
+        {
+            sR.sprite = pressedS;
+        }
+        else
+        {
+            sR.sprite = unpressedS;
         }
     }
 

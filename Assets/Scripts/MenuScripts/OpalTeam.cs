@@ -298,7 +298,9 @@ public class OpalTeam : MonoBehaviour
 
     private void setLimitations()
     {
-        List<string> types = mms.calculateTypeOverload(opals);
+        List<string> types = new List<string>();
+        if(mms != null)
+            types = mms.calculateTypeOverload(opals);
         if(types.Count > 0)
         {
             int i = 0;

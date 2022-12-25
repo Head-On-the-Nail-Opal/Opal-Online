@@ -79,6 +79,9 @@ public class MainMenuScript : MonoBehaviour {
     private List<string> bannedCharms = new List<string>();
     private int waiting = -1;
     public Text chooseTeamsText;
+    private List<string> controls = new List<string>();
+
+    public MenuButtonScript toggleAI;
 
     private List<string> personalities = new List<string>();
 
@@ -110,6 +113,11 @@ public class MainMenuScript : MonoBehaviour {
         foreach (string s in Input.GetJoystickNames())
         {
             print(s);
+        }
+
+        for(int i = 0; i < 4; i++)
+        {
+            controls.Add("keyboard");
         }
 
         //TargetInfo.transform.position = new Vector3(-100, -100, -100);
@@ -162,7 +170,11 @@ public class MainMenuScript : MonoBehaviour {
                 if (activeTeams.Count >= numTeams)
                 {
                     glob.setMult(false);
-                    glob.setControllers("keyboard", "keyboard", "keyboard", "keyboard");
+                    string rCont = controls[0];
+                    string bCont = controls[1];
+                    string gCont = controls[2];
+                    string oCont = controls[3];
+                    glob.setControllers(rCont, bCont, gCont, oCont);
                     glob.setNumPlayers(activeTeams.Count);
                     switch (numTeams) {
                         case 2:
@@ -178,8 +190,12 @@ public class MainMenuScript : MonoBehaviour {
                             glob.setOverloads(calculateTypeOverload(activeTeams[0]), calculateTypeOverload(activeTeams[1]), calculateTypeOverload(activeTeams[2]), calculateTypeOverload(activeTeams[3]));
                             break;
                     }
-                    
+
                     UnityEngine.SceneManagement.SceneManager.LoadScene("MainGame", UnityEngine.SceneManagement.LoadSceneMode.Single);
+                    //if(rCont == "AI" || bCont == "AI" || oCont == "AI" || gCont == "AI")
+                    //{
+                    //    UnityEngine.SceneManagement.SceneManager.LoadScene("MainGame", UnityEngine.SceneManagement.LoadSceneMode.Additive);
+                    //}
                 }
             }
             else if (waiting == 2)
@@ -1648,6 +1664,11 @@ public class MainMenuScript : MonoBehaviour {
         if(waiting != -1)
         {
             activeTeams.Add(opals);
+            if (toggleAI.getToggle())
+            {
+                toggleAI.setToggle(false);
+                controls[activeTeams.Count-1] = "AI";
+            } 
             return;
         }
         foreach(OpalScript o in opals)

@@ -40,6 +40,10 @@ public class Duplimorph : OpalScript
         Attacks[3].setFreeAction(true);
         type1 = "Void";
         type2 = "Swarm";
+
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Weasely", 1, 4),
+            new Behave("Acrophobic", 0,1) });
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -80,14 +84,16 @@ public class Duplimorph : OpalScript
             takeDamage(7, false, true);
             if (health > 0)
             {
-                OpalScript opalOne = spawnOplet(duplimorphPrefab, target);
-                
-                opalOne.setHealth(this.health);
-                opalOne.setDetails(this);
-                List<TempBuff> temp = getBuffs();
-                foreach (TempBuff t in temp)
-                {
-                    opalOne.doTempBuff(t.getTargetStat(), t.getTurnlength(), t.getAmount());
+                OpalScript opalOne = spawnOplet(duplimorphPrefab, target, 0);
+
+                if (opalOne != null) { 
+                    opalOne.setHealth(this.health);
+                    opalOne.setDetails(this);
+                    List<TempBuff> temp = getBuffs();
+                    foreach (TempBuff t in temp)
+                    {
+                        opalOne.doTempBuff(t.getTargetStat(), t.getTurnlength(), t.getAmount());
+                    }
                 }
             }
         }
@@ -135,5 +141,36 @@ public class Duplimorph : OpalScript
             return 0;
         }
         return -1;
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (atNum == 0)
+        {
+            if (health > 7 && minionCount < 4 && !boardScript.myCursor.tileIsFalling((int)target.getPos().x, (int)target.getPos().z)) //needs to check better
+                return true;
+        }
+        else if (atNum == 1 && !useAdjacentToOpal(target, true))
+        {
+            return true;
+        }
+        else if (atNum == 2)
+        {
+            if (health <= maxHealth / 2 && target.getCurrentOpal().getTeam() != getTeam() && !isTeamEmpty(false))
+                return true;
+        }
+        else if (atNum == 3)
+        {
+            if(health > maxHealth/2 && target.getCurrentOpal().getTeam() == getTeam())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
+        return 1;
     }
 }

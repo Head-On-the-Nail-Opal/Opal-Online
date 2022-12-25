@@ -60,6 +60,7 @@ public class CursorScript : MonoBehaviour {
     private bool UIOn = true;
 
     private Coroutine currentHighlight;
+    private bool cursorLock = false;
 
     // Use this for initialization
     void Start () {
@@ -93,7 +94,7 @@ public class CursorScript : MonoBehaviour {
     public void clearGhosts(TileScript t)
     {
         //print("got called");
-        if (t.currentPlayer != null && t.currentPlayer.getMyName() != "Boulder")
+        if (t.currentPlayer != null && t.currentPlayer.getMyName() != "Boulder" && !t.getFallen())
         {
             if (t.currentPlayer.getPos().x != (int)t.getPos().x || t.currentPlayer.getPos().z != (int)t.getPos().z)
             {
@@ -105,6 +106,16 @@ public class CursorScript : MonoBehaviour {
         {
             if (t.currentPlayer == null && t.type != "Boulder" && !t.getFallen())
             {
+               /**
+                foreach (OpalScript o in boardScript.gameOpals)
+                {
+                    if (o.getPos().x == t.getPos().x && o.getPos().z == t.getPos().z)
+                    {
+                        t.standingOn(o);
+                        return;
+                    }
+                }*/
+
                 print("Ghost Found; Tile Position: " + (int)myPos.x + "," + (int)myPos.z);
                 t.setImpassable(false);
                 t.standingOn(null);
@@ -172,7 +183,8 @@ public class CursorScript : MonoBehaviour {
             return;
         }
         //print("oof");
-        moveCursor(myPos, orthoCam.WorldToScreenPoint(myPos), orthoCam.WorldToScreenPoint(reticle.transform.position));
+        if(!cursorLock)
+            moveCursor(myPos, orthoCam.WorldToScreenPoint(myPos), orthoCam.WorldToScreenPoint(reticle.transform.position));
         if(currentController == "keyboard")
         {
             if(Input.GetButton("button 0"))
@@ -378,89 +390,15 @@ public class CursorScript : MonoBehaviour {
             //display movement options
             if (distance > 0 && tileFrom.currentPlayer == selectedPlayer && boardScript.dummies[(int)myPos.x, (int)myPos.z] == null && attacking == -1) //check if tilefrom current player == selected player
             {
-                moving = true;
-                DummyScript tempDummy = Instantiate<DummyScript>(dummyPrefab);
-                tempDummy.setCoordinates((int)selectedPlayer.getPos().x, (int)selectedPlayer.getPos().z);
-                boardScript.dummies[(int)myPos.x, (int)myPos.z] = tempDummy;
-                boardScript.spotlight.transform.position = new Vector3((int)selectedPlayer.getPos().x, 2, (int)selectedPlayer.getPos().z);
-                tempDummy.Spawn(distance, 0, 0, true);
-                pathing = true;
+                generateMovementDummies();
             }
             //display movement options
         }
         if (pathing && lastPos != myPos)
         {
             destroyPath();
-
-            PathScript tempPath = Instantiate<PathScript>(pathPrefab);
-            tempPath.setCoordinates((int)selectedPlayer.getPos().x, (int)selectedPlayer.getPos().z);
-            originPath = tempPath;
-            if (tdistance == -1)
-            {
-                pathBuilder = new List<Vector2>();
-                boardScript.paths.Add(tempPath);
-                originPath = tempPath;
-                pathing = true;
-                //tempPath.SpawnPath(myPos);
-                List<Vector2> temp = Astar(new Vector2((int)selectedPlayer.getPos().x, (int)selectedPlayer.getPos().z), new Vector2(myPos.x, myPos.z));
-                if (temp.Count > 0)
-                {
-                    temp.RemoveAt(0);
-                }
-                for (int i = 0; i < distance && i < temp.Count; i++)
-                {
-                    PathScript pathPiece = Instantiate<PathScript>(tempPath);
-                    pathPiece.setCoordinates((int)temp[i].x, (int)temp[i].y);
-                    boardScript.paths.Add(pathPiece);
-                }
-                pathBuilder = new List<Vector2>();
-                for (int i = 0; i < distance && i < temp.Count; i++)
-                {
-                    pathBuilder.Add(temp[i]);
-                }
-                if (boardScript.paths.Count > 0)
-                {
-                    //lastPath = boardScript.paths.Count;
-                }
-            }
-            else
-            {
-                tempPath.setCoordinates((int)originLoc.x, (int)originLoc.y);
-                boardScript.paths.Add(tempPath);
-                originPath = tempPath;
-                pathing = true;
-                //tempPath.SpawnPath(myPos);
-                List<Vector2> temp = Astar(new Vector2((int)originLoc.x, (int)originLoc.y), new Vector2(myPos.x, myPos.z));
-                if (temp.Count > 0)
-                {
-                    temp.RemoveAt(0);
-                    if (pathBuilder.Count > 0)
-                    {
-                        for (int i = 0; i < pathBuilder.Count; i++)
-                        {
-                            if (pathBuilder[i].x == originLoc.x && pathBuilder[i].y == originLoc.y)
-                            {
-                                for (int q = pathBuilder.Count - 1; q > i; q--)
-                                {
-                                    pathBuilder.RemoveAt(q);
-                                }
-                                break;
-                            }
-                        }
-                    }
-                    for (int i = 0; i < temp.Count && i < tdistance; i++)
-                    {
-                        pathBuilder.Add(temp[i]);
-                    }
-                }
-
-                for (int i = 0; i < pathBuilder.Count; i++)
-                {
-                    PathScript pathPiece = Instantiate<PathScript>(tempPath);
-                    pathPiece.setCoordinates((int)pathBuilder[i].x, (int)pathBuilder[i].y);
-                    boardScript.paths.Add(pathPiece);
-                }
-            }
+            if(currentController != "AI")
+                 generatePaths();
         }
         if ((!followup && (Input.GetMouseButtonUp(1) && currentController == "keyboard") || ((currentController == "joystick 1" || currentController == "joystick 2" || currentController == "joystick 3" || currentController == "joystick 4") && Input.GetButtonUp("button 2" + addon))) && (!boardScript.getMult() || boardScript.getOnlineTeam() == currentOnlinePlayer))
         {
@@ -577,6 +515,16 @@ public class CursorScript : MonoBehaviour {
             }
             toggleShift = !toggleShift;
         }
+
+        if (Input.GetKeyUp(KeyCode.KeypadPlus))
+        {
+            boardScript.saveGame(0);
+        }else if (Input.GetKeyUp(KeyCode.KeypadMinus))
+        {
+            boardScript.loadGame(0);
+        }
+
+
         //if ((Input.GetKeyUp(KeyCode.LeftShift) && currentController == "keyboard") || (Input.GetButtonUp("LBump" + addon) && (currentController == "joystick 1" || currentController == "joystick 2" || currentController == "joystick 3" || currentController == "joystick 4")))
        //{
          //   ts.displayAttacks(null, null);
@@ -598,38 +546,7 @@ public class CursorScript : MonoBehaviour {
         //display attack options
         if (startAttack == true)
         {
-            boardScript.diplayPath(false);
-            ts.updateAttackScreen(selectedPlayer, attacking, boardScript.tileGrid[(int)myPos.x, (int)myPos.z]);
-            if (moving == true)
-            {
-                destroyDummies();
-                moving = false;
-                tdistance = -1;
-            }
-            if (attacking != -1)
-            {
-                //check if it's a passive attack
-                if (!(selectedPlayer.Attacks[attacking].getBaseDamage() == 0 && selectedPlayer.Attacks[attacking].getRange() == 0 && selectedPlayer.Attacks[attacking].getShape() == 0))
-                {
-                    DummyScript tempDummy = Instantiate<DummyScript>(attackPrefab);
-                    tempDummy.setCoordinates((int)selectedPlayer.getPos().x, (int)selectedPlayer.getPos().z);
-                    boardScript.dummies[(int)selectedPlayer.getPos().x, (int)selectedPlayer.getPos().z] = tempDummy;
-                    tempDummy.Spawn(selectedPlayer.Attacks[attacking].getRange(), 0, selectedPlayer.Attacks[attacking].getShape(), true);
-                    startAttack = false;
-                    handleTargets();
-                }
-                else
-                {
-                    startAttack = false;
-                }
-            }
-            else
-            {
-                destroyDummies();
-                attacking = -1;
-                ts.updateAttackScreen(selectedPlayer, attacking, boardScript.tileGrid[(int)myPos.x, (int)myPos.z]);
-                startAttack = false;
-            }
+            generateAbilityDummies(attacking);
         }
         //display attack options
 
@@ -698,99 +615,7 @@ public class CursorScript : MonoBehaviour {
             //make attack
             if(attacking != -1 && (!finishAttack || selectedPlayer.Attacks[attacking].getFreeAction()) &&  boardScript.dummies[(int)myPos.x, (int)myPos.z] != null && !selectedPlayer.getBanned().Contains(attacking) && notAllTargetsNull())
             {
-                bool targetedSelf = false;
-                //check to make sure they don't target themselves
-                if((boardScript.tileGrid[(int)myPos.x, (int)myPos.z].currentPlayer == selectedPlayer && selectedPlayer.getAttacks()[attacking].getRange() != 0))
-                {
-                    targetedSelf = true;
-                }
-                foreach (Target t in targets)
-                {
-                    if (t.getTile() != null)
-                    {
-                        OpalScript target = t.getTile().currentPlayer;
-                        if (target != null && targetedSelf == false)
-                        {
-                            selectedPlayer.Attacks[attacking].getCurrentUse(1);
-                            if (followup)
-                            {
-                                selectedPlayer.onFollowUp(attacking);
-                            }
-                            if (boardScript.getMult())
-                            {
-                                boardScript.getMM().sendMultiplayerData("attack," + currentOnlinePlayer + "," + t.getTile().getPos().x + "," + t.getTile().getPos().z + "," + attacking);
-                                lastCommand = "attack," + currentOnlinePlayer + "," + t.getTile().getPos().x + "," + t.getTile().getPos().z + "," + attacking;
-                            }
-                            if (!boardScript.getResetting())
-                            {
-                                if (selectedPlayer.Attacks[attacking].getProj() != null)
-                                    StartCoroutine(selectedPlayer.doAttackAnim(target, this, attacking, projToProjectile(selectedPlayer.Attacks[attacking].getProj())));
-                                else
-                                    StartCoroutine(selectedPlayer.doAttackAnim(target, this, attacking, currentProj));
-                                
-                            }
-                            //Projectile tempProj = Instantiate(currentProj);
-                            //tempProj.setUp(selectedPlayer.getAttacks()[attacking].getShape(),  selectedPlayer.getMainType());
-                            //selectedPlayer.adjustProjectile(tempProj, attacking);
-                            //tempProj.fire(selectedPlayer, target, attacking);
-                            if (selectedPlayer.getCurrentTile() != null && selectedPlayer.getCurrentTile().type == "Fire")
-                            {
-                                //target.setBurning(true);
-                            }
-                        }
-                        else if(targetedSelf == false)
-                        {
-                            selectedPlayer.Attacks[attacking].getCurrentUse(1);
-                            if (followup)
-                            {
-                                selectedPlayer.onFollowUp(attacking);
-                            }
-                            if (boardScript.getMult())
-                            {
-                                boardScript.getMM().sendMultiplayerData("attack," + currentOnlinePlayer + "," + t.getTile().getPos().x + "," + t.getTile().getPos().z + "," + attacking);
-                                lastCommand = "attack," + currentOnlinePlayer + "," + t.getTile().getPos().x + "," + t.getTile().getPos().z + "," + attacking;
-                            }
-                            if (!boardScript.getResetting())
-                            {
-                                if (selectedPlayer.Attacks[attacking].getProj() != null)
-                                    StartCoroutine(selectedPlayer.doAttackAnim(t.getTile(), this, attacking, projToProjectile(selectedPlayer.Attacks[attacking].getProj())));
-                                else
-                                    StartCoroutine(selectedPlayer.doAttackAnim(t.getTile(), this, attacking, currentProj));
-
-                            }
-                            //Projectile tempProj = Instantiate(currentProj);
-                            //tempProj.setUp(selectedPlayer.getAttacks()[attacking].getShape(), selectedPlayer.getMainType());
-                            //selectedPlayer.adjustProjectile(tempProj, attacking);
-                            //tempProj.fire(selectedPlayer, t.getTile(), attacking);
-                        }
-                    }
-                }
-                if (targetedSelf)
-                {
-                }
-                else
-                {
-                    if (!selectedPlayer.getAttackAgain() && selectedPlayer.Attacks[attacking].getUses() <= selectedPlayer.Attacks[attacking].getCurrentUse(0) && !selectedPlayer.Attacks[attacking].getFreeAction())
-                    { 
-                        finishAttack = true;
-                    }
-                    if (!selectedPlayer.getMoveAfter() && !selectedPlayer.Attacks[attacking].getFreeAction())
-                    {
-                        distance = 0;
-                    }
-                    if(selectedPlayer.Attacks[attacking].getUses() > selectedPlayer.Attacks[attacking].getCurrentUse(0))
-                    {
-                        followup = true;
-                    }
-                    else
-                    {
-                        attacking = -1;
-                        destroyDummies();
-                        followup = false;
-                    }
-                    ts.updateCurrent(selectedPlayer, distance);
-                }
-                //nextTurn();
+                attackCurrentTile(attacking, false);
             }
             //make attack
         }
@@ -981,38 +806,7 @@ public class CursorScript : MonoBehaviour {
             {
                 t.updateTile();
             }
-            if (roundNum > 4 && roundNum % 3 == 2)
-            {
-                for (int i = 0; i < 10; i++)
-                {
-                    for (int j = 0; j < 10; j++)
-                    {
-                        if ((i == fallState || j == fallState || i == 9 - fallState || j == 9 - fallState) && (i >= fallState && i <= 9 - fallState) && (j >= fallState && j <= 9 - fallState))
-                        {
-                            GameObject temp = Instantiate<GameObject>(warningPrefab);
-                            temp.transform.position = new Vector3(i, 0.02f, j);
-                            warningList.Add(temp);
-                        }
-                     }
-                }
-            }
-            if (roundNum > 5 && roundNum % 3 == 0)
-            {
-                for (int i = 0; i < 10; i++)
-                {
-                    for (int j = 0; j < 10; j++)
-                    {
-                        if (i == fallState || j == fallState || i == 9 - fallState || j == 9 - fallState)
-                            StartCoroutine(boardScript.tileGrid[i, j].fall());
-                    }
-                }
-                foreach (GameObject w in warningList){
-                    DestroyImmediate(w);
-                }
-                warningList.Clear();
-
-                fallState++;
-            }
+            doWarning(true);
             boardScript.sortOpals(boardScript.gameOpals);
             boardScript.alreadyMoved.Clear();
             if (placing)
@@ -1076,6 +870,7 @@ public class CursorScript : MonoBehaviour {
         }
         selectedPlayer.setMyTurn(true);
         selectedPlayer.StartOfTurn();
+        selectedPlayer.setBehaviours();
         if (selectedPlayer.getTeam() == "Red")
         {
             currentOnlinePlayer = 1;
@@ -1150,11 +945,57 @@ public class CursorScript : MonoBehaviour {
             //boardScript.getMM().sendFullGameData(boardScript.generateString());
             //boardScript.getMM().sendMultiplayerData("reset," + currentOnlinePlayer);
         }
+        GC.Collect();
+    }
+
+    private void doWarning(bool inc)
+    {
+        foreach (GameObject w in warningList)
+        {
+            DestroyImmediate(w);
+        }
+        warningList.Clear();
+        if (roundNum > 4 && roundNum % 3 == 2)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    if ((i == fallState || j == fallState || i == 9 - fallState || j == 9 - fallState) && (i >= fallState && i <= 9 - fallState) && (j >= fallState && j <= 9 - fallState))
+                    {
+                        GameObject temp = Instantiate<GameObject>(warningPrefab);
+                        temp.transform.position = new Vector3(i, 0.02f, j);
+                        warningList.Add(temp);
+                    }
+                }
+            }
+        }
+        if (roundNum > 5 && roundNum % 3 == 0)
+        {
+            if (!inc)
+                return;
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    if (i == fallState || j == fallState || i == 9 - fallState || j == 9 - fallState)
+                    {
+                        boardScript.tileGrid[i, j].doFall();
+                    }
+                }
+            }
+            fallState++;
+        }
     }
 
     public int getAttacking()
     {
         return attacking;
+    }
+
+    public bool getGameOver()
+    {
+        return gameOver;
     }
 
 
@@ -1175,11 +1016,15 @@ public class CursorScript : MonoBehaviour {
 
     public void doMove(List<PathScript> paths)
     {
-        print("moving Opal");
+        doMove(paths, false);
+    }
+
+    public void doMove(List<PathScript> paths, bool instant)
+    {
         if (selectedPlayer != null)
         {
             boardScript.tileGrid[(int)selectedPlayer.getPos().x, (int)selectedPlayer.getPos().z].standingOn(null);
-            int actualPath = selectedPlayer.doFullMove(paths, paths.Count);
+            int actualPath = selectedPlayer.doFullMove(paths, paths.Count, instant);
             if (tdistance == -1)
             {
                 distance -= actualPath;
@@ -1190,10 +1035,102 @@ public class CursorScript : MonoBehaviour {
             }
             boardScript.spotlight.transform.position = new Vector3((int)selectedPlayer.getPos().x, 2, (int)(int)selectedPlayer.getPos().z);
             ts.updateCurrent(selectedPlayer, distance);
-            foreach (PathScript p in paths)
+            destroyDummies();
+        }
+    }
+
+    public void attackCurrentTile(int at, bool instant)
+    {
+        myPos = transform.position;
+        attacking = at;
+        bool targetedSelf = false;
+        //check to make sure they don't target themselves
+        if ((boardScript.tileGrid[(int)myPos.x, (int)myPos.z].currentPlayer == selectedPlayer && selectedPlayer.getAttacks()[attacking].getRange() != 0))
+        {
+            targetedSelf = true;
+        }
+        foreach (Target t in targets)
+        {
+            if (t.getTile() != null)
             {
-                DestroyImmediate(p.gameObject);
+                OpalScript target = t.getTile().currentPlayer;
+                if (target != null && targetedSelf == false)
+                {
+                    selectedPlayer.Attacks[attacking].getCurrentUse(1);
+                    if (followup)
+                    {
+                        selectedPlayer.onFollowUp(attacking);
+                    }
+                    if (boardScript.getMult())
+                    {
+                        boardScript.getMM().sendMultiplayerData("attack," + currentOnlinePlayer + "," + t.getTile().getPos().x + "," + t.getTile().getPos().z + "," + attacking);
+                        lastCommand = "attack," + currentOnlinePlayer + "," + t.getTile().getPos().x + "," + t.getTile().getPos().z + "," + attacking;
+                    }
+                    if (!boardScript.getResetting() && !instant)
+                    {
+                        if (selectedPlayer.Attacks[attacking].getProj() != null)
+                            StartCoroutine(selectedPlayer.doAttackAnim(target, this, attacking, projToProjectile(selectedPlayer.Attacks[attacking].getProj())));
+                        else
+                            StartCoroutine(selectedPlayer.doAttackAnim(target, this, attacking, currentProj));
+
+                    }
+                    else
+                    {
+                        selectedPlayer.prepAttack(at);
+                        boardScript.tileGrid[(int)myPos.x, (int)myPos.z].currentPlayer.takeDamage(selectedPlayer.getAttackEffect(at, boardScript.tileGrid[(int)myPos.x, (int)myPos.z].currentPlayer), true, false);
+                        return;
+                    }
+                }
+                else if (targetedSelf == false)
+                {
+                    selectedPlayer.Attacks[attacking].getCurrentUse(1);
+                    if (followup)
+                    {
+                        selectedPlayer.onFollowUp(attacking);
+                    }
+                    if (boardScript.getMult())
+                    {
+                        boardScript.getMM().sendMultiplayerData("attack," + currentOnlinePlayer + "," + t.getTile().getPos().x + "," + t.getTile().getPos().z + "," + attacking);
+                        lastCommand = "attack," + currentOnlinePlayer + "," + t.getTile().getPos().x + "," + t.getTile().getPos().z + "," + attacking;
+                    }
+                    if (!boardScript.getResetting() && !instant)
+                    {
+                        if (selectedPlayer.Attacks[attacking].getProj() != null)
+                            StartCoroutine(selectedPlayer.doAttackAnim(t.getTile(), this, attacking, projToProjectile(selectedPlayer.Attacks[attacking].getProj())));
+                        else
+                            StartCoroutine(selectedPlayer.doAttackAnim(t.getTile(), this, attacking, currentProj));
+
+                    }
+                    else
+                    {
+                        selectedPlayer.prepAttack(at);
+                        selectedPlayer.getAttackEffect(at, boardScript.tileGrid[(int)myPos.x, (int)myPos.z]);
+                        return;
+                    }
+                }
             }
+        }
+        if (!targetedSelf)
+        {
+            if (!selectedPlayer.getAttackAgain() && selectedPlayer.Attacks[attacking].getUses() <= selectedPlayer.Attacks[attacking].getCurrentUse(0) && !selectedPlayer.Attacks[attacking].getFreeAction())
+            {
+                finishAttack = true;
+            }
+            if (!selectedPlayer.getMoveAfter() && !selectedPlayer.Attacks[attacking].getFreeAction())
+            {
+                distance = 0;
+            }
+            if (selectedPlayer.Attacks[attacking].getUses() > selectedPlayer.Attacks[attacking].getCurrentUse(0))
+            {
+                followup = true;
+            }
+            else
+            {
+                attacking = -1;
+                destroyDummies();
+                followup = false;
+            }
+            ts.updateCurrent(selectedPlayer, distance);
         }
     }
 
@@ -1217,6 +1154,7 @@ public class CursorScript : MonoBehaviour {
             }
             return;
         }
+        ts.updateAttackScreen(updatedPlayer, at, boardScript.tileGrid[x, y]);
         updatedPlayer.prepAttack(at);
         Projectile tempProj;
 
@@ -1299,7 +1237,7 @@ public class CursorScript : MonoBehaviour {
     private void destroyPath()
     {
         foreach(PathScript p in boardScript.paths){
-            DestroyImmediate(p.gameObject);
+            Destroy(p.gameObject);
         }
         pathing = false;
         //originPath = null;
@@ -1758,6 +1696,62 @@ public class CursorScript : MonoBehaviour {
         reticle.toggleMe(UIOn);    
     }
 
+    public string saveGameState()
+    {
+        string output = "";
+        output += roundNum + "|";
+        output += fallState + "|";
+
+        output += currentTurn + "|";
+        output += selectedPlayer.getID() + "|";
+
+        foreach (int i in boardScript.getAlreadyMoved())
+        {
+            output += i + "&";
+        }
+        output += "|";
+
+        output += distance + "|";
+
+        output += finishAttack + "|";
+
+        return output;
+    }
+
+    public void loadGameState(string input)
+    {
+        string[] data = input.Split('|');
+        roundNum = int.Parse(data[0]);
+        fallState = int.Parse(data[1]);
+
+        currentTurn = int.Parse(data[2]);
+        selectedPlayer = boardScript.getOpalByID(int.Parse(data[3]));
+
+        string[] opalsRemainingInTurn = data[4].Split('&');
+        List<int> aM = new List<int>();
+        foreach(string o in opalsRemainingInTurn)
+        {
+            if(o != "")
+                aM.Add(int.Parse(o));
+        }
+
+        distance = int.Parse(data[5]);
+
+        finishAttack = data[6] == "True";
+
+        boardScript.updateTurnOrder(currentTurn, aM);
+        ts.updateCurrent(selectedPlayer, distance);
+        doWarning(false);
+        if (attacking != -1)
+        {
+            attacking = -1;
+            ts.updateAttackScreen(null, -1, null);
+        }
+        destroyDummies();
+        destroyPath();
+        
+    }
+
 
     private Projectile projToProjectile(List<AbilityProj> p)
     {
@@ -1804,6 +1798,222 @@ public class CursorScript : MonoBehaviour {
         }
 
         return output;
+    }
+
+    public void showTargets()
+    {
+        myPos = transform.position;
+        handleTargets();
+        if (targets.Count > 0)
+        {
+            foreach (Target t in targets)
+            {
+                t.setRelativeCoordinates((int)myPos.x, (int)myPos.z, attacking, selectedPlayer);
+            }
+        }
+    }
+
+    public List<Vector2> getAllTargetTiles()
+    {
+        destroyDummies();
+        generateMovementDummies();
+        List<Vector2> output = new List<Vector2>();
+        for(int i = 0; i< 10; i++) {
+            for (int j = 0; j < 10; j++)
+            {
+                if (!boardScript.tileGrid[i, j].getFallen())
+                {
+                    if (boardScript.dummies[i, j] != null && boardScript.dummies[i, j].transform.position.x > -1 && boardScript.dummies[i, j].transform.position.z > -1 && boardScript.dummies[i, j].transform.position.x < 10 && boardScript.dummies[i, j].transform.position.z < 10)
+                        output.Add(new Vector2((int)boardScript.dummies[i, j].transform.position.x, (int)boardScript.dummies[i, j].transform.position.z));
+                }
+            }
+        }
+        destroyDummies();
+        return output;
+    }
+
+    public List<Vector3> getAllPossibleAbilities()
+    {
+        return getAllPossibleAbilities(false);
+    }
+
+        public List<Vector3> getAllPossibleAbilities(bool free)
+    {
+        destroyDummies();
+        List<Vector3> output = new List<Vector3>();
+        for(int i = 0; i < 4; i++)
+        {
+            generateAbilityDummies(i);
+            foreach (DummyScript d in boardScript.dummies)
+            {
+                if (d != null && selectedPlayer.checkCanAttack(boardScript.tileGrid[(int)d.transform.position.x, (int)d.transform.position.z], attacking) >= 0 && selectedPlayer.getIdealAttack(i, boardScript.tileGrid[(int)d.transform.position.x, (int)d.transform.position.z]))
+                {
+                    if (selectedPlayer.getCurrentTile() != boardScript.tileGrid[(int)d.transform.position.x, (int)d.transform.position.z] || selectedPlayer.getAttacks()[attacking].getRange() == 0)
+                    {
+                        if(free && selectedPlayer.Attacks[attacking].getFreeAction())
+                            output.Add(new Vector3(attacking, (int)d.transform.position.x, (int)d.transform.position.z));
+                        else if(!free)
+                            output.Add(new Vector3(attacking, (int)d.transform.position.x, (int)d.transform.position.z));
+                    }
+                }
+            }
+            destroyDummies();
+        }
+        attacking = -1;
+        return output;
+    }
+
+    public int getMovesLeft()
+    {
+        return distance;
+    }
+
+    public bool tileIsFalling(int x, int z)
+    {
+        foreach(GameObject t in warningList)
+        {
+            if (t.transform.position.x == x && t.transform.position.z == z)
+                return true;
+        }
+        return false;       
+    }
+
+    public bool getFinishAttack()
+    {
+        return finishAttack;
+    }
+
+
+    public void toggleCursorLock(bool cL)
+    {
+        cursorLock = cL;
+    }
+
+    public void generateAbilityDummies(int at)
+    {
+        destroyDummies();
+        attacking = at;
+        boardScript.diplayPath(false);
+        ts.updateAttackScreen(selectedPlayer, attacking, boardScript.tileGrid[(int)myPos.x, (int)myPos.z]);
+        if (moving == true)
+        {
+            destroyDummies();
+            moving = false;
+            tdistance = -1;
+        }
+        if (attacking != -1)
+        {
+            //check if it's a passive attack
+            if (!(selectedPlayer.Attacks[attacking].getBaseDamage() == 0 && selectedPlayer.Attacks[attacking].getRange() == 0 && selectedPlayer.Attacks[attacking].getShape() == 0))
+            {
+                DummyScript tempDummy = Instantiate<DummyScript>(attackPrefab);
+                tempDummy.setCoordinates((int)selectedPlayer.getPos().x, (int)selectedPlayer.getPos().z);
+                if (selectedPlayer.getPos().x > -1 && selectedPlayer.getPos().x < 10 && selectedPlayer.getPos().z > -1 && selectedPlayer.getPos().z < 10)
+                    boardScript.dummies[(int)selectedPlayer.getPos().x, (int)selectedPlayer.getPos().z] = tempDummy;
+                else
+                    return;
+                tempDummy.Spawn(selectedPlayer.Attacks[attacking].getRange(), 0, selectedPlayer.Attacks[attacking].getShape(), true);
+                //tempDummy.Spawn(1, 0, selectedPlayer.Attacks[attacking].getShape(), true);
+                startAttack = false;
+                handleTargets();
+            }
+            else
+            {
+                startAttack = false;
+            }
+        }
+        else
+        {
+            destroyDummies();
+            attacking = -1;
+            ts.updateAttackScreen(selectedPlayer, attacking, boardScript.tileGrid[(int)myPos.x, (int)myPos.z]);
+            startAttack = false;
+        }
+    }
+
+    public void generateMovementDummies()
+    {
+        moving = true;
+        DummyScript tempDummy = Instantiate<DummyScript>(dummyPrefab);
+        tempDummy.setCoordinates((int)selectedPlayer.getPos().x, (int)selectedPlayer.getPos().z);
+        boardScript.dummies[(int)myPos.x, (int)myPos.z] = tempDummy;
+        boardScript.spotlight.transform.position = new Vector3((int)selectedPlayer.getPos().x, 2, (int)selectedPlayer.getPos().z);
+        tempDummy.Spawn(distance, 0, 0, true);
+        pathing = true;
+    }
+
+    public void generatePaths()
+    {
+        myPos = transform.position;
+        PathScript tempPath = Instantiate<PathScript>(pathPrefab);
+        tempPath.setCoordinates((int)selectedPlayer.getPos().x, (int)selectedPlayer.getPos().z);
+        originPath = tempPath;
+        if (tdistance == -1)
+        {
+            pathBuilder = new List<Vector2>();
+            boardScript.paths.Add(tempPath);
+            originPath = tempPath;
+            pathing = true;
+            //tempPath.SpawnPath(myPos);
+            List<Vector2> temp = Astar(new Vector2((int)selectedPlayer.getPos().x, (int)selectedPlayer.getPos().z), new Vector2(myPos.x, myPos.z));
+            if (temp.Count > 0)
+            {
+                temp.RemoveAt(0);
+            }
+            for (int i = 0; i < distance && i < temp.Count; i++)
+            {
+                PathScript pathPiece = Instantiate<PathScript>(tempPath);
+                pathPiece.setCoordinates((int)temp[i].x, (int)temp[i].y);
+                boardScript.paths.Add(pathPiece);
+            }
+            pathBuilder = new List<Vector2>();
+            for (int i = 0; i < distance && i < temp.Count; i++)
+            {
+                pathBuilder.Add(temp[i]);
+            }
+            if (boardScript.paths.Count > 0)
+            {
+                //lastPath = boardScript.paths.Count;
+            }
+        }
+        else
+        {
+            tempPath.setCoordinates((int)originLoc.x, (int)originLoc.y);
+            boardScript.paths.Add(tempPath);
+            originPath = tempPath;
+            pathing = true;
+            //tempPath.SpawnPath(myPos);
+            List<Vector2> temp = Astar(new Vector2((int)originLoc.x, (int)originLoc.y), new Vector2(myPos.x, myPos.z));
+            if (temp.Count > 0)
+            {
+                temp.RemoveAt(0);
+                if (pathBuilder.Count > 0)
+                {
+                    for (int i = 0; i < pathBuilder.Count; i++)
+                    {
+                        if (pathBuilder[i].x == originLoc.x && pathBuilder[i].y == originLoc.y)
+                        {
+                            for (int q = pathBuilder.Count - 1; q > i; q--)
+                            {
+                                pathBuilder.RemoveAt(q);
+                            }
+                            break;
+                        }
+                    }
+                }
+                for (int i = 0; i < temp.Count && i < tdistance; i++)
+                {
+                    pathBuilder.Add(temp[i]);
+                }
+            }
+
+            for (int i = 0; i < pathBuilder.Count; i++)
+            {
+                PathScript pathPiece = Instantiate<PathScript>(tempPath);
+                pathPiece.setCoordinates((int)pathBuilder[i].x, (int)pathBuilder[i].y);
+                boardScript.paths.Add(pathPiece);
+            }
+        }
     }
 
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
 
@@ -49,7 +50,7 @@ abstract public class OpalScript : MonoBehaviour {
     protected List<ParticleSystem> armors = new List<ParticleSystem>();
     protected ParticleSystem bubbles;
     private int matchID = -1;
-    private int minionCount = 0;
+    protected int minionCount = 0;
     //private string myCharm;
     private List<Charm> myCharms = new List<Charm>();
     private string myNickname;
@@ -133,6 +134,8 @@ abstract public class OpalScript : MonoBehaviour {
     protected bool pauseFrame = false;
 
     private bool overloaded = false;
+
+    private StringBuilder sb = new StringBuilder(150);
 
     private void Awake()
     {
@@ -346,9 +349,9 @@ abstract public class OpalScript : MonoBehaviour {
         {
             Destroy(child.gameObject);
         }
-        if(highlight.GetComponent<Animator>() != null)
+        if(highlight.GetComponent<Animator>() != null && GetComponent<Animator>() != null)
             highlight.GetComponent<Animator>().runtimeAnimatorController = GetComponent<Animator>().runtimeAnimatorController;
-        if (input != "")
+        if (input != "" && highlight.GetComponent<Animator>() != null)
         { 
             highlight.GetComponent<Animator>().Play(input);
         }
@@ -526,6 +529,451 @@ abstract public class OpalScript : MonoBehaviour {
         string[] parsed = data.Split('|');
         setCharmFromString(parsed[1], false);
         personality = parsed[2];
+    }
+
+
+    public string saveStateSB()
+    {
+        sb.Clear();
+        sb.Append(getMyName());
+        sb.Append("|");
+        sb.Append(getPersonality());
+        sb.Append("|");
+        sb.Append(getID());
+        sb.Append("|");
+
+        foreach (string c in getCharmsNames())
+        {
+            sb.Append(c);
+            sb.Append("&");
+        }
+        sb.Append("|");
+
+        sb.Append(getHealth());
+        sb.Append("|");
+
+        foreach (Enchantment e in enchants)
+        {
+            sb.Append(e.getName());
+            sb.Append("@");
+            sb.Append(e.getValue());
+            sb.Append("@");
+            sb.Append(e.getMax());
+            sb.Append("&");
+        }
+        sb.Append("|");
+
+        foreach (TempBuff b in buffs)
+        {
+            sb.Append(b.getTargetStat());
+            sb.Append("@");
+            sb.Append(b.getTurnlength());
+            sb.Append("@");
+            sb.Append(b.getAmount());
+            sb.Append("&");
+        }
+        sb.Append("|");
+
+        sb.Append(burning);
+        sb.Append("|");
+        sb.Append(burnTimer);
+        sb.Append("|");
+        sb.Append(burnCounter);
+        sb.Append("|");
+
+        sb.Append(poisoned);
+        sb.Append("|");
+        sb.Append(poisonTimer);
+        sb.Append("|");
+        sb.Append(poisonCounter);
+        sb.Append("|");
+
+        sb.Append(lifted);
+        sb.Append("|");
+        sb.Append(liftTimer);
+        sb.Append("|");
+        sb.Append(liftCounter);
+        sb.Append("|");
+
+        sb.Append(armor);
+        sb.Append("|");
+        sb.Append(charge);
+        sb.Append("|");
+        sb.Append(tidal);
+        sb.Append("|");
+        sb.Append(flooded);
+        sb.Append("|");
+        sb.Append(shrouded);
+        sb.Append("|");
+        sb.Append(minionCount);
+        sb.Append("|");
+        sb.Append(skipfirstTurn);
+        sb.Append("|");
+        sb.Append(moveAfter);
+        sb.Append("|");
+        sb.Append(overloaded);
+        sb.Append("|");
+        sb.Append(myVisual);
+        sb.Append("|");
+
+        foreach (OpalScript o in cursed)
+        {
+            sb.Append(o.getID());
+            sb.Append("&");
+        }
+        sb.Append("|");
+        foreach (OpalScript o in cursedBy)
+        {
+            sb.Append(o.getID());
+            sb.Append("&");
+        }
+        sb.Append("|");
+
+        sb.Append(getPos().x);
+        sb.Append("|");
+        sb.Append(getPos().z);
+        sb.Append("|");
+        sb.Append(getSpecifics());
+        sb.Append("|");
+        sb.Append(getDead());
+        sb.Append("|");
+
+        if (myHighlight != null)
+        {
+            sb.Append(myHighlight.GetComponent<SpriteRenderer>().enabled);
+            sb.Append("|");
+        }
+        else
+        {
+            sb.Append("|");
+        }
+
+        sb.Append(sr.flipX);
+        sb.Append("|");
+
+        return sb.ToString();
+    }
+
+    public string saveState()
+    {
+        string output = "";
+        output += getMyName()+"|";
+        output += getPersonality() + "|";
+        output += getID() + "|";
+        foreach(string c in getCharmsNames())
+        {
+            output += c + "&";
+        }
+        output += "|";
+        output += getHealth() + "|";
+        foreach(Enchantment e in enchants)
+        {
+            output += e.getName() + "@" + e.getValue() + "@" + e.getMax()+"&";
+        }
+        output += "|";
+        foreach(TempBuff b in buffs)
+        {
+            output += b.getTargetStat() + "@" + b.getTurnlength() + "@" + b.getAmount() + "&";
+        }
+        output += "|";
+
+        output += burning + "|";
+        output += burnTimer + "|";
+        output += burnCounter + "|";
+
+        output += poisoned + "|";
+        output += poisonTimer + "|";
+        output += poisonCounter + "|";
+
+        output += lifted + "|";
+        output += liftTimer + "|";
+        output += liftCounter + "|";
+
+        output += armor + "|";
+        output += charge + "|";
+        output += tidal + "|";
+        output += flooded + "|";
+        output += shrouded + "|";
+        output += minionCount + "|";
+        output += skipfirstTurn + "|";
+        output += moveAfter + "|";
+        output += overloaded + "|";
+        output += myVisual + "|";
+
+        foreach(OpalScript o in cursed)
+        {
+            output += o.getID();
+        }
+        output += "|";
+        foreach(OpalScript o in cursedBy)
+        {
+            output += o.getID();
+        }
+        output += "|";
+
+        output += getPos().x+"|";
+        output += getPos().z+"|";
+
+        output += getSpecifics();
+
+        output += "|";
+
+        output += getDead() + "|";
+
+        if (myHighlight != null)
+            output += myHighlight.GetComponent<SpriteRenderer>().enabled + "|";
+        else
+            output += "|";
+
+        output += sr.flipX + "|";
+
+        return output;
+    }
+
+    public void loadState(string input)
+    {
+        
+        clearAllBuffs();
+        setOpal(getTeam());
+        myCharms.Clear();
+        string[] data =  input.Split('|');
+        
+        myName = data[0];
+        setPersonality(data[1]);
+        proccessPersonality(data[1]);
+        setID(int.Parse(data[2]));
+       
+        string[] c = data[3].Split('&');
+        foreach(string s in c)
+        {
+            setCharmFromString(s, false); //this will need to be better but works for the time being
+        }
+
+        health = int.Parse(data[4]);
+        
+        if (data[5] != "")
+        {
+            string[] e = data[5].Split('&');
+            foreach (string s in e)
+            {
+                if (s != "")
+                {
+                    string[] ss = s.Split('@');
+                    setEnchantment(ss[0], int.Parse(ss[1]), int.Parse(ss[2]));
+                }
+                
+            }
+        }
+
+        if (data[6] != "")
+        {
+            string[] b = data[6].Split('&');
+            foreach (string s in b)
+            {
+                if (s != "")
+                {
+                    string[] ss = s.Split('@');
+                    if(ss[1] != "0")
+                        doTempBuff(int.Parse(ss[0]), int.Parse(ss[1]), int.Parse(ss[2]), false);
+                }
+            }
+        }
+        
+        setBurning(data[7] == "True");
+        burnTimer = int.Parse(data[8]);
+        burnCounter = int.Parse(data[9]);
+        setPoison(data[10] == "True");
+        poisonTimer = int.Parse(data[11]);
+        poisonCounter = int.Parse(data[12]);
+        setLifted(data[13] == "True");
+        liftTimer = int.Parse(data[14]);
+        liftCounter = int.Parse(data[15]);
+
+        armor = 0;
+        addArmor(int.Parse(data[16]));
+
+        charge = 0;
+        doCharge(int.Parse(data[17]), false) ;
+        
+        tidal = data[18] == "True";
+        flooded = data[19] == "True";
+        shrouded = data[20] == "True";
+        minionCount = int.Parse(data[21]);
+        skipfirstTurn = data[22] == "True";
+        moveAfter = data[23] == "True";
+        overloaded = data[24] == "True";
+        if(getMyVisual() != data[25])
+            changeVisual(data[25], true);
+
+        if (data[26] != "")
+        {
+            foreach (string s in data[26].Split('&'))
+            {
+                if (boardScript.getOpalByID(int.Parse(s)) != null)
+                    cursed.Add(boardScript.getOpalByID(int.Parse(s)));
+            }
+        }
+
+        if (data[27] != "")
+        {
+            foreach (string s in data[27].Split('&'))
+            {
+                if (boardScript.getOpalByID(int.Parse(s)) != null)
+                    cursedBy.Add(boardScript.getOpalByID(int.Parse(s)));
+            }
+        }
+
+        teleport(int.Parse(data[28]), int.Parse(data[29]), 0);
+        if(currentTile != null)
+            currentTile.currentPlayer = this;
+
+        setBySpecifics(data[30]);
+
+        if (data[31] == "True")
+        {
+            setDead();
+        }
+        else
+        {
+            setNotDead();
+        }
+
+        if (myHighlight != null)
+        {
+            if (data[32] == "True")
+            {
+                myHighlight.GetComponent<SpriteRenderer>().enabled = true;
+            }
+            else
+            {
+                myHighlight.GetComponent<SpriteRenderer>().enabled = false;
+            }
+        }
+
+        sr.flipX = data[33] == "True";
+
+        if(myHighlight != null)
+            myHighlight.GetComponent<SpriteRenderer>().flipX = sr.flipX;
+
+        if (getMyName() == "Boulder")
+            transform.localScale *= 10;
+        
+
+    }
+
+    public virtual string getSpecifics()
+    {
+        return "";
+    }
+
+    public virtual void setBySpecifics(string specifics)
+    {
+
+    }
+
+    public virtual bool getIdealAttack(int atNum, TileScript target)
+    {
+        return false;
+    }
+
+    public virtual int getMaxRange()
+    {
+        return -1;
+    }
+
+    public bool targettingEnemy(TileScript target)
+    {
+        if(target != null && target.currentPlayer != null && target.currentPlayer.getTeam() != getTeam())
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public bool targettingAlly(TileScript target)
+    {
+        if (target != null && target.currentPlayer != null && target.currentPlayer.getTeam() == getTeam())
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public bool useAdjacentToOpal(TileScript target, bool enemy)
+    {
+        foreach (OpalScript o in boardScript.gameOpals)
+        {
+            if ((o.getTeam() != getTeam() && enemy) || (o.getTeam() == getTeam() && !enemy))
+            {
+                foreach(TileScript t in o.getSurroundingTiles(true))
+                {
+                    if (target == t)
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public bool useAroundOpal(TileScript target, bool enemy, int range)
+    {
+        foreach (OpalScript o in boardScript.gameOpals)
+        {
+            if((o.getTeam() != getTeam() && enemy) || (o.getTeam() == getTeam() && !enemy))
+            {
+                if(target.getPos().x < o.getPos().x + range && target.getPos().x > o.getPos().x - range && target.getPos().z < o.getPos().z + range && target.getPos().z > o.getPos().z - range)
+                {
+                    if(target.getPos().x != o.getPos().x && target.getPos().y != o.getPos().y)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public bool useAwayFromOpal(TileScript target, bool enemy, int range)
+    {
+        foreach (OpalScript o in boardScript.gameOpals)
+        {
+            if ((o.getTeam() != getTeam() && enemy) || (o.getTeam() == getTeam() && !enemy))
+            {
+                if (target.getPos().x > o.getPos().x + range && target.getPos().x < o.getPos().x - range && target.getPos().z > o.getPos().z + range && target.getPos().z < o.getPos().z - range)
+                {
+                    if (target.getPos().x != o.getPos().x && target.getPos().y != o.getPos().y)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public bool isTeamEmpty(bool enemy)
+    {
+        foreach (OpalScript o in boardScript.gameOpals)
+        {
+            if (!o.getDead() && o != this)
+            {
+                if (enemy)
+                {
+                    if(o.getTeam() != getTeam())
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (o.getTeam() == getTeam())
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     public void proccessPersonality(string p)
@@ -978,6 +1426,21 @@ abstract public class OpalScript : MonoBehaviour {
         return speciesAwareness;
     }
 
+    public void setBehaviours()
+    {
+        myPriorities.Clear();
+
+        foreach (Behave b in getSpeciesPriorities())
+        {
+            myPriorities.Add(b);
+        }
+
+        foreach (OpalScript o in boardScript.gameOpals)
+        {
+            myPriorities.AddRange(o.getSpeciesAwareness());
+        }
+    }
+
     public string getVariant()
     {
         return variant;
@@ -1046,6 +1509,7 @@ abstract public class OpalScript : MonoBehaviour {
             anim.Add(tempSprites[i]);
         }
         pauseAnim = false;
+        Resources.UnloadUnusedAssets();
     }
 
     public string getMyVisual()
@@ -1111,7 +1575,7 @@ abstract public class OpalScript : MonoBehaviour {
         return Resources.Load<OpalScript>("Prefabs/SubOpals/" + getMyName()); 
     }
 
-    public int doFullMove(List<PathScript> paths, int totalDist)
+    public int doFullMove(List<PathScript> paths, int totalDist, bool instant)
     {
         int output = 0;
         if(this.myName == "Hopscure")
@@ -1120,25 +1584,28 @@ abstract public class OpalScript : MonoBehaviour {
             onMove(paths[paths.Count -1]);
             return paths.Count-1;
         }
-        StartCoroutine(moveAnimate((int)paths[0].getPos().x,(int)paths[0].getPos().z,totalDist, paths));
+        if(!instant)
+            StartCoroutine(moveAnimate((int)paths[0].getPos().x,(int)paths[0].getPos().z,totalDist, paths));
+        else
+            moveAnimateInstant((int)paths[0].getPos().x, (int)paths[0].getPos().z, totalDist, paths);
         for (int i = 0; i < paths.Count; i++)
         {
             if (getBoard().tileGrid[(int)paths[i].getPos().x, (int)paths[i].getPos().z].getTrap() != null && getBoard().tileGrid[(int)paths[i].getPos().x, (int)paths[i].getPos().z].getTrap() != "PortalOut")
             {
                 
-                //output += doMove((int)paths[i].getPos().x, (int)paths[i].getPos().z, totalDist);
                 if (getBoard().tileGrid[(int)paths[i].getPos().x, (int)paths[i].getPos().z].getTrap() != "PortalIn" && getBoard().tileGrid[(int)paths[i].getPos().x, (int)paths[i].getPos().z].getTrap() != null)
                 {
-                    //print(getBoard().tileGrid[(int)paths[i].getPos().x, (int)paths[i].getPos().z].getTrap());
                     getBoard().tileGrid[(int)paths[i].getPos().x, (int)paths[i].getPos().z].standingOn(this);
                 }
-                //onMove(paths[i]);
                 return i;
             }
-            //output += doMove((int)paths[i].getPos().x, (int)paths[i].getPos().z, totalDist);
-            //onMove(paths[i]);
         }
         return paths.Count-1;
+    }
+
+    public int doFullMove(List<PathScript> paths, int totalDist)
+    {
+        return doFullMove(paths, totalDist, false);
     }
 
     public void pushAway(int d, OpalScript target)
@@ -1230,7 +1697,67 @@ abstract public class OpalScript : MonoBehaviour {
         return 1;
     }
 
-    public IEnumerator moveAnimate(int x, int y, int totalDist, List<PathScript> paths)
+    public void moveAnimateInstant(int x, int y, int totalDist, List<PathScript> paths) //make changes to moveAnimate as well
+    {
+        boardScript.getMyCursor().setAnimating(true);
+        int tile = 0;
+        List<Vector2> tilesTravelled = new List<Vector2>();
+        if (paths != null)
+        {
+            foreach (PathScript p in paths)
+            {
+                tilesTravelled.Add(new Vector2(p.getPos().x, p.getPos().z));
+            }
+            foreach (Vector2 v in tilesTravelled)
+            {
+                TileScript targetTile = new TileScript();
+                x = (int)v.x;
+                y = (int)v.y;
+
+                foreach (TileScript t in getSurroundingTiles(true))
+                {
+                    if (t == boardScript.tileGrid[x, y])
+                    {
+                        targetTile = boardScript.tileGrid[x, y];
+                    }
+                }
+
+                bool trap = false;
+                if (boardScript.tileGrid[x, y].getTrap() != null)
+                {
+                    trap = true;
+                }
+                teleport(x, y, totalDist);
+                if (trap && tile != 0)
+                {
+                    if (currentTile != null)
+                        currentTile.setCurrentOpal(this);
+                    break;
+                }
+                if (currentTile.findSurroundingMeadowebb())
+                {
+                    boardScript.refundMovement(tilesTravelled.Count - tile - 1);
+                    break;
+                }
+                tile++;
+            }
+        }
+        else
+        {
+            TileScript targetTile = new TileScript();
+            foreach (TileScript t in getSurroundingTiles(true))
+            {
+                if (t == boardScript.tileGrid[x, y])
+                {
+                    targetTile = boardScript.tileGrid[x, y];
+                }
+            }
+            teleport(x, y, totalDist);
+        }
+        boardScript.getMyCursor().setAnimating(false);
+    }
+
+    public IEnumerator moveAnimate(int x, int y, int totalDist, List<PathScript> paths) //make changes to moveAnimateInstant as well
     {
         boardScript.getMyCursor().setAnimating(true);
         bool adj = false;
@@ -1245,7 +1772,7 @@ abstract public class OpalScript : MonoBehaviour {
             foreach (Vector2 v in tilesTravelled)
             {
                 //print(j+" out of "+paths.Count);
-                TileScript targetTile = new TileScript();
+                TileScript targetTile = null;
                 x = (int)v.x;
                 y = (int)v.y;
 
@@ -1611,14 +2138,20 @@ abstract public class OpalScript : MonoBehaviour {
         return bannedAttacks;
     }
 
-    public void doCharge(int amount)
+    public void doCharge(int amount, bool effect)
     {
         if (type1 == "Electric" || type2 == "Electric")
         {
             charge += amount;
             onChargeItem(amount);
-            boardScript.callParticles("charge", transform.position);
+            if(effect)
+                boardScript.callParticles("charge", transform.position);
         }
+    }
+
+    public void doCharge(int amount)
+    {
+        doCharge(amount, true);
     }
 
     public void updateTile()
@@ -2071,14 +2604,14 @@ abstract public class OpalScript : MonoBehaviour {
             {
                 boardScript.tileGrid[(int)getPos().x, (int)getPos().z].currentPlayer = null;
             }
-            transform.position = new Vector3(-100, -100, -100);
-            coordinates = new Vector3(-100, -100, -100);
+            transform.position = new Vector3(-100, transform.position.y, -100);
+            coordinates = new Vector3(-100, transform.position.y, -100);
             boardScript.clearGhosts((int)deadTile.x, (int)deadTile.z);
             if (deadTile.x > -1 && deadTile.x < 10 && deadTile.z > -1 && deadTile.z < 10)
             {
                 foreach (string c in exportCharmToTile())
                 {
-                    if (c.Split(',')[0] != "None")
+                    if (c.Split(',')[0] != "None" && c.Split(',')[0] != "")
                     {
                         print(c);
                         boardScript.tileGrid[(int)deadTile.x, (int)deadTile.z].addCharm(c);
@@ -2268,7 +2801,7 @@ abstract public class OpalScript : MonoBehaviour {
             barriarraySurrounding().takeDamage(dam, mod, effect);
             return;
         }
-        if (!boardScript.getResetting())
+        if (!boardScript.getResetting() && effect)
         {
             StartCoroutine(yowch());
             StartCoroutine(playFrame("hurt", 5));
@@ -2410,7 +2943,7 @@ abstract public class OpalScript : MonoBehaviour {
     public IEnumerator doAttackAnim(TileScript target, CursorScript cursor, int attackNum, Projectile currentProj)
     {
         TileScript myTile = currentTile;
-        if (target != null && target.getPos().x <= currentTile.getPos().x && target.getPos().z <= currentTile.getPos().z)
+        if (target != null && currentTile != null && target.getPos().x <= currentTile.getPos().x && target.getPos().z <= currentTile.getPos().z)
         {
             flipOpal(false);
         }
@@ -3770,6 +4303,11 @@ abstract public class OpalScript : MonoBehaviour {
         public int getValue()
         {
             return value;
+        }
+
+        public int getMax()
+        {
+            return maxValue;
         }
 
         public void setValue(int v)

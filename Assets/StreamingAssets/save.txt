@@ -2,7 +2,9 @@ Please don't change this, it will be encrypted eventually.
 Bubbacle|None|Straight-Edge,Glorm|None|Straight-Edge,Succuum|None|Straight-Edge,
 Hearthhog|None|Straight-Edge,Fluttorch|None|Straight-Edge,Teslamp|None|Straight-Edge,
 Hopscure|None|Straight-Edge,Wingnition|None|Straight-Edge,Rekindle|None|Straight-Edge,
-Inflicshun|None|Straight-Edge,Betary|None|Straight-Edge,Amalgum|None|Straight-Edge,Cactoid|None|Straight-Edge,Aughtment|None|Straight-Edge,Gorj|None|Straight-Edge,
+Ambush|None|Straight-Edge,Sentree|None|Straight-Edge,Luminute|None|Straight-Edge,
+Ambush|None|Straight-Edge,
+Duplimorph|None|Straight-Edge,
 endTeams
 Abysmeel,Amalgum,Ambush,Aquarican,Aughtment,Barriarray,Beamrider,Betary,Bubbacle,Butterflight,Cactoid,Charayde,Chardinal,Chasmcrawler,Cottonmaw,Drizziphyl,Duplimorph,Excremite,Experiment42,Finbow,Fluttorch,Froxic,FumePlume,Gilsplish,Glintrey,Glorm,Glummer,Gorj,Grimmline,Groth,Hearthhog,Heatriarch,Hopscure,Hoviron,Infermal,Inflicshun,Inseedious,Investigator,KnightLite,Luminute,Meadowebb,Mechalodon,Mintick,Mistery,Moppet,Nachteous,Nekrokrab,Oozwl,Oremordilla,Overgroink,Pebblepal,Prismin,Protectric,Puffsqueak,Rekindle,Scorpirad,Sentree,Shineode,Shocket,Slungus,Snugbun,Sorceraura,Spillarc,Spiritch,Squirmtongue,Strikel,Succuum,Swoopitch,Teslamp,Thermor,Tortquoise,Verminfection,Volcoco,Wingnition,Woolloy,
 endOpals

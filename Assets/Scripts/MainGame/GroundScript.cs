@@ -102,8 +102,20 @@ public class GroundScript : MonoBehaviour {
     private bool secondary = false;
     private bool madeBoard = false;
 
+    private string gameState;
+    private string gameState1;
+
+    private List<string> saveStates = new List<string>();
+    private List<OpalScript> allBoulders = new List<OpalScript>();
+
+    private bool noUpdate = false;
+
     private void Awake()
     {
+        for(int i = 0; i < 20; i++)
+        {
+            saveStates.Add("");
+        }
         me = this;
         GameObject board = new GameObject("Gameboard");
         glob = GameObject.Find("GlobalObject").GetComponent<GlobalScript>();
@@ -189,6 +201,11 @@ public class GroundScript : MonoBehaviour {
     public void setSecondary(bool s)
     {
         secondary = s;
+    }
+
+    public void setNoUpdate(bool n)
+    {
+        noUpdate = n;
     }
 
     public void Update()
@@ -741,7 +758,7 @@ public class GroundScript : MonoBehaviour {
                 return null;
             }
         }
-        TileScript tempTile = new TileScript();
+        TileScript tempTile = null;
         if (type.Equals("Grass"))
         {
             replaced.standingOn(null);
@@ -883,11 +900,14 @@ public class GroundScript : MonoBehaviour {
             }
         }
 
-        tempTile.updateConnection();
-        tempTile.setRandomDecor();
-        foreach (TileScript t in tempTile.getSurroundingTiles(false))
+        if (!noUpdate)
         {
-            t.updateConnection();
+            tempTile.updateConnection();
+            tempTile.setRandomDecor();
+            foreach (TileScript t in tempTile.getSurroundingTiles(false))
+            {
+                t.updateConnection();
+            }
         }
 
         foreach (string c in tileCharm)
@@ -1022,12 +1042,13 @@ public class GroundScript : MonoBehaviour {
         return null;
     }
 
-    public void updateTurnOrder(int currentTurn) //duplimorph ultra broke, minions don't delete on death
+    public void updateTurnOrder(int currentTurn, List<int> aM)
     {
+        if (aM != null)
+        {
+            alreadyMoved = aM;
+        } 
         float i = 0;
-
-        // if(opalTurns.Count > 0 && opalTurns[opalTurns.Count - 1] != null)
-        //     DestroyImmediate(opalTurns[opalTurns.Count-1].gameObject);
         foreach(OpalScript o in opalTurns)
         {
             DestroyImmediate(o.gameObject);
@@ -1101,15 +1122,17 @@ public class GroundScript : MonoBehaviour {
                 pl.GetComponent<TurnHighlighter>().setUp(this, o.getID());
                 i += 150f;
             }
-            else
-            {
-                //OpalScript temp = Instantiate<OpalScript>(o);
-                //temp.setDead();
-                    
-                //opalTurns.Add(temp);
-                //temp.transform.position = new Vector3(-100, -100, -100);
-            }
         }
+    }
+
+    public List<int> getAlreadyMoved()
+    {
+        return alreadyMoved;
+    }
+
+    public void updateTurnOrder(int currentTurn)
+    {
+        updateTurnOrder(currentTurn, null);
     }
 
     public void highlightOpal(int id, bool highlight)
@@ -1218,6 +1241,7 @@ public class GroundScript : MonoBehaviour {
         //opalTwo.transform.localPosition = new Vector3(opalTwo.transform.localPosition.x + 0.3f, opalTwo.transform.localPosition.y - 0.1f, opalTwo.transform.localPosition.z - 0.3f);
         opalTwo.setCurrentTile(target);
         target.standingOn(opalTwo);
+        allBoulders.Add(opalTwo);
     }
 
     public void clearGhosts(int x, int y)
@@ -1263,6 +1287,30 @@ public class GroundScript : MonoBehaviour {
         return i;
     }
 
+    public OpalScript getOpalByID(int id)
+    {
+        foreach(OpalScript o in gameOpals)
+        {
+            if(o.getID() == id)
+            {
+                return o;
+            }
+        }
+        return null;
+    }
+
+    public OpalScript getBoulderByID(int id)
+    {
+        foreach (OpalScript o in allBoulders)
+        {
+            if (o.getID() == id)
+            {
+                return o;
+            }
+        }
+        return null;
+    }
+
     public string isVocabWord(string word)
     {
         string strippedWord = "";
@@ -1279,7 +1327,8 @@ public class GroundScript : MonoBehaviour {
     public void setRed(int x, int z, bool red)
     {
         //print(myCursor.getMoving());
-        tileGrid[x, z].setRed(red, myCursor.getMoving());
+        if(x < 10 && x > -1 && z < 10 && z > -1)
+            tileGrid[x, z].setRed(red, myCursor.getMoving());
     }
 
     public IEnumerator screenShake(int intensity, int length)
@@ -1311,6 +1360,157 @@ public class GroundScript : MonoBehaviour {
 
     private void setUpSurroundings()
     {
+
+    }
+
+    public void saveGame(int input)
+    {
+        string state = "";
+
+        for (int i = 0; i < 10; i++)
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                state += tileGrid[i, j].type+"&";
+            }
+        }
+        state += "^";
+
+        for (int i = 0; i < 10; i++)
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                state += tileGrid[i, j].saveState() + "\n";
+            }
+        }
+
+        state += "^";
+
+        for(int i = 0; i < nonSortedGameOpals.Count; i++)
+        {
+            state += nonSortedGameOpals[i].saveStateSB() + "\n";
+        }
+        state += "^";
+
+        state += myCursor.saveGameState();
+
+        state += "^";
+
+        foreach (OpalScript o in nonSortedGameOpals)
+        {
+            state += o.getID() + "&";
+        }
+
+        state += "^";
+
+        string allBouldersState = "^";
+
+        for (int i = 0; i < allBoulders.Count; i++)
+        {
+            state += allBoulders[i].saveStateSB() + "\n";
+            allBouldersState += allBoulders[i].getID() + '&';
+        }
+
+        state += allBouldersState;
+
+        saveStates[input] = state;
+    }
+
+    public void loadGame(int input)
+    {
+        string[] data;
+        data = saveStates[input].Split('^');
+        string[] tileLayout = data[0].Split('&');
+        string[] tileStates = data[1].Split('\n');
+        string[] opalStates = data[2].Split('\n');
+        string[] allOpals = data[4].Split('&');
+        string[] boulderStates = data[5].Split('\n');
+        string[] allBouldersState = data[6].Split('&');
+
+
+        List<OpalScript> leftOut = new List<OpalScript>();
+        leftOut.AddRange(nonSortedGameOpals);
+        for(int i = 0; i < allOpals.Length; i++)
+        {
+            if(allOpals[i] != "")
+                leftOut.Remove(getOpalByID(int.Parse(allOpals[i])));
+        }
+
+        List<OpalScript> bouldersLeftOut = new List<OpalScript>();
+        bouldersLeftOut.AddRange(allBoulders);
+        for (int i = 0; i < allBouldersState.Length; i++)
+        {
+            if (allBouldersState[i] != "")
+                bouldersLeftOut.Remove(getBoulderByID(int.Parse(allBouldersState[i])));
+        }
+
+
+        if (leftOut.Count > 0)
+        {
+            foreach(OpalScript o in leftOut)
+            {
+                nonSortedGameOpals.Remove(o);
+                gameOpals.Remove(o);
+                if(o.getCurrentTile() != null)
+                    o.getCurrentTile().currentPlayer = null;
+                Destroy(o.gameObject);
+            }
+        }
+
+        if (bouldersLeftOut.Count > 0)
+        {
+            foreach (OpalScript o in bouldersLeftOut)
+            {
+                allBoulders.Remove(o);
+                if (o.getCurrentTile() != null)
+                    o.getCurrentTile().currentPlayer = null;
+                Destroy(o.gameObject);
+            }
+        }
+
+        int k = 0;
+        k = 0;
+        for (int i = 0; i < 10; i++)
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                setTile(tileGrid[i, j], tileLayout[k], true);
+                k++;
+            }
+        }
+
+
+        k = 0;
+        for (int i = 0; i < 10; i++)
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                tileGrid[i, j].loadState(tileStates[k]);
+                k++;
+            }
+        }
+
+
+        for (int i = 0; i < nonSortedGameOpals.Count; i++)
+        {
+            nonSortedGameOpals[i].loadState(opalStates[i]);
+        }
+        for (int i = 0; i < allBoulders.Count; i++)
+        {
+            if (boulderStates.Length == i)
+                break;
+            if(boulderStates[i] != "")
+                allBoulders[i].loadState(boulderStates[i]);
+        }
+
+
+        foreach (TileScript t in tileGrid)
+        {
+            t.updateConnection();
+        }
+
+
+        myCursor.loadGameState(data[3]);
 
     }
 }

@@ -66,7 +66,8 @@ public class TileScript : MonoBehaviour {
 
     private bool showMyTimer = false;
 
-    
+    private Coroutine falling = null;
+    private bool fallFlag = true;
 
     private GameObject myShadow;
     private bool shady = false;
@@ -797,8 +798,14 @@ public class TileScript : MonoBehaviour {
         return new Vector3(0,0,0);
     }
 
+    public void doFall()
+    {
+        falling = StartCoroutine(fall());
+    }
+
     public IEnumerator fall()
     {
+        fallFlag = true;
         if(currentPlayer != null)
         {
             currentPlayer.setDead();
@@ -807,7 +814,7 @@ public class TileScript : MonoBehaviour {
         }
         foreach(OpalScript o in boardScript.gameOpals)
         {
-            if(o.getCurrentTile() == this)
+            if(o.getCurrentTile() == this && !o.getDead())
             {
                 o.setDead();
                 StartCoroutine(o.shrinker());
@@ -820,11 +827,13 @@ public class TileScript : MonoBehaviour {
         }
         fallen = true;
         impassable = true;
-        while(transform.position.y > -100)
+        while(transform.position.y > -100 && fallFlag)
         {
             int xRand = Random.Range(-10, 10);
             int zRand = Random.Range(-10, 10);
             transform.position = new Vector3(transform.position.x + xRand*0.002f, transform.position.y - 0.01f, transform.position.z+zRand * 0.002f);
+            if (!fallFlag)
+                break;
             yield return new WaitForFixedUpdate();
         }
     }
@@ -856,6 +865,8 @@ public class TileScript : MonoBehaviour {
 
     public bool checkNeighbors(string targetType)
     {
+        if (fallen)
+            return false;
         bool check = true;
         for (int i = -1; i < 2; i++)
         {
@@ -1157,6 +1168,7 @@ public class TileScript : MonoBehaviour {
                 parts[i].sprite = tempS;
             }
         }
+        Resources.UnloadUnusedAssets();
     }
 
     private int calcShape(int num0, int num1, int num2)
@@ -1286,6 +1298,74 @@ public class TileScript : MonoBehaviour {
         }
 
         anim++;
+    }
+
+    public string saveState()
+    {
+        string output = "";
+
+        output += currentTrap + "|";
+        output += decayTurn + "|";
+        output += fallen + "|";
+
+        if (link != null) {
+            output += link.getPos().x + "|";
+            output += link.getPos().z + "|";
+        }
+        else
+        {
+            output += "none|none|";
+        }
+        
+        foreach(string charm in currentCharms)
+        {
+            output += charm + "&";
+        }
+
+        return output;
+    }
+
+    public void loadState(string input)
+    {
+        string[] data = input.Split('|');
+
+        if(data[0] != "")
+            setTrap(data[0]);
+
+        decayTurn = (int.Parse(data[1]));
+        setTimer(decayTurn);
+
+        if(data[2] == "True")
+        {
+            if(!fallen)
+                doFall();
+        }
+        else
+        {
+            fallFlag = false;
+            fallen = false;
+            impassable = false;
+            transform.position = new Vector3(gridPos.x, -1, gridPos.y);
+        }
+
+        if(data[3] != "none")
+        {
+            link = boardScript.tileGrid[int.Parse(data[3]), int.Parse(data[4])];
+        }
+
+        if (data[5] != "")
+        {
+            string[] cs = data[5].Split('&');
+            foreach (string c in cs)
+            {
+                if (c != "" && c != "None")
+                {
+                    addCharm(c);
+                }
+            }
+        }
+
+        
     }
 
 }

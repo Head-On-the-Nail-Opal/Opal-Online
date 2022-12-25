@@ -37,8 +37,10 @@ public class Ambush : OpalScript {
         type1 = "Grass";
         type2 = "Dark";
 
-        getSpeciesPriorities().AddRange(new List<Behave>{ new Behave("Growth-Teleport", 8, 1), new Behave("Safety", 7, 4), new Behave("Killer", 6, 1), new Behave("Green-Thumb", 5, 1) });
-        getSpeciesAwareness().AddRange(new List<Behave> { new Behave("Ambush-Wary", 8, 1) });
+        getSpeciesPriorities().AddRange(new List<Behave>{ 
+            new Behave("Cautious", 1, 3), new Behave("Ambush", 1, 10),
+            new Behave("Acrophobic", 0,1), new Behave("Green-Thumb", 0, 5) });
+        getSpeciesAwareness().AddRange(new List<Behave> { new Behave("Ambush-Wary", 0, 1) });
     }
 
     public override void prepAttack(int attackNum)
@@ -164,12 +166,60 @@ public class Ambush : OpalScript {
             {
                 return -1;
             }
+            if(attackNum == 0 && currentTile.type != "Growth")
+            {
+                return -1;
+            }
             return 0;
         }
+        
+        if(attackNum == 3)
+        {
+            foreach(TileScript t in getSurroundingTiles(true))
+            {
+                if (t.currentPlayer != null)
+                    return 0;
+            }
+            return -1;
+        }
+
         if (target.currentPlayer != null)
         {
             return 0;
         }
         return -1;
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if(atNum == 0)
+        {
+            //teleport to opponents at the start of the turn and away from them at the end
+            if((!useAroundOpal(currentTile, true, 2) && useAroundOpal(target, true, 3) && !boardScript.myCursor.getFinishAttack()) || (boardScript.myCursor.getFinishAttack() && useAroundOpal(currentTile, true, 2) && !useAdjacentToOpal(target, true))
+                && !boardScript.myCursor.tileIsFalling((int)target.getPos().x, (int)target.getPos().z))
+            {
+                return true;
+            }
+        }
+        else if(atNum == 1)
+        {
+            if(useAdjacentToOpal(target, true) && target.type != "Growth" && !useAdjacentToOpal(currentTile, true) && target.currentPlayer == null && !boardScript.myCursor.tileIsFalling((int)target.getPos().x, (int)target.getPos().z))
+            {
+                return true;
+            }
+        }else if(atNum == 2)
+        {
+            if (targettingEnemy(target))
+                return true;
+        }else if(atNum == 3)
+        {
+            return false;
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
+        return 1;
     }
 }
