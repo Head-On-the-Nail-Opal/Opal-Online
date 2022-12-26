@@ -110,6 +110,7 @@ abstract public class OpalScript : MonoBehaviour {
     private List<Behave> myPriorities = new List<Behave>();
 
     private List<Behave> speciesPriorities = new List<Behave>();
+    private List<Behave> speciesSynergies = new List<Behave>();
     private List<Behave> speciesAwareness = new List<Behave>();
 
     public Sprite attackFrame;
@@ -1426,6 +1427,11 @@ abstract public class OpalScript : MonoBehaviour {
         return speciesAwareness;
     }
 
+    public List<Behave> getSpeciesSynergies()
+    {
+        return speciesSynergies;
+    }
+
     public void setBehaviours()
     {
         myPriorities.Clear();
@@ -1437,7 +1443,14 @@ abstract public class OpalScript : MonoBehaviour {
 
         foreach (OpalScript o in boardScript.gameOpals)
         {
-            myPriorities.AddRange(o.getSpeciesAwareness());
+            if (o.getTeam() != getTeam())
+            {
+                myPriorities.AddRange(o.getSpeciesAwareness());
+            }
+            else
+            {
+                myPriorities.AddRange(o.getSpeciesSynergies());
+            }
         }
     }
 

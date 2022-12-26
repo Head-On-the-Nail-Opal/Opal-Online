@@ -34,6 +34,13 @@ public class Sentree : OpalScript
         type1 = "Grass";
         type2 = "Grass";
         og = true;
+
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Ally", 1, 14), new Behave("Close-Combat", 1, 2),
+            new Behave("Safety", 0,1) });
+
+        getSpeciesSynergies().AddRange(new List<Behave>{
+            new Behave("AnchorTree", 0, 10) });
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -125,5 +132,35 @@ public class Sentree : OpalScript
             return 0;
         }
         return -1;
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (atNum == 0)
+        {
+            if(useAdjacentToOpal(target, false))
+                return true;
+        }
+        else if (atNum == 1)
+        {
+            if(target.currentPlayer != null)
+                return true;
+        }
+        else if (atNum == 2)
+        {
+            if (target.getCurrentOpal() != null && target.getCurrentOpal().getTeam() != getTeam())
+                return true;
+        }
+        else if (atNum == 3)
+        {
+            if(!useAdjacentToOpal(target, true) && !useAdjacentToOpal(target, false))
+                return false;
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
+        return 1;
     }
 }

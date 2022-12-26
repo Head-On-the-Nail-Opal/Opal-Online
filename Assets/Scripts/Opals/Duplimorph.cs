@@ -156,7 +156,7 @@ public class Duplimorph : OpalScript
         }
         else if (atNum == 2)
         {
-            if (health <= maxHealth / 2 && target.getCurrentOpal().getTeam() != getTeam() && !isTeamEmpty(false))
+            if (health <= maxHealth / 2 && target.getCurrentOpal().getTeam() != getTeam() && !isTeamEmptyDuplimorph(false))
                 return true;
         }
         else if (atNum == 3)
@@ -181,6 +181,31 @@ public class Duplimorph : OpalScript
             if (o.getTeam() == getTeam() && o.getMyName() == "Duplimorph")
                 if (o.getMinionCount() == 4)
                     return false;
+        }
+        return true;
+    }
+
+    public bool isTeamEmptyDuplimorph(bool enemy)
+    {
+        foreach (OpalScript o in boardScript.gameOpals)
+        {
+            if (!o.getDead() && o != this)
+            {
+                if (enemy)
+                {
+                    if (o.getTeam() != getTeam() && o.getMyName() == "Duplimorph")
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (o.getTeam() == getTeam() && o.getMyName() == "Duplimorph")
+                    {
+                        return false;
+                    }
+                }
+            }
         }
         return true;
     }

@@ -35,6 +35,13 @@ public class Spillarc : OpalScript
         type1 = "Water";
         type2 = "Light";
         og = true;
+
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Ally", 1, 3), new Behave("Use-Full-Move", 1, 10),
+            new Behave("Safety", 0,1), new Behave("Wet-Appetite", 0, 10) });
+
+        getSpeciesSynergies().AddRange(new List<Behave>{
+            new Behave("Flood-Adjacent", 0, 10) });
     }
 
     public override void onMove(int x, int z)
@@ -141,10 +148,43 @@ public class Spillarc : OpalScript
         {
             return -1;
         }
-        if (target.currentPlayer != null)
+        if (target.currentPlayer != null && attackNum != 1)
+        {
+            return 0;
+        }
+        if (attackNum == 1 && target.type == "Flood")
         {
             return 0;
         }
         return -1;
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (atNum == 0)
+        {
+            return false;
+        }
+        else if (atNum == 1)
+        {
+            if (target.getCurrentOpal() != null && target.getCurrentOpal().getTeam() == getTeam())
+                return true;
+        }
+        else if (atNum == 2)
+        {
+            if (target.getCurrentOpal() != null && target.getCurrentOpal().getTeam() == getTeam())
+                return true;
+        }
+        else if (atNum == 3)
+        {
+            if(currentTile.type != "Flood" && !useAdjacentToOpal(currentTile, false))
+                return true;
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
+        return 1;
     }
 }

@@ -249,6 +249,21 @@ public class OpalBrain : MonoBehaviour
                     case "Line-Up":
                         output += doLineUp(t) * b.getIntensity();
                         break;
+                    case "Line-Up-Ally":
+                        output += doLineUpAlly(t) * b.getIntensity();
+                        break;
+                    case "Ally":
+                        output += doAlly(t) * b.getIntensity();
+                        break;
+                    case "AnchorTree":
+                        output += doAnchorTree(t) * b.getIntensity();
+                        break;
+                    case "Wet-Appetite":
+                        output += doWetAppetite(t) * b.getIntensity();
+                        break;
+                    case "Flood-Adjacent":
+                        output += doFloodAdjacent(t) * b.getIntensity();
+                        break;
                 }
             }
         }
@@ -321,6 +336,19 @@ public class OpalBrain : MonoBehaviour
         return 0;
     }
 
+    private int doWetAppetite(TileScript t)
+    {
+        int output = 0;
+        foreach (TileScript tile in t.getSurroundingTiles(true))
+        {
+            if (t.type == "Flood" && tile.getCurrentOpal() != null && tile.getCurrentOpal().getTeam() ==  myCursor.getCurrentOpal().getTeam() && tile.getCurrentOpal() != myCursor.getCurrentOpal())
+            {
+                output += 20;
+            }
+        }
+        return output;
+    }
+
     private int doAmbush(TileScript t)
     {
         if(t.type == "Growth")
@@ -374,6 +402,32 @@ public class OpalBrain : MonoBehaviour
         return output;
     }
 
+    private int doAlly(TileScript target)
+    {
+        int output = 0;
+        foreach (TileScript t in mainGame.tileGrid)
+        {
+            if (t.getCurrentOpal() != null && t.getCurrentOpal().getTeam() == myCursor.getCurrentOpal().getTeam())
+            {
+                output += -(int)(Mathf.Abs(target.getPos().x - t.getPos().x) + Mathf.Abs(target.getPos().z - t.getPos().z));
+            }
+        }
+        return output;
+    }
+
+    private int doAnchorTree(TileScript target)
+    {
+        int output = 0;
+        foreach (TileScript t in mainGame.tileGrid)
+        {
+            if (t.getCurrentOpal() != null && t.getCurrentOpal().getTeam() == myCursor.getCurrentOpal().getTeam() && t.getCurrentOpal().getMyName() == "Sentree")
+            {
+                output += -(int)(Mathf.Abs(target.getPos().x - t.getPos().x) + Mathf.Abs(target.getPos().z - t.getPos().z));
+            }
+        }
+        return output;
+    }
+
     private int doLineUp(TileScript target)
     {
         int output = 0;
@@ -394,6 +448,44 @@ public class OpalBrain : MonoBehaviour
                 {
                     output += 2;
                 }
+            }
+        }
+        return output;
+    }
+
+    private int doLineUpAlly(TileScript target)
+    {
+        int output = 0;
+        for (int i = -3; i < 4; i++)
+        {
+            if (target.getPos().x + i > -1 && target.getPos().x + i < 10)
+            {
+                TileScript t = mainGame.tileGrid[(int)target.getPos().x + i, (int)target.getPos().z];
+                if (t.currentPlayer != null && t.currentPlayer.getTeam() == mainGame.getCurrentOpal().getTeam())
+                {
+                    output += 2;
+                }
+            }
+            if (target.getPos().z + i > -1 && target.getPos().z + i < 10)
+            {
+                TileScript t = mainGame.tileGrid[(int)target.getPos().x, (int)target.getPos().z + i];
+                if (t.currentPlayer != null && t.currentPlayer.getTeam() == mainGame.getCurrentOpal().getTeam())
+                {
+                    output += 2;
+                }
+            }
+        }
+        return output;
+    }
+
+    private int doFloodAdjacent(TileScript t)
+    {
+        int output = 0;
+        foreach (TileScript tile in t.getSurroundingTiles(true))
+        {
+            if (tile.type == "Flood")
+            {
+                output += 1;
             }
         }
         return output;

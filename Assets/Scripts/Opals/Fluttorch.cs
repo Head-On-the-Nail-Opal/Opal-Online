@@ -36,6 +36,9 @@ public class Fluttorch : OpalScript
         Attacks[3] = new Attack("Dragon's Breath",2,4,0, "Give a target burn and lift. If you're standing in Flame, deal 6 damage and push them back by 2 tiles.",0,3);
         type1 = "Fire";
         type2 = "Air";
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Cautious", 1, 3), new Behave("Line-Up-Ally", 1, 5),
+            new Behave("Safety", 0,1), new Behave("Hot-Headed", 0, 10) });
     }
 
     public override void onStart()
@@ -58,16 +61,19 @@ public class Fluttorch : OpalScript
         }
         else if (attackNum == 2) //Grass Cover
         {
-            if(currentTile != null && currentTile.type == "Fire")
+            if (currentTile != null && currentTile.type == "Fire")
             {
                 target.doHeal(6, false);
-                target.doTempBuff(0,1,4);
+                target.doTempBuff(0, 1, 4);
                 target.doTempBuff(2, 1, 2);
                 return 0;
             }
-            target.doHeal(3, false);
-            target.doTempBuff(0, 1, 2);
-            target.doTempBuff(2, 1, 1);
+            else
+            {
+                target.doHeal(3, false);
+                target.doTempBuff(0, 1, 2);
+                target.doTempBuff(2, 1, 1);
+            }
             return 0;
         }
         else if (attackNum == 3) //Grass Cover
@@ -164,5 +170,34 @@ public class Fluttorch : OpalScript
             return 0;
         }
         return -1;
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (atNum == 0)
+        {
+            return false;
+        }
+        else if (atNum == 1)
+        {
+            if(cinderWing > 0 && (useAroundOpal(target, true, 3) || useAroundOpal(target, false, 3)))
+                return true;
+        }
+        else if (atNum == 2)
+        {
+            if(target.getCurrentOpal() != null && target.getCurrentOpal().getTeam() == getTeam())
+            return true;
+        }
+        else if (atNum == 3)
+        {
+            if(target.getCurrentOpal() != null && target.getCurrentOpal().getTeam() != getTeam() && currentTile.type == "Fire")
+                return true;
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
+        return 2;
     }
 }
