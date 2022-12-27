@@ -34,6 +34,11 @@ public class Gorj : OpalScript
         Attacks[3] = new Attack("Mulch Munch", 0, 1, 0, "Eat the ground beneath Gorj, each tile type affecting Gorj and it's victim differently.",0,3);
         type1 = "Void";
         type2 = "Void";
+
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Courageous", 1, 10),
+            new Behave("Safety", 0, 2), new Behave("Remedy", 0,1) });
+        getSpeciesAwareness().AddRange(new List<Behave> { new Behave("Gorj-Wary", 0, 1) });
     }
 
 
@@ -210,5 +215,35 @@ public class Gorj : OpalScript
             return 0;
         }
         return -1;
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (atNum == 0)
+        {
+            return false;
+        }
+        else if (atNum == 1)
+        {
+            if (target.currentPlayer != null)
+                return true;
+        }
+        else if (atNum == 2)
+        {
+            if (!useAdjacentToOpal(target, true)
+                && (getBurning() && currentTile.type == "Fire" || getPoison() && currentTile.type == "Miasma"))
+                return true;
+        }
+        else if (atNum == 3)
+        {
+            if (!useAdjacentToOpal(target, true) && target.type != "Grass")
+                return true;
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
+        return 1;
     }
 }

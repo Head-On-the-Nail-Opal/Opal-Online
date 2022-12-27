@@ -264,6 +264,12 @@ public class OpalBrain : MonoBehaviour
                     case "Flood-Adjacent":
                         output += doFloodAdjacent(t) * b.getIntensity();
                         break;
+                    case "Remedy":
+                        output += doRemedy(t) * b.getIntensity();
+                        break;
+                    case "Courageous":
+                        output += doCourageous(t) * b.getIntensity();
+                        break;
                 }
             }
         }
@@ -283,6 +289,20 @@ public class OpalBrain : MonoBehaviour
                     output +=  -(int)(Mathf.Abs(target.getPos().x - t.getPos().x) + Mathf.Abs(target.getPos().z - t.getPos().z)) / 2;
                 else
                     output += (int)(Mathf.Abs(target.getPos().x - t.getPos().x) + Mathf.Abs(target.getPos().z - t.getPos().z)) - range;
+            }
+        }
+        return output;
+    }
+
+    private int doCourageous(TileScript target)
+    {
+        int output = 0;
+        foreach (TileScript t in mainGame.tileGrid)
+        {
+            if (t.getCurrentOpal() != null && t.getCurrentOpal().getTeam() != myCursor.getCurrentOpal().getTeam())
+            {
+                if ((int)(Mathf.Abs(target.getPos().x - t.getPos().x) + Mathf.Abs(target.getPos().z - t.getPos().z)) > 0)
+                    output += 10 - (int)(Mathf.Abs(target.getPos().x - t.getPos().x) + Mathf.Abs(target.getPos().z - t.getPos().z));
             }
         }
         return output;
@@ -339,13 +359,8 @@ public class OpalBrain : MonoBehaviour
     private int doWetAppetite(TileScript t)
     {
         int output = 0;
-        foreach (TileScript tile in t.getSurroundingTiles(true))
-        {
-            if (t.type == "Flood" && tile.getCurrentOpal() != null && tile.getCurrentOpal().getTeam() ==  myCursor.getCurrentOpal().getTeam() && tile.getCurrentOpal() != myCursor.getCurrentOpal())
-            {
-                output += 20;
-            }
-        }
+        if (t.type == "Flood")
+            return 1;
         return output;
     }
 
@@ -409,7 +424,7 @@ public class OpalBrain : MonoBehaviour
         {
             if (t.getCurrentOpal() != null && t.getCurrentOpal().getTeam() == myCursor.getCurrentOpal().getTeam())
             {
-                output += -(int)(Mathf.Abs(target.getPos().x - t.getPos().x) + Mathf.Abs(target.getPos().z - t.getPos().z));
+                output += 10-(int)(Mathf.Abs(target.getPos().x - t.getPos().x) + Mathf.Abs(target.getPos().z - t.getPos().z));
             }
         }
         return output;
@@ -487,6 +502,20 @@ public class OpalBrain : MonoBehaviour
             {
                 output += 1;
             }
+        }
+        return output;
+    }
+
+    private int doRemedy(TileScript target)
+    {
+        int output = 0;
+        if(myCursor.getCurrentOpal().getBurning() && target.type == "Fire")
+        {
+            output += 5;
+        }
+        if (myCursor.getCurrentOpal().getPoison() && target.type == "Miasma")
+        {
+            output += 5;
         }
         return output;
     }

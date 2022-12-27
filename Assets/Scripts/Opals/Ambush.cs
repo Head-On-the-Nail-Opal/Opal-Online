@@ -194,7 +194,7 @@ public class Ambush : OpalScript {
     {
         if(atNum == 0)
         {
-            //teleport to opponents at the start of the turn and away from them at the end
+            //teleport to opponents at the start of the turn and away from them at the end - should not be used as a main move
             if((!useAroundOpal(currentTile, true, 2) && useAroundOpal(target, true, 3) && !boardScript.myCursor.getFinishAttack()) || (boardScript.myCursor.getFinishAttack() && useAroundOpal(currentTile, true, 2) && !useAdjacentToOpal(target, true))
                 && !boardScript.myCursor.tileIsFalling((int)target.getPos().x, (int)target.getPos().z))
             {

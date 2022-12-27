@@ -1,7 +1,7 @@
 Please don't change this, it will be encrypted eventually.
 Ambush|None|Straight-Edge,
-Bubbacle|None|Straight-Edge,
 Duplimorph|None|Straight-Edge,
+Duplimorph|None|Straight-Edge,Gorj|None|Straight-Edge,
 Hearthhog|None|Straight-Edge,Fluttorch|None|Straight-Edge,
 Ambush|None|Straight-Edge,Sentree|None|Straight-Edge,
 Bubbacle|None|Straight-Edge,Spillarc|None|Straight-Edge,

@@ -37,8 +37,8 @@ public class Spillarc : OpalScript
         og = true;
 
         getSpeciesPriorities().AddRange(new List<Behave>{
-            new Behave("Ally", 1, 3), new Behave("Use-Full-Move", 1, 10),
-            new Behave("Safety", 0,1), new Behave("Wet-Appetite", 0, 10) });
+            new Behave("Ally", 1, 10),
+            new Behave("Safety", 0,1) });
 
         getSpeciesSynergies().AddRange(new List<Behave>{
             new Behave("Flood-Adjacent", 0, 10) });

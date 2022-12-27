@@ -1447,7 +1447,7 @@ abstract public class OpalScript : MonoBehaviour {
             {
                 myPriorities.AddRange(o.getSpeciesAwareness());
             }
-            else
+            else if(o != this)
             {
                 myPriorities.AddRange(o.getSpeciesSynergies());
             }
