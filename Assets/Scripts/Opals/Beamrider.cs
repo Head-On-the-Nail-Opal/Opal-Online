@@ -34,6 +34,9 @@ public class Beamrider : OpalScript
         Attacks[3] = new Attack("Big Red Button", 1, 6, 0, "Deal 0 damage to all targets in a line. Ignores line of sight. Double bonuses from attack, then remove all stat bonuses",0,3);
         type1 = "Laser";
         type2 = "Laser";
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Cautious", 1, 5), new Behave("Line-Up-Laser", 1, 5),
+            new Behave("Safety", 0,1) });
     }
 
     public override void onStart()
@@ -125,5 +128,35 @@ public class Beamrider : OpalScript
             return 0;
         }
         return -1;
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (atNum == 0)
+        {
+            if(checkLaserClear(target) && getAttack() >= 5)
+                return true;
+        }
+        else if (atNum == 1)
+        {
+            if(!checkLaserClear(target) || (checkLaserClear(target) && getAttack() < 5))
+                return true;
+        }
+        else if (atNum == 2)
+        {
+            if((!checkLaserClear(target) && getAttack() >= 6) || (checkLaserClear(target) && getAttack() >= 6 && getAttack() <= 15))
+                return true;
+        }
+        else if (atNum == 3)
+        {
+            if (checkLaserClear(target) && getAttack() >= 6)
+                return true;
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
+        return 0;
     }
 }

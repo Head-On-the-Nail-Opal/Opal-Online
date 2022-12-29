@@ -998,6 +998,16 @@ public class CursorScript : MonoBehaviour {
         return gameOver;
     }
 
+    public bool getFollowUp()
+    {
+        return followup;
+    }
+
+    public void toggleReticle(bool tog)
+    {
+        reticle.GetComponent<SpriteRenderer>().enabled = tog;
+    }
+
 
     private void dealDamage(OpalScript target)
     {
@@ -1860,6 +1870,7 @@ public class CursorScript : MonoBehaviour {
             destroyDummies();
         }
         attacking = -1;
+        ts.updateAttackScreen(selectedPlayer, -1, selectedPlayer.getCurrentTile());
         return output;
     }
 

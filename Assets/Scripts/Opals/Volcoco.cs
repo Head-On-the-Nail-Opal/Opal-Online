@@ -37,6 +37,9 @@ public class Volcoco : OpalScript
         Attacks[3] = new Attack("Heatleaf", 0, 5, 0, "Opal standing on a growth takes damage from their burn.",0,3);
         type1 = "Fire";
         type2 = "Grass";
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Nesting", 1, 5),
+            new Behave("Safety", 0,1) });
     }
 
     public override void onStart()
@@ -197,5 +200,56 @@ public class Volcoco : OpalScript
             return 0;
         }
         return -1;
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (atNum == 0)
+        {
+            if (targettingEnemy(target) && !boardScript.myCursor.getFollowUp())
+                return true;
+        }
+        else if (atNum == 1)
+        {
+            return false;
+        }
+        else if (atNum == 2)
+        {
+            if (target.type != "Growth" && target.type != "Fire")
+            {
+                int input = 0;
+                foreach(TileScript t in getSurroundingTiles(false))
+                {
+                    if (t.type == "Growth" && t.type == "Fire")
+                        input++;
+                }
+                if(input < 6)
+                    return true;
+            }
+            if(boardScript.myCursor.getFollowUp())
+            {
+                int input = 0;
+                int total = 0;
+                foreach (TileScript t in getSurroundingTiles(false))
+                {
+                    if (t.type != "Growth" && t.type != "Fire")
+                        input++;
+                    total++;
+                }
+                if (input == total)
+                    return true;
+            }
+        }
+        else if (atNum == 3)
+        {
+            if (targettingEnemy(target) && target.currentPlayer.getBurning() && !boardScript.myCursor.getFollowUp())
+                return true;
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
+        return 1;
     }
 }

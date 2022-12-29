@@ -35,6 +35,10 @@ public class Succuum : OpalScript {
         type1 = "Water";
         type2 = "Air";
         og = true;
+
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Crowded", 1, 5), new Behave("Line-Up", 1, 5), new Behave("Ally", 1, 2),
+            new Behave("Safety", 0,1) });
     }
 
     private void adjustDeluge()
@@ -217,5 +221,47 @@ public class Succuum : OpalScript {
             return 0;
         }
         return -1;
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (atNum == 0)
+        {
+            return false;
+        }
+        else if (atNum == 1)
+        {
+            if(targettingEnemy(target) && notAdjacent(target))
+                return true;
+        }
+        else if (atNum == 2)
+        {
+            int result = 0;
+            foreach(TileScript t in getSurroundingTiles(false))
+            {
+                if (t.getCurrentOpal() != null && t.getCurrentOpal().getTeam() != getTeam())
+                    result++;
+            }
+            if (result > 1 && target.currentPlayer != null)
+                return true;
+            
+        }
+        else if (atNum == 3)
+        {
+            int result = 0;
+            foreach (TileScript t in getSurroundingTiles(false))
+            {
+                if (t.getCurrentOpal() != null && t.getCurrentOpal().getTeam() != getTeam())
+                    result++;
+            }
+            if (result <= 1 && !checkHasLineOfSightNotAdjacent(getMaxRange()))
+                return true;
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
+        return 3;
     }
 }

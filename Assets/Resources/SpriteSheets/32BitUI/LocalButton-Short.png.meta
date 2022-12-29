@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: 791af2ec17d34ae44b05f1d473ae95a1
+guid: bee21de9a093ff74cbc2f973edff8fc4
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4680436278979896466
-    second: LocalButton_0
+      213: -3723850217453517994
+    second: LocalButton-Short_0
   - first:
-      213: -5187783933733091780
-    second: LocalButton_1
+      213: 4745407390646078782
+    second: LocalButton-Short_1
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -117,7 +117,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: LocalButton_0
+      name: LocalButton-Short_0
       rect:
         serializedVersion: 2
         x: 0
@@ -131,14 +131,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 294a27a6fff34f040800000000000000
-      internalID: 4680436278979896466
+      spriteID: 6530ceff4f9325cc0800000000000000
+      internalID: -3723850217453517994
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: LocalButton_1
+      name: LocalButton-Short_1
       rect:
         serializedVersion: 2
         x: 64
@@ -152,8 +152,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c364c529ff94108b0800000000000000
-      internalID: -5187783933733091780
+      spriteID: e3d09f921e21bd140800000000000000
+      internalID: 4745407390646078782
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 079174916379df64192a754646e26c52
+    spriteID: 5c840c81d0bd9b5419c35bd948677bfa
     internalID: 0
     vertices: []
     indices: 

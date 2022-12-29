@@ -55,22 +55,31 @@ public class OpalBrain : MonoBehaviour
 
     private IEnumerator doRandomMove()
     {
+        myCursor.toggleReticle(false);
         if(findBestRandomAbility(true))
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(1.5f);
         findBestRandomMove();
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
         if (findBestRandomAbility(true))
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(1.5f);
         findBestRandomAbility(false);
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
+
+        while (myCursor.getFollowUp())
+        {
+            findBestRandomAbility(false);
+            yield return new WaitForSeconds(1.5f);
+        }
+
         if (findBestRandomMove())
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(1.5f);
         if (findBestRandomAbility(true))
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(1.5f);
 
         myCursor.doEndTurn();
         currentAction = null;
         startOfTurn = true;
+        myCursor.toggleReticle(true);
     }
 
     private bool findBestRandomMove()
@@ -182,30 +191,6 @@ public class OpalBrain : MonoBehaviour
     }
 
 
-
-    
-    private void assessMyBehaviour(OpalScript me, Behave b)
-    {
-        switch (b.getName()) {
-            case "Killer":
-                break;
-            case "Safety":
-                break;
-            case "Pressure":
-                break;
-
-            case "Green-Thumb":
-                break;
-            case "Growth-Teleport":
-                break;
-
-            case "Ambush-Wary":
-                break;
-
-        }
-    }
-
-
     private int calculateScore(TileScript[,] current, TileScript t)
     {
         int output = 0;
@@ -216,7 +201,8 @@ public class OpalBrain : MonoBehaviour
             if (!numBehaviourPriorities.Contains(b.getPriority()) && b.getPriority() != 0)
                 numBehaviourPriorities.Add(b.getPriority());
         }
-        randPriority = numBehaviourPriorities[Random.Range(0, numBehaviourPriorities.Count)];
+        if(numBehaviourPriorities.Count > 0)
+            randPriority = numBehaviourPriorities[Random.Range(0, numBehaviourPriorities.Count)];
         foreach (Behave b in myCursor.getCurrentOpal().getBehaviours())
         {
             if (b.getPriority() == randPriority || b.getPriority() == 0)
@@ -247,7 +233,7 @@ public class OpalBrain : MonoBehaviour
                         output += doHotHeaded(t) * b.getIntensity();
                         break;
                     case "Line-Up":
-                        output += doLineUp(t) * b.getIntensity();
+                        output += doLineUp(t, myCursor.getCurrentOpal().getMaxRange()) * b.getIntensity();
                         break;
                     case "Line-Up-Ally":
                         output += doLineUpAlly(t) * b.getIntensity();
@@ -269,6 +255,18 @@ public class OpalBrain : MonoBehaviour
                         break;
                     case "Courageous":
                         output += doCourageous(t) * b.getIntensity();
+                        break;
+                    case "Nesting":
+                        output += doNesting(t) * b.getIntensity();
+                        break;
+                    case "Glimmering-Aura":
+                        output += doGlimmeringAura(t) * b.getIntensity();
+                        break;
+                    case "Crowded":
+                        output += doCrowded(t) * b.getIntensity();
+                        break;
+                    case "Line-Up-Laser":
+                        output += doLineUp(t, 10) * b.getIntensity();
                         break;
                 }
             }
@@ -443,10 +441,10 @@ public class OpalBrain : MonoBehaviour
         return output;
     }
 
-    private int doLineUp(TileScript target)
+    private int doLineUp(TileScript target, int range)
     {
         int output = 0;
-        for(int i = -3; i < 4; i++)
+        for(int i = -range; i < range+1; i++)
         {
             if (target.getPos().x + i > -1 && target.getPos().x + i < 10)
             {
@@ -516,6 +514,53 @@ public class OpalBrain : MonoBehaviour
         if (myCursor.getCurrentOpal().getPoison() && target.type == "Miasma")
         {
             output += 5;
+        }
+        return output;
+    }
+
+    private int doNesting(TileScript target)
+    {
+        int output = 0;
+        foreach (TileScript t in target.getSurroundingTiles(false))
+        {
+            if (t.type == "Growth" || t.type == "Fire")
+                output += 1;
+        }
+        return output;
+    }
+
+    private int doGlimmeringAura(TileScript target)
+    {
+        int output = 0;
+        foreach (TileScript t in target.getSurroundingTiles(false))
+        {
+            if(t.getCurrentOpal() != null && t.getCurrentOpal().getMyName() == "Glimmerpillar")
+            {
+                if (t.getCurrentOpal().getTeam() != myCursor.getCurrentOpal().getTeam())
+                {
+                    output += -1;
+                }
+                else
+                {
+                    output += 1;
+                }
+            }
+        }
+        return output;
+    }
+
+    private int doCrowded(TileScript target)
+    {
+        int output = 0;
+        foreach (TileScript t in target.getSurroundingTiles(false))
+        {
+            if (t.getCurrentOpal() != null && t.getCurrentOpal().getMyName() == "Glimmerpillar")
+            {
+                if (t.getCurrentOpal().getTeam() != myCursor.getCurrentOpal().getTeam())
+                {
+                    output += 1;
+                }
+            }
         }
         return output;
     }

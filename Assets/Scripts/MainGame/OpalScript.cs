@@ -882,6 +882,185 @@ abstract public class OpalScript : MonoBehaviour {
         return -1;
     }
 
+    public bool checkHasLineOfSight(int range)
+    {
+        for (int i = 1; i < range+1; i++)
+        {
+            if (getPos().x + i > -1 && getPos().x + i < 10)
+            {
+                TileScript t = boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z];
+                if (t.currentPlayer != null && t.currentPlayer.getTeam() != getTeam())
+                {
+                    return true;
+                }else if (t.currentPlayer != null && t.currentPlayer.getTeam() == getTeam())
+                {
+                    break;
+                }
+            }
+        }
+        for (int i = -range; i < 0; i++)
+        {
+            if (getPos().x + i > -1 && getPos().x + i < 10)
+            {
+                TileScript t = boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z];
+                if (t.currentPlayer != null && t.currentPlayer.getTeam() != getTeam())
+                {
+                    return true;
+                }
+                else if (t.currentPlayer != null && t.currentPlayer.getTeam() == getTeam())
+                {
+                    break;
+                }
+            }
+        }
+        for (int i = 1; i < range + 1; i++)
+        {
+            if (getPos().z + i > -1 && getPos().z + i < 10)
+            {
+                TileScript t = boardScript.tileGrid[(int)getPos().x, (int)getPos().z+i];
+                if (t.currentPlayer != null && t.currentPlayer.getTeam() != getTeam())
+                {
+                    return true;
+                }
+                else if (t.currentPlayer != null && t.currentPlayer.getTeam() == getTeam())
+                {
+                    break;
+                }
+            }
+        }
+        for (int i = -range; i < 0; i++)
+        {
+            if (getPos().z + i > -1 && getPos().z + i < 10)
+            {
+                TileScript t = boardScript.tileGrid[(int)getPos().x, (int)getPos().z + i];
+                if (t.currentPlayer != null && t.currentPlayer.getTeam() != getTeam())
+                {
+                    return true;
+                }
+                else if (t.currentPlayer != null && t.currentPlayer.getTeam() == getTeam())
+                {
+                    break;
+                }
+            }
+        }
+        return false;
+    }
+
+    public bool checkLaserClear(TileScript target)
+    {
+        int range = 10;
+        if(target.getPos().x < getPos().x)
+        {
+            for (int i = -range; i < 0; i++)
+            {
+                if (getPos().x + i > -1 && getPos().x + i < 10)
+                {
+                    TileScript t = boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z];
+                    if (t.currentPlayer != null && t.currentPlayer.getTeam() != getTeam())
+                    {
+                        return true;
+                    }
+                    else if (t.currentPlayer != null && t.currentPlayer.getTeam() == getTeam())
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+        else if (target.getPos().x > getPos().x)
+        {
+            for (int i = 1; i < range + 1; i++)
+            {
+                if (getPos().x + i > -1 && getPos().x + i < 10)
+                {
+                    TileScript t = boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z];
+                    if (t.currentPlayer != null && t.currentPlayer.getTeam() != getTeam())
+                    {
+                        return true;
+                    }
+                    else if (t.currentPlayer != null && t.currentPlayer.getTeam() == getTeam())
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+        else if (target.getPos().z < getPos().z)
+        {
+            for (int i = -range; i < 0; i++)
+            {
+                if (getPos().z + i > -1 && getPos().z + i < 10)
+                {
+                    TileScript t = boardScript.tileGrid[(int)getPos().x, (int)getPos().z + i];
+                    if (t.currentPlayer != null && t.currentPlayer.getTeam() != getTeam())
+                    {
+                        return true;
+                    }
+                    else if (t.currentPlayer != null && t.currentPlayer.getTeam() == getTeam())
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+        else if (target.getPos().z > getPos().z)
+        {
+            for (int i = 1; i < range + 1; i++)
+            {
+                if (getPos().z + i > -1 && getPos().z + i < 10)
+                {
+                    TileScript t = boardScript.tileGrid[(int)getPos().x, (int)getPos().z + i];
+                    if (t.currentPlayer != null && t.currentPlayer.getTeam() != getTeam())
+                    {
+                        return true;
+                    }
+                    else if (t.currentPlayer != null && t.currentPlayer.getTeam() == getTeam())
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public bool checkHasLineOfSightNotAdjacent(int range)
+    {
+        for (int i = -range; i < range + 1; i++)
+        {
+            if (getPos().x + i > -1 && getPos().x + i < 10 && i != -1 && i != 1)
+            {
+                TileScript t = boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z];
+                if (t.currentPlayer != null && t.currentPlayer.getTeam() != getTeam())
+                {
+                    return true;
+                }
+            }
+        }
+        for (int i = -range; i < range + 1; i++)
+        {
+            if (getPos().z + i > -1 && getPos().z + i < 10 && i != -1 && i != 1)
+            {
+                TileScript t = boardScript.tileGrid[(int)getPos().x, (int)getPos().z + i];
+                if (t.currentPlayer != null && t.currentPlayer.getTeam() != getTeam())
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public bool notAdjacent(TileScript input)
+    {
+        foreach (TileScript t in getSurroundingTiles(true))
+        {
+            if (input == t)
+                return false;
+        }
+        return true;
+    }
+
     public bool targettingEnemy(TileScript target)
     {
         if(target != null && target.currentPlayer != null && target.currentPlayer.getTeam() != getTeam())

@@ -35,6 +35,9 @@ public class Glummer : OpalScript
         type1 = "Swarm";
         type2 = "Light";
         glimmerpillarPrefab = Resources.Load<Glimmerpillar>("Prefabs/SubOpals/Glimmerpillar");
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Cautious", 1, 3), new Behave("Ally", 1, 10),
+            new Behave("Safety", 0,1)});
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -133,5 +136,34 @@ public class Glummer : OpalScript
             return 0;
         }
         return -1;
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (atNum == 0)
+        {
+            if(minionCount < 4)
+                return true;
+        }
+        else if (atNum == 1)
+        {
+            if(targettingAlly(target) && minionCount > 0 && target.currentPlayer.getMyName() != "Glimmerpillar")
+                return true;
+        }
+        else if (atNum == 2)
+        {
+            if (targettingAlly(target) && minionCount > 0 && target.currentPlayer.getHealth() < target.currentPlayer.getMaxHealth() && target.currentPlayer.getMyName() != "Glimmerpillar")
+                return true;
+        }
+        else if (atNum == 3)
+        {
+            return false;
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
+        return 1;
     }
 }

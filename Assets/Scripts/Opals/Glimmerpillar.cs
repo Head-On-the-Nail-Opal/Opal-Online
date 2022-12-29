@@ -28,10 +28,14 @@ public class Glimmerpillar : OpalScript
         player = pl;
         Attacks[0] = new Attack("Pillar", 0, 0, 0, "<Passive>\n At the start of its turn, surrounding Enemy Opals lose -4 defense for 1 turn.");
         Attacks[1] = new Attack("Lamplight", 2, 1, 0, "Give a target +2 attack and +2 defense for 1 turn",0,3);
-        Attacks[2] = new Attack("Soothe", 0, 1, 0, "Surrounding allied Opals are healed by +2 health. Enemy opals lose -2 attack.",0,3);
+        Attacks[2] = new Attack("Soothe", 0, 1, 0, "Surrounding allied Opals are healed by +2 health. Surrounding enemy opals lose -2 attack.",0,3);
         Attacks[3] = new Attack("Intensify", 1, 1, 0, "Give a target +3 attack and +3 defense. Die.",0,3) ;
         type1 = "Swarm";
         type2 = "Light";
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Safety", 0,1)});
+        getSpeciesSynergies().AddRange(new List<Behave> { new Behave("Glimmering-Aura", 0, 2) });
+        getSpeciesAwareness().AddRange(new List<Behave> { new Behave("Glimmering-Aura", 0, 2) });
     }
 
     public override void onStart()
@@ -148,5 +152,40 @@ public class Glimmerpillar : OpalScript
             return 0;
         }
         return -1;
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (atNum == 0)
+        {
+            return false;
+        }
+        else if (atNum == 1)
+        {
+            if (targettingAlly(target) && target.currentPlayer.getMyName() != "Glimmerpillar")
+                return true;
+        }
+        else if (atNum == 2)
+        {
+            int result = 0;
+            foreach(TileScript t in getSurroundingTiles(false))
+            {
+                if (t.getCurrentOpal() != null)
+                    result++;
+            }
+            if(result > 3)
+                return true;
+        }
+        else if (atNum == 3)
+        {
+            if (targettingAlly(target) && target.currentPlayer.getMyName() != "Glimmerpillar")
+                return true;
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
+        return 1;
     }
 }
