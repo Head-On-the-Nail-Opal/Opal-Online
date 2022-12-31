@@ -34,6 +34,10 @@ public class Rekindle : OpalScript
         type1 = "Fire";
         type2 = "Spirit";
         og = true;
+
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Ally", 1, 10),
+            new Behave("Safety", 0, 1)});
     }
 
     public override void onStart()
@@ -159,5 +163,34 @@ public class Rekindle : OpalScript
             return 0;
         }
         return -1;
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (atNum == 0)
+        {
+            return false;
+        }
+        else if (atNum == 1)
+        {
+            if(cursed.Count > 0 && cursed[0].getDead())
+                return true;
+        }
+        else if (atNum == 2)
+        {
+            if (cursed.Count > 0)
+                return true;
+        }
+        else if (atNum == 3)
+        {
+            if(cursed.Count == 0 && targettingAlly(target))
+                return true;
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
+        return 1;
     }
 }

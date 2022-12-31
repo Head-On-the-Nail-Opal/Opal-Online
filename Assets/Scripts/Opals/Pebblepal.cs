@@ -45,6 +45,9 @@ public class Pebblepal : OpalScript
         Attacks[3] = new Attack("Roll", 1, 1, 0, "Move one tile over.",0,3);
         type1 = "Ground";
         type2 = "Air";
+
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Safety", 0,1) });
     }
 
 
@@ -186,5 +189,60 @@ public class Pebblepal : OpalScript
             return 0;
         }
         return -1;
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (atNum == 0)
+        {
+            return false;
+        }
+        else if (atNum == 1)
+        {
+            return false;
+        }
+        else if (atNum == 2)
+        {
+            if (atSwitch)
+            {
+                if (numNearbyOpals(target, rA, false) > numNearbyOpals(target, rA, true))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if (numNearbyOpals(target, rA, true) > numNearbyOpals(target, rA, false))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+        else if (atNum == 3)
+        {
+            if (!boardScript.myCursor.tileIsFalling((int)target.getPos().x, (int)target.getPos().z) && boardScript.myCursor.tileIsFalling((int)getPos().x, (int)getPos().z))
+            {
+                return true;
+            }
+            if (nearEdge(currentTile) && !nearEdge(target))
+            {
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
+        return 0;
     }
 }

@@ -61,6 +61,9 @@ public class CursorScript : MonoBehaviour {
 
     private Coroutine currentHighlight;
     private bool cursorLock = false;
+    private bool turnStarted = true;
+
+    private OpalBrain oB;
 
     // Use this for initialization
     void Start () {
@@ -69,6 +72,7 @@ public class CursorScript : MonoBehaviour {
         transform.position = new Vector3(0,0,0);
         GameObject board = GameObject.Find("Main Camera");
         ts = GameObject.Find("Canvas").GetComponent<TextScript>();
+        oB = GameObject.FindObjectOfType<OpalBrain>();
         reticle = GameObject.Find("Reticle").GetComponent<ReticleScript>();
         MM = GameObject.Find("MultiplayerManager").GetComponent<MultiplayerManager>();
         boardScript = board.GetComponent<GroundScript>();
@@ -764,6 +768,8 @@ public class CursorScript : MonoBehaviour {
 
     public void nextTurn()
     {
+        currentController = "None";
+        turnStarted = false;
         if(boardScript.getMult() == true)
             MM.verifyNoDisconnection();
         selectedPlayer.setMyTurn(false);
@@ -843,6 +849,7 @@ public class CursorScript : MonoBehaviour {
             StopCoroutine(currentHighlight);
             selectedPlayer.resetHighlight();
         }
+        currentController = boardScript.getCurrentController(nextOpal.getTeam());
         selectedPlayer = nextOpal;
         currentHighlight = StartCoroutine(selectedPlayer.highlightFlash());
         boardScript.updateTurnOrder(currentTurn);
@@ -868,6 +875,7 @@ public class CursorScript : MonoBehaviour {
             clearGhosts(t);
             t.updateConnection();
         }
+        currentController = boardScript.getCurrentController(selectedPlayer.getTeam());
         selectedPlayer.setMyTurn(true);
         selectedPlayer.StartOfTurn();
         selectedPlayer.setBehaviours();
@@ -940,11 +948,16 @@ public class CursorScript : MonoBehaviour {
             moving = true;
             pathing = true;
         }
+        if(roundNum > 0 && currentController == "AI")
+        {
+            oB.makeMove();
+        }
         if (boardScript.getMult())
         {
             //boardScript.getMM().sendFullGameData(boardScript.generateString());
             //boardScript.getMM().sendMultiplayerData("reset," + currentOnlinePlayer);
         }
+        turnStarted = true;
         GC.Collect();
     }
 
@@ -1001,6 +1014,11 @@ public class CursorScript : MonoBehaviour {
     public bool getFollowUp()
     {
         return followup;
+    }
+
+    public bool getTurnStarted()
+    {
+        return turnStarted;
     }
 
     public void toggleReticle(bool tog)

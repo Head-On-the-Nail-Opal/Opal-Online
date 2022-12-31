@@ -229,7 +229,7 @@ public class Succuum : OpalScript {
         {
             return false;
         }
-        else if (atNum == 1)
+        else if (atNum == 1 && !boardScript.myCursor.getFollowUp())
         {
             if(targettingEnemy(target) && notAdjacent(target))
                 return true;
@@ -246,7 +246,7 @@ public class Succuum : OpalScript {
                 return true;
             
         }
-        else if (atNum == 3)
+        else if (atNum == 3 && !boardScript.myCursor.getFollowUp())
         {
             int result = 0;
             foreach (TileScript t in getSurroundingTiles(false))

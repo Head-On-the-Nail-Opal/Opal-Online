@@ -1061,6 +1061,63 @@ abstract public class OpalScript : MonoBehaviour {
         return true;
     }
 
+    public bool notNearEnemy(TileScript input)
+    {
+        foreach (TileScript t in getSurroundingTiles(true))
+        {
+            if (t.getCurrentOpal() != null && t.getCurrentOpal().getTeam() != getTeam())
+                return false;
+        }
+        return true;
+    }
+
+    public int numNearbyOpals(TileScript target, int range, bool enemy)
+    {
+        int output = 0;
+        for(int i = -range; i < range; i++)
+        {
+            for (int j = -range; j < range; j++)
+            {
+                if (target.getPos().x + i > -1 && target.getPos().x + i < 10 && target.getPos().z + j > -1 && target.getPos().z + j < 10)
+                {
+                    if (enemy)
+                    {
+                        if(boardScript.tileGrid[(int)(target.getPos().x + i), (int)(target.getPos().z + j)].getCurrentOpal() != null && boardScript.tileGrid[(int)(target.getPos().x + i), (int)(target.getPos().z + j)].getCurrentOpal().getTeam() != getTeam())
+                        {
+                            output++;
+                        }
+
+                    }
+                    else
+                    {
+                        if (boardScript.tileGrid[(int)(target.getPos().x + i), (int)(target.getPos().z + j)].getCurrentOpal() != null && boardScript.tileGrid[(int)(target.getPos().x + i), (int)(target.getPos().z + j)].getCurrentOpal().getTeam() == getTeam())
+                        {
+                            if(boardScript.tileGrid[(int)(target.getPos().x + i), (int)(target.getPos().z + j)].getCurrentOpal() != this)
+                                output++;
+                        }
+                    }
+                }
+            }
+        }
+        return output;
+    }
+
+    public bool nearEdge(TileScript input)
+    {
+        foreach (TileScript t in input.getSurroundingTiles(true))
+        {
+            if (t.getFallen())
+                return true;
+        }
+
+        if (input.getPos().x == 0 || input.getPos().x == 9 || input.getPos().z == 0 || input.getPos().z == 9)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     public bool targettingEnemy(TileScript target)
     {
         if(target != null && target.currentPlayer != null && target.currentPlayer.getTeam() != getTeam())

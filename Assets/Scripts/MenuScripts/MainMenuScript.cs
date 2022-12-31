@@ -84,6 +84,7 @@ public class MainMenuScript : MonoBehaviour {
     public MenuButtonScript toggleAI;
 
     private List<string> personalities = new List<string>();
+    private int controlTracker = 0;
 
 
     // Use this for initialization
@@ -115,7 +116,7 @@ public class MainMenuScript : MonoBehaviour {
             print(s);
         }
 
-        for(int i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++)
         {
             controls.Add("keyboard");
         }
@@ -170,6 +171,8 @@ public class MainMenuScript : MonoBehaviour {
                 if (activeTeams.Count >= numTeams)
                 {
                     glob.setMult(false);
+
+
                     string rCont = controls[0];
                     string bCont = controls[1];
                     string gCont = controls[2];
@@ -1668,7 +1671,7 @@ public class MainMenuScript : MonoBehaviour {
             {
                 toggleAI.setToggle(false);
                 controls[activeTeams.Count-1] = "AI";
-            } 
+            }
             return;
         }
         foreach(OpalScript o in opals)

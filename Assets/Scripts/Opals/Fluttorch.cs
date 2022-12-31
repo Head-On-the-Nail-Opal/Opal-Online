@@ -165,7 +165,7 @@ public class Fluttorch : OpalScript
         {
             return 0;
         }
-        if (target.currentPlayer != null)
+        if (target.currentPlayer != null && attackNum != 1)
         {
             return 0;
         }

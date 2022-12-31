@@ -41,6 +41,7 @@ public class OpalBrain : MonoBehaviour
             myCursor = mainGame.getMyCursor();
         else
         {
+            /**
             if (myCursor.getCurrentController() == "AI")
             {
                 if (myCursor.getGameOver())
@@ -49,37 +50,47 @@ public class OpalBrain : MonoBehaviour
                     moved = false;
                 if (currentAction == null)
                     currentAction = StartCoroutine(doRandomMove());
-            }
+            }*/
         }
+    }
+
+    public void makeMove()
+    {
+        myCursor.toggleReticle(false);
+        if(currentAction == null)
+            currentAction = StartCoroutine(doRandomMove());
     }
 
     private IEnumerator doRandomMove()
     {
-        myCursor.toggleReticle(false);
-        if(findBestRandomAbility(true))
-            yield return new WaitForSeconds(1.5f);
-        findBestRandomMove();
-        yield return new WaitForSeconds(1.5f);
-        if (findBestRandomAbility(true))
-            yield return new WaitForSeconds(1.5f);
-        findBestRandomAbility(false);
-        yield return new WaitForSeconds(1.5f);
-
-        while (myCursor.getFollowUp())
+        if (mainGame.getCurrentController(myCursor.getCurrentOpal().getTeam()) == "AI")
         {
+            if (findBestRandomAbility(true))
+                yield return new WaitForSeconds(1.5f);
+            findBestRandomMove();
+            yield return new WaitForSeconds(1.5f);
+            if (findBestRandomAbility(true))
+                yield return new WaitForSeconds(1.5f);
             findBestRandomAbility(false);
             yield return new WaitForSeconds(1.5f);
+
+            while (myCursor.getFollowUp())
+            {
+                findBestRandomAbility(false);
+                yield return new WaitForSeconds(1.5f);
+            }
+
+            if (findBestRandomMove())
+                yield return new WaitForSeconds(1.5f);
+            if (findBestRandomAbility(true))
+                yield return new WaitForSeconds(1.5f);
+
+            currentAction = null;
+            startOfTurn = true;
+            myCursor.toggleReticle(true);
+            myCursor.doEndTurn();
+            
         }
-
-        if (findBestRandomMove())
-            yield return new WaitForSeconds(1.5f);
-        if (findBestRandomAbility(true))
-            yield return new WaitForSeconds(1.5f);
-
-        myCursor.doEndTurn();
-        currentAction = null;
-        startOfTurn = true;
-        myCursor.toggleReticle(true);
     }
 
     private bool findBestRandomMove()
@@ -268,6 +279,9 @@ public class OpalBrain : MonoBehaviour
                     case "Line-Up-Laser":
                         output += doLineUp(t, 10) * b.getIntensity();
                         break;
+                    case "Boulder-Buddy":
+                        output += doBoulderBuddy(t) * b.getIntensity();
+                        break;
                 }
             }
         }
@@ -291,6 +305,8 @@ public class OpalBrain : MonoBehaviour
         }
         return output;
     }
+
+
 
     private int doCourageous(TileScript target)
     {
@@ -373,6 +389,17 @@ public class OpalBrain : MonoBehaviour
             }
         }
         return 0;
+    }
+
+    private int doBoulderBuddy(TileScript target)
+    {
+        int output = 0;
+        foreach (TileScript t in target.getSurroundingTiles(true))
+        {
+            if (t.getCurrentOpal() != null && t.getCurrentOpal().getMyName() == "Boulder")
+                output++;
+        }
+        return output;
     }
 
     private int doWeasely(TileScript target)

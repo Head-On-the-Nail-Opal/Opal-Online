@@ -39,6 +39,10 @@ public class Experiment42 : OpalScript
         type1 = "Metal";
         type2 = "Spirit";
         og = true;
+
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Close-Combat", 1, 10), new Behave("Cautious", 1, 1),
+            new Behave("Safety", 0,1) });
     }
 
     public void corpse(TileScript target)
@@ -69,7 +73,7 @@ public class Experiment42 : OpalScript
 
     private void revive(TileScript target)
     {
-        health = 15;
+        health = 10;
         maxHealth = health;
         type2 = "Spirit";
         Attacks[0] = new Attack("Immortal", 0, 0, 0, "<Passive>\nAfter Experiment42 dies it leaves an unbreakable corpse. That corpse can return to being Experiment42.");
@@ -170,5 +174,63 @@ public class Experiment42 : OpalScript
             return 0;
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (!isCorpse)
+        {
+            if (atNum == 0)
+            {
+                return false;
+            }
+            else if (atNum == 1)
+            {
+                if(targettingEnemy(target))
+                    return true;
+            }
+            else if (atNum == 2)
+            {
+                if(notNearEnemy(target))
+                    return true;
+            }
+            else if (atNum == 3)
+            {
+                if (notNearEnemy(target) && health > 10)
+                    return true;
+            }
+        }
+        else
+        {
+            if (atNum == 0)
+            {
+                return false;
+            }
+            else if (atNum == 1)
+            {
+                return false;
+            }
+            else if (atNum == 2)
+            {
+                return true;
+            }
+            else if (atNum == 3)
+            {
+                int output = 0;
+                foreach (TileScript t in getSurroundingTiles(true))
+                {
+                    if (t.getCurrentOpal() != null)
+                        output++;
+                }
+                if(output >= 2)
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
+        return 1;
     }
 }

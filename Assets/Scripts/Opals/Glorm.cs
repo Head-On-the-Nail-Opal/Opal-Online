@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Glorm : OpalScript
 {
@@ -31,6 +32,10 @@ public class Glorm : OpalScript
         Attacks[3] = new Attack("Self Care", 0, 1, 0, "Overheal yourself by 4. Gain +1 defense.",0,3);
         type1 = "Light";
         type2 = "Plague";
+
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Ally", 1, 5), new Behave("Line-Up-Ally", 1, 6),
+            new Behave("Safety", 0,1) });
     }
 
 
@@ -124,5 +129,33 @@ public class Glorm : OpalScript
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
     }
 
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (atNum == 0)
+        {
+            if(targettingAlly(target))
+                return true;
+        }
+        else if (atNum == 1)
+        {
+            if(targettingEnemy(target) && health > maxHealth + 4)
+                return true;
+        }
+        else if (atNum == 2)
+        {
+            if (targettingAlly(target) && health > maxHealth + 4)
+                return true;
+        }
+        else if (atNum == 3)
+        {
+            if(health < maxHealth + 16)
+                return true;
+        }
+        return false;
+    }
 
+    public override int getMaxRange()
+    {
+        return 4;
+    }
 }

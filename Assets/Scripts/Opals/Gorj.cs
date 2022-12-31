@@ -225,7 +225,7 @@ public class Gorj : OpalScript
         }
         else if (atNum == 1)
         {
-            if (target.currentPlayer != null)
+            if (targettingEnemy(target))
                 return true;
         }
         else if (atNum == 2)

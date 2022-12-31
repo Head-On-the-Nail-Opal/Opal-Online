@@ -35,6 +35,10 @@ public class Swoopitch : OpalScript
         type1 = "Air";
         type2 = "Ground";
         og = true;
+
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Cautious", 1, 1), new Behave("Boulder-Buddy", 1, 6),
+            new Behave("Safety", 0,1) });
     }
 
     public override void onStart()
@@ -162,14 +166,57 @@ public class Swoopitch : OpalScript
 
     public override int checkCanAttack(TileScript target, int attackNum)
     {
-        if(attackNum == 1 && (fu == 0 && target.currentPlayer != null && target.currentPlayer.getMyName() == "Boulder"))
+        if (attackNum == 1 && (fu == -1 && target.currentPlayer != null && target.currentPlayer.getMyName() == "Boulder"))
         {
+            return 0;
+        } else if (attackNum == 1 && (fu == -1 && (target.currentPlayer == null || target.currentPlayer.getMyName() != "Boulder")))
+        {
+            return -1;
+        } else if (attackNum == 1 && (fu != -1 && target.currentPlayer != null)) {
             return 0;
         }
         if((attackNum == 2 || attackNum == 3) && target.currentPlayer != null)
         {
             return -1;
         }
+        return 0;
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (atNum == 0)
+        {
+            return false;
+        }
+        else if (atNum == 1)
+        {
+            if(fu == -1 && numNearbyOpals(currentTile, Attacks[1].getRange(), true) > 0)
+            {
+                return true;
+            }
+            else
+            {
+                if (targettingEnemy(target))
+                {
+                    return true;
+                }
+            }
+        }
+        else if (atNum == 2 && !boardScript.myCursor.getFollowUp())
+        {
+            if (useAdjacentToOpal(target, true) || useAdjacentToOpal(target, false))
+                return true;
+        }
+        else if (atNum == 3 && !boardScript.myCursor.getFollowUp())
+        {
+            if(useAdjacentToOpal(currentTile, true) && !boardScript.myCursor.tileIsFalling((int)target.getPos().x, (int)target.getPos().z))
+                return true;
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
         return 0;
     }
 }

@@ -902,11 +902,14 @@ public class GroundScript : MonoBehaviour {
 
         if (!noUpdate)
         {
-            tempTile.updateConnection();
-            tempTile.setRandomDecor();
-            foreach (TileScript t in tempTile.getSurroundingTiles(false))
+            if (tempTile != null)
             {
-                t.updateConnection();
+                tempTile.updateConnection();
+                tempTile.setRandomDecor();
+                foreach (TileScript t in tempTile.getSurroundingTiles(false))
+                {
+                    t.updateConnection();
+                }
             }
         }
 
@@ -947,15 +950,17 @@ public class GroundScript : MonoBehaviour {
         TileScript tileCatch = setTile(start, type, false);
         if (start.getPos().x == -100)
             start = tileCatch;
+        int x = (int)start.getPos().x;
+        int y = (int)start.getPos().z;
         for (int i = -dist + 1; i < dist; i++)
         {
             for (int j = -dist + 1; j < dist; j++)
             {
                 if (Mathf.Abs(i) + Mathf.Abs(j) < dist)
                 {
-                    if (isValidTile(i + (int)start.getPos().x, j + (int)start.getPos().z))
+                    if (isValidTile(i + x, j + y))
                     {
-                        setTile(tileGrid[i + (int)start.getPos().x, j + (int)start.getPos().z], type, false);
+                        setTile(tileGrid[i + x, j + y], type, false);
                     }
                 }
             }
@@ -1334,7 +1339,7 @@ public class GroundScript : MonoBehaviour {
     public IEnumerator screenShake(int intensity, int length)
     {
         Camera target = Camera.main;
-        intensity *= 5;
+        intensity = 5;
 
         bool up = false;
         for (int i = 0; i < length/2 * 2; i++)

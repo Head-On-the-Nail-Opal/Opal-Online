@@ -99,7 +99,7 @@ public class GlobalScript : MonoBehaviour {
     }
 
 
-    public void setControllers(string blue, string red, string green, string orange)
+    public void setControllers(string red, string blue, string green, string orange)
     {
         blueController = blue;
         redController = red;

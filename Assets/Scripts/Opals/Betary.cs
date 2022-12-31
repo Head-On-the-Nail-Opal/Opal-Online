@@ -35,6 +35,10 @@ public class Betary : OpalScript
         Attacks[3] = new Attack("Jump", 0, 1, 0, "Gain +1 charge.",0,3);
         type1 = "Electric";
         type2 = "Electric";
+
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Cautious", 1, 3), new Behave("Line-Up", 1, 5),
+            new Behave("Safety", 0,1) });
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -134,5 +138,35 @@ public class Betary : OpalScript
             return -1;
         }
         return 1;
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (atNum == 0)
+        {
+            if (getCharge() >= 2 && targettingEnemy(target))
+                return true;
+        }
+        else if (atNum == 1)
+        {
+            if (getCharge() >= 1 && targettingEnemy(target) && target.currentPlayer.isBuffed())
+                return true;
+        }
+        else if (atNum == 2)
+        {
+            if(getCharge() >= 1)
+                return true;
+        }
+        else if (atNum == 3)
+        {
+            if(getCharge() < 1)
+                return true;
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
+        return 3;
     }
 }
