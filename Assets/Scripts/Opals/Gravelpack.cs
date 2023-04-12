@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Excremite : OpalScript
+public class Gravelpack : OpalScript
 {
-    private Dunglet dungletPrefab;
+    private Gritwit dungletPrefab;
     private int boulderDamage = 0;
 
     public override void onAwake()
     {
-        dungletPrefab = Resources.Load<Dunglet>("Prefabs/SubOpals/Dunglet");
+        dungletPrefab = Resources.Load<Gritwit>("Prefabs/SubOpals/Gritwit");
     }
 
     override public void setOpal(string pl)
@@ -20,7 +20,7 @@ public class Excremite : OpalScript
         defense = 2;
         speed = 1;
         priority = 6;
-        myName = "Excremite";
+        myName = "Gravelpack";
         transform.localScale = new Vector3(3f, 3f, 1) * 1.3f;
         offsetX = 0;
         offsetY = 0f;
@@ -34,10 +34,10 @@ public class Excremite : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Crappy Load", 2, 4, 0, "Summon two Dunglets",0,3);
+        Attacks[0] = new Attack("Rocky Load", 2, 4, 0, "Summon two Gritwits",0,3);
         Attacks[0].setUses(2);
-        Attacks[1] = new Attack("Huck", 4, 1, 0, "Give an Opal +2 attack.",0,3);
-        Attacks[2] = new Attack("Smelly Bite", 3, 4, 6, "Deal 6 damage for each Boulder on surrounding tiles (0)",0,3);
+        Attacks[1] = new Attack("Winning Path", 4, 1, 0, "Give an Opal +2 attack.",0,3);
+        Attacks[2] = new Attack("Crunchy Bite", 3, 4, 6, "Deal 6 damage for each Boulder on surrounding tiles (0)",0,3);
         Attacks[3] = new Attack("Rock Carapace", 0, 1, 0, "Surrounding Boulders gain +3 defense.",0,3);
         type1 = "Ground";
         type2 = "Swarm";
@@ -54,7 +54,7 @@ public class Excremite : OpalScript
                 boulderDamage++;
             }
         }
-        Attacks[2] = new Attack("Smelly Bite", 3, 4, 6, "Deal 6 damage for each Boulder on surrounding tiles ("+boulderDamage+")");
+        Attacks[2] = new Attack("Crunchy Bite", 3, 4, 6, "Deal 6 damage for each Boulder on surrounding tiles ("+boulderDamage+")");
     }
 
     public override void onMove(int distanceMoved)
@@ -68,7 +68,7 @@ public class Excremite : OpalScript
                 boulderDamage++;
             }
         }
-        Attacks[2] = new Attack("Smelly Bite", 3, 4, 6, "Deal 6 damage for each Boulder on surrounding tiles (" + boulderDamage + ")");
+        Attacks[2] = new Attack("Crunchy Bite", 3, 4, 6, "Deal 6 damage for each Boulder on surrounding tiles (" + boulderDamage + ")");
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)

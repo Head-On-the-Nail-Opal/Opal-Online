@@ -36,9 +36,9 @@ public class Inseedious : OpalScript
 
     public override void onStart()
     {
-        Attacks[0] = new Attack("Mystery Flower", 1, 1, 0, "Place a flower trap which 1-damages, 2-heals, or 3-buffs its victim.",0,3);
-        Attacks[1] = new Attack("Mystery Flower", 1, 1, 0, "Place a flower trap which 1-damages, 2-heals, or 3-buffs its victim.",0,3);
-        Attacks[2] = new Attack("Mystery Flower", 1, 1, 0, "Place a flower trap which 1-damages, 2-heals, or 3-buffs its victim.",0,3);
+        Attacks[0] = new Attack("Mystery Flower", 1, 1, 0, "Place a flower trap which 1-damages (16), 2-heals (8), or 3-buffs its victim (+3,+3).",0,3);
+        Attacks[1] = new Attack("Mystery Flower", 1, 1, 0, "Place a flower trap which 1-damages (16), 2-heals (8), or 3-buffs its victim (+3,+3).", 0,3);
+        Attacks[2] = new Attack("Mystery Flower", 1, 1, 0, "Place a flower trap which 1-damages (16), 2-heals (8), or 3-buffs its victim (+3,+3).", 0,3);
     }
 
     public override void prepAttack(int attackNum)

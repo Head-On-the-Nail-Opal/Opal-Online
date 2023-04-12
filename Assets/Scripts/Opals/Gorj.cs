@@ -29,7 +29,7 @@ public class Gorj : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Soft Belly", 0, 0, 0, "<Passive>\nWhen Gorj takes damage while it is engorged it will spit it's victim out.");
-        Attacks[1] = new Attack("Consume", 1, 1, 0, "Consume an Opal. Gorj's speed is set to 2",0,3);
+        Attacks[1] = new Attack("Consume", 1, 1, 0, "Consume an Opal. Clear all of Gorj's stat changes.",0,3);
         Attacks[2] = new Attack("Belly Laugh", 0, 1, 0, "Gain +3 defense. If engorged, deal 5 damage to the victim",0,3);
         Attacks[3] = new Attack("Mulch Munch", 0, 1, 0, "Eat the ground beneath Gorj, each tile type affecting Gorj and it's victim differently.",0,3);
         type1 = "Void";
@@ -86,7 +86,7 @@ public class Gorj : OpalScript
             //if(target.getCurrentTile() != null)
             target.getCurrentTile().standingOn(null);
             target.setPos(-100,-100);
-            setTempBuff(2, -1, 2);
+            clearAllBuffs();
             transform.localScale *= 1.1f;
             //anim.CrossFade("EnGorj", 0);
             doHighlight("EnGorj");

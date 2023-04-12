@@ -116,6 +116,11 @@ public class MenuButtonScript : MonoBehaviour {
             main.startMultiplayerGame();
             main.blueController = "keyboard";
         }
+        else if (purpose == "setupCampfire")
+        {
+            main.startCampfireGame();
+            main.blueController = "keyboard";
+        }
         else if (purpose == "setup3")
         {
             main.startLocalAI();
@@ -217,6 +222,12 @@ public class MenuButtonScript : MonoBehaviour {
                 main.setNextVisual(false);
             else if (Input.GetMouseButtonDown(1))
                 main.setNextVisual(true);
+        }else if(purpose == "randomizeOpal")
+        {
+            if (Input.GetMouseButton(0))
+            {
+                main.randomizeCurrentOpal();
+            }
         }
     }
 

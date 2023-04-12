@@ -28,7 +28,7 @@ public class Swoopitch : OpalScript
             GetComponent<SpriteRenderer>().flipX = false;
         }
         Attacks[0] = new Attack("Favorable Terrain", 0, 0, 0, "<Passive>\nGain +1 speed (for 1 turn) for each Boulder you start your turn surrounded by.");
-        Attacks[1] = new Attack("Catapult", 4, 1, 0, "Break an adjacent Boulder. Deal damage to an Opal within 4 tiles based on that Boulder's defense. Place Boulders adjacent to them with the same defense.",0,3);
+        Attacks[1] = new Attack("Catapult", 4, 1, 0, "Break an adjacent Boulder. Deal damage to an Opal within 4 tiles based on that Boulder's defense. Otherwise, place a Boulder.",0,3);
         Attacks[1].setUses(2);
         Attacks[2] = new Attack("Rock Stack", 3, 1, 0, "Place a Boulder. It gains +5 defense for each Boulder adjacent to it on placement.",0,3);
         Attacks[3] = new Attack("Heavy Flight", 5, 1, 0, "Fly to a tile. Leave a boulder where you left with +5 defense.",0,3);
@@ -44,7 +44,7 @@ public class Swoopitch : OpalScript
     public override void onStart()
     {
         fu = -1;
-        Attacks[1] = new Attack("Catapult", 1, 1, 0, "Break an adjacent Boulder. Deal damage to an Opal within 6 tiles based on that Boulder's defense. Surround them by Boulders with the same defense.",0,3);
+        Attacks[1] = new Attack("Catapult", 1, 1, 0, "Break an adjacent Boulder. Deal damage to an Opal within 4 tiles based on that Boulder's defense. Otherwise, place a Boulder.", 0,3);
         Attacks[1].setUses(2);
         foreach(TileScript t in getSurroundingTiles(false))
         {
@@ -70,22 +70,13 @@ public class Swoopitch : OpalScript
                     if(target.getDefense() > -1)
                         fu = target.getDefense();
                     target.takeDamage(target.getHealth(), false, false);
-                    Attacks[1] = new Attack("Catapult", 6, 1, 0, "Break an adjacent Boulder. Deal damage to an Opal within 6 tiles based on that Boulder's defense. Place Boulders adjacent to them with the same defense.",0,3);
+                    Attacks[1] = new Attack("Catapult", 4, 1, 0, "Break an adjacent Boulder. Deal damage to an Opal within 4 tiles based on that Boulder's defense. Otherwise, place a Boulder.", 0,3);
                    // Attacks[1].setUses(2);
                 }
             }
             else
             {
-                target.takeDamage(fu + getAttack(), true, true);
-                List<TileScript> tiles = target.getSurroundingTiles(true);
-                foreach(TileScript t in tiles)
-                {
-                    TileScript temp = boardScript.setTile(t, "Boulder", false);
-                    if(t.currentPlayer != null && t.currentPlayer.getMyName() == "Boulder")
-                    {
-                        t.currentPlayer.doTempBuff(1, -1, fu);
-                    }
-                }
+                return fu + getAttack();
             }
             return 0;
         }

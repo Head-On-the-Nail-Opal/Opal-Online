@@ -191,10 +191,10 @@ public class GroundScript : MonoBehaviour {
             tempR.Clear();
             tempG.Clear();
             tempO.Clear();
-            redController = glob.getBlueController();
-            blueController = glob.getBlueController();
-            greenController = glob.getBlueController();
-            orangeController = glob.getBlueController();
+            redController = glob.getRedController();
+            blueController = glob.getRedController();
+            greenController = glob.getRedController();
+            orangeController = glob.getRedController();
         }
     }
 
@@ -208,12 +208,24 @@ public class GroundScript : MonoBehaviour {
         noUpdate = n;
     }
 
+    public GlobalScript getGlob()
+    {
+        return glob;
+    }
+
+    public bool includeAI()
+    {
+        if (redController == "AI" || blueController == "AI" || orangeController == "AI" || greenController == "AI")
+            return true;
+        return false;
+    }
+
     public void Update()
     {
         if(!setUp && glob.getMult() && mm.getTeamOne() != "" && mm.getTeamTwo() != "" && (numTeams < 3 || mm.getTeamThree() != "") && (numTeams < 4 || mm.getTeamFour() != ""))
         {
            
-            print(mm.getTeamOne() + " vs " + mm.getTeamTwo());
+            print(mm.getTeamOne()+ " vs " + mm.getTeamTwo());
             setUp = true;
             
             string[] team1Names = mm.getTeamOne().Split(',');
@@ -1339,7 +1351,9 @@ public class GroundScript : MonoBehaviour {
     public IEnumerator screenShake(int intensity, int length)
     {
         Camera target = Camera.main;
-        intensity = 5;
+        target.transform.localPosition = new Vector3(6, 0, -7);
+
+        intensity = 6;
 
         bool up = false;
         for (int i = 0; i < length/2 * 2; i++)

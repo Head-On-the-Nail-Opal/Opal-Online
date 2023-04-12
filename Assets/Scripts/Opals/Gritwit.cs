@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Dunglet : OpalScript
+public class Gritwit : OpalScript
 {
     int lastAttack = 0;
     override public void setOpal(string pl)
@@ -13,7 +13,7 @@ public class Dunglet : OpalScript
         defense = 2;
         speed = 4;
         priority = 3;
-        myName = "Dunglet";
+        myName = "Gritwit";
         transform.localScale = new Vector3(3f, 3f, 1) * 1.2f;
         if (pl == "Red" || pl == "Green")
         {

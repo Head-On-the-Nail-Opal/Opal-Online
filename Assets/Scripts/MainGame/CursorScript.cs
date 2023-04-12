@@ -63,6 +63,8 @@ public class CursorScript : MonoBehaviour {
     private bool cursorLock = false;
     private bool turnStarted = true;
 
+    private string whoWon = "";
+
     private OpalBrain oB;
 
     // Use this for initialization
@@ -178,7 +180,32 @@ public class CursorScript : MonoBehaviour {
         {
             if (boardScript.getGameWon())
             {
-                UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu", UnityEngine.SceneManagement.LoadSceneMode.Single);
+                if (boardScript.getGlob().getCampfireOpals().Count > 0 || boardScript.getGlob().getPickedCampfireOpals().Count > 0)
+                {
+                    foreach(OpalScript o in boardScript.gameOpals)
+                    {
+                        if(o.getTeam() == "Red")
+                        {
+                            if (boardScript.getGlob().pickedContains(o.getMyName()))
+                            {
+                                if (!o.getDead() || (o.getMainType() == "Spirit" || o.getSecondType() == "Spirit"))
+                                {
+                                    boardScript.getGlob().getCampfireOpals().Add(o);
+                                }
+                                boardScript.getGlob().removePickedAtName(o.getMyName());
+                            }
+                        }
+                    }
+
+                    boardScript.getGlob().setWon(whoWon == "Red" || whoWon == "");
+                    boardScript.getGlob().setCampfireLevel(boardScript.getGlob().getCampfireLevel() + 1);
+
+                    UnityEngine.SceneManagement.SceneManager.LoadScene("Campfire", UnityEngine.SceneManagement.LoadSceneMode.Single);
+                }
+                else
+                {
+                    UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu", UnityEngine.SceneManagement.LoadSceneMode.Single);
+                }
             }else
                 boardScript.toggleMenu();
         }
@@ -1063,6 +1090,10 @@ public class CursorScript : MonoBehaviour {
             }
             boardScript.spotlight.transform.position = new Vector3((int)selectedPlayer.getPos().x, 2, (int)(int)selectedPlayer.getPos().z);
             ts.updateCurrent(selectedPlayer, distance);
+            foreach(PathScript p in paths)
+            {
+                Destroy(p.gameObject);
+            }
             destroyDummies();
         }
     }
@@ -1458,6 +1489,7 @@ public class CursorScript : MonoBehaviour {
         {
             PlayerPrefs.SetString("CurrentMatch", "");
             ts.doWin("Blue");
+            whoWon = "Blue";
             List<OpalScript> winningTeam = new List<OpalScript>();
             foreach(OpalScript o in boardScript.gameOpals)
             {
@@ -1475,6 +1507,7 @@ public class CursorScript : MonoBehaviour {
         {
             PlayerPrefs.SetString("CurrentMatch", "");
             ts.doWin("Red");
+            whoWon = "Red";
             List<OpalScript> winningTeam = new List<OpalScript>();
             foreach (OpalScript o in boardScript.gameOpals)
             {
@@ -1494,6 +1527,7 @@ public class CursorScript : MonoBehaviour {
         {
             PlayerPrefs.SetString("CurrentMatch", "");
             ts.doWin("Green");
+            whoWon = "Green";
             List<OpalScript> winningTeam = new List<OpalScript>();
             foreach (OpalScript o in boardScript.gameOpals)
             {
@@ -1511,6 +1545,7 @@ public class CursorScript : MonoBehaviour {
         {
             PlayerPrefs.SetString("CurrentMatch", "");
             ts.doWin("Orange");
+            whoWon = "Orange";
             List<OpalScript> winningTeam = new List<OpalScript>();
             foreach (OpalScript o in boardScript.gameOpals)
             {

@@ -15,7 +15,7 @@ public class Squirmtongue : OpalScript
         speed = 3;
         priority = 8;
         myName = "Squirmtongue";
-        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1.2f;
         offsetX = 0;
         offsetY = 0f;
         offsetZ = 0;

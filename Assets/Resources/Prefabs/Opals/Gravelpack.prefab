@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 95472426517087796}
   - component: {fileID: 114573480813159460}
   m_Layer: 0
-  m_Name: Excremite
+  m_Name: Gravelpack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,6 +47,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -80,7 +81,7 @@ SpriteRenderer:
   m_Size: {x: 0.32, y: 0.32}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!95 &95472426517087796
@@ -126,3 +127,4 @@ MonoBehaviour:
     type: 3}
   myBoulders: {fileID: 6844152519219085815, guid: 16688df503c73fe4e99709501a0ebff7,
     type: 3}
+  doBoulders: 0

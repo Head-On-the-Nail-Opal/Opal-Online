@@ -226,6 +226,10 @@ public class Hearthhog : OpalScript {
         }
         else if (atNum == 2)
         {
+            if(currentTile.type == "Fire" && checkHasLineOfSight(Attacks[1].getRange()))
+            {
+                return false;
+            }
             int total = 0;
             foreach(TileScript t in getSurroundingTiles(true))
             {

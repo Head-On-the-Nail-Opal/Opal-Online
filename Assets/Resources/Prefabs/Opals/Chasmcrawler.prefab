@@ -47,6 +47,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -125,3 +126,4 @@ MonoBehaviour:
     type: 3}
   myBoulders: {fileID: -6738594086125060681, guid: ec126c7cd1a655547b2aac01ad40600e,
     type: 3}
+  doBoulders: 0

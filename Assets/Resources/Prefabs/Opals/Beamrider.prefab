@@ -47,6 +47,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -125,3 +126,4 @@ MonoBehaviour:
   hurtFrame: {fileID: 8155275848936752366, guid: 4d46354933b6ec7408cb8d6923f8afdc,
     type: 3}
   myBoulders: {fileID: 0}
+  doBoulders: 0

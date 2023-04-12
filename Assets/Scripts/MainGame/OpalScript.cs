@@ -157,8 +157,11 @@ abstract public class OpalScript : MonoBehaviour {
         spiritchPrefab = Resources.Load<Spiritch>("Prefabs/Opals/Spiritch");
         playerIndicator = Resources.Load<GameObject>("Prefabs/TeamLabel");
         GameObject iDBody = GameObject.Find("ItemDescriptions");
-        ItemDescriptions iD = iDBody.GetComponent<ItemDescriptions>();
-        iD.setUp();
+        if (iDBody != null)
+        {
+            ItemDescriptions iD = iDBody.GetComponent<ItemDescriptions>();
+            iD.setUp();
+        }
         defaultFrame = GetComponent<SpriteRenderer>().sprite;
         //if(boardScript != null && !boardScript.getMult())
             //myCharm = iD.getRandomCharmName();
@@ -387,7 +390,7 @@ abstract public class OpalScript : MonoBehaviour {
             highlight.flipX = GetComponent<SpriteRenderer>().flipX;
         }
 
-        if(boardScript.myCursor.getCurrentOpal() == this)
+        if(boardScript != null && boardScript.myCursor.getCurrentOpal() == this)
         {
             boardScript.myCursor.flashOpal();
         }

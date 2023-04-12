@@ -29,7 +29,7 @@ public class Mintick : OpalScript
         player = pl;
         Attacks[0] = new Attack("Precious", 0, 0, 0, "<Passive>\nWhen Diamite takes damage, it loses all stat changes, and opponents regain stats drained by Mintick.");
         Attacks[1] = new Attack("Color Drain", 1, 1, 1, "Target loses -1 speed and -2 attack. Gain +1 speed and +2 attack. May move after using this.",0,3);
-        Attacks[2] = new Attack("Chip Gem", 0, 1, 0, "Take 1 damage, then gain +2 armor.");
+        Attacks[2] = new Attack("Chip Coin", 0, 1, 0, "Take 1 damage, then gain +2 armor.");
         Attacks[3] = new Attack("Crack", 0, 1, 0, "Lose an armor and gain +3 defense. Then take 1 damage.");
         type1 = "Dark";
         type2 = "Metal";
@@ -92,8 +92,8 @@ public class Mintick : OpalScript
             {
                 addArmor(-1);
                 doTempBuff(1, -1, 3);
+                takeDamage(1 + getDefense(), true, true);
             }
-            takeDamage(1 + getDefense(), true, true);
             return 0;
         }
         return cA.getBaseDamage() + getAttack();

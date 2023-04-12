@@ -30,7 +30,7 @@ public class Strikel : OpalScript
         Attacks[0] = new Attack("Sharpen", 0, 1, 0, "<Free Ability>\nTake 2 damage. (Ignores Armor)");
         Attacks[0].setFreeAction(true);
         Attacks[1] = new Attack("Furious Blades", 1, 1, 0, "Deal damage, dealing more the lower health Strikel has.",0,3);
-        Attacks[2] = new Attack("Synthesized Adrenaline", 0, 1, 0, "Gain +3 attack. If you lost armor since your last turn, gain +6 instead.",0,3);
+        Attacks[2] = new Attack("Synthesize", 0, 1, 0, "Gain +3 attack. If you lost armor since your last turn, gain +6 instead.",0,3);
         Attacks[3] = new Attack("Efficiency Boost", 0, 1, 0, "Take 5 damage and then gain +1 armor. If it has armor when Strikel uses this, gain +4 attack and +4 defense for 1 turn.",0,3);
         type1 = "Metal";
         type2 = "Metal";

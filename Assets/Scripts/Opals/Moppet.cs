@@ -29,7 +29,7 @@ public class Moppet : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Sufferer's Bond", 0, 0, 0, "<Passive>\nMoppet takes burn damage and poison damage instead of Opals cursed by it.");
-        Attacks[1] = new Attack("Chain of Torment", 2, 1, 0, "Overheal an Opal by 4 and curse it.",0,3);
+        Attacks[1] = new Attack("Torment Chain", 2, 1, 0, "Overheal an Opal by 4 and curse it.",0,3);
         Attacks[2] = new Attack("Pain Share", 0, 1, 0, "Enemy Opals cursed by Moppet take the damage Moppet took since its last turn.",0,3);
         Attacks[3] = new Attack("Masochism", 0, 1, 0, "Heal Moppet by 8 health. If Moppet is at full health, heal ally Opals cursed by Moppet instead.",0,3);
         type1 = "Spirit";

@@ -27,7 +27,7 @@ public class Charayde : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Rain Wings", 0, 0, 0, "<Passive>\n Place Flood tiles down wherever you move.");
-        Attacks[1] = new Attack("Merciless Ray", 3, 4, 5, "Deal damage at range. Target loses all temporary buffs. Their current permanent buffs now last 2 turns. Charayde takes 5 damage from this ability.",0,3);
+        Attacks[1] = new Attack("Merciless Ray", 3, 4, 5, "Deal damage at range. Target loses all temporary buffs. Target's current permanent buffs now last 2 turns. Charayde takes 5 damage from this ability.",0,3);
         Attacks[2] = new Attack("Spinal Blade", 1, 3, 8, "<Water Rush>\nDeal damage, if the target is unbuffed then also heal 4 health.",0,3);
         Attacks[3] = new Attack("Glide", 0, 1, 0, "Gain +1 speed and place Flood on adjacent tiles. Tidal: Gain +2 speed instead.",0,3);
         Attacks[3].setTidalD("Gain +3 speed and place Flood on adjacent tiles. Tidal: Gain +1 speed instead.");

@@ -15,6 +15,9 @@ EditorBuildSettings:
     path: Assets/Scenes/MainGame.unity
     guid: d79fef41d5944f64084c9deb991aee3f
   - enabled: 1
+    path: Assets/Scenes/Campfire.unity
+    guid: 330e9c1c4a487a64895e0d26b4e11f70
+  - enabled: 1
     path: Assets/Scenes/World.unity
     guid: 1369c55a14a9e954d87848168def1346
   - enabled: 1

@@ -7,7 +7,7 @@ public class Nachteous : OpalScript
 
     override public void setOpal(string pl)
     {
-        health = 30;
+        health = 20;
         maxHealth = health;
         attack = 0;
         defense = 4;

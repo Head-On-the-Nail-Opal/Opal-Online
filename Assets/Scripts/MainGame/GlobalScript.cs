@@ -21,6 +21,11 @@ public class GlobalScript : MonoBehaviour {
     private string greenController;
     private string orangeController;
 
+    private List<OpalScript> campfireOpals = new List<OpalScript>();
+    private List<OpalScript> pickedCampfireOpals = new List<OpalScript>();
+    private int campfireLevel = 1;
+    private bool won = true;
+
     private string username;
 
     private bool multiplayer = false;
@@ -191,6 +196,58 @@ public class GlobalScript : MonoBehaviour {
     public bool getFinishedGame()
     {
         return finishedGame;
+    }
+
+    public List<OpalScript> getCampfireOpals()
+    {
+        return campfireOpals;
+    }
+
+    public List<OpalScript> getPickedCampfireOpals()
+    {
+        return pickedCampfireOpals;
+    }
+
+    public bool pickedContains(string name)
+    {
+        foreach (OpalScript o in pickedCampfireOpals)
+        {
+            if (o.getMyName() == name)
+                return true;
+        }
+        return false;
+    }
+
+    public void removePickedAtName(string name)
+    {
+        OpalScript opalNamed = null;
+        foreach (OpalScript o in pickedCampfireOpals)
+        {
+            if (o.getMyName() == name)
+                opalNamed = o;
+        }
+        if (opalNamed != null)
+            pickedCampfireOpals.Remove(opalNamed);
+    }
+
+    public int getCampfireLevel()
+    {
+        return campfireLevel;
+    }
+
+    public void setCampfireLevel(int cl)
+    {
+        campfireLevel = cl;
+    }
+
+    public bool getWon()
+    {
+        return won;
+    }
+
+    public void setWon(bool w)
+    {
+        won = w;
     }
 
     // Update is called once per frame

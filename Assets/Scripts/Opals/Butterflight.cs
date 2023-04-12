@@ -37,7 +37,7 @@ public class Butterflight : OpalScript
         Attacks[1] = new Attack("Breeze", 3, 1, 0, "Select a target Opal. Then choose a direction to push them 4 tiles.",0,3);
         Attacks[1].setUses(2);
         Attacks[2] = new Attack("Wind Shield", 0, 1, 0, "Gain +3 defense and Lift.",0,3);
-        Attacks[3] = new Attack("Sprint",1,1,0, "Buff a target's speed by your defense for 1 turn. They gain Lift.",0,3);
+        Attacks[3] = new Attack("Sprint",1,1,0, "Buff a target's defense by your own defense for 1 turn. They gain Lift.",0,3);
         Attacks[3].setFreeAction(true);
         type1 = "Air";
         type2 = "Light";
@@ -56,6 +56,7 @@ public class Butterflight : OpalScript
         if (attackNum == 0) //Pollinate
         {
             target.doHeal(4, false);
+            doTempBuff(1, -1, -2);
             return 0;
         }
         else if (attackNum == 1) //Whirlwind
@@ -111,7 +112,7 @@ public class Butterflight : OpalScript
             return 0;
         }else if(attackNum == 3)
         {
-            target.doTempBuff(2, 1, getDefense());
+            target.doTempBuff(1, 1, getDefense());
             target.setLifted(true);
             return 0;
         }

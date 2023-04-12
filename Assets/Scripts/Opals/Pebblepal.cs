@@ -28,11 +28,11 @@ public class Pebblepal : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        if(pl != null)
+        if (pl != null)
         {
             cs = GameObject.Find("Cursor(Clone)").GetComponent<CursorScript>();
             myAura = Instantiate<ParticleSystem>(Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/RocklyAuraBuff"), transform);
-            myAura.transform.localScale = transform.localScale/5;
+            myAura.transform.localScale = transform.localScale / 5;
             //myAura.transform.localRotation = Quaternion.Euler(0, 90, 35);
         }
         offsetX = 0;
@@ -41,8 +41,8 @@ public class Pebblepal : OpalScript
         player = pl;
         Attacks[0] = new Attack("Rockly Aura", 0, 0, 0, "<Passive>\nAt the end of Pebblepal's turn, friendly Opals adjacent to Pebblepal gain +5 attack and defense for 1 turn");
         Attacks[1] = new Attack("Friend Boost", 0, 0, 0, "<Passive>\n Each Boulder adjacent to Pebblepal extends the range of its Rockly Aura ");
-        Attacks[2] = new Attack("Indecisive", 0, 1, 0, "Rockly Aura deals debuffs to adjacent enemy Opals instead of buffing.");
-        Attacks[3] = new Attack("Roll", 1, 1, 0, "Move one tile over.",0,3);
+        Attacks[2] = new Attack("Indecisive", 0, 1, 0, "Rockly Aura deals debuffs to adjacent enemy Opals instead of buffing. Debuffs are more powerful than buffs.");
+        Attacks[3] = new Attack("Roll", 1, 1, 0, "Move one tile over.", 0, 3);
         type1 = "Ground";
         type2 = "Air";
 
@@ -54,18 +54,26 @@ public class Pebblepal : OpalScript
     public override void onStart()
     {
         //cs = GameObject.Find("Cursor(Clone)").GetComponent<CursorScript>();
+        updateBoulderCount();
     }
 
-    public override void onEnd()
+    private int updateBoulderCount()
     {
         int currentBoulderCount = 1;
-        foreach(TileScript t in getSurroundingTiles(true))
+        foreach (TileScript t in getSurroundingTiles(true))
         {
-            if(t.getCurrentOpal() != null && t.getCurrentOpal().getMyName() == "Boulder")
+            if (t.getCurrentOpal() != null && t.getCurrentOpal().getMyName() == "Boulder")
             {
                 currentBoulderCount++;
             }
         }
+        Attacks[1].setDescription("<Passive>\n Each Boulder adjacent to Pebblepal extends the range of its Rockly Aura: (+" + (currentBoulderCount - 1) + ")");
+        return currentBoulderCount;
+    }
+
+    public override void onEnd()
+    {
+        int currentBoulderCount = updateBoulderCount();
         for(int i = -(currentBoulderCount); i < (currentBoulderCount)+1; i++)
         {
             for(int j = -(currentBoulderCount); j < (currentBoulderCount)+1; j++)
@@ -110,12 +118,14 @@ public class Pebblepal : OpalScript
             if (atSwitch)
             {
                 Attacks[0] = new Attack("Rockly Aura", 0, 0, 0, "<Passive>\nAt the end of Pebblepal's turn, enemy Opals adjacent to Pebblepal gain -8 attack and defense for 1 turn");
+                Attacks[2].setDescription("Rockly Aura deals buffs to adjacent allied Opals instead of debuffing. Buffs are less powerful than debuffs.");
                 DestroyImmediate(myAura.gameObject);
                 myAura = Instantiate<ParticleSystem>(Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/RocklyAuraHarm"), transform);
             }
             else
             {
                 Attacks[0] = new Attack("Rockly Aura", 0, 0, 0, "<Passive>\nAt the end of Pebblepal's turn, friendly Opals adjacent to Pebblepal gain +5 attack and defense for 1 turn");
+                Attacks[2].setDescription("Rockly Aura deals debuffs to adjacent enemy Opals instead of buffing. Debuffs are more powerful than buffs.");
                 DestroyImmediate(myAura.gameObject);
                 myAura = Instantiate<ParticleSystem>(Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/RocklyAuraBuff"), transform);
             }

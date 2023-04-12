@@ -29,7 +29,7 @@ public class Glimmerpillar : OpalScript
         Attacks[0] = new Attack("Pillar", 0, 0, 0, "<Passive>\n At the start of its turn, surrounding Enemy Opals lose -4 defense for 1 turn.");
         Attacks[1] = new Attack("Lamplight", 2, 1, 0, "Give a target +2 attack and +2 defense for 1 turn",0,3);
         Attacks[2] = new Attack("Soothe", 0, 1, 0, "Surrounding allied Opals are healed by +2 health. Surrounding enemy opals lose -2 attack.",0,3);
-        Attacks[3] = new Attack("Intensify", 1, 1, 0, "Give a target +3 attack and +3 defense. Die.",0,3) ;
+        Attacks[3] = new Attack("Intensify", 1, 1, 0, "Give a target +2 attack and +2 defense. Die.",0,3) ;
         type1 = "Swarm";
         type2 = "Light";
         getSpeciesPriorities().AddRange(new List<Behave>{
@@ -86,8 +86,8 @@ public class Glimmerpillar : OpalScript
         }
         else if(attackNum == 3)
         {
-            target.doTempBuff(0, -1, 3);
-            target.doTempBuff(0, -1, 3);
+            target.doTempBuff(0, -1, 2);
+            target.doTempBuff(1, -1, 2);
             takeDamage(health, false, true);
 
         }

@@ -38,7 +38,13 @@ public class OpalBrain : MonoBehaviour
     public void Update()
     {
         if (myCursor == null)
+        {
             myCursor = mainGame.getMyCursor();
+            if (!mainGame.includeAI())
+            {
+                this.enabled = false;
+            }
+        }
         else
         {
             /**
@@ -85,8 +91,9 @@ public class OpalBrain : MonoBehaviour
             if (findBestRandomAbility(true))
                 yield return new WaitForSeconds(1.5f);
 
-            currentAction = null;
+            
             startOfTurn = true;
+            currentAction = null;
             myCursor.toggleReticle(true);
             myCursor.doEndTurn();
             
