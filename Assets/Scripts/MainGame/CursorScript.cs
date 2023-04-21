@@ -556,18 +556,6 @@ public class CursorScript : MonoBehaviour {
         }
 
 
-        //if ((Input.GetKeyUp(KeyCode.LeftShift) && currentController == "keyboard") || (Input.GetButtonUp("LBump" + addon) && (currentController == "joystick 1" || currentController == "joystick 2" || currentController == "joystick 3" || currentController == "joystick 4")))
-       //{
-         //   ts.displayAttacks(null, null);
-          //  ts.disableBuffs(selectedPlayer, tileFrom.currentPlayer);
-           // foreach (OpalScript o in boardScript.gameOpals)
-            //{
-             //   if(o != selectedPlayer)
-              //  o.resetHighlight();
-            //}
-            //ts.enableTileScreen(false, "", -1);
-        //}
-
 
         if (attacking != -1 && transform.position != lastPos)
         {
@@ -965,15 +953,9 @@ public class CursorScript : MonoBehaviour {
             reticle.transform.position = new Vector3(selectedPlayer.getPos().x, 0, selectedPlayer.getPos().z);
             reticle.transform.position += reticle.transform.forward * (-10 + 0.5f * selectedPlayer.getPos().x - 0.5f * selectedPlayer.getPos().z);
         }
-        if (roundNum > 0 && currentController != "keyboard" && distance > 0) //check if tilefrom current player == selected player
+        if (roundNum > 0 && distance > 0 && currentController != "keyboard") //check if tilefrom current player == selected player
         {
-            DummyScript tempDummy = Instantiate<DummyScript>(dummyPrefab);
-            tempDummy.setCoordinates((int)selectedPlayer.getPos().x, (int)selectedPlayer.getPos().z);
-            boardScript.dummies[(int)myPos.x, (int)myPos.z] = tempDummy;
-            boardScript.spotlight.transform.position = new Vector3((int)selectedPlayer.getPos().x, 2, (int)selectedPlayer.getPos().z);
-            tempDummy.Spawn(distance, 0, 0, true);
-            moving = true;
-            pathing = true;
+            generateMovementDummies();
         }
         if(roundNum > 0 && currentController == "AI")
         {

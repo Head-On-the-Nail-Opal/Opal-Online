@@ -12,7 +12,8 @@ public class GroundScript : MonoBehaviour {
     public List<PathScript> generatedPaths = new List<PathScript>();
     public int switchCam = 1;
 
-    private List<string> wildlife = new List<string>{"ButterflightSwarm", "Pebble", "Conspicuous Bush", "Diamond Coin", "Bombats"};
+    //private List<string> wildlife = new List<string>{"ButterflightSwarm", "Pebble", "Conspicuous Bush", "Diamond Coin", "Bombats"};
+    private List<string> wildlife = new List<string> { "ButterflightSwarm", "Pebble", "Conspicuous Bush"};
 
     public List<OpalScript> gameOpals = new List<OpalScript>();
     private List<OpalScript> nonSortedGameOpals = new List<OpalScript>();
@@ -466,7 +467,7 @@ public class GroundScript : MonoBehaviour {
         {
             t.updateConnection();
             t.setRandomDecor();
-            if(Random.Range(0,8) == 4)
+            if(Random.Range(0,15) == 4)
             {
                 t.spawnWildlife(wildlife[Random.Range(0,wildlife.Count)]);
             }

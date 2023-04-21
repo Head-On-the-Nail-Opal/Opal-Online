@@ -258,7 +258,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {x: 0, y: 50, z: -10}
-  purpose: teamdetails
+  purpose: teamdetailsNONE
   unpressedS: {fileID: 2243105774603402535, guid: 68b38420a6ca5ed48852d96b056894d0,
     type: 3}
   pressedS: {fileID: -5311601343027517249, guid: 68b38420a6ca5ed48852d96b056894d0,
@@ -6026,7 +6026,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &719249646
 Transform:
   m_ObjectHideFlags: 0
@@ -14567,7 +14567,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {x: 20, y: 15, z: -10}
-  purpose: setup2
+  purpose: setup2NONE
   unpressedS: {fileID: 5438883942770044157, guid: 0fc02123ed8b59c42844d0b0adda7f5f,
     type: 3}
   pressedS: {fileID: -8152897517313142898, guid: 0fc02123ed8b59c42844d0b0adda7f5f,

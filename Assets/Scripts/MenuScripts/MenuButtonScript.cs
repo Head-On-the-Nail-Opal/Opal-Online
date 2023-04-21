@@ -263,7 +263,10 @@ public class MenuButtonScript : MonoBehaviour {
 
     public bool getToggle()
     {
-        return sR.sprite == pressedS;
+        if (sR != null)
+            return sR.sprite == pressedS;
+        else
+            return false;
     }
 
     public void setToggle(bool t)
