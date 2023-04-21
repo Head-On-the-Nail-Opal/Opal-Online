@@ -16,6 +16,7 @@ public class MainMenuScript : MonoBehaviour {
     private List<OpalTeam> displayTeams = new List<OpalTeam>();
     private List<OpalScript> myOpals = new List<OpalScript>();
     private List<List<OpalScript>> activeTeams = new List<List<OpalScript>>();
+    private List<Pal> palTrackerTwo = new List<Pal>();
     private GlobalScript glob;
     public string currentTeam;
     public string blueController;
@@ -89,6 +90,13 @@ public class MainMenuScript : MonoBehaviour {
 
 
     // Use this for initialization
+    private void Awake()
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            palTrackerTwo.Add(null);
+        }
+    }
 
     void Start() {
         Cursor.visible = true;
@@ -122,6 +130,7 @@ public class MainMenuScript : MonoBehaviour {
         {
             controls.Add("keyboard");
         }
+
 
         //TargetInfo.transform.position = new Vector3(-100, -100, -100);
         currentTeam = "blue";
@@ -1711,6 +1720,7 @@ public class MainMenuScript : MonoBehaviour {
             addNewTeamButton.gameObject.SetActive(false);
         }
         loadTeams();
+        displayPals();
     }
 
     public void displayTeam(List<OpalScript> opals, int teamNum)
@@ -2281,5 +2291,30 @@ public class MainMenuScript : MonoBehaviour {
             }
         }
         return overloads;
+    }
+
+    public void setCurrentPal(Pal p)
+    {
+        if (p == null)
+        {
+            palTrackerTwo[currentEditorTeam] = null;
+        }
+        else
+        {
+            palTrackerTwo[currentEditorTeam] = Instantiate<Pal>(p);
+            palTrackerTwo[currentEditorTeam].gameObject.SetActive(false);
+        }
+        //displayTeams[currentEditorTeam].setPal(palTrackerTwo[currentEditorTeam]);
+    }
+
+    private void displayPals()
+    {
+        for(int i = 0; i < palTrackerTwo.Count; i++)
+        {
+            if(palTrackerTwo[i] != null)
+            {
+                displayTeams[i].setPal(palTrackerTwo[i]);
+            }
+        }
     }
 }

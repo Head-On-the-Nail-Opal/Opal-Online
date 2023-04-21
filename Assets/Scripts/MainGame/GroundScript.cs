@@ -5,12 +5,14 @@ using UnityEngine;
 public class GroundScript : MonoBehaviour {
     static public GroundScript me;
     static public Transform GameBoard;
-    public TileScript[,] tileGrid = new TileScript[10,10];
+    public TileScript[,] tileGrid = new TileScript[10, 10];
     public DummyScript[,] dummies = new DummyScript[10, 10];
     public List<PathScript> paths = new List<PathScript>();
     public List<List<Vector3>> pathofpaths = new List<List<Vector3>>();
     public List<PathScript> generatedPaths = new List<PathScript>();
     public int switchCam = 1;
+
+    private List<string> wildlife = new List<string>{"ButterflightSwarm", "Pebble", "Conspicuous Bush", "Diamond Coin", "Bombats"};
 
     public List<OpalScript> gameOpals = new List<OpalScript>();
     private List<OpalScript> nonSortedGameOpals = new List<OpalScript>();
@@ -464,6 +466,10 @@ public class GroundScript : MonoBehaviour {
         {
             t.updateConnection();
             t.setRandomDecor();
+            if(Random.Range(0,8) == 4)
+            {
+                t.spawnWildlife(wildlife[Random.Range(0,wildlife.Count)]);
+            }
         }
         foreach(OpalScript o in gameOpals)
         {
@@ -781,6 +787,8 @@ public class GroundScript : MonoBehaviour {
                 tempTile = Instantiate<TileScript>(tilePrefab);
             tempTile.transform.SetParent(GameBoard);
             tempTile.setCoordinates(x, y);
+            if(replaced.type != "Grass")
+                tempTile.setTexture(getTextureName(replaced.type));
             tileGrid[x, y] = tempTile;
             tempTile.standingOn(standing);
             if (standing != null)
@@ -933,6 +941,27 @@ public class GroundScript : MonoBehaviour {
         return tileGrid[x, y];
     }
 
+    private string getTextureName(string tile)
+    {
+        string output = "";
+        switch (tile)
+        {
+            case "Fire":
+                output = "ScorchedGrass";
+                break;
+            case "Flood":
+                output = "Puddled";
+                break;
+            case "Growth":
+                output = "DeadGrass";
+                break;
+            case "Miasma":
+                output = "PoisonScar";
+                break;
+        }
+        return output;
+    }
+
     public bool isValidTile(int x, int y)
     {
         if (x < 10 && x > -1 && y < 10 && y > -1)
@@ -1017,6 +1046,23 @@ public class GroundScript : MonoBehaviour {
             generatedPaths.Clear();
             pathofpaths.Clear();
         }
+    }
+
+    public List<TileScript> getSurroundingTiles(TileScript tile, bool adj)
+    {
+        List<TileScript> output = new List<TileScript>();
+        for (int i = -1; i < 2; i++)
+        {
+            for (int j = -1; j < 2; j++)
+            {
+                if (tile.getPos().x + i < 10 && tile.getPos().x + i > -1 && tile.getPos().z + j < 10 && tile.getPos().z + j > -1 && !(i == 0 && j == 0) && (!adj || (Mathf.Abs(i) != Mathf.Abs(j))))
+                {
+                    //print((int)getPos().x + i + ", " + ((int)getPos().z + j));
+                    output.Add(tileGrid[(int)tile.getPos().x + i, (int)tile.getPos().z + j]);
+                }
+            }
+        }
+        return output;
     }
 
     public string getCurrentController(string player)

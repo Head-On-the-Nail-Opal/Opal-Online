@@ -72,6 +72,9 @@ public class TileScript : MonoBehaviour {
     private GameObject myShadow;
     private bool shady = false;
 
+    private Wildlife myWildlife = null;
+    private string alternateTexture = "";
+
     public void Awake()
     {
         GameObject board = GameObject.Find("Main Camera");
@@ -286,6 +289,16 @@ public class TileScript : MonoBehaviour {
 
     public void setCoordinates(int row, int col)
     {
+        if(row == -100 && col == -100)
+        {
+            if(myWildlife != null)
+                myWildlife.adjustState("run");
+
+            foreach (TileScript t in boardScript.getSurroundingTiles(this, true))
+            {
+                t.scareMyWildlife();
+            }
+        }
         gridPos.x = row;
         gridPos.y = col;
         if (type == "Flood")
@@ -696,6 +709,14 @@ public class TileScript : MonoBehaviour {
             myShadow.GetComponent<SpriteRenderer>().enabled = true;
             myShadow.transform.localScale *= player.transform.localScale.x/2.5f;
 
+            if(myWildlife != null)
+                myWildlife.adjustState("run");
+
+            foreach(TileScript t in boardScript.getSurroundingTiles(this, true))
+            {
+                t.scareMyWildlife();
+            }
+
             if (currentCharms.Count > 0)
             {
                 List<string> removedCharms = new List<string>();
@@ -806,7 +827,9 @@ public class TileScript : MonoBehaviour {
     public IEnumerator fall()
     {
         fallFlag = true;
-        if(currentPlayer != null)
+        if(myWildlife!= null)
+            myWildlife.adjustState("run");
+        if (currentPlayer != null)
         {
             currentPlayer.setDead();
             StartCoroutine(currentPlayer.shrinker());
@@ -1163,12 +1186,26 @@ public class TileScript : MonoBehaviour {
                 {
                     r = new Rect(shapes[i] * 16 + 8, 0, 8, 8);
                 }
-                
-                Sprite tempS = Sprite.Create(Resources.Load<Texture2D>("SpriteSheets/Board4P/"+type+endTag), r, new Vector2(r.width / 16f, r.height / 16f));
+
+                string textureName = type + endTag;
+                if (alternateTexture != "")
+                    textureName = alternateTexture;
+                Sprite tempS = Sprite.Create(Resources.Load<Texture2D>("SpriteSheets/Board4P/"+ textureName), r, new Vector2(r.width / 16f, r.height / 16f));
                 parts[i].sprite = tempS;
             }
         }
         Resources.UnloadUnusedAssets();
+    }
+
+    public void setTexture(string alt)
+    {
+        alternateTexture = alt;
+        
+    }
+
+    public string getTexture()
+    {
+        return alternateTexture;
     }
 
     private int calcShape(int num0, int num1, int num2)
@@ -1214,7 +1251,7 @@ public class TileScript : MonoBehaviour {
                     output += 'X';
                 else if(t == null)
                     output += '0';
-                else if (t.type == type)
+                else if (t.type == type && alternateTexture == t.getTexture())
                     output += '1';
                 else
                     output += '0';
@@ -1246,6 +1283,9 @@ public class TileScript : MonoBehaviour {
                 break;
 
         }
+
+        if (alternateTexture != "")
+            return;
 
         Texture2D textures = Resources.Load<Texture2D>("SpriteSheets/Board4P/Decor-" + type);
         if (textures == null)
@@ -1364,8 +1404,24 @@ public class TileScript : MonoBehaviour {
                 }
             }
         }
+    }
 
-        
+    public void spawnWildlife(string wName)
+    {
+        if (starting)
+            return;
+        myWildlife = Instantiate<Wildlife>(Resources.Load<Wildlife>("Prefabs/Wildlife/"+ wName));
+        float xRand = Random.Range(-20, 20) * 0.01f;
+        //float yRand = Random.Range(-30, 30) * 0.01f;
+        myWildlife.transform.position = new Vector3(transform.position.x+xRand, transform.position.y+1.35f, transform.position.z+xRand);
+        myWildlife.transform.eulerAngles = new Vector3(40, -45, 0);
+        myWildlife.transform.localScale *= 0.75f;
+    }
+
+    public void scareMyWildlife()
+    {
+        if (myWildlife != null)
+            myWildlife.adjustState("scared");
     }
 
 }

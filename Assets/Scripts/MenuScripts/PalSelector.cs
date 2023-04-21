@@ -14,10 +14,13 @@ public class PalSelector : MonoBehaviour
     private PalSelector myParent;
 
     public bool doStuff = false;
+    private bool displaying = false;
+    private MainMenuScript main;
 
     // Start is called before the first frame update
     void Awake()
     {
+        main = GameObject.Find("MainMenuController").GetComponent<MainMenuScript>();
         if (!doStuff)
             return;
         palPrefab = Resources.Load<PalSelector>("Prefabs/PalPlate");
@@ -43,18 +46,23 @@ public class PalSelector : MonoBehaviour
         {
             Destroy(myPal.gameObject);
             myPal = null;
+            if (myParent == null)
+                main.setCurrentPal(null);
         }
         if(p != null)
         {
             myPal = Instantiate<Pal>(p, transform);
             myPal.transform.localPosition = new Vector3(-0.015f, 0.015f, -1);
             myPal.transform.localScale *= 0.8f;
+            if (myParent == null)
+                main.setCurrentPal(p);
         }
     }
 
     private void displayPals(bool show)
     {
         //setPal(null);
+        displaying = show;
         foreach(PalSelector ps in palBorders)
         {
             ps.setPal(null);
@@ -99,7 +107,7 @@ public class PalSelector : MonoBehaviour
         }
         else
         {
-            displayPals(true);
+            displayPals(!displaying);
         }
     }
 

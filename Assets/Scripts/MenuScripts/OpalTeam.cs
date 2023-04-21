@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class OpalTeam : MonoBehaviour
 {
     private List<OpalScript> opals = new List<OpalScript>();
+    private Pal myPal = null;
     private GameObject backgroundMat;
     private GameObject typePlate;
     private List<GameObject> backgrounds = new List<GameObject>();
@@ -123,9 +124,24 @@ public class OpalTeam : MonoBehaviour
         }
     }
 
+    public void setPal(Pal p)
+    {
+        if (myPal != null)
+            Destroy(myPal.gameObject);
+        if (p == null)
+        {
+            myPal = null;
+        }
+        else
+        {
+            myPal = Instantiate<Pal>(p, actualPalPlate.transform);
+            myPal.transform.localPosition = new Vector3(0, 0, 0);
+            myPal.gameObject.SetActive(true);
+        }
+    }
+
     private void displayPal(bool show)
     {
-        return;
         if(actualPalPlate == null)
         {
             actualPalPlate = Instantiate<GameObject>(palPlate, transform);
@@ -136,8 +152,22 @@ public class OpalTeam : MonoBehaviour
         actualPalPlate.SetActive(show);
     }
 
+    private void movePalPlate(bool start)
+    {
+        if (start)
+        {
+            actualPalPlate.transform.localPosition = new Vector3(((opals.Count + 1) / 2) * 0.325f - 1.95f, 0.25f, -1);
+        }
+        else
+        {
+            actualPalPlate.transform.localPosition = new Vector3(((opals.Count - 1)) * 1.1f - 1.95f, 0.25f, -1);
+        }
+
+    }
+
     private void destroyPal()
     {
+        myPal = null;
         if(actualPalPlate != null)
             Destroy(actualPalPlate.gameObject);
     }
@@ -198,8 +228,9 @@ public class OpalTeam : MonoBehaviour
         if (over)
         {
             displayTeamTypes(false);
-            displayPal(false);
-            
+            displayPal(true);
+            movePalPlate(false);
+
             int i = 0;
             foreach (OpalScript o in opals)
             {
@@ -248,6 +279,7 @@ public class OpalTeam : MonoBehaviour
             }
             displayTeamTypes(true);
             displayPal(true);
+            movePalPlate(true);
         }
         setLimitations();
     }
@@ -263,7 +295,7 @@ public class OpalTeam : MonoBehaviour
         if (Input.GetMouseButtonUp(1))
         {
             displayTeamTypes(false);
-            displayPal(false);
+            movePalPlate(false);
             mms.deleteTeam(this, teamNum);
             //mms.loadTeams();
         }
