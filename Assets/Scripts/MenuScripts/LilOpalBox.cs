@@ -16,6 +16,8 @@ public class LilOpalBox : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (currentOpal == null)
+            return;
         if(i >= threshold)
         {
             i = 0;

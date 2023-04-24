@@ -2138,79 +2138,66 @@ public class MainMenuScript : MonoBehaviour {
 
     public void saveData()
     {
-        string path = "/StreamingAssets/save.txt";
-        using (var stream = new FileStream(Application.dataPath + path, FileMode.Truncate))
+        string output = "";
+        foreach (List<OpalScript> lO in teams)
         {
-            using (var writer = new StreamWriter(stream))
+            foreach (OpalScript o in lO)
             {
-                writer.Write("Please don't change this, it will be encrypted eventually.\n");
-                foreach(List<OpalScript> lO in teams)
-                {
-                    foreach(OpalScript o in lO)
-                    {
-                        o.setOpal(null);
-                        writer.Write(o.saveOpal() + ",");
-                        
-                    }
-                    writer.Write("\n");
-                }
-                writer.Write("endTeams\n");
-                foreach (OpalScript o in myOpals)
-                {
-                    //print("du hello");
-                    o.setOpal(null);
-                    writer.Write(o.getMyName() + ",");
-                }
-                writer.Write("\n");
-                writer.Write("endOpals\n");
+                o.setOpal(null);
+                output += (o.saveOpal() + ",");
+
             }
+            output += "\n";
         }
-        //AssetDatabase.ImportAsset(path);
-        //TextAsset asset = Resources.Load<TextAsset>("save");
+        output += "endTeams\n,";
+        foreach (OpalScript o in myOpals)
+        {
+            //print("du hello");
+            o.setOpal(null);
+            output += o.getMyName() + ",";
+        }
+        output += "\nendOpals\n";
+        PlayerPrefs.SetString("save", output);
     }
 
     public void loadData()
     {
-        string path = "/StreamingAssets/save.txt";
-        //Read the text from directly from the test.txt file
-        StreamReader reader = new StreamReader(Application.dataPath + path);
-        string reid = reader.ReadLine();
-        reid = reader.ReadLine();
-        while (reid != "endTeams")
+        //print(PlayerPrefs.GetString("save"));
+        int currentPos = 0;
+        string saveGame = PlayerPrefs.GetString("save","");
+        if (saveGame == "")
+            saveGame = getDefault();
+        string[] parsing = saveGame.Split(',');
+        while (!parsing[currentPos].Contains("endTeams"))
         {
-            string[] opalNames = reid.Split(',');
-            List<OpalScript> opals = new List<OpalScript>();
-            foreach(string name in opalNames)
+            List<OpalScript> myTeam = new List<OpalScript>();
+            while (!parsing[currentPos].Contains("\n"))
             {
-                if (name != "\n" && name != "")
+                string[] parsedMore = parsing[currentPos].Split('|');
+                OpalScript temp = Instantiate(Resources.Load<OpalScript>("Prefabs/Opals/" + parsedMore[0]));
+                if(temp != null)
                 {
-                    string[] parsed = name.Split('|');
-                    OpalScript temp = Instantiate(Resources.Load<OpalScript>("Prefabs/Opals/" + parsed[0]));
-                    if (temp != null)
-                    {
-                        temp.setFromSave(name);
-                        opals.Add(temp);
-                    }
+                    temp.setFromSave(parsing[currentPos]);
+                    myTeam.Add(temp);
                 }
+                currentPos++;
             }
-            teams.Add(opals);
-            reid = reader.ReadLine();
+            teams.Add(myTeam);
+            if(parsing[currentPos].Substring(0,1) == "\n")
+            {
+                parsing[currentPos] = parsing[currentPos].Substring(1, parsing[currentPos].Length - 1);
+            }
         }
-        while(reid != "endOpals")
+        while (!parsing[currentPos].Contains("endOpals"))
         {
-            string[] opalNames = reid.Split(',');
-            foreach (string name in opalNames)
-            {
-                if (name != "\n" && name != "" && name != "endTeams")
-                {
-                    //print("name: |"+name+"|");
-                    myOpals.Add(Resources.Load<OpalScript>("Prefabs/Opals/" + name));
-                }
-            }
+            //print("[" + parsing[currentPos] + "]");
+            OpalScript o = Resources.Load<OpalScript>("Prefabs/Opals/" + parsing[currentPos]);
+            if(o != null)
+                myOpals.Add(o);
+            currentPos++;
+        }
 
-            reid = reader.ReadLine();
-        }
-        if(myOpals.Count == 0)
+        if (myOpals.Count == 0)
         {
             myOpals.Add(pickNewOpal(false));
             myOpals.Add(pickNewOpal(false));
@@ -2219,7 +2206,7 @@ public class MainMenuScript : MonoBehaviour {
             myOpals.Add(pickNewOpal(false));
             myOpals.Add(pickNewOpal(false));
         }
-        reader.Close();
+
         loadTeams();
         populateOpalScreen();
     }
@@ -2316,5 +2303,10 @@ public class MainMenuScript : MonoBehaviour {
                 displayTeams[i].setPal(palTrackerTwo[i]);
             }
         }
+    }
+
+    private string getDefault()
+    {
+        return "Mechalodon|None|Straight-Edge,Succuum|None|Straight-Edge,\nSentree|None|Straight-Edge,Ambush|None|Straight-Edge,\nHearthhog|None|Straight-Edge,Fluttorch|None|Straight-Edge,\nDuplimorph|None|Straight-Edge,Gorj|None|Straight-Edge,\nendTeams\n,Abysmeel,Amalgum,Ambush,Aquarican,Aughtment,Barriarray,Beamrider,Betary,Bubbacle,Butterflight,Cactoid,Charayde,Chardinal,Chasmcrawler,Cottonmaw,Drizziphyl,Duplimorph,Experiment42,Finbow,Fluttorch,Froxic,FumePlume,Gilsplish,Glintrey,Glorm,Glummer,Gorj,Gravelpack,Grimmline,Groth,Hearthhog,Heatriarch,Hopscure,Hoviron,Infermal,Inflicshun,Inseedious,Investigator,KnightLite,Luminute,Meadowebb,Mechalodon,Mintick,Mistery,Moppet,Nachteous,Nekrokrab,Oozwl,Oremordilla,Overgroink,Pebblepal,Prismin,Protectric,Puffsqueak,Rekindle,Scorpirad,Sentree,Shineode,Shocket,Slungus,Snugbun,Sorceraura,Spillarc,Spiritch,Squirmtongue,Strikel,Succuum,Swoopitch,Teslamp,Thermor,Tortquoise,Verminfection,Volcoco,Wingnition,Woolloy,\nendOpals";
     }
 }
