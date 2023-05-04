@@ -16,9 +16,9 @@ public class Gum : OpalScript {
         speed = 2;
         priority = 7;
         myName = "Gum";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.8f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         offsetX = 0;
-        offsetY = 0.15f;
+        offsetY = -0.1f;
         offsetZ = 0;
         player = pl;
         if (pl == "Red" || pl == "Green")
@@ -30,9 +30,9 @@ public class Gum : OpalScript {
             GetComponent<SpriteRenderer>().flipX = false;
         }
         Attacks[0] = new Attack("Linked", 0, 0, 0, "<Passive>\n Whenever this opal takes damage, its twin will take it instead. If one twin dies so does the other.");
-        Attacks[1] = new Attack("Rift Gaze", 1, 1, 8, "Target loses 4 speed next turn.");
-        Attacks[2] = new Attack("Twin Resolute", 0, 1, 0, "Buff Amal by +4 defense");
-        Attacks[3] = new Attack("Trade Link", 0, 1, 0, "<Free Ability>\n Amal loses 5 health. Gum gains 5 health.");
+        Attacks[1] = new Attack("Rift Gaze", 2, 4, 4, "Target loses 4 speed next turn.",0,3);
+        Attacks[2] = new Attack("Twin Resolute", 0, 1, 0, "Buff Amal by +4 defense",0,3);
+        Attacks[3] = new Attack("Trade Link", 0, 1, 0, "<Free Ability>\n Amal loses 5 health. Gum gains 5 health.",0,3);
         Attacks[3].setFreeAction(true);
         type1 = "Void";
         type2 = "Void";

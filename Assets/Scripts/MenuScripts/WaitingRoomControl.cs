@@ -23,7 +23,6 @@ public class WaitingRoomControl : MonoBehaviourPunCallbacks, IPunObservable
     void Start()
     {
         glob = GameObject.Find("GlobalObject").GetComponent<GlobalScript>();
-
         username = glob.getUsername();
         roomName.text = PhotonNetwork.CurrentRoom.Name;
 
@@ -81,13 +80,20 @@ public class WaitingRoomControl : MonoBehaviourPunCallbacks, IPunObservable
     {
         chat = data;
         chatTextHistory.text = chat;
+        chatKeywordCheck();
     }
 
-    public void startMatch()
+    [PunRPC]
+    private void updatePlayerCount()
+    {
+        glob.setNumPlayers(PhotonNetwork.CurrentRoom.PlayerCount);
+    }
+
+    public void startMatch() //needs to detect number of players
     {
         if (PhotonNetwork.CurrentRoom.PlayerCount >= 2)
         {
-            PhotonNetwork.CurrentRoom.IsOpen = false;
+            this.photonView.RPC("updatePlayerCount", RpcTarget.All);
             PhotonNetwork.LoadLevel("MainGame");
         }
     }
@@ -101,15 +107,15 @@ public class WaitingRoomControl : MonoBehaviourPunCallbacks, IPunObservable
             int rand = Random.Range(0, 8);
             if (rand < 3)
             {
-                chat += "I've just been told that approximately " + Random.Range(100, 1000) + " people hate this person.</color>";
+                chat += "I've just been told that approximately " + Random.Range(100, 1000) + " people want to date this person.</color>";
             }
             else if (rand > 2 && rand < 5)
             {
-                chat += "I hear this person is incredibly rude.</color>";
+                chat += "I hear this person is incredibly cute.</color>";
             }
             else
             {
-                chat += "As of today, this person has kicked " + Random.Range(20, 100) + " puppies.</color>";
+                chat += "As of today, this person has hugged " + Random.Range(20, 100) + " puppies.</color>";
             }
             this.photonView.RPC("sendChatData", RpcTarget.All, chat);
             chatTextEnter.placeholder.GetComponent<Text>().text = "Press enter to chat...";
@@ -136,6 +142,16 @@ public class WaitingRoomControl : MonoBehaviourPunCallbacks, IPunObservable
             this.photonView.RPC("sendChatData", RpcTarget.All, chat);
         }
 
+        string playerListBuilder = "";
+        foreach (Photon.Realtime.Player p in PhotonNetwork.PlayerList)
+        {
+            playerListBuilder += p.NickName + "\n";
+        }
+        playerList.text = playerListBuilder;
+    }
+
+    public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
+    {
         string playerListBuilder = "";
         foreach (Photon.Realtime.Player p in PhotonNetwork.PlayerList)
         {
@@ -269,6 +285,14 @@ public class WaitingRoomControl : MonoBehaviourPunCallbacks, IPunObservable
                 typing = false;
                 this.photonView.RPC("sendChatData", RpcTarget.All, chat);
             }
+        }
+    }
+
+    private void chatKeywordCheck()
+    {
+        if ((chat.Split('\n')[chat.Split('\n').Length - 1]).Contains("lick"))
+        {
+            AudioSource.PlayClipAtPoint((AudioClip)Resources.Load("Sounds/lick"), new Vector3(800, 450, -10), 0.4f);
         }
     }
 }

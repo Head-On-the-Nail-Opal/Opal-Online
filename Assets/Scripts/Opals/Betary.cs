@@ -7,14 +7,14 @@ public class Betary : OpalScript
 
     override public void setOpal(string pl)
     {
-        health = 25;
+        health = 20;
         maxHealth = health;
         attack = 0;
         defense = 2;
         speed = 1;
         priority = 8;
         myName = "Betary";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.8f;
+        transform.localScale = new Vector3(3f, 3f, 1);
         offsetX = 0;
         offsetY = -0.15f;
         offsetZ = 0;
@@ -27,37 +27,18 @@ public class Betary : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Recharge", 0, 1, 0, "Gain +2 charge and +1 speed.");
-        Attacks[1] = new Attack("Zap", 3, 4, 5, "<Aftershock>\nDeal 5 damage. Repeatable until Betary is out of charge. Costs 2 charge.");
-        Attacks[2] = new Attack("Draw Power", 0, 1, 0, "<Aftershock>\nGain +2 attack for this turn. Costs 2 charge.");
-        Attacks[3] = new Attack("Recycling Energy", 0, 1, 0, "Lose -1 speed and gain +3 charge.");
+        Attacks[0] = new Attack("Zap", 3, 4, 5, "<Free Ability>\nCosts 2 charge. Deal 5 damage.",0,3);
+        Attacks[0].setFreeAction(true);
+        Attacks[1] = new Attack("Draw Power", 3, 4, 5, "<Free Ability>\n Costs 1 charge. If target is buffed then they are Reduced by 1 and Betary gains the stat loss.",0,3);
+        Attacks[1].setFreeAction(true);
+        Attacks[2] = new Attack("Recharge", 0, 1, 0, "Costs 1 charge. Gain +3 charge and +1 speed.",0,3);
+        Attacks[3] = new Attack("Jump", 0, 1, 0, "Gain +1 charge.",0,3);
         type1 = "Electric";
         type2 = "Electric";
-    }
 
-    public override void onStart()
-    {
-        bannedAttacks.Clear();
-        attackAgain = true;
-    }
-
-    public override void prepAttack(int attackNum)
-    {
-        if (attackNum == 0)
-        {
-            attackAgain = false;
-        }
-        else if (attackNum == 1)
-        {
-            attackAgain = true;
-        }
-        else if (attackNum == 2)
-        {
-            attackAgain = true;
-        }else if (attackNum == 3)
-        {
-            attackAgain = false;
-        }
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Cautious", 1, 3), new Behave("Line-Up", 1, 5),
+            new Behave("Safety", 0,1) });
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -65,44 +46,34 @@ public class Betary : OpalScript
         Attack cA = Attacks[attackNum];
         if (attackNum == 0) //
         {
-            doCharge(2);
-            boardScript.setChargeDisplay(getCharge());
-            doTempBuff(2, -1, 1);
-            attackAgain = false;
+            if(getCharge() > 1)
+            {
+                doCharge(-2);
+                return cA.getBaseDamage() + getAttack();
+            }
             return 0;
         }
         else if (attackNum == 1) //
         {
-            if(getCharge() > 1)
+            if (getCharge() > 0)
             {
-                doCharge(-2);
-                boardScript.setChargeDisplay(getCharge());
-                attackAgain = true;
-                if(getCharge() <= 0)
-                {
-                    bannedAttacks.Add(attackNum);
-                }
-                return cA.getBaseDamage() + getAttack();
+                doCharge(-1);
+                doTempBuffFromReduce(target.reduce(1));
             }
-            attackAgain = false;
             return 0;
         }
         else if (attackNum == 2) //
         {
-            if (getCharge() > 1)
+            if (getCharge() > 0)
             {
-                doCharge(-2);
-                boardScript.setChargeDisplay(getCharge());
-                doTempBuff(0, 1, 2);
-                attackAgain = true;
-                bannedAttacks.Add(attackNum);
+                doCharge(-1);
+                doCharge(3);
+                doTempBuff(2, -1, 1);
             }
             return 0;
         }else if(attackNum == 3)
         {
-            doTempBuff(2, -1, -1);
-            doCharge(3);
-            boardScript.setChargeDisplay(getCharge());
+            doCharge(1);
             return 0;
         }
         return cA.getBaseDamage() + getAttack();
@@ -132,11 +103,10 @@ public class Betary : OpalScript
             return 0;
         if (attackNum == 0)
         {
-            return 0;
         }
         else if (attackNum == 1)
         {
-            return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+            return 0;
         }
         else if (attackNum == 2)
         {
@@ -147,5 +117,56 @@ public class Betary : OpalScript
             return 0;
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+    }
+
+    public override int checkCanAttack(TileScript target, int attackNum)
+    {
+        if(attackNum == 0 && getCharge() < 2)
+        {
+            return -1;
+        }
+        if (attackNum == 1 && getCharge() < 1)
+        {
+            return -1;
+        }
+        if (attackNum == 2 && getCharge() < 1)
+        {
+            return -1;
+        }
+        if(target.currentPlayer == null)
+        {
+            return -1;
+        }
+        return 1;
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (atNum == 0)
+        {
+            if (getCharge() >= 2 && targettingEnemy(target))
+                return true;
+        }
+        else if (atNum == 1)
+        {
+            if (getCharge() >= 1 && targettingEnemy(target) && target.currentPlayer.isBuffed())
+                return true;
+        }
+        else if (atNum == 2)
+        {
+            if(getCharge() >= 1)
+                return true;
+        }
+        else if (atNum == 3)
+        {
+            if(getCharge() < 1)
+                return true;
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
+        return 3;
     }
 }

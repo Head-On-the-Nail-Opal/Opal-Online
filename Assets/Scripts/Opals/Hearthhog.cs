@@ -16,7 +16,7 @@ public class Hearthhog : OpalScript {
         speed = 3;
         priority = 5;
         myName = "Hearthhog";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.9f;
+        transform.localScale = new Vector3(3f, 3f, 1)*1.25f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -29,12 +29,17 @@ public class Hearthhog : OpalScript {
         offsetY = 0f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Incendiary", 0, 0, 0, "<Passive>\nGain +1 attack for each fire tile underfoot and on surrounding tiles.");
-        Attacks[1] = new Attack("Inferno", 2, 4, 6, "Deal damage and light target tile on fire. If you are standing on fire also affect tiles adjacent to target. Doesn't need to target an Opal.");
-        Attacks[2] = new Attack("Ignite", 0, 1, 0, "Ignite the tile at your feet. If you are standing on fire then light all adjacent tiles.");
+        Attacks[0] = new Attack("Incendiary", 0, 0, 0, "<Passive>\nGain a temporary +1 attack for each Flame tile underfoot and on surrounding tiles.");
+        Attacks[1] = new Attack("Inferno", 3, 4, 6, "Deal damage and light target tile on Flame. If you are standing on Flame also affect tiles adjacent to target. Doesn't need to target an Opal.",0,3);
+        Attacks[1].addProjectile("Default","Flame",12, Color.white, 1);
+        Attacks[2] = new Attack("Ignite", 0, 1, 0, "Ignite the tile at your feet. If you are standing on Flame then light all adjacent tiles.",0,3);
         Attacks[3] = new Attack("Flame Shield", 0, 1, 0, "Gain +1 defense for each point of attack you have, for 1 turn.");
         type1 = "Fire";
         type2 = "Fire";
+
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Cautious", 1, 3), new Behave("Line-Up", 1, 5),
+            new Behave("Safety", 0,1), new Behave("Hot-Headed", 0, 10) });
     }
 
     public override void onStart()
@@ -186,6 +191,10 @@ public class Hearthhog : OpalScript {
         {
             return 0;
         }
+        else if (attackNum == 3)
+        {
+            return 0;
+        }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
     }
 
@@ -200,5 +209,44 @@ public class Hearthhog : OpalScript {
             return 0;
         }
         return -1;
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (atNum == 0)
+        {
+            return false;
+        }
+        else if (atNum == 1)
+        {
+            if((useAdjacentToOpal(target, true) && currentTile.type == "Fire") || (target.currentPlayer != null && target.currentPlayer.getTeam() != getTeam()))
+            {
+                return true;
+            }
+        }
+        else if (atNum == 2)
+        {
+            if(currentTile.type == "Fire" && checkHasLineOfSight(Attacks[1].getRange()))
+            {
+                return false;
+            }
+            int total = 0;
+            foreach(TileScript t in getSurroundingTiles(true))
+            {
+                if (t.type == "Fire")
+                    total++;
+            }
+            return total < 3;
+        }
+        else if (atNum == 3)
+        {
+            return false;
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
+        return 3;
     }
 }

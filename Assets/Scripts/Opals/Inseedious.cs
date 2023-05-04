@@ -13,7 +13,7 @@ public class Inseedious : OpalScript
         speed = 4;
         priority = 2;
         myName = "Inseedious";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.9f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -26,19 +26,19 @@ public class Inseedious : OpalScript
         offsetY = -0.1f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Thorned Rose", 1, 1, 0, "Place a flower trap which deals 16 damage. During game this attack is disguised.");
-        Attacks[1] = new Attack("Honey Suckle", 1, 1, 0, "Place a flower trap which heals its victim 8 health. During game this attack is disguised.");
-        Attacks[2] = new Attack("Sunflower", 1, 1, 0, "Place a flower trap which buffs its victim +3 attack and +3 defense. During game this attack is disguised.");
-        Attacks[3] = new Attack("Petal Brew", 1, 1, 0, "Reduce target Opal by -4 attack and -4 defense. Place a Growth at their feet.");
+        Attacks[0] = new Attack("Thorned Rose", 1, 1, 0, "Place a flower trap which deals 16 damage. During game this attack is disguised.",0,3);
+        Attacks[1] = new Attack("Honey Suckle", 1, 1, 0, "Place a flower trap which heals its victim 8 health. During game this attack is disguised.",0,3);
+        Attacks[2] = new Attack("Sunflower", 1, 1, 0, "Place a flower trap which buffs its victim +3 attack and +3 defense. During game this attack is disguised.",0,3);
+        Attacks[3] = new Attack("Petal Brew", 1, 1, 0, "Reduce target Opal by -4 attack and -4 defense. Place a Growth at their feet.",0,3);
         type1 = "Dark";
         type2 = "Grass";
     }
 
     public override void onStart()
     {
-        Attacks[0] = new Attack("Mystery Flower", 1, 1, 0, "Place a flower trap which 1-damages, 2-heals, or 3-buffs its victim.");
-        Attacks[1] = new Attack("Mystery Flower", 1, 1, 0, "Place a flower trap which 1-damages, 2-heals, or 3-buffs its victim.");
-        Attacks[2] = new Attack("Mystery Flower", 1, 1, 0, "Place a flower trap which 1-damages, 2-heals, or 3-buffs its victim.");
+        Attacks[0] = new Attack("Mystery Flower", 1, 1, 0, "Place a flower trap which 1-damages (16), 2-heals (8), or 3-buffs its victim (+3,+3).",0,3);
+        Attacks[1] = new Attack("Mystery Flower", 1, 1, 0, "Place a flower trap which 1-damages (16), 2-heals (8), or 3-buffs its victim (+3,+3).", 0,3);
+        Attacks[2] = new Attack("Mystery Flower", 1, 1, 0, "Place a flower trap which 1-damages (16), 2-heals (8), or 3-buffs its victim (+3,+3).", 0,3);
     }
 
     public override void prepAttack(int attackNum)

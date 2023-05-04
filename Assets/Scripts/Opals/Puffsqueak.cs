@@ -15,7 +15,7 @@ public class Puffsqueak : OpalScript
         speed = 4;
         priority = 7;
         myName = "Puffsqueak";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.9f;
+        transform.localScale = new Vector3(3f, 3f, 1);
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -28,12 +28,12 @@ public class Puffsqueak : OpalScript
         offsetY = 0f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Carrying Wind", 4, 1, 0, "Place three Growths. Target Opals gain +1 speed for 1 turn.");
+        Attacks[0] = new Attack("Carrying Wind", 4, 1, 0, "Place three Growths. Target Opals gain +1 speed for 1 turn.",0,3);
         Attacks[0].setUses(3);
-        Attacks[1] = new Attack("Escape Plant", 1, 1, 0, "Teleport target Opal to any Growth tile.");
+        Attacks[1] = new Attack("Escape Plant", 1, 1, 0, "Teleport target Opal to any Growth tile.",0,3);
         Attacks[1].setUses(2);
-        Attacks[2] = new Attack("Seed Blast", 3, 1, 8, "Target gains Lift, place a Growth under their feet");
-        Attacks[3] = new Attack("Puffed Up", 0, 5, 0,"Target an Opal on a Growth. They gain +3 attack and +3 defense for 1 turn, and heal 4 health.");
+        Attacks[2] = new Attack("Seed Blast", 3, 1, 8, "Target gains Lift, place a Growth under their feet",0,3);
+        Attacks[3] = new Attack("Puffed Up", 0, 5, 0,"Target an Opal on a Growth. They gain +3 attack and +3 defense for 1 turn, and heal 4 health.",0,3);
         type1 = "Grass";
         type2 = "Air";
     }
@@ -52,6 +52,7 @@ public class Puffsqueak : OpalScript
         {
             boardScript.setTile((int)target.getPos().x, (int)target.getPos().z, "Growth", false);
             target.doTempBuff(2, 1, 1);
+            return 0;
         }
         else if (attackNum == 1)
         {

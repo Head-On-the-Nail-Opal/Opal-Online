@@ -7,16 +7,16 @@ public class Nachteous : OpalScript
 
     override public void setOpal(string pl)
     {
-        health = 30;
+        health = 20;
         maxHealth = health;
         attack = 0;
         defense = 4;
         speed = 2;
         priority = 1;
         myName = "Nachteous";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 1f;
+        transform.localScale = new Vector3(3f, 3f, 1f)*1.25f;
         offsetX = 0;
-        offsetY = 0.15f;
+        offsetY = 0f;
         offsetZ = 0;
         player = pl;
         if (pl == "Red" || pl == "Green")
@@ -27,10 +27,10 @@ public class Nachteous : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Vector", 0, 1, 0, "Lower Nachteous's attack and defense by -2, spawn miasma at Nachteous's feet and on adjacent tiles");
-        Attacks[1] = new Attack("Spead Sickness", 3, 4, 0, "Spawn miasma at the feet of all targets, and inflict them with all stat changes Nachteous carries", 2);
-        Attacks[2] = new Attack("Bile Shot", 3, 4, 1, "Clear all stat changes on Nachteous and deal damage for each negative point of attack.");
-        Attacks[3] = new Attack("Re-Uptake", 0, 1, 0, "<Free Ability>\n Remove Miasma at your feet in order to lower your attack by -2.");
+        Attacks[0] = new Attack("Vector", 0, 1, 0, "Lower Nachteous's attack and defense by -2, spawn miasma at Nachteous's feet and on adjacent tiles", 0,3);
+        Attacks[1] = new Attack("Spead Sickness", 3, 4, 0, "Spawn miasma at the feet of all targets, and inflict them with all stat changes Nachteous carries", 2, 3);
+        Attacks[2] = new Attack("Bile Shot", 3, 4, 1, "Clear all stat changes on Nachteous and deal damage for each negative point of attack.", 0,3);
+        Attacks[3] = new Attack("Re-Uptake", 0, 1, 0, "<Free Ability>\n Remove Miasma at your feet in order to lower your attack by -2.",0,3);
         Attacks[3].setFreeAction(true);
         type1 = "Plague";
         type2 = "Dark";

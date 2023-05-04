@@ -13,12 +13,12 @@ public class Amal : OpalScript {
         maxHealth = health;
         attack = 0;
         defense = 2;
-        speed = 1;
+        speed = 2;
         priority = 3;
         myName = "Amal";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.8f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         offsetX = 0;
-        offsetY = -0.05f;
+        offsetY = -0.1f;
         offsetZ = 0;
         player = pl;
         if (pl == "Red" || pl == "Green")
@@ -30,9 +30,9 @@ public class Amal : OpalScript {
             GetComponent<SpriteRenderer>().flipX = false;
         }
         Attacks[0] = new Attack("Linked", 0, 0, 0, "<Passive>\n Whenever this opal takes damage, its twin will take it instead. If one twin dies so does the other.");
-        Attacks[1] = new Attack("Scythe", 2, 4, 4, "Deal 4 damage, add your defense instead of your attack.");
-        Attacks[2] = new Attack("Twin Intrepidity", 0, 1, 0, "Buff Gum by +4 attack");
-        Attacks[3] = new Attack("Trade Link", 0, 1, 0, "<Free Ability>\n Gum loses 5 health. Amal gains 5 health.");
+        Attacks[1] = new Attack("Scythe", 1, 4, 4, "Deal 4 damage, add your defense instead of your attack.",0,3);
+        Attacks[2] = new Attack("Twin Intrepidity", 0, 1, 0, "Buff Gum by +4 attack",0,3);
+        Attacks[3] = new Attack("Trade Link", 0, 1, 0, "<Free Ability>\n Gum loses 5 health. Amal gains 5 health.",0,3);
         Attacks[3].setFreeAction(true);
         type1 = "Void";
         type2 = "Void";

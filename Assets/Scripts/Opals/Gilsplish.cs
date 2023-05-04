@@ -8,12 +8,12 @@ public class Gilsplish : OpalScript
     {
         health = 25;
         maxHealth = health;
-        attack = 0;
-        defense = 3;
+        attack = 2;
+        defense = 2;
         speed = 2;
         priority = 0;
         myName = "Gilsplish";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.9f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1.3f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -27,9 +27,10 @@ public class Gilsplish : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Gills", 0, 0, 0, "<Passive>\n At the start of its turn, Gilsplish loses -10 health outside of Flood, or gains +5 health in Flood");
-        Attacks[1] = new Attack("Splish", 4, 4, 5, "If the target is in Flood, this attack heals them instead of dealing damage.");
-        Attacks[2] = new Attack("Splurt", 5, 4, 4, "If Gilpslish in in Flood, then this attack places Flood under and adjacent to the target.");
-        Attacks[3] = new Attack("Flop", 0, 1, 0, "Gain +2 speed for 1 turn. Place Flood under Gilsplish and on adjacent tiles.");
+        Attacks[1] = new Attack("Splish", 1, 3, 5, "<Water Rush> Deal damage, if Gilsplish is at full health, deal damage twice.",0,3);
+        Attacks[2] = new Attack("Splurt", 3, 4, 6, "Deal damage to the target. Tiles under and adjacent to them are Flooded. Tidal: This has +2 range, and you heal the damage it deals.",0,3);
+        Attacks[2].setTidalD("Deal damage to the target. Tiles under and adjacent to them are Flooded. You heal the damage it deals. Tidal: This has -2 range, and you don't heal");
+        Attacks[3] = new Attack("Flop", 0, 1, 0, "Gain +2 speed for 1 turn. Place Flood under Gilsplish and on adjacent tiles.",0,3);
         type1 = "Water";
         type2 = "Water";
     }
@@ -45,6 +46,14 @@ public class Gilsplish : OpalScript
         {
             takeDamage(10, false, true);
         }
+        if (getTidal())
+        {
+            Attacks[2].setRange(5);
+        }
+        else
+        {
+            Attacks[2].setRange(3);
+        }
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -56,32 +65,30 @@ public class Gilsplish : OpalScript
         }
         else if (attackNum == 1)
         {
-            if(target.getCurrentTile().type == "Flood")
-            {
-                target.doHeal(cA.getBaseDamage() + getAttack(), false);
-                return 0;
-            }
+            if(getHealth() == getMaxHealth())
+                target.takeDamage(cA.getBaseDamage() + getAttack(), true, true);
         }
         else if (attackNum == 2)
         {
-            if(currentTile.type == "Flood")
+            boardScript.setTile(target, "Flood", false);
+            foreach (TileScript t in target.getSurroundingTiles(true))
             {
-                boardScript.setTile(target, "Flood", false);
-                boardScript.setTile((int)target.getPos().x + 1, (int)target.getPos().z, "Flood", false);
-                boardScript.setTile((int)target.getPos().x - 1, (int)target.getPos().z, "Flood", false);
-                boardScript.setTile((int)target.getPos().x, (int)target.getPos().z + 1, "Flood", false);
-                boardScript.setTile((int)target.getPos().x, (int)target.getPos().z - 1, "Flood", false);
+                boardScript.setTile(t, "Flood", false);
+            }
+            if (getTidal())
+            {
+                if(target.getArmor() == 0)
+                    doHeal(cA.getBaseDamage() + getAttack() - target.getDefense(), false);
             }
         }
         else if (attackNum == 3)
         {
-            doTempBuff(2, 1, 2);
-            boardScript.setTile((int)transform.position.x, (int)transform.position.z, "Flood", false);
-            boardScript.setTile((int)transform.position.x + 1, (int)transform.position.z, "Flood", false);
-            boardScript.setTile((int)transform.position.x - 1, (int)transform.position.z, "Flood", false);
-            boardScript.setTile((int)transform.position.x, (int)transform.position.z + 1, "Flood", false);
-            boardScript.setTile((int)transform.position.x, (int)transform.position.z - 1, "Flood", false);
-            return 0;
+            doTempBuff(2, 2, 2);
+            boardScript.setTile(this, "Flood", false);
+            foreach(TileScript t in getSurroundingTiles(true))
+            {
+                boardScript.setTile(t, "Flood", false);
+            }
         }
         return cA.getBaseDamage() + getAttack();
     }
@@ -117,10 +124,8 @@ public class Gilsplish : OpalScript
         }
         else if (attackNum == 1)
         {
-            if(target.type == "Flood")
-            {
-                return 0;
-            }
+            if(getHealth() == getMaxHealth())
+                return (Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense())*2;
         }
         else if (attackNum == 2)
         {

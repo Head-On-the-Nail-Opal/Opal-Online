@@ -40,7 +40,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsConnected)
         {
             // we need at this point to attempt joining a Random Room. If it fails, we'll get notified in OnJoinRandomFailed() and we'll create one.
-            PhotonNetwork.JoinRoom("Lobby");
+            PhotonNetwork.LoadLevel("Lobby");
         }
         else
         {
@@ -60,7 +60,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         if (isConnecting)
         {
             // The first we try to do is to join a potential existing room. If there is, good, else, we'll be called back with OnJoinRandomFailed()
-            PhotonNetwork.JoinRoom("Lobby");
+            PhotonNetwork.LoadLevel("Lobby");
         }
     }
 
@@ -74,7 +74,6 @@ public class Launcher : MonoBehaviourPunCallbacks
         Debug.Log("OnJoinRandomFailed() was called by PUN. No random room available, so we create one.\nCalling: PhotonNetwork.CreateRoom");
 
         // we failed to join a random room, maybe none exists or they are all full. No worries, we create a new room.
-        PhotonNetwork.CreateRoom("Lobby", new RoomOptions() { EmptyRoomTtl = 5000 });
         PhotonNetwork.LoadLevel("Lobby");
     }
 

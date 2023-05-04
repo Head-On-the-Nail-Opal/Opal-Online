@@ -13,24 +13,31 @@ public class PlateScript : MonoBehaviour {
     GameObject panel;
     GameObject background;
     private Color defaultBackground = new Color(0f, 0.5f, 0.1f);
+    private SpriteRenderer frontSR;
+    private SpriteRenderer backSR;
+    private bool team = false;
     // Use this for initialization
     void Start () {
         mainCam = GameObject.Find("Main Camera");
         main = GameObject.Find("MainMenuController").GetComponent<MainMenuScript>();
         setColor(defaultBackground);
+        setPlateColor();
     }
 
     public void setPlate(OpalScript opal, float x, float y)
     {
-        myOpal = opal;
-        OpalScript opalOne = Instantiate<OpalScript>(opal);
-        specificOpal = opalOne;
-        opalOne.setOpal(null);
-        //opalOne.setVariant("1");
         transform.position = new Vector3(x, y, -1);
-        opalOne.transform.position = new Vector3(transform.position.x, transform.position.y - 0.8f, -2.5f);
-        opalOne.transform.localScale *= 1.2f;
-        opalOne.transform.Rotate(new Vector3(0,45,0));
+        if (opal != null)
+        {
+            myOpal = opal;
+            OpalScript opalOne = Instantiate<OpalScript>(opal);
+            specificOpal = opalOne;
+            opalOne.setOpal(null);
+            opalOne.transform.position = new Vector3(transform.position.x, transform.position.y - 0.8f, -2.5f);
+            opalOne.transform.localScale *= 1.2f;
+            opalOne.transform.rotation = Quaternion.Euler(0, 0, 0);
+            setPlateColor();
+        }
     }
 
     public void setPlate(OpalScript opal)
@@ -44,13 +51,15 @@ public class PlateScript : MonoBehaviour {
         }
         myOpal = opal;
         OpalScript opalOne = Instantiate<OpalScript>(opal);
-        specificOpal = opalOne;
+        
         opalOne.setOpal(null);
         //opalOne.setVariant("1");
         opalOne.transform.position = new Vector3(transform.position.x, transform.position.y - 0.8f, -2.5f);
         opalOne.transform.localScale *= 1.2f;
-        opalOne.transform.Rotate(new Vector3(0, 45, 0));
-        if(panel != null)
+        opalOne.transform.rotation = Quaternion.Euler(0, 0, 0);
+        specificOpal = opalOne;
+        setPlateColor();
+        if (panel != null)
             DestroyImmediate(background);
         int i = 0;
         foreach(string s in opalsPicked)
@@ -63,14 +72,78 @@ public class PlateScript : MonoBehaviour {
         }
     }
 
+    private void setPlateSprites()
+    {
+        if (frontSR == null || backSR == null)
+        {
+            foreach (SpriteRenderer sr in transform.GetChild(0).GetComponentsInChildren<SpriteRenderer>())
+            {
+                if (sr.gameObject.name == "MainPlate")
+                {
+                    frontSR = sr;
+                }
+                else if (sr.gameObject.name == "BackPlate")
+                {
+                    backSR = sr;
+                }
+            }
+        }
+    }
+
+    public void setPlateColor()
+    {
+        setPlateSprites();
+        if(myOpal != null)
+        {
+            frontSR.color = myOpal.getColorFromType(myOpal.getMainType(), false)/1.4f;
+            backSR.color = myOpal.getColorFromType(myOpal.getSecondType(), true)/1.4f;
+        }
+        else
+        {
+            frontSR.color = Color.blue;
+            backSR.color = Color.blue;
+        }
+    }
+
+    public void highlightCursor(bool on)
+    {
+        setPlateSprites();
+        if (on)
+        {
+            frontSR.color *= 2f;
+            backSR.color *= 2f;
+            frontSR.transform.localScale *= 1.2f;
+            backSR.transform.localScale *= 1.2f;
+            if(specificOpal != null)
+                specificOpal.transform.localScale *= 1.2f;
+        }
+        else
+        {
+            frontSR.color /= 2f;
+            backSR.color /= 2f;
+            frontSR.transform.localScale /= 1.2f;
+            backSR.transform.localScale /= 1.2f;
+            if (specificOpal != null)
+                specificOpal.transform.localScale /= 1.2f;
+        }
+    }
+
+    public void setTeamMember()
+    {
+        setPlateSprites();
+    }
+
     public void clearPlate()
     {
-        
         if (specificOpal != null)
-            DestroyImmediate(specificOpal.gameObject);
+        {
+            specificOpal.StopAllCoroutines();
+            Destroy(specificOpal.gameObject);
+        }
         myOpal = null;
+        setPlateColor();
         if (panel != null)
-            DestroyImmediate(background);
+            Destroy(background);
     }
 
     public void disableMouse() { disable = true; }
@@ -170,18 +243,39 @@ public class PlateScript : MonoBehaviour {
     {
         if (!disable)
         {
-            main.addCurrentOpal();
+            if (team)
+            {
+                main.chooseOneOpal(this);
+            }
+            else
+            {
+                main.addCurrentOpal();
+            }
         }
     }
 
     private void OnMouseEnter()
     {
-        setColor(new Color(0,0,0.5f));
+        highlightCursor(true);
         main.displayOpal(myOpal);
+        if (team)
+        {
+            main.displayOpal(myOpal, true);
+        }
+
+        if(specificOpal != null)
+        {
+            StartCoroutine(specificOpal.playFrame("attack", 5));
+        }
     }
 
     private void OnMouseExit()
     {
-        setColor(defaultBackground);
+        highlightCursor(false);
+    }
+
+    public void setTeamPlate()
+    {
+        team = true;
     }
 }

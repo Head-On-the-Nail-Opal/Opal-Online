@@ -21,19 +21,23 @@ public class PathScript : MonoBehaviour {
 
     public void setCoordinates(int x, int z)
     {
-        transform.position = new Vector3(x, 0f, z);
-        if (boardScript.tileGrid[(int)transform.position.x, (int)transform.position.z].type == "Fire" || boardScript.tileGrid[(int)transform.position.x, (int)transform.position.z].type == "Miasma" || boardScript.tileGrid[(int)transform.position.x, (int)transform.position.z].type == "Spore")
+        if ((int)transform.position.x > -1 && (int)transform.position.z > -1 && (int)transform.position.x < 10 && (int)transform.position.z < 10)
         {
-            if (boardScript.tileGrid[(int)transform.position.x, (int)transform.position.z].type == "Fire")
+            transform.position = new Vector3(x, 0f, z);
+            if (boardScript.tileGrid[(int)transform.position.x, (int)transform.position.z].type == "Fire" || boardScript.tileGrid[(int)transform.position.x, (int)transform.position.z].type == "Miasma" || boardScript.tileGrid[(int)transform.position.x, (int)transform.position.z].type == "Spore")
             {
-                doBurn = true;
-            }
-            else
-            {
-                doPoison = true;
+                if (boardScript.tileGrid[(int)transform.position.x, (int)transform.position.z].type == "Fire")
+                {
+                    doBurn = true;
+                }
+                else
+                {
+                    doPoison = true;
+                }
             }
         }
     }
+
 
     public Vector3 getPos()
     {

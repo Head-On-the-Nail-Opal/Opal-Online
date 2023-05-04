@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +12,11 @@ public class MainMenuScript : MonoBehaviour {
     private List<OpalScript> greenTeam = new List<OpalScript>();
     private List<OpalScript> orangeTeam = new List<OpalScript>();
     private List<PlateScript> displayOpals = new List<PlateScript>();
+    private List<List<OpalScript>> teams = new List<List<OpalScript>>();
+    private List<OpalTeam> displayTeams = new List<OpalTeam>();
+    private List<OpalScript> myOpals = new List<OpalScript>();
+    private List<List<OpalScript>> activeTeams = new List<List<OpalScript>>();
+    private List<Pal> palTrackerTwo = new List<Pal>();
     private GlobalScript glob;
     public string currentTeam;
     public string blueController;
@@ -18,6 +25,7 @@ public class MainMenuScript : MonoBehaviour {
     public string orangeController;
     public Text currentText;
     public Text teamText;
+    public Text numTeamsText;
     public Text chooseText;
     public Text opalCount;
     public Text dupeText;
@@ -25,7 +33,7 @@ public class MainMenuScript : MonoBehaviour {
     public string currentController;
     private GameObject mainCam;
     public string menuState;
-    public GameObject TargetInfo;
+    //public GameObject TargetInfo;
     public PlateSelector ps;
     public Text controllerSelect;
     public Transform opletButton;
@@ -35,10 +43,11 @@ public class MainMenuScript : MonoBehaviour {
     public OpalDisplay opletDisplay;
     public OpalDisplay selectionDisplay;
     private TeamDisplay teamDisplay;
+    private GameObject opalPlate;
     private bool opletBool = false;
     private int numTeams = 2;
     private int numOpals = 4;
-    private bool choose = true; 
+    private bool choose = true;
     public List<TeamDisplay> displayPlates = new List<TeamDisplay>();
     private bool startDraft = true;
     private int dupes = 0;
@@ -49,41 +58,67 @@ public class MainMenuScript : MonoBehaviour {
     public InputField opalSearch;
     private GameObject nPage;
     private GameObject lPage;
+    public Text currentTeamNumOpals;
+    private List<PlateScript> teamEditor = new List<PlateScript>();
+    public GameObject teamScreen;
+    private PlateScript platePrefab;
+    private PlateScript currentTeamPlate = null;
+    public OpalDisplay teamOpalDisplay;
+    public MenuButtonScript createTeamButton;
+    public MenuButtonScript addNewTeamButton;
+    private int currentEditorTeam = -1;
+    private TextAsset save;
+    public Text personalityTracker;
+    private int personalityNum = 0;
+    private ItemLabel itemLabelPrefab;
+    public ItemDescriptions iD;
+    public Text description;
+    public Text charmLabel;
+    public Text visualLabel;
+    private int currentVisual = -1;
+    private OpalScript viewedOpal = null;
+    private List<string> bannedCharms = new List<string>();
+    private int waiting = -1;
+    public Text chooseTeamsText;
+    private List<string> controls = new List<string>();
+
+    public MenuButtonScript toggleAI;
+
+    private List<string> personalities = new List<string>();
+    private int controlTracker = 0;
+    private bool doingCampfire = false;
 
 
     // Use this for initialization
-    void Start () {
+    private void Awake()
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            palTrackerTwo.Add(null);
+        }
+    }
+
+    void Start() {
+        Cursor.visible = true;
         currentController = "";
         mainCam = GameObject.Find("Main Camera");
         allOpals = Resources.LoadAll<OpalScript>("Prefabs/Opals");
-        PlateScript platePrefab = Resources.Load<PlateScript>("Prefabs/OpalPlate");
+        platePrefab = Resources.Load<PlateScript>("Prefabs/OpalPlate");
         teamDisplay = Resources.Load<TeamDisplay>("Prefabs/TeamDisplay");
+        itemLabelPrefab = Resources.Load<ItemLabel>("Prefabs/ItemThing");
+        opalPlate = Resources.Load<GameObject>("Prefabs/OpalPlate2");
         glob = GameObject.Find("GlobalObject").GetComponent<GlobalScript>();
         mm = GameObject.Find("MultiplayerManager").GetComponent<MultiplayerManager>();
         lPage = GameObject.Find("LastPage");
         nPage = GameObject.Find("NextPage");
+        save = Resources.Load<TextAsset>("Assets/save.txt");
+        createTeamButton.gameObject.SetActive(false);
         lPage.SetActive(false);
-        float x = 20;
-        float y = 19;
-        int i = 0;
-        int offset = 0;
-        maxOpalPage = Mathf.CeilToInt(allOpals.Length/25f);
-        for(int j = 0 + offset; j < 25+offset; j++)
-        {
-            PlateScript tempP = Instantiate<PlateScript>(platePrefab);
-            tempP.setPlate(allOpals[j], x, y);
-            x += 1.6f;
-            i++;
-            if(i == 5)
-            {
-                x = 20;
-                y -= 1.6f;
-                i = 0;
-            }
-            displayOpals.Add(tempP);
-        }
+        populateOpalScreen();
+        setUpItems();
+        setupTeamDisplay();
         startButton.transform.position = new Vector3(-100, -100, -100);
-        TargetInfo.transform.position = new Vector3(0.2f, 18, -1);
+        //TargetInfo.transform.position = new Vector3(0.2f, 18, -1);
         mainDisplay.clearInfo();
         menuState = "Main";
         foreach (string s in Input.GetJoystickNames())
@@ -91,14 +126,29 @@ public class MainMenuScript : MonoBehaviour {
             print(s);
         }
 
+        for (int i = 0; i < 4; i++)
+        {
+            controls.Add("keyboard");
+        }
+
+
         //TargetInfo.transform.position = new Vector3(-100, -100, -100);
         currentTeam = "blue";
         currentText.text = "Current Player: Blue";
         currentText.color = Color.blue;
+        loadPersonalities();
+        loadData();
+        if(glob.getFinishedGame() == true)
+        {
+            addNewOpal();
+            glob.setFinishedGame(false); 
+        }
+        setUpMenuBackground();
+        //loadTeams();
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update() {
         int num = 0;
         foreach (string s in Input.GetJoystickNames())
         {
@@ -106,12 +156,98 @@ public class MainMenuScript : MonoBehaviour {
         }
         //print(num);
         Vector3 mousePos = Input.mousePosition;
-        if(menuState == "Draft" && startDraft)
+        if (menuState == "Draft" && startDraft)
         {
             if (!choose)
             {
                 populateTeams();
             }
+        }
+
+        updateTeamsText();
+        if(waiting != -1)
+        {
+            if (doingCampfire)
+            {
+                if (activeTeams.Count > 0)
+                {
+                    glob.setMult(false);
+                    glob.setControllers("keyboard", "AI", "keyboard", "keyboard");
+                    glob.setNumPlayers(2);
+
+                    glob.getCampfireOpals().Clear();
+                    glob.getCampfireOpals().Add(activeTeams[0][0]);
+                    glob.setCampfireLevel(1);
+                    UnityEngine.SceneManagement.SceneManager.LoadScene("Campfire", UnityEngine.SceneManagement.LoadSceneMode.Single);
+                    return;
+                }
+            }
+            if (waiting == 0)
+            {
+                if (activeTeams.Count > 0)
+                {
+                    doMultiplayerSettings();
+                    blueTeam = activeTeams[0];
+                    blueController = "keyboard";
+                    startGame();
+                }
+            }
+            else if (waiting == 1)
+            {
+                if (activeTeams.Count >= numTeams)
+                {
+                    glob.setMult(false);
+
+
+                    string rCont = controls[0];
+                    string bCont = controls[1];
+                    string gCont = controls[2];
+                    string oCont = controls[3];
+                    glob.setControllers(rCont, bCont, gCont, oCont);
+                    glob.setNumPlayers(activeTeams.Count);
+                    switch (numTeams) {
+                        case 2:
+                            glob.setTeams(activeTeams[0], activeTeams[1], null, null);
+                            glob.setOverloads(calculateTypeOverload(activeTeams[0]), calculateTypeOverload(activeTeams[1]), null, null);
+                            break;
+                        case 3:
+                            glob.setTeams(activeTeams[0], activeTeams[1], activeTeams[2], null);
+                            glob.setOverloads(calculateTypeOverload(activeTeams[0]), calculateTypeOverload(activeTeams[1]), calculateTypeOverload(activeTeams[2]), null);
+                            break;
+                        case 4:
+                            glob.setTeams(activeTeams[0], activeTeams[1], activeTeams[2], activeTeams[3]);
+                            glob.setOverloads(calculateTypeOverload(activeTeams[0]), calculateTypeOverload(activeTeams[1]), calculateTypeOverload(activeTeams[2]), calculateTypeOverload(activeTeams[3]));
+                            break;
+                    }
+
+                    UnityEngine.SceneManagement.SceneManager.LoadScene("MainGame", UnityEngine.SceneManagement.LoadSceneMode.Single);
+                    //if(rCont == "AI" || bCont == "AI" || oCont == "AI" || gCont == "AI")
+                    //{
+                    //    UnityEngine.SceneManagement.SceneManager.LoadScene("MainGame", UnityEngine.SceneManagement.LoadSceneMode.Additive);
+                    //}
+                }
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Equals))
+        {
+            addNewOpal();
+        }
+        if (Input.GetKeyDown(KeyCode.Minus))
+        {
+            wipeOpals();
+        }
+        if (Input.GetKeyDown(KeyCode.Delete))
+        {
+            refillOpals();
+        }
+        if (Input.GetKeyDown(KeyCode.Plus))
+        {
+            //UnityEngine.SceneManagement.SceneManager.LoadScene("World", UnityEngine.SceneManagement.LoadSceneMode.Single);
+        }
+        if (Input.GetKeyDown(KeyCode.Backslash))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu", UnityEngine.SceneManagement.LoadSceneMode.Single);
         }
 
         if (Input.GetButtonDown("button 0"))
@@ -182,12 +318,12 @@ public class MainMenuScript : MonoBehaviour {
                 currentText.text = "Current Player: Blue";
                 currentText.color = Color.blue;
             }
-            if(menuState == "Draft")
+            if (menuState == "Draft")
             {
                 if (currentTeam == "blue" && blueController == "joystick 1" || currentTeam == "red" && redController == "joystick 1" || currentTeam == "green" && greenController == "joystick 1" || currentTeam == "orange" && orangeController == "joystick 1")
                     addCurrentOpal();
             }
-            if(menuState == "Play")
+            if (menuState == "Play")
             {
                 startGame();
                 currentTeam = "blue";
@@ -204,7 +340,7 @@ public class MainMenuScript : MonoBehaviour {
             if (menuState == "Draft")
             {
                 //if (currentTeam == "blue" && blueController == "joystick 1" || currentTeam == "red" && redController == "joystick 1")
-                   // clear();
+                // clear();
             }
         }
         else if (Input.GetAxis("dpadRight") > 0)
@@ -235,7 +371,7 @@ public class MainMenuScript : MonoBehaviour {
                 }
             }
         }
-        else if(Input.GetAxis("dpadUp") > 0)
+        else if (Input.GetAxis("dpadUp") > 0)
         {
             if (menuState == "Draft" && opletBool)
             {
@@ -340,8 +476,8 @@ public class MainMenuScript : MonoBehaviour {
             }
             if (menuState == "Draft")
             {
-               // if (currentTeam == "blue" && blueController == "joystick 2" || currentTeam == "red" && redController == "joystick 2")
-                  //  clear();
+                // if (currentTeam == "blue" && blueController == "joystick 2" || currentTeam == "red" && redController == "joystick 2")
+                //  clear();
             }
         }
         else if (Input.GetAxis("dpadRight 2") > 0)
@@ -664,7 +800,7 @@ public class MainMenuScript : MonoBehaviour {
                     if (numTeams > 1)
                     {
                         currentTeam = "red";
-                        
+
                         controllerSelect.text = "Red Player\nPress A or SPACE";
                     }
                     else
@@ -688,7 +824,7 @@ public class MainMenuScript : MonoBehaviour {
                         currentTeam = "green";
                         controllerSelect.text = "Green Player\nPress A or SPACE";
                     }
-                }else if(currentTeam == "green")
+                } else if (currentTeam == "green")
                 {
                     greenController = "keyboard";
                     if (numTeams == 3)
@@ -703,13 +839,13 @@ public class MainMenuScript : MonoBehaviour {
                         controllerSelect.text = "Orange Player\nPress A or SPACE";
                     }
                 }
-                else if(currentTeam == "orange")
+                else if (currentTeam == "orange")
                 {
                     orangeController = "keyboard";
                     currentTeam = "blue";
                     mainCam.transform.position = new Vector3(20, 15, -10);
                     menuState = "Draft";
-                    
+
                 }
             }
         }
@@ -719,16 +855,47 @@ public class MainMenuScript : MonoBehaviour {
         }
     }
 
+    private void setUpMenuBackground()
+    {
+        GameObject tempPrefab = Resources.Load<GameObject>("Prefabs/UIandMenu/TeamSelectionBackground");
+        LilOpalBox lilPrefab = Resources.Load<LilOpalBox>("Prefabs/UIandMenu/LilOpalBox");
+        for (int i = 0; i < 6; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                GameObject temp = Instantiate<GameObject>(tempPrefab);
+                temp.transform.position = new Vector3(-32.5f+2.8f*j, 3.61f - i * 1.4f, -0.5f);
+                temp.transform.localScale = new Vector3(4.4f, 4.4f, 0);
+            }
+        }
+
+        for (int i = 0; i < 5; i++)
+        {
+            LilOpalBox temp = Instantiate<LilOpalBox>(lilPrefab);
+            temp.transform.position = new Vector3(-16.875f - i * 1.5f, 4.2f, -0.51f);
+            temp.transform.localScale = new Vector3(5f, 5f, 0);
+            temp.setOpal(Resources.Load<OpalScript>("Prefabs/Opals/"+getRandomOpalName()));
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            LilOpalBox temp = Instantiate<LilOpalBox>(lilPrefab);
+            temp.transform.position = new Vector3(-24.6f, 2f - i*2.5f, -0.51f);
+            temp.transform.localScale = new Vector3(5f, 5f, 0);
+            temp.setOpal(Resources.Load<OpalScript>("Prefabs/Opals/" + getRandomOpalName()));
+        }
+    }
+
     public void addCurrentOpal()
     {
-        if(selectionDisplay.getCurrentOpal() == null)
+        if (selectionDisplay.getCurrentOpal() == null)
         {
             return;
         }
         selectionDisplay.getCurrentOpal().setOpal(null);
-        if(selectionDisplay.getCurrentOpal() != null && ((!checkRepeats(blueTeam, selectionDisplay.getCurrentOpal()) && !checkRepeats(redTeam, selectionDisplay.getCurrentOpal())) && !checkRepeats(greenTeam, selectionDisplay.getCurrentOpal()) && !checkRepeats(orangeTeam, selectionDisplay.getCurrentOpal()) || (dupes == 1 && !checkRepeats(getTeam(currentTeam), selectionDisplay.getCurrentOpal()))) && !full)
+        if (selectionDisplay.getCurrentOpal() != null && ((!checkRepeats(blueTeam, selectionDisplay.getCurrentOpal()) && !checkRepeats(redTeam, selectionDisplay.getCurrentOpal())) && !checkRepeats(greenTeam, selectionDisplay.getCurrentOpal()) && !checkRepeats(orangeTeam, selectionDisplay.getCurrentOpal()) || (dupes == 1 && !checkRepeats(getTeam(currentTeam), selectionDisplay.getCurrentOpal()))) && !full)
         {
-            if (dupes == 0)
+            if (dupes == 0 && currentTeamPlate == null)
             {
                 foreach (PlateScript p in displayOpals)
                 {
@@ -737,6 +904,24 @@ public class MainMenuScript : MonoBehaviour {
                         p.setTeam(currentTeam);
                     }
                 }
+            }
+            if (currentTeamPlate != null)
+            {
+                //print("du hello");
+                foreach (PlateScript p in teamEditor)
+                {
+                    if (p.getOpal() != null && p.getOpal().getMyName() == selectionDisplay.getCurrentOpal().getMyName())
+                    {
+                        currentTeamPlate = p;
+                        mainCam.transform.position = new Vector3(0, 15, -10);
+                        return;
+                    }
+                }
+                currentTeamPlate.setPlate(selectionDisplay.getCurrentOpal());
+                currentTeamPlate = null;
+                mainCam.transform.position = new Vector3(0, 15, -10);
+                displayOpal(selectionDisplay.getCurrentOpal(), true);
+                return;
             }
             if (currentTeam == "blue")
             {
@@ -764,11 +949,56 @@ public class MainMenuScript : MonoBehaviour {
             }
         }
         selectionDisplay.setCurrentOpal(null);
-        if (redTeam.Count + blueTeam.Count + greenTeam.Count + orangeTeam.Count == numOpals*numTeams)
+        if (redTeam.Count + blueTeam.Count + greenTeam.Count + orangeTeam.Count == numOpals * numTeams)
         {
             full = true;
             startButton.transform.position = new Vector3(24, 17f, -3);
             menuState = "Play";
+        }
+    }
+
+    public void randomizeCurrentOpal()
+    {
+        OpalScript replaced = teamOpalDisplay.getCurrentOpal();
+        OpalScript randO = getRandomOpal();
+
+        for (int i = 0; i < teamEditor.Count; i++)
+        {
+            if (teamEditor[i].getOpal() != null && teamEditor[i].getOpal().getMyName() == randO.getMyName())
+            {
+                return;
+            }
+        }
+
+        teamOpalDisplay.setCurrentOpal(randO);
+        if (replaced == null)
+        {
+            for (int i = 0; i < teamEditor.Count; i++)
+            {
+                if (teamEditor[i].getOpal() == null)
+                {
+                    teamEditor[i].setPlate(teamOpalDisplay.getCurrentOpal());
+                    break;
+                }
+            }
+
+            for (int i = 0; i < teamEditor.Count; i++)
+            {
+                if (teamEditor[i].getOpal() == null)
+                    return;
+            }
+
+            createTeamButton.gameObject.SetActive(true);
+        }
+        else
+        {
+            for(int i = 0; i < teamEditor.Count; i++)
+            {
+                if(teamEditor[i].getOpal() != null && teamEditor[i].getOpal().getMyName() == replaced.getMyName())
+                {
+                    teamEditor[i].setPlate(teamOpalDisplay.getCurrentOpal());
+                }
+            }
         }
     }
 
@@ -787,10 +1017,10 @@ public class MainMenuScript : MonoBehaviour {
 
     private void populateTeams()
     {
-        while(!full)
+        while (!full)
         {
             OpalScript temp = Instantiate<OpalScript>(allOpals[Random.Range(0, allOpals.Length)]);
-            temp.setVariant(""+Random.Range(0, 2));
+            temp.setVariant("" + Random.Range(0, 2));
             mainDisplay.setCurrentOpal(temp);
             addCurrentOpal();
         }
@@ -798,13 +1028,13 @@ public class MainMenuScript : MonoBehaviour {
 
     private bool checkRepeats(List<OpalScript> opals, OpalScript check)
     {
-        if(dupes == 2)
+        if (dupes == 2)
         {
             return false;
         }
-        foreach(OpalScript o in opals)
+        foreach (OpalScript o in opals)
         {
-            if(o.getMyName() == check.getMyName())
+            if (o.getMyName() == check.getMyName())
             {
                 return true;
             }
@@ -815,7 +1045,7 @@ public class MainMenuScript : MonoBehaviour {
     public void clear()
     {
         menuState = "Draft";
-        foreach(TeamDisplay t in displayPlates)
+        foreach (TeamDisplay t in displayPlates)
         {
             t.clear();
         }
@@ -840,9 +1070,9 @@ public class MainMenuScript : MonoBehaviour {
     public void clearSingleOpal(OpalScript o)
     {
         int i = 0;
-        foreach(OpalScript opal in blueTeam)
+        foreach (OpalScript opal in blueTeam)
         {
-            if(o.getMyName() == opal.getMyName())
+            if (o.getMyName() == opal.getMyName())
             {
                 break;
             }
@@ -850,7 +1080,7 @@ public class MainMenuScript : MonoBehaviour {
         }
         foreach (PlateScript p in displayOpals)
         {
-            if(p.getOpal() != null && o.getMyName() == p.getOpal().getMyName())
+            if (p.getOpal() != null && o.getMyName() == p.getOpal().getMyName())
                 p.setTeam("reset");
         }
         blueTeam.RemoveAt(i);
@@ -866,7 +1096,7 @@ public class MainMenuScript : MonoBehaviour {
             lPage.SetActive(false);
             List<OpalScript> searched = new List<OpalScript>();
             //print(opalSearch.text);
-            foreach(OpalScript o in allOpals)
+            foreach (OpalScript o in allOpals)
             {
                 o.setOpal(null);
                 if (o.getMyName() != null && o.getMyName().ToLower().Contains(opalSearch.text.ToLower()))
@@ -879,9 +1109,9 @@ public class MainMenuScript : MonoBehaviour {
             {
                 p.clearPlate();
             }
-            for(int i = 0; i < searched.Count; i++)
+            for (int i = 0; i < searched.Count; i++)
             {
-                if(i > displayOpals.Count - 1)
+                if (i > displayOpals.Count - 1)
                 {
                     break;
                 }
@@ -947,7 +1177,7 @@ public class MainMenuScript : MonoBehaviour {
     {
         if (allOpals.Length < x + y)
             return null;
-        return allOpals[(int)(x+y)];
+        return allOpals[(int)(x + y)];
     }
 
     public void setPlateActive(bool hmm)
@@ -957,7 +1187,7 @@ public class MainMenuScript : MonoBehaviour {
 
     public void setCurrentOplet(int num)
     {
-        currentOplet= num;
+        currentOplet = num;
     }
 
     public void cycleChoose()
@@ -976,10 +1206,10 @@ public class MainMenuScript : MonoBehaviour {
     public void cycleDuplicate(int add)
     {
         dupes += add;
-        if(dupes > 2)
+        if (dupes > 2)
         {
             dupes = 0;
-        }else if(dupes < 0)
+        } else if (dupes < 0)
         {
             dupes = 2;
         }
@@ -987,11 +1217,11 @@ public class MainMenuScript : MonoBehaviour {
         {
             dupeText.text = "Allow Duplicates?\nNo Duplicates";
         }
-        else if(dupes == 1)
+        else if (dupes == 1)
         {
             dupeText.text = "Allow Duplicates?\nNo Team Duplicates";
         }
-        else if(dupes == 2)
+        else if (dupes == 2)
         {
             dupeText.text = "Allow Duplicates?\nNo Limits";
         }
@@ -1005,11 +1235,11 @@ public class MainMenuScript : MonoBehaviour {
     public void setOpaloids()
     {
         return;
-        if(mainDisplay.getCurrentOpalInstance().getOplets() != null)
+        if (mainDisplay.getCurrentOpalInstance().getOplets() != null)
         {
             opletBool = true;
             opletButton.transform.position = new Vector3(opletButton.transform.position.x, opletButton.transform.position.y, -1);
-            if(currentOplet >= mainDisplay.getCurrentOpalInstance().getOplets().Count)
+            if (currentOplet >= mainDisplay.getCurrentOpalInstance().getOplets().Count)
             {
                 currentOplet = 0;
             }
@@ -1028,9 +1258,9 @@ public class MainMenuScript : MonoBehaviour {
 
     public bool checkController(string player, string controller)
     {
-        if(currentTeam == "blue" && blueController == controller)
+        if (currentTeam == "blue" && blueController == controller)
         {
-            if(player == "blue")
+            if (player == "blue")
             {
                 return true;
             }
@@ -1073,9 +1303,9 @@ public class MainMenuScript : MonoBehaviour {
                 currentText.text = "Current Player: Red";
                 currentText.color = Color.red;
             }
-        }else if(currentTeam == "red")
+        } else if (currentTeam == "red")
         {
-            if(numTeams > 2)
+            if (numTeams > 2)
             {
                 currentTeam = "green";
                 currentText.text = "Current Player: Green";
@@ -1087,7 +1317,7 @@ public class MainMenuScript : MonoBehaviour {
                 currentText.text = "Current Player: Blue";
                 currentText.color = Color.blue;
             }
-        }else if(currentTeam == "green")
+        } else if (currentTeam == "green")
         {
             if (numTeams > 3)
             {
@@ -1102,7 +1332,7 @@ public class MainMenuScript : MonoBehaviour {
                 currentText.color = Color.blue;
             }
         }
-        else if(currentTeam == "orange")
+        else if (currentTeam == "orange")
         {
             currentTeam = "blue";
             currentText.text = "Current Player: Blue";
@@ -1137,12 +1367,91 @@ public class MainMenuScript : MonoBehaviour {
         mult = true;
     }
 
+    public void setUpItems()
+    {
+        iD.setUp();
+        List<string> items = new List<string>();
+        for(int i = 0; i < iD.itemsCount(); i++)
+        {
+            items.Add(iD.getItem(i));
+        }
+        float height = 30.5f;
+        int k = 0;
+        int j = 0;
+        foreach(string name in items)
+        {
+            ItemLabel temp = Instantiate<ItemLabel>(itemLabelPrefab);
+            temp.setText(name);
+            temp.setMain(this);
+            temp.transform.position = new Vector3(-7 + j*4,height,-2);
+            temp.transform.localScale /= 2;
+            height -= 0.5f;
+            k++;
+            if(k >= 19)
+            {
+                j++;
+                height = 30.5f;
+                k = 0;
+            }
+        }
+    }
+
+    public void readDescription(string name)
+    {
+        description.text = iD.getDescFromItem(name);
+    }
+
+    public void loadPersonalities()
+    {
+        //personality format: name;health,attack,defense,speed,priority
+        personalities.Add("Straight-Edge;0,0,0,0,0");
+        personalities.Add("Proud;0,1,-1,0,0");
+        personalities.Add("Reserved;0,-1,1,0,0");
+        personalities.Add("Risk-Taker;0,2,-2,0,0");
+        personalities.Add("Worried;0,-2,2,0,0");
+        personalities.Add("Tactical;0,3,0,-1,0");
+        personalities.Add("Cautious;0,0,3,-1,0");
+        personalities.Add("Relaxed;5,0,0,-1,0");
+        personalities.Add("Optimistic;5,-2,0,0,0");
+        personalities.Add("Pessimistic;5,0,-2,0,0");
+        personalities.Add("Impatient;0,-2,-2,1,0");
+        //personalities.Add("Jumpy;0,-1,-,1,0");
+    }
+
+    public void setCurrentCharmName(string name)
+    {
+        OpalScript temp = viewedOpal;
+        if (bannedCharms.Contains(name))
+        {
+            return;
+        }
+        if (temp == null)
+            return;
+        if (temp.getCharmsNames().Count > 0 && temp.getCharmsNames()[0] != null)
+        {
+            bannedCharms.Remove(temp.getCharmsNames()[0]);
+        }
+        bannedCharms.Add(name);
+        temp.replaceCharmName(name);
+        mainCam.transform.position = new Vector3(0,15,-10);
+        //print(temp.getMyName() + "'s charm is set to " + temp.getCharm());
+        setCurrentCharm(temp);
+    }
+
+    public void setCurrentCharm(OpalScript op)
+    {
+        if (op.getCharms()[0] == null)
+            charmLabel.text = "None";
+        else
+            charmLabel.text = "" +  op.getCharmsNames()[0];
+    }
+
     public void setTeamDisplays()
     {
         //print("duh hello");
         TeamDisplay teamTemp = Instantiate<TeamDisplay>(teamDisplay);
         teamTemp.setUp("blue", numOpals);
-        teamTemp.transform.localPosition = new Vector3(11.7f,19.4f, -4f);
+        teamTemp.transform.localPosition = new Vector3(11.7f, 19.4f, -4f);
         displayPlates.Add(teamTemp);
 
         if (numTeams >= 2)
@@ -1163,7 +1472,7 @@ public class MainMenuScript : MonoBehaviour {
 
 
         }
-        if(numTeams >= 4)
+        if (numTeams >= 4)
         {
             TeamDisplay teamTemp4 = Instantiate<TeamDisplay>(teamDisplay);
             teamTemp4.setUp("orange", numOpals);
@@ -1175,14 +1484,14 @@ public class MainMenuScript : MonoBehaviour {
 
     public void nextPage(int inc)
     {
-        if(currentOpalPage + inc < maxOpalPage && currentOpalPage + inc >= 0)
+        if (currentOpalPage + inc < maxOpalPage && currentOpalPage + inc >= 0)
         {
             nPage.SetActive(true);
             lPage.SetActive(true);
             if (currentOpalPage + inc == 0)
             {
                 lPage.SetActive(false);
-            }else if (currentOpalPage + inc == maxOpalPage-1)
+            } else if (currentOpalPage + inc == maxOpalPage - 1)
             {
                 nPage.SetActive(false);
             }
@@ -1205,6 +1514,799 @@ public class MainMenuScript : MonoBehaviour {
 
     public void displayOpal(OpalScript o)
     {
-        selectionDisplay.setCurrentOpal(o);
+        if (o != null)
+        {
+            o.gameObject.SetActive(true);
+            selectionDisplay.setCurrentOpal(o);
+        }
+        
+        if (o != null)
+        {
+            personalityTracker.text = "" + o.getPersonality() + "\n" + getPersonalityStats(o.getPersonality());
+            if (o.getCharmsNames().Count == 0 || o.getCharmsNames()[0] == "None")
+                charmLabel.text = "None";
+            else
+                charmLabel.text = "" + o.getCharmsNames()[0];
+        }
+
+    }
+
+    public void displayOpal(OpalScript o, bool team)
+    {
+        if (o != null)
+        {
+            teamOpalDisplay.setCurrentOpal(o);
+            viewedOpal = o;
+            if (team)
+            {
+                visualLabel.text = o.getMyVisual();
+            }
+        }
+        else
+        {
+            teamOpalDisplay.setCurrentOpal(null);
+            viewedOpal = null;
+        }
+    }
+
+    public void incNumTeams()
+    {
+        numTeams++;
+        if(numTeams > 4)
+        {
+            numTeams = 2;
+        }
+        numTeamsText.text = numTeams+"";
+        //teams[currentEditorTeam].Add(null);
+    }
+
+    public void decNumTeams()
+    {
+        numTeams--;
+        if (numTeams < 2)
+        {
+            numTeams = 4;
+        }
+        numTeamsText.text = numTeams + "";
+        //teams[currentEditorTeam].RemoveAt(teams[currentEditorTeam].Count-1);
+    }
+
+    public void incTeamNum()
+    {
+        if (currentTeamNumOpals.text != "8")
+        {
+            currentTeamNumOpals.text = (int.Parse(currentTeamNumOpals.text) + 1) + "";
+            PlateScript temp = Instantiate<PlateScript>(platePrefab, teamScreen.transform);
+            temp.transform.localPosition = new Vector3((int.Parse(currentTeamNumOpals.text) - 1) * 1.8f - 4, 10.1f, 3);
+            teamEditor.Add(temp);
+            temp.setTeamPlate();
+            createTeamButton.gameObject.SetActive(false);
+        }
+    }
+
+    public void decrTeamNum()
+    {
+        if (currentTeamNumOpals.text != "1")
+        {
+            currentTeamNumOpals.text = (int.Parse(currentTeamNumOpals.text) - 1) + "";
+            teamEditor[int.Parse(currentTeamNumOpals.text)].setPlate(null);
+            DestroyImmediate(teamEditor[int.Parse(currentTeamNumOpals.text)].gameObject);
+            teamEditor.RemoveAt(int.Parse(currentTeamNumOpals.text));
+            int currentPopulation = 0;
+            foreach (PlateScript pl in teamEditor)
+            {
+                if (pl.getOpal() != null)
+                {
+                    currentPopulation++;
+                }
+            }
+            if (currentPopulation == int.Parse(currentTeamNumOpals.text))
+            {
+                createTeamButton.gameObject.SetActive(true);
+            }
+        }
+    }
+
+    private void setupTeamDisplay()
+    {
+        if (teamEditor.Count < 1)
+        {
+            for (int i = 0; i < int.Parse(currentTeamNumOpals.text); i++)
+            {
+                PlateScript temp = Instantiate<PlateScript>(platePrefab, teamScreen.transform);
+                temp.transform.localPosition = new Vector3(i * 1.8f - 4, 10.1f, 3);
+                teamEditor.Add(temp);
+                temp.setTeamPlate();
+            }
+        }
+    }
+
+    public int getWaiting()
+    {
+        return waiting;
+    }
+
+    public void chooseOneOpal(PlateScript p)
+    {
+        currentTeamPlate = p;
+        mainCam.transform.position = new Vector3(20, 15, -10);
+        int currentPopulation = 0;
+        foreach (PlateScript pl in teamEditor)
+        {
+            if (pl.getOpal() != null)
+            {
+                currentPopulation++;
+            }
+        }
+        if (currentPopulation == int.Parse(currentTeamNumOpals.text) || (currentPopulation == int.Parse(currentTeamNumOpals.text) - 1 && currentTeamPlate.getOpal() == null))
+        {
+            createTeamButton.gameObject.SetActive(true);
+        }
+    }
+
+    public void createTeam()
+    {
+        List<OpalScript> teamOpals = new List<OpalScript>();
+        foreach (PlateScript p in teamEditor)
+        {
+            teamOpals.Add(p.getOpal());
+        }
+        createTeam(teamOpals);
+    }
+
+    public void createTeam(List<OpalScript> o)
+    {
+        List<OpalScript> teamOpals = o;
+        OpalTeam temp = Instantiate<OpalTeam>(Resources.Load<OpalTeam>("Prefabs/OpalTeam"));
+        List<OpalScript> copy = new List<OpalScript>();
+        foreach(OpalScript opal in teamOpals)
+        {
+            OpalScript opalCopy = Instantiate<OpalScript>(opal);
+            opalCopy.setOpal(null);
+            //opalCopy.setPersonality(opal.getPersonality());
+            opalCopy.setDetails(opal);
+            //print(opalCopy.getCharm());
+            copy.Add(opalCopy);
+        }
+        if (currentEditorTeam == -1)
+        {
+            bannedCharms.Clear();
+            teams.Add(copy);
+            temp.setMain(this, teams.Count - 1);
+
+            if (teams.Count == 1000)
+                temp.transform.position = new Vector3(-30, 5 - teams.Count * 1.5f, -1);
+            else
+                temp.transform.position = new Vector3(-30, 5f - teams.Count * 1.4f, -1);
+
+            if (teams.Count == 1000)
+                addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 5 - (teams.Count + 1) * 1.5f, addNewTeamButton.transform.position.z);
+            else
+                addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 5f - (teams.Count + 1) * 1.4f, addNewTeamButton.transform.position.z);
+            temp.displayTeam(copy);
+            displayTeams.Add(temp);
+        }
+        else
+        {
+            bannedCharms.Clear();
+            teams[currentEditorTeam] = copy;
+            temp.setMain(this, currentEditorTeam);
+            if (currentEditorTeam == 1000)
+                temp.transform.position = new Vector3(-30, 5 - (currentEditorTeam + 1) * 1.5f, -1);
+            else
+                temp.transform.position = new Vector3(-30, 5f - (currentEditorTeam + 1) * 1.4f, -1);
+
+            if (currentEditorTeam == 1000)
+                addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 5 - (currentEditorTeam + 1) * 1.5f, addNewTeamButton.transform.position.z);
+            else
+                addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 5f - (currentEditorTeam + 1) * 1.4f, addNewTeamButton.transform.position.z);
+
+            temp.displayTeam(copy);
+            displayTeams[currentEditorTeam].selfDestruct();
+            DestroyImmediate(displayTeams[currentEditorTeam].gameObject);
+            displayTeams.RemoveAt(currentEditorTeam);
+            displayTeams.Insert(currentEditorTeam, temp);
+            currentEditorTeam = -1;
+        }
+        createTeamButton.gameObject.SetActive(false);
+        foreach (PlateScript p in teamEditor)
+        {
+            p.setPlate(null);
+        }
+        mainCam.transform.position = new Vector3(-25, 0, -10);
+        
+        if (teams.Count == 6)
+        {
+            addNewTeamButton.gameObject.SetActive(false);
+        }
+        loadTeams();
+        displayPals();
+    }
+
+    public void displayTeam(List<OpalScript> opals, int teamNum)
+    {
+        if(waiting != -1)
+        {
+            activeTeams.Add(opals);
+            if (toggleAI.getToggle())
+            {
+                toggleAI.setToggle(false);
+                controls[activeTeams.Count-1] = "AI";
+            }
+            return;
+        }
+        foreach(OpalScript o in opals)
+        {
+            if(o == null)
+            {
+                return;
+            }
+            if(o.getCharms()[0] != null)
+            {
+                bannedCharms.Add(o.getCharmsNames()[0]);
+            }
+        }
+        mainCam.transform.position = new Vector3(0, 15, -10);
+        while (opals.Count != teamEditor.Count)
+        {
+            if (opals.Count > teamEditor.Count)
+                incTeamNum();
+            else if (opals.Count < teamEditor.Count)
+                decrTeamNum();
+        }
+        int i = 0;
+        foreach (PlateScript p in teamEditor)
+        {
+            p.setPlate(opals[i]);
+            i++;
+        }
+        createTeamButton.gameObject.SetActive(true);
+        currentEditorTeam = teamNum;
+        displayOpal(opals[0], true);
+    }
+  
+    public void deleteTeam(OpalTeam oT, int teamNum)
+    {
+        teams.RemoveAt(teamNum);
+        bannedCharms.Clear();
+        loadTeams();
+        if (teams.Count == 1000)
+            addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 5 - (teams.Count + 1) * 1.5f, addNewTeamButton.transform.position.z);
+        else
+            addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 5f - (teams.Count + 1) * 1.4f, addNewTeamButton.transform.position.z);
+        if (teams.Count < 6)
+        {
+            addNewTeamButton.gameObject.SetActive(true);
+        }
+    }
+
+    private string getPersonalityStats(string personality)
+    {
+        if(personality == "Straight-Edge")
+        {
+            return "(No Stat Changes)";
+        }
+        if(personality == "")
+        {
+            return "";
+        }
+        string stats = "";
+        foreach(string s in personalities)
+        {
+            string[] temp = s.Split(';');
+            if(temp[0] == personality)
+            {
+                stats = temp[1];
+            }
+        }
+        if(stats == "")
+        {
+            return "";
+        }
+        string[] temp2 = stats.Split(',');
+        string pHealth = temp2[0];
+        string pAttack = temp2[1];
+        string pDefense = temp2[2];
+        string pSpeed = temp2[3];
+        string pPriority = temp2[4];
+        string firsthalf = "";
+        string secondhalf = "";
+        if (int.Parse(pHealth) > 0)
+        {
+            firsthalf = "+" + pHealth + " health, ";
+        }
+        if (int.Parse(pAttack) > 0)
+        {
+            firsthalf = "+" + pAttack + " attack, ";
+        }
+        else if (int.Parse(pAttack) < 0)
+        {
+            secondhalf = pAttack + " attack ";
+        }
+
+        if (int.Parse(pDefense) > 0)
+        {
+            firsthalf = "+" + pDefense + " defense, ";
+        }
+        else if (int.Parse(pDefense) < 0)
+        {
+            secondhalf += pDefense + " defense ";
+        }
+
+        if (int.Parse(pSpeed) > 0)
+        {
+            firsthalf = "+" + pSpeed + " speed, ";
+        }
+        else if (int.Parse(pSpeed) < 0)
+        {
+            secondhalf = pSpeed + " speed ";
+        }
+
+        if (int.Parse(pPriority) > 0)
+        {
+            firsthalf = "+" + pPriority + " priority, ";
+        }
+        else if (int.Parse(pPriority) < 0)
+        {
+            secondhalf = pPriority + " priority ";
+        }
+        return firsthalf + secondhalf;
+
+    }
+
+    public void setNextPersonality(bool reverse)
+    {
+
+        if (!reverse)
+        {
+            personalityNum++;
+            if (personalityNum >= personalities.Count)
+            {
+                personalityNum = 0;
+            }
+        }
+        else
+        {
+            personalityNum--;
+            if (personalityNum < 0)
+            {
+                personalityNum = personalities.Count-1;
+            }
+        }
+        string[] temp = personalities[personalityNum].Split(';');
+        string pName = temp[0];
+        string stats = temp[1];
+        personalityTracker.text = "" + pName + "\n" + getPersonalityStats(pName);
+        if (viewedOpal == null)
+            return;
+        viewedOpal.setPersonality(pName);
+    }
+
+    public void setNextVisual(bool reverse)
+    {
+        Texture2D[] tempTextures = Resources.LoadAll<Texture2D>("Spritesheets/Alternates/"+viewedOpal.getMyName());
+
+        List<Texture2D> textures = new List<Texture2D>();
+        textures.AddRange(tempTextures);
+
+        if(textures.Count == 0)
+        {
+            visualLabel.text = "Default";
+            return;
+        }
+
+
+        int target = -1;
+        for(int i = 0; i < textures.Count; i++)
+        {
+            if(textures[i].name == "Default")
+            {
+                target = i;
+            }
+        }
+        if (target != -1)
+            textures.RemoveAt(target);
+
+        int numTextures = textures.Count;
+
+        if (!reverse)
+        {
+            currentVisual++;
+            if (currentVisual >= textures.Count)
+            {
+                currentVisual = -1;
+            }
+        }
+        else
+        {
+            currentVisual--;
+            if (currentVisual <= -2)
+            {
+                currentVisual = textures.Count - 1;
+            }
+        }
+        if (currentVisual == -1)
+        {
+            visualLabel.text = "Default";
+            teamOpalDisplay.getCurrentOpalInstance().changeVisual("Default", true);
+        }
+        else
+        {
+            visualLabel.text = textures[currentVisual].name;
+            teamOpalDisplay.getCurrentOpalInstance().changeVisual(textures[currentVisual].name, true);
+            viewedOpal.changeVisual(textures[currentVisual].name, true);
+
+        }
+    }
+
+    private OpalScript findViewedOpal()
+    {
+
+        foreach(OpalScript o in teams[currentEditorTeam])
+        {
+            if (o == null || teamOpalDisplay.getCurrentOpal() == null)
+            {
+                break;
+            }
+            if (o.getMyName() == teamOpalDisplay.getCurrentOpal().getMyName())
+                return teamOpalDisplay.getCurrentOpal();
+        }
+        return null;
+    }
+
+    public void startLocalGame()
+    {
+        activeTeams.Clear();
+        waiting = 1;
+        doingCampfire = false;
+    }
+
+    public void updateTeamsText()
+    {
+        if (waiting == -1 && chooseTeamsText.text != "Teams")
+        {
+            chooseTeamsText.text = "Teams";
+        }else if (waiting == 0 && doingCampfire && chooseTeamsText.text != "Choose 1 team of 1 Opal!")
+        {
+            chooseTeamsText.text = "Choose 1 team of 1 Opal!";
+        }
+        else if (waiting == 0 && chooseTeamsText.text != "Choose 1 team!" && !doingCampfire)
+        {
+            chooseTeamsText.text = "Choose 1 team!";
+        }
+        else if (waiting == 1 && chooseTeamsText.text != "Choose " + (numTeams - activeTeams.Count) + " teams!")
+        {
+            chooseTeamsText.text = "Choose " + (numTeams - activeTeams.Count) + " teams!";
+        }
+        else if (waiting == 2 && chooseTeamsText.text != "Choose 1 team!")
+        {
+            chooseTeamsText.text = "Choose 1 team!";
+        }
+    }
+
+    public void loadTeams()
+    {
+        if(displayTeams.Count > 0)
+        {
+            foreach(OpalTeam oT in displayTeams)
+            {
+                oT.selfDestruct();
+            }
+        }
+        displayTeams.Clear();
+        int i = 0;
+        foreach(List<OpalScript> l in teams)
+        {
+            List<OpalScript> teamOpals = l;
+            OpalTeam temp = Instantiate<OpalTeam>(Resources.Load<OpalTeam>("Prefabs/OpalTeam"));
+            temp.setMain(this, i);
+            if (i == 1000)
+                temp.transform.position = new Vector3(-30, 5 - (i+1) * 1.5f, -1);
+            else
+                temp.transform.position = new Vector3(-30, 5 - (i+1) * 1.4f, -1);
+            temp.displayTeam(teamOpals); //this is broken
+            displayTeams.Add(temp);
+            i++;
+        }
+        if (teams.Count == 100)
+            addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 5 - (teams.Count + 1) * 1.5f, addNewTeamButton.transform.position.z);
+        else
+            addNewTeamButton.transform.position = new Vector3(addNewTeamButton.transform.position.x, 5 - (teams.Count + 1) * 1.4f, addNewTeamButton.transform.position.z);
+        saveData();
+    }
+
+    public void startMultiplayerGame()
+    {
+        activeTeams.Clear();
+        waiting = 0;
+        doingCampfire = false;
+    }
+
+    public void startCampfireGame()
+    {
+        activeTeams.Clear();
+        waiting = 0;
+        doingCampfire = true;
+    }
+
+    public void startLocalAI()
+    {
+        activeTeams.Clear();
+        waiting = 1;
+    }
+
+    private void populateOpalScreen()
+    {
+        /**
+        foreach(PlateScript p in displayOpals)
+        {
+            Destroy(p.gameObject);
+        }
+        displayOpals.Clear();
+        float x = 20;
+        float y = 19;
+        int i = 0;
+        int offset = 0;
+        maxOpalPage = Mathf.CeilToInt(allOpals.Length / 25f);
+        for (int j = 0 + offset; j < 25 + offset; j++)
+        {
+            PlateScript tempP = Instantiate<PlateScript>(platePrefab);
+            tempP.setPlate(allOpals[j], x, y);
+            x += 1.6f;
+            i++;
+            if (i == 5)
+            {
+                x = 20;
+                y -= 1.6f;
+                i = 0;
+            }
+            displayOpals.Add(tempP);
+        }*/
+
+        foreach (PlateScript p in displayOpals)
+        {
+            p.clearPlate();
+            Destroy(p.gameObject);
+        }
+        displayOpals.Clear();
+        float x = 20;
+        float y = 19;
+        int i = 0;
+        int offset = 0;
+        maxOpalPage = Mathf.CeilToInt(myOpals.Count / 25f);
+        for (int j = 0 + offset; j < 25 + offset; j++)
+        {
+            PlateScript tempP = Instantiate<PlateScript>(platePrefab);
+            if(j < myOpals.Count)
+                tempP.setPlate(myOpals[j], x, y);
+            else
+                tempP.setPlate(null, x, y);
+            x += 1.6f;
+            i++;
+            if (i == 5)
+            {
+                x = 20;
+                y -= 1.6f;
+                i = 0;
+            }
+            displayOpals.Add(tempP);
+        }
+    }
+
+    public OpalScript pickNewOpal(bool rand)
+    {
+        if (myOpals.Count == allOpals.Length)
+            return null;
+        List<OpalScript> newOpals = new List<OpalScript>();
+        foreach(OpalScript o in allOpals)
+        {
+            if (!myOpals.Contains(o))
+            {
+                newOpals.Add(o);
+            }
+        }
+        return newOpals[Random.Range(0, newOpals.Count)];
+    }
+
+    public void addNewOpal()
+    {
+        OpalScript add = pickNewOpal(true);
+        if (add == null)
+            return;
+        myOpals.Add(add);
+        populateOpalScreen();
+        saveData();
+    }
+
+    public void wipeOpals()
+    {
+        myOpals.Clear();
+        populateOpalScreen();
+        saveData();
+    }
+
+    public void refillOpals()
+    {
+        wipeOpals();
+        foreach(OpalScript o in allOpals)
+        {
+            myOpals.Add(o);
+        }
+        populateOpalScreen();
+        saveData();
+    }
+
+    public void saveData()
+    {
+        string output = "";
+        foreach (List<OpalScript> lO in teams)
+        {
+            foreach (OpalScript o in lO)
+            {
+                o.setOpal(null);
+                output += (o.saveOpal() + ",");
+
+            }
+            output += "\n";
+        }
+        output += "endTeams\n,";
+        foreach (OpalScript o in myOpals)
+        {
+            //print("du hello");
+            o.setOpal(null);
+            output += o.getMyName() + ",";
+        }
+        output += "\nendOpals\n";
+        PlayerPrefs.SetString("save", output);
+    }
+
+    public void loadData()
+    {
+        //print(PlayerPrefs.GetString("save"));
+        int currentPos = 0;
+        string saveGame = PlayerPrefs.GetString("save","");
+        if (saveGame == "")
+            saveGame = getDefault();
+        string[] parsing = saveGame.Split(',');
+        while (!parsing[currentPos].Contains("endTeams"))
+        {
+            List<OpalScript> myTeam = new List<OpalScript>();
+            while (!parsing[currentPos].Contains("\n"))
+            {
+                string[] parsedMore = parsing[currentPos].Split('|');
+                OpalScript temp = Instantiate(Resources.Load<OpalScript>("Prefabs/Opals/" + parsedMore[0]));
+                if(temp != null)
+                {
+                    temp.setFromSave(parsing[currentPos]);
+                    myTeam.Add(temp);
+                }
+                currentPos++;
+            }
+            teams.Add(myTeam);
+            if(parsing[currentPos].Substring(0,1) == "\n")
+            {
+                parsing[currentPos] = parsing[currentPos].Substring(1, parsing[currentPos].Length - 1);
+            }
+        }
+        while (!parsing[currentPos].Contains("endOpals"))
+        {
+            //print("[" + parsing[currentPos] + "]");
+            OpalScript o = Resources.Load<OpalScript>("Prefabs/Opals/" + parsing[currentPos]);
+            if(o != null)
+                myOpals.Add(o);
+            currentPos++;
+        }
+
+        if (myOpals.Count == 0)
+        {
+            myOpals.Add(pickNewOpal(false));
+            myOpals.Add(pickNewOpal(false));
+            myOpals.Add(pickNewOpal(false));
+            myOpals.Add(pickNewOpal(false));
+            myOpals.Add(pickNewOpal(false));
+            myOpals.Add(pickNewOpal(false));
+        }
+
+        loadTeams();
+        populateOpalScreen();
+    }
+
+    public OpalScript getRandomAIOpal()
+    {
+        return Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/Ambush"));
+    }
+
+    private string getRandomOpalName()
+    {
+        return allOpals[Random.Range(0,allOpals.Length)].getMyName();
+    }
+
+    private OpalScript getRandomOpal()
+    {
+        return allOpals[Random.Range(0, allOpals.Length)];
+    }
+
+    public List<string> calculateTypeOverload(List<OpalScript> opals)
+    {
+        if (opals == null)
+            return null;
+        Dictionary<string, int> typeFrequency = new Dictionary<string, int>();
+        List<string> allTypes = new List<string>();
+
+        foreach (OpalScript o in opals)
+        {
+            if (typeFrequency.ContainsKey(o.getMainType()))
+            {
+                typeFrequency[o.getMainType()] += 2;
+            }
+            else
+            {
+                typeFrequency.Add(o.getMainType(), 2);
+            }
+
+            if (typeFrequency.ContainsKey(o.getSecondType()))
+            {
+                if (o.getMainType() != o.getSecondType())
+                {
+                    typeFrequency[o.getSecondType()] += 1;
+                }
+            }
+            else
+            {
+                if(o.getMainType() != o.getSecondType())
+                {
+                    typeFrequency.Add(o.getSecondType(), 1);
+                }
+            }
+
+            if (!allTypes.Contains(o.getMainType()))
+            {
+                allTypes.Add(o.getMainType());
+            }
+            if (!allTypes.Contains(o.getSecondType()))
+            {
+                allTypes.Add(o.getSecondType());
+            }
+        }
+        List<string> overloads = new List<string>();
+        foreach(string s in allTypes)
+        {
+            if(typeFrequency[s] > 5)
+            {
+                if(!overloads.Contains(s))
+                    overloads.Add(s);
+            }
+        }
+        return overloads;
+    }
+
+    public void setCurrentPal(Pal p)
+    {
+        if (p == null)
+        {
+            palTrackerTwo[currentEditorTeam] = null;
+        }
+        else
+        {
+            palTrackerTwo[currentEditorTeam] = Instantiate<Pal>(p);
+            palTrackerTwo[currentEditorTeam].gameObject.SetActive(false);
+        }
+        //displayTeams[currentEditorTeam].setPal(palTrackerTwo[currentEditorTeam]);
+    }
+
+    private void displayPals()
+    {
+        for(int i = 0; i < palTrackerTwo.Count; i++)
+        {
+            if(palTrackerTwo[i] != null)
+            {
+                displayTeams[i].setPal(palTrackerTwo[i]);
+            }
+        }
+    }
+
+    private string getDefault()
+    {
+        return "Mechalodon|None|Straight-Edge,Succuum|None|Straight-Edge,\nSentree|None|Straight-Edge,Ambush|None|Straight-Edge,\nHearthhog|None|Straight-Edge,Fluttorch|None|Straight-Edge,\nDuplimorph|None|Straight-Edge,Gorj|None|Straight-Edge,\nendTeams\n,Abysmeel,Amalgum,Ambush,Aquarican,Aughtment,Barriarray,Beamrider,Betary,Bubbacle,Butterflight,Cactoid,Charayde,Chardinal,Chasmcrawler,Cottonmaw,Drizziphyl,Duplimorph,Experiment42,Finbow,Fluttorch,Froxic,FumePlume,Gilsplish,Glintrey,Glorm,Glummer,Gorj,Gravelpack,Grimmline,Groth,Hearthhog,Heatriarch,Hopscure,Hoviron,Infermal,Inflicshun,Inseedious,Investigator,KnightLite,Luminute,Meadowebb,Mechalodon,Mintick,Mistery,Moppet,Nachteous,Nekrokrab,Oozwl,Oremordilla,Overgroink,Pebblepal,Prismin,Protectric,Puffsqueak,Rekindle,Scorpirad,Sentree,Shineode,Shocket,Slungus,Snugbun,Sorceraura,Spillarc,Spiritch,Squirmtongue,Strikel,Succuum,Swoopitch,Teslamp,Thermor,Tortquoise,Verminfection,Volcoco,Wingnition,Woolloy,\nendOpals";
     }
 }

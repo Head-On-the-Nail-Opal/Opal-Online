@@ -13,7 +13,7 @@ public class Scorpirad : OpalScript
         speed = 3;
         priority = 8;
         myName = "Scorpirad";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.8f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -27,9 +27,9 @@ public class Scorpirad : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Contaminated", 0, 0, 0, "<Passive>\nOpals adjacent to Scorpirad at the end of it's turn are poisoned for 1 turn.");
-        Attacks[1] = new Attack("Radsap", 2, 4, 0, "If the target has an attack lower than 0, gain attack opposite to theirs.");
-        Attacks[2] = new Attack("Radiation Sickness", 2, 4, 3, "Target is poisoned. Opals adjacent to the target take damage from the target's poison.");
-        Attacks[3] = new Attack("Hazard Sting", 1, 4, 2, "Target takes damage from their poison.");
+        Attacks[1] = new Attack("Radsap", 2, 4, 0, "If the target has an attack lower than 0, gain attack opposite to theirs.",0,3);
+        Attacks[2] = new Attack("Radiation Sickness", 2, 4, 3, "Target is poisoned. Opals adjacent to the target take damage from the target's poison.",0,3);
+        Attacks[3] = new Attack("Hazard Sting", 1, 4, 2, "Target takes damage from their poison.",0,3);
         type1 = "Plague";
         type2 = "Plague";
     }
@@ -48,6 +48,7 @@ public class Scorpirad : OpalScript
                     {
                         target.setPoison(true);
                         target.setPoisonTimer(1, false);
+                        playFrame("attack", 5); 
                     }
                 }
             }
@@ -63,7 +64,7 @@ public class Scorpirad : OpalScript
         }
         else if (attackNum == 1)
         {
-            if(target.getAttack() > 0)
+            if(target.getAttack() < 0)
             {
                 doTempBuff(0, -1, -target.getAttack());
             }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Glorm : OpalScript
 {
@@ -12,7 +13,7 @@ public class Glorm : OpalScript
         speed = 2;
         priority = 6;
         myName = "Glorm";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.7f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 0.9f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -25,12 +26,16 @@ public class Glorm : OpalScript
         offsetY = 0f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Glowweb", 3, 4, 0, "<Incremental>\n Poison a target and give it +1 attack and +1 defense for a turn. Overheal self by 1.");
-        Attacks[1] = new Attack("Gooey Spit", 4, 4, 0, "Deal damage based on amount of current overheal. Remove all overheal.");
-        Attacks[2] = new Attack("Gluey Spit", 3, 4, 0, "Overheal a target by your current overheal. Lose health for each point the target overheals.");
-        Attacks[3] = new Attack("Self Care", 0, 1, 0, "Overheal yourself by 4. Gain +1 defense.");
+        Attacks[0] = new Attack("Glowweb", 3, 4, 0, "Poison a target and give it +4 attack and +4 defense for a turn. Overheal self by 4.",0,3);
+        Attacks[1] = new Attack("Gooey Spit", 4, 4, 0, "Deal damage based on amount of current overheal. Remove all overheal.",0,3);
+        Attacks[2] = new Attack("Gluey Spit", 3, 4, 0, "Overheal a target by your current overheal. Lose health for each point the target overheals.",0,3);
+        Attacks[3] = new Attack("Self Care", 0, 1, 0, "Overheal yourself by 4. Gain +1 defense.",0,3);
         type1 = "Light";
         type2 = "Plague";
+
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Ally", 1, 5), new Behave("Line-Up-Ally", 1, 6),
+            new Behave("Safety", 0,1) });
     }
 
 
@@ -40,11 +45,9 @@ public class Glorm : OpalScript
         if (attackNum == 0) //Thorns
         {
             target.setPoison(true);
-            target.doTempBuff(0, 1, increment);
-            target.doTempBuff(1, 1, increment);
-            doHeal(increment, true);
-            increment++;
-            Attacks[0] = new Attack("Glowweb", 5, 4, 0, "<Incremental>\n Poison a target and give it +"+increment+ " attack and +" + increment + " defense for a turn. Overheal self by " + increment + ".");
+            target.doTempBuff(0, 1, 4);
+            target.doTempBuff(1, 1, 4);
+            doHeal(4, true);
             return 0;
         }
         else if (attackNum == 1) //Seed Launch
@@ -52,7 +55,7 @@ public class Glorm : OpalScript
             if (this.getHealth() > this.getMaxHealth())
             {
                 int temp = getHealth() - getMaxHealth();
-                takeDamage(temp, false, true);
+                health = maxHealth;
                 return temp + getAttack();
             }
             return 0;
@@ -61,9 +64,12 @@ public class Glorm : OpalScript
         {
             if (this.getHealth() > this.getMaxHealth())
             {
+                int currentTargetOverheal = target.getHealth() - target.getMaxHealth();
                 target.doHeal(getHealth() - getMaxHealth(), true);
                 if(target.getHealth() > target.getMaxHealth())
                 {
+                    if(currentTargetOverheal > 0)
+                        takeDamage(target.getHealth() - target.getMaxHealth() - currentTargetOverheal, false, true);
                     takeDamage(target.getHealth()-target.getMaxHealth(), false, true);
                 }
             }
@@ -123,5 +129,33 @@ public class Glorm : OpalScript
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
     }
 
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (atNum == 0)
+        {
+            if(targettingAlly(target))
+                return true;
+        }
+        else if (atNum == 1)
+        {
+            if(targettingEnemy(target) && health > maxHealth + 4)
+                return true;
+        }
+        else if (atNum == 2)
+        {
+            if (targettingAlly(target) && health > maxHealth + 4)
+                return true;
+        }
+        else if (atNum == 3)
+        {
+            if(health < maxHealth + 16)
+                return true;
+        }
+        return false;
+    }
 
+    public override int getMaxRange()
+    {
+        return 4;
+    }
 }

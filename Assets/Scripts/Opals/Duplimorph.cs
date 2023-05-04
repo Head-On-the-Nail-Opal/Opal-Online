@@ -4,7 +4,13 @@ using UnityEngine;
 
 public class Duplimorph : OpalScript
 {
+    private Duplimorph duplimorphPrefab;
 
+    public override void onAwake()
+    {
+        duplimorphPrefab = Resources.Load<Duplimorph>("Prefabs/Opals/Duplimorph");
+
+    }
     override public void setOpal(string pl)
     {
         health = 20;
@@ -14,9 +20,9 @@ public class Duplimorph : OpalScript
         speed = 2;
         priority = 0;
         myName = "Duplimorph";
-        transform.localScale = transform.localScale;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         offsetX = 0;
-        offsetY = -0.1f;
+        offsetY = 0;
         offsetZ = 0;
         player = pl;
         if (pl == "Red" || pl == "Green")
@@ -27,13 +33,17 @@ public class Duplimorph : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Duplicate", 1, 0, 0, "Lose 7 health and create a Duplimorph clone");
-        Attacks[1] = new Attack("Insight", 0, 1, 0, "Gain +2 attack and +2 defense and heal by 2. Can heal over max health.");
-        Attacks[2] = new Attack("Spectral Lunge", 1, 1, 0, "Deal 0 damage. Ignores defense. Die.");
-        Attacks[3] = new Attack("Bolster", 1, 1, 0, "<Free Ability>\n Take 5 damage. Target gains +2 attack and defense.");
+        Attacks[0] = new Attack("Duplicate", 1, 0, 0, "Lose 7 health and create a Duplimorph clone",0,3);
+        Attacks[1] = new Attack("Insight", 0, 1, 0, "Gain +2 attack and +2 defense and overheal by 2.",0,3);
+        Attacks[2] = new Attack("Spectral Lunge", 1, 1, 0, "Deal 0 damage. Ignores defense. Die.",0,3);
+        Attacks[3] = new Attack("Bolster", 1, 1, 0, "<Free Ability>\n Take 5 damage. Target gains +2 attack and defense.",0,3);
         Attacks[3].setFreeAction(true);
         type1 = "Void";
         type2 = "Swarm";
+
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Weasely", 1, 4),
+            new Behave("Safety", 0, 1) });
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -74,35 +84,17 @@ public class Duplimorph : OpalScript
             takeDamage(7, false, true);
             if (health > 0)
             {
-                Duplimorph opalOne = Instantiate<Duplimorph>(this);
-                opalOne.setOpal(player); // Red designates player 1, Blue designates player 2
-                opalOne.setPos((int)target.getPos().x, (int)target.getPos().z);
-                getBoard().gameOpals.Add(opalOne);
-                getBoard().addToUnsorted(opalOne);
-                if (player == "Red")
-                {
-                    getBoard().p2Opals.Add(opalOne);
+                OpalScript opalOne = spawnOplet(duplimorphPrefab, target, 0);
+
+                if (opalOne != null) { 
+                    opalOne.setHealth(this.health);
+                    opalOne.setDetails(this);
+                    List<TempBuff> temp = getBuffs();
+                    foreach (TempBuff t in temp)
+                    {
+                        opalOne.doTempBuff(t.getTargetStat(), t.getTurnlength(), t.getAmount());
+                    }
                 }
-                else if (player == "Green")
-                {
-                    getBoard().p3Opals.Add(opalOne);
-                }
-                else if (player == "Orange")
-                {
-                    getBoard().p4Opals.Add(opalOne);
-                }
-                else
-                {
-                    getBoard().p1Opals.Add(opalOne);
-                }
-                opalOne.setHealth(this.health);
-                List<TempBuff> temp = getBuffs();
-                foreach (TempBuff t in temp)
-                {
-                    opalOne.doTempBuff(t.getTargetStat(), t.getTurnlength(), t.getAmount());
-                }
-                target.standingOn(opalOne);
-                opalOne.skipfirstTurn = true;
             }
         }
         else if (attackNum == 1) //Insight
@@ -149,5 +141,72 @@ public class Duplimorph : OpalScript
             return 0;
         }
         return -1;
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (atNum == 0)
+        {
+            if (health > 7 && canSpawnOplet() && !boardScript.myCursor.tileIsFalling((int)target.getPos().x, (int)target.getPos().z)) //needs to check better
+                return true;
+        }
+        else if (atNum == 1 && !useAdjacentToOpal(target, true))
+        {
+            return true;
+        }
+        else if (atNum == 2)
+        {
+            if (health <= maxHealth / 2 && target.getCurrentOpal().getTeam() != getTeam() && !isTeamEmptyDuplimorph(false))
+                return true;
+        }
+        else if (atNum == 3)
+        {
+            if(health > maxHealth/2 && target.getCurrentOpal().getTeam() == getTeam())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
+        return 1;
+    }
+
+    private bool canSpawnOplet()
+    {
+        foreach(OpalScript o in boardScript.gameOpals)
+        {
+            if (o.getTeam() == getTeam() && o.getMyName() == "Duplimorph")
+                if (o.getMinionCount() == 4)
+                    return false;
+        }
+        return true;
+    }
+
+    public bool isTeamEmptyDuplimorph(bool enemy)
+    {
+        foreach (OpalScript o in boardScript.gameOpals)
+        {
+            if (!o.getDead() && o != this)
+            {
+                if (enemy)
+                {
+                    if (o.getTeam() != getTeam() && o.getMyName() == "Duplimorph")
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (o.getTeam() == getTeam() && o.getMyName() == "Duplimorph")
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 }

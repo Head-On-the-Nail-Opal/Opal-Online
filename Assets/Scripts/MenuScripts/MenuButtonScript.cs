@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MenuButtonScript : MonoBehaviour {
     public Vector3 target;
@@ -10,6 +11,7 @@ public class MenuButtonScript : MonoBehaviour {
     //private Material hover;
     public Sprite unpressedS;
     public Sprite pressedS;
+    public bool toggle = false;
     public string setMenuState;
     private GameObject mainCam;
     private MainMenuScript main;
@@ -68,10 +70,26 @@ public class MenuButtonScript : MonoBehaviour {
         {
             main.nextPage(-1);
         }
+        else if (purpose == "teams")
+        {
+            mainCam.transform.position = target;
+        }else if(purpose == "personality")
+        {
+            
+        }
+        else if (purpose == "items")
+        {
+            mainCam.transform.position = new Vector3(0, 26, -10);
+        }
+        
         //rend.material = pressed;
         if (pressedS != null)
         {
-            sR.sprite = pressedS;
+            if (toggle && sR.sprite == pressedS)
+                sR.sprite = unpressedS;
+            else 
+                sR.sprite = pressedS;
+
         }
         else
         {
@@ -81,6 +99,7 @@ public class MenuButtonScript : MonoBehaviour {
 
     private void OnMouseUp()
     {
+        //print(": "+purpose);
         if (purpose == "")
         {
             mainCam.transform.position = target;
@@ -91,16 +110,40 @@ public class MenuButtonScript : MonoBehaviour {
             Application.Quit();
         }else if (purpose == "setup")
         {
-            mainCam.transform.position = target;
-            main.menuState = setMenuState;
-            main.setTeamDisplays();
+            main.startLocalGame();
         }else if(purpose == "setup2")
         {
-            mainCam.transform.position = target;
-            main.doMultiplayerSettings();
-            main.menuState = setMenuState;
-            main.setTeamDisplays();
+            main.startMultiplayerGame();
             main.blueController = "keyboard";
+        }
+        else if (purpose == "setupCampfire")
+        {
+            main.startCampfireGame();
+            main.blueController = "keyboard";
+        }
+        else if (purpose == "setup3")
+        {
+            main.startLocalAI();
+            main.blueController = "keyboard";
+        }
+        else if(purpose == "teams")
+        {
+            main.displayOpal(null, true);
+        }else if(purpose == "teamdetails")
+        {
+            mainCam.transform.position = target;
+        }
+        else if (purpose == "incTeam")
+        {
+            //print("du hello");
+            main.incTeamNum();
+        }
+        else if (purpose == "decTeam")
+        {
+            main.decrTeamNum();
+        }else if(purpose == "createTeam")
+        {
+            main.createTeam();
         }
         if (!main.checkController(main.currentTeam, "keyboard"))
         {
@@ -136,6 +179,7 @@ public class MenuButtonScript : MonoBehaviour {
         {
             sR.sprite = unpressedS;
         }
+        
         main.menuState = setMenuState;
     }
 
@@ -144,11 +188,46 @@ public class MenuButtonScript : MonoBehaviour {
         //rend.material = hover;
         if (pressedS != null)
         {
-            sR.sprite = pressedS;
+            if (!toggle)
+                sR.sprite = pressedS;
         }
         else
         {
             sR.color = new Color(1f, 0.2f, 1f);
+            if(purpose == "teams")
+            {
+                transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().color = new Color(1f, 0f, 0f);
+            }
+            else if (purpose == "personality")
+            {
+                transform.GetComponent<Text>().color = new Color(1f, 0f, 0f);
+                if (Input.GetMouseButtonDown(0))
+                    main.setNextPersonality(false);
+                else if (Input.GetMouseButtonDown(1))
+                    main.setNextPersonality(true);
+            }
+            
+        }
+        if (purpose == "numTeams")
+        {
+            if (Input.GetMouseButtonDown(0))
+                main.incNumTeams();
+            else if (Input.GetMouseButtonDown(1))
+                main.decNumTeams();
+        }
+        else if (purpose == "visuals")
+        {
+            //transform.GetComponent<Text>().color = new Color(1f, 0f, 0f);
+            if (Input.GetMouseButtonDown(0))
+                main.setNextVisual(false);
+            else if (Input.GetMouseButtonDown(1))
+                main.setNextVisual(true);
+        }else if(purpose == "randomizeOpal")
+        {
+            if (Input.GetMouseButton(0))
+            {
+                main.randomizeCurrentOpal();
+            }
         }
     }
 
@@ -157,11 +236,48 @@ public class MenuButtonScript : MonoBehaviour {
         //rend.material = unpressed;
         if(unpressedS != null)
         {
-            sR.sprite = unpressedS;
+            if(!toggle)
+                sR.sprite = unpressedS;
+            else
+                sR.color += new Color(0.1f, 0.1f, 0.1f, 0);
         }
         else
         {
             sR.color = new Color(1f, 1f, 1f);
+            if (purpose == "teams")
+            {
+                transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().color = new Color(0f, 0f, 1f);
+            }
+            else if(purpose == "personality")
+            {
+                transform.GetComponent<Text>().color = new Color(1f, 1f, 1f);
+            }
+        }
+    }
+
+    private void OnMouseEnter()
+    {
+        if(toggle)
+            sR.color -= new Color(0.1f, 0.1f, 0.1f, 0);
+    }
+
+    public bool getToggle()
+    {
+        if (sR != null)
+            return sR.sprite == pressedS;
+        else
+            return false;
+    }
+
+    public void setToggle(bool t)
+    {
+        if (t)
+        {
+            sR.sprite = pressedS;
+        }
+        else
+        {
+            sR.sprite = unpressedS;
         }
     }
 

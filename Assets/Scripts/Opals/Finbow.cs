@@ -14,7 +14,7 @@ public class Finbow : OpalScript
         speed = 2;
         priority = 2;
         myName = "Finbow";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.7f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -27,8 +27,8 @@ public class Finbow : OpalScript
         offsetY = 0f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Rainbow Beam", 1, 6, 0, "Place flood down on all tiles in a line. Lose -4 speed for 2 turns.");
-        Attacks[1] = new Attack("Nullifying Strike", 1, 3, 6, "<Water Rush>\nTarget loses 2 attack and 2 defense for 2 turns.");
+        Attacks[0] = new Attack("Rainbow Beam", 1, 6, 0, "Place flood down on all tiles in a line. Lose -4 speed for 2 turns.",0,3);
+        Attacks[1] = new Attack("Nullifying Strike", 1, 3, 6, "<Water Rush>\nTarget loses 2 attack and 2 defense for 2 turns.",0,3);
         Attacks[2] = new Attack("Rev", 0, 1, 0, "Gain +3 speed for 3 turns.");
         Attacks[3] = new Attack("Splash Paddle", 1, 3, 0, "Move to any tile in your current pool of Floods. Lose -5 defense.");
         type1 = "Water";
@@ -78,8 +78,8 @@ public class Finbow : OpalScript
         }
         else if (attackNum == 1) //Seed Launch
         {
-            doTempBuff(0, 2, -2);
-            doTempBuff(1, 2, -2);
+            target.doTempBuff(0, 2, -2);
+            target.doTempBuff(1, 2, -2);
             return cA.getBaseDamage() + getAttack() - 2;
         }
         else if (attackNum == 2) //Grass Cover

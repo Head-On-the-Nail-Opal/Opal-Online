@@ -15,7 +15,7 @@ public class Beamrider : OpalScript
         speed = 2;
         priority = 3;
         myName = "Beamrider";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 1f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1.2f;
         offsetX = 0;
         offsetY = 0.15f;
         offsetZ = 0;
@@ -28,12 +28,15 @@ public class Beamrider : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Energy Blast", 1, 6, 0, "Deal 0 damage to all targets in a line. Ignores line of sight.");
+        Attacks[0] = new Attack("Energy Blast", 1, 6, 0, "Deal 0 damage to all targets in a line. Ignores line of sight.",0,3);
         Attacks[1] = new Attack("Warming Up", 0, 1, 0, "Gain +3 attack.");
         Attacks[2] = new Attack("Reboot", 0, 1, 0, "Gain +5 attack and +2 speed for 1 turn.");
-        Attacks[3] = new Attack("Big Red Button", 1, 6, 0, "Deal 0 damage to all targets in a line. Ignores line of sight. Double bonuses from attack, set attack to 0");
+        Attacks[3] = new Attack("Big Red Button", 1, 6, 0, "Deal 0 damage to all targets in a line. Ignores line of sight. Double bonuses from attack, then remove all stat bonuses",0,3);
         type1 = "Laser";
         type2 = "Laser";
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Cautious", 1, 5), new Behave("Line-Up-Laser", 1, 5),
+            new Behave("Safety", 0,1) });
     }
 
     public override void onStart()
@@ -68,7 +71,7 @@ public class Beamrider : OpalScript
         else if (attackNum == 3) //
         {
             int atk = getAttack();
-            setTempBuff(0, -1, 0);
+            clearAllBuffs();
             return cA.getBaseDamage() + myAttack*2;
         }
         return cA.getBaseDamage() + getAttack();
@@ -125,5 +128,35 @@ public class Beamrider : OpalScript
             return 0;
         }
         return -1;
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (atNum == 0)
+        {
+            if(checkLaserClear(target) && getAttack() >= 5)
+                return true;
+        }
+        else if (atNum == 1)
+        {
+            if(!checkLaserClear(target) || (checkLaserClear(target) && getAttack() < 5))
+                return true;
+        }
+        else if (atNum == 2)
+        {
+            if((!checkLaserClear(target) && getAttack() >= 6) || (checkLaserClear(target) && getAttack() >= 6 && getAttack() <= 15))
+                return true;
+        }
+        else if (atNum == 3)
+        {
+            if (checkLaserClear(target) && getAttack() >= 6)
+                return true;
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
+        return 0;
     }
 }

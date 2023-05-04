@@ -6,16 +6,9 @@ public class Heatriarch : OpalScript
 {
     private Heant heantPrefab;
 
-    private void Awake()
+    public override void onAwake()
     {
-        GameObject board = GameObject.Find("Main Camera");
-        boardScript = board.GetComponent<GroundScript>();
-        transform.position = new Vector3(5, 0.5f, 5);
-        anim = GetComponent<Animator>();
-        burningParticle = Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/PassiveBurn");
-        poisonedParticle = Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/PassivePoison");
         heantPrefab = Resources.Load<Heant>("Prefabs/SubOpals/Heant");
-        damRes = Resources.Load<DamageResultScript>("Prefabs/AttackResult");
     }
 
     override public void setOpal(string pl)
@@ -27,7 +20,7 @@ public class Heatriarch : OpalScript
         speed = 1;
         priority = 1;
         myName = "Heatriarch";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 1.5f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         offsetX = 0;
         offsetY = 0.2f;
         offsetZ = 0;
@@ -40,10 +33,10 @@ public class Heatriarch : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Hive Mother", 0, 1, 0, "Hatch a Heant on each adjacent Flame tile.", 1);
-        Attacks[1] = new Attack("Flame Nest", 0, 1, 0, "Light adjacent tiles on fire. Adjacent Opals gain +3 speed for their next turn.", 1);
-        Attacks[2] = new Attack("Agitating Bite", 2, 4, 0, "Target takes damage from their burn.");
-        Attacks[3] = new Attack("Flaming Spit", 4, 4, 0, "Burn all opals in radius.", 1);
+        Attacks[0] = new Attack("Hive Mother", 0, 1, 0, "Hatch a Heant on each adjacent Flame tile.", 1,3);
+        Attacks[1] = new Attack("Flame Nest", 0, 1, 0, "Light adjacent tiles on fire. Adjacent Opals gain +3 speed for their next turn.", 1,3);
+        Attacks[2] = new Attack("Agitating Bite", 2, 4, 0, "Target takes damage from their burn.",0,3);
+        Attacks[3] = new Attack("Flaming Spit", 4, 4, 0, "Burn all opals in radius.", 1,3);
         type1 = "Fire";
         type2 = "Swarm";
     }
@@ -99,23 +92,7 @@ public class Heatriarch : OpalScript
             {
                 if (target.type == "Fire")
                 {
-                    Heant opalTwo = Instantiate<Heant>(heantPrefab);
-                    opalTwo.setOpal(player); // Red designates player 1, Blue designates player 2
-                    opalTwo.setPos((int)target.getPos().x, (int)target.getPos().z);
-                    getBoard().gameOpals.Add(opalTwo);
-                    getBoard().addToUnsorted(opalTwo);
-                    if (player == "Red")
-                    {
-                        getBoard().p2Opals.Add(opalTwo);
-                    }
-                    else
-                    {
-                        getBoard().p1Opals.Add(opalTwo);
-                    }
-                    DamageResultScript temp = Instantiate<DamageResultScript>(damRes, opalTwo.transform);
-                    temp.setUp(minionCount + 1, swarmLimit);
-                    target.standingOn(opalTwo);
-                    opalTwo.setSkipTurn(true);
+                    spawnOplet(heantPrefab, target);
                 }
             }
             return 0;
@@ -160,5 +137,18 @@ public class Heatriarch : OpalScript
             return target.currentPlayer.getBurningDamage();
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+    }
+
+    public override int checkCanAttack(TileScript target, int attackNum)
+    {
+        if(attackNum == 1 || attackNum == 0)
+        {
+            return 0;
+        }
+        else if(target.getCurrentOpal() != null)
+        {
+            return 0;
+        }
+        return -1;
     }
 }

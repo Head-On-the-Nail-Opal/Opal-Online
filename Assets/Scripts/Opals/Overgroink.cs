@@ -13,7 +13,7 @@ public class Overgroink : OpalScript
         speed = 3;
         priority = 0;
         myName = "Overgroink";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.9f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 0.9f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -26,38 +26,23 @@ public class Overgroink : OpalScript
         offsetY = 0f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Ecosystem", 0, 0, 0, "<Passive>\n At the start of its turn, all surrounding Growth tiles buff Overgroink as if it were standing on them.");
-        Attacks[1] = new Attack("Boink", 2, 1, 4, "Place a Growth at your feet. Heal the damage dealt.");
-        Attacks[2] = new Attack("Nurture", 0, 5, 0, "Give an Opal standing on a Growth +2 attack and +2 defense. You may use this twice.");
-        Attacks[2].setUses(2);
-        Attacks[3] = new Attack("Transplant", 0, 5, 0, "<Free Ability>\n Heal an Opal standing on a Growth by 2 health. Lose 2 health.");
-        Attacks[3].setFreeAction(true);
+        Attacks[0] = new Attack("Nutritious", 0, 0, 0, "<Passive>\n At the start of its turn, if Overgroink is standing on a Growth, gain +2 attack and defense.");
+        Attacks[1] = new Attack("Boink", 2, 1, 6, "Lose all your buffs. If standing on Growth, only lose -2 attack and defense.",0,3);
+        Attacks[2] = new Attack("Transplant", 0, 1, 0, "Give adjacent Opals standing on Growths the buffs on Overgroink. Remove them from Overgroink. Clear surrounding Growths.",0,3);
+        Attacks[3] = new Attack("Nurture", 0, 1, 0, "Place Growths under your feet and on adjacent tiles. Gain +1 attack and defense.",0,3);
         type1 = "Grass";
         type2 = "Grass";
     }
 
     public override void onStart()
     {
-        int tempFire = checkTiles();
-        doTempBuff(0, 1, tempFire * 2);
-        doTempBuff(1, 1, tempFire * 2);
-    }
-
-    private int checkTiles()
-    {
-        int num = 0;
-        for (int i = -1; i < 2; i++)
+        if(currentTile != null && currentTile.type == "Growth")
         {
-            for (int j = -1; j < 2; j++)
-            {
-                if (getPos().x + i < 10 && getPos().x + i > -1 && getPos().z + j < 10 && getPos().z + j > -1 && boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].type == "Growth")
-                {
-                    if(!(i == 0 && j == 0))
-                        num++;
-                }
-            }
+            TempBuff test = doTempBuff(0, -1, 2);
+            doTempBuff(1, -1, 2);
+            StartCoroutine(playFrame("attack", 5));
         }
-        return num;
+
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -69,18 +54,47 @@ public class Overgroink : OpalScript
         }
         else if (attackNum == 1)
         {
-            doHeal(getAttack() + cA.getBaseDamage(), false);
-            boardScript.setTile(this, "Growth", false);
+            int attackBuff = getAttack();
+            if(currentTile != null && currentTile.type == "Growth")
+            {
+                doTempBuff(0, -1, -2);
+                doTempBuff(1, -1, -2);
+            }
+            else
+            {
+                clearAllBuffs();
+            }
+            return cA.getBaseDamage() + attackBuff;
         }
         else if (attackNum == 2)
         {
-            target.doTempBuff(0, -1, 2);
-            target.doTempBuff(1, -1, 2);
+            foreach(TileScript t in getSurroundingTiles(true))
+            {
+                if(t.type == "Growth" && t.getCurrentOpal() != null)
+                {
+                    foreach (TempBuff b in buffs)
+                    {
+                        if (b.getTurnlength() != 0)
+                        {
+                            t.getCurrentOpal().doTempBuff(b.getTargetStat(), b.getTurnlength(), b.getAmount());
+                        }
+                    }
+                }
+                if (t.type == "Growth" && t != currentTile)
+                {
+                    boardScript.setTile(t, "Grass", false);
+                }
+            }
             return 0;
         }else if(attackNum == 3)
         {
-            target.doHeal(2, false);
-            takeDamage(2, false, true);
+            foreach(TileScript t in getSurroundingTiles(true))
+            {
+                boardScript.setTile(t, "Growth", false);
+            }
+            boardScript.setTile(this, "Growth", false);
+            doTempBuff(0, -1, 1);
+            doTempBuff(1, -1, 1);
             return 0;
         }
         return cA.getBaseDamage() + getAttack();
@@ -124,5 +138,12 @@ public class Overgroink : OpalScript
             return 0;
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+    }
+
+    public override int checkCanAttack(TileScript target, int attackNum)
+    {
+        if (target != null && target.currentPlayer != null)
+            return 1;
+        return -1;
     }
 }

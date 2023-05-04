@@ -15,7 +15,7 @@ public class Glummer : OpalScript
         speed = 3;
         priority = 3;
         myName = "Glummer";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.7f;
+        transform.localScale = new Vector3(3f, 3f, 1);
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -25,16 +25,19 @@ public class Glummer : OpalScript
             GetComponent<SpriteRenderer>().flipX = false;
         }
         offsetX = 0;
-        offsetY = -0.1f;
+        offsetY = 0f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Beacon", 1, 4, 0, "Spawn a Glimmerpillar.");
-        Attacks[1] = new Attack("Refraction", 1, 1, 0, "Give target +2 attack and +2 defense for each Glimmerpillar alive, for 1 turn.");
-        Attacks[2] = new Attack("Magnified Heal", 1, 1, 0, "Heal target 2 health for each Glimmerpillar alive. If there are 4 or more, overheal.");
-        Attacks[3] = new Attack("Larva Love",0,1,0,"Heal all Glimmerpillars by 10 health and heal their status effects.");
+        Attacks[0] = new Attack("Beacon", 1, 4, 0, "Spawn a Glimmerpillar.",0,3);
+        Attacks[1] = new Attack("Refraction", 1, 1, 0, "Give target +2 attack and +2 defense for each Glimmerpillar alive, for 1 turn.",0,3);
+        Attacks[2] = new Attack("Magnified Heal", 1, 1, 0, "Heal target 2 health for each Glimmerpillar alive. If there are 4 or more, overheal.",0,3);
+        Attacks[3] = new Attack("Larva Love",0,1,0,"Heal all Glimmerpillars by 10 health and heal their status effects.",0,3);
         type1 = "Swarm";
         type2 = "Light";
         glimmerpillarPrefab = Resources.Load<Glimmerpillar>("Prefabs/SubOpals/Glimmerpillar");
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Cautious", 1, 3), new Behave("Ally", 1, 10),
+            new Behave("Safety", 0,1)});
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -133,5 +136,34 @@ public class Glummer : OpalScript
             return 0;
         }
         return -1;
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (atNum == 0)
+        {
+            if(minionCount < 4)
+                return true;
+        }
+        else if (atNum == 1)
+        {
+            if(targettingAlly(target) && minionCount > 0 && target.currentPlayer.getMyName() != "Glimmerpillar")
+                return true;
+        }
+        else if (atNum == 2)
+        {
+            if (targettingAlly(target) && minionCount > 0 && target.currentPlayer.getHealth() < target.currentPlayer.getMaxHealth() && target.currentPlayer.getMyName() != "Glimmerpillar")
+                return true;
+        }
+        else if (atNum == 3)
+        {
+            return false;
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
+        return 1;
     }
 }

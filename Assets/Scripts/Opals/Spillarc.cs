@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class Spillarc : OpalScript
 {
-
+    private int refreshCount = 0;
     override public void setOpal(string pl)
     {
         health = 20;
         maxHealth = health;
         attack = 0;
         defense = 4;
-        speed = 2;
+        speed = 3;
         priority = 3;
         myName = "Spillarc";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.8f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         offsetX = 0;
-        offsetY = 0.15f;
+        offsetY = 0;
         offsetZ = 0;
         player = pl;
         if (pl == "Red" || pl == "Green")
@@ -27,13 +27,41 @@ public class Spillarc : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Prismatic Soothe", 1, 3, 0, "<Water Rush>\nHeal another Opal 8 health. Place Flood surrounding the target.");
-        Attacks[1] = new Attack("Encolour", 1, 3, 0, "<Water Rush>\nBuff another Opal by +3 attack and +2 defense for 1 turn");
-        Attacks[2] = new Attack("Soak", 2, 1, 6, "If the target Opal is not on Flood, replace the tile they're standing on with Flood and deal 8 more damage.");
-        Attacks[3] = new Attack("Water Down",0,1,0,"Overheal self by 6 health. Place flood at your feet and on adjacent tiles.");
+        Attacks[0] = new Attack("Prismatic Soothe", 0, 0, 0, "<Passive>\nWhen Spillarc moves to a Flood tile, adjacent Opals also in Flood gain +2 defense for 1 turn.");
+        Attacks[1] = new Attack("Refresh", 1, 3, 0, "<Free Ability>\nHeal a target in Flood 2 health. (May use this twice a turn.)", 0, 3);
+        Attacks[1].setFreeAction(true);
+        Attacks[2] = new Attack("Encolour", 1, 3, 0, "Give the target +2 attack and +2 defense for 2 turns.", 0,3);
+        Attacks[3] = new Attack("Water Down",0,1,0,"Overheal self by 6 health. Place flood at your feet and on adjacent tiles.",0,3);
         type1 = "Water";
         type2 = "Light";
         og = true;
+
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Ally", 1, 10),
+            new Behave("Safety", 0,1) });
+
+        getSpeciesSynergies().AddRange(new List<Behave>{
+            new Behave("Flood-Adjacent", 0, 10) });
+    }
+
+    public override void onMove(int x, int z)
+    {
+        if(!getDead() && boardScript.tileGrid[x,z].type == "Flood")
+        {
+            foreach(TileScript t in getSurroundingTiles(true))
+            {
+                if(t.type == "Flood" && t.currentPlayer != null)
+                {
+                    t.currentPlayer.doTempBuff(1, 1, 2);
+                    StartCoroutine(playFrame("attack", 3));
+                }
+            }
+        }
+    }
+
+    public override void onStart()
+    {
+        refreshCount = 0;
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -41,31 +69,21 @@ public class Spillarc : OpalScript
         Attack cA = Attacks[attackNum];
         if (attackNum == 0) //Prismatic Soothe
         {
-            target.doHeal(8, false);
-            for (int i = -1; i < 2; i++)
-            {
-                for (int j = -1; j < 2; j++)
-                {
-                    getBoard().setTile((int)target.getPos().x + i, (int)target.getPos().z + j, "Flood", false);
-                }
-            }
-            return 0;
+            
         }
         else if (attackNum == 1) //Encolour
         {
-                target.doTempBuff(0, 1, 3);
-                target.doTempBuff(2, 1, 2);
+            if (refreshCount < 2)
+            {
+                target.doHeal(2, false);
+                refreshCount++;
+            }
         }
         else if (attackNum == 2) //Soak
         {
-            int flud = 0;
-            if (boardScript.tileGrid[(int)(target.getPos().x), (int)(target.getPos().z)].type != "Flood")
-            {
-                flud = 8;
-                getBoard().setTile((int)target.getPos().x, (int)target.getPos().z, "Flood", false);
-            }
-            return cA.getBaseDamage() + getAttack() + flud;
-
+            target.doTempBuff(0, 2, 2);
+            target.doTempBuff(1, 2, 2);
+            return 0;
         }
         else if (attackNum == 3) //Encolour
         {
@@ -93,6 +111,10 @@ public class Spillarc : OpalScript
         {
             return 0;
         }
+        else if (attackNum == 3) //Soak
+        {
+            return 0;
+        }
         return cA.getBaseDamage() + getAttack();
     }
 
@@ -106,6 +128,7 @@ public class Spillarc : OpalScript
         }
         else if (attackNum == 1)
         {
+            
             return 0;
         }
         else if (attackNum == 2)
@@ -114,8 +137,54 @@ public class Spillarc : OpalScript
             {
                 return Attacks[attackNum].getBaseDamage()  + getAttack() - target.currentPlayer.getDefense();
             }
-            return Attacks[attackNum].getBaseDamage() + 8 + getAttack() - target.currentPlayer.getDefense();
+            return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+    }
+
+    public override int checkCanAttack(TileScript target, int attackNum)
+    {
+        if(attackNum == 1 && refreshCount >= 2)
+        {
+            return -1;
+        }
+        if (target.currentPlayer != null && attackNum != 1)
+        {
+            return 0;
+        }
+        if (attackNum == 1 && target.type == "Flood")
+        {
+            return 0;
+        }
+        return -1;
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (atNum == 0)
+        {
+            return false;
+        }
+        else if (atNum == 1)
+        {
+            if (target.getCurrentOpal() != null && target.getCurrentOpal().getTeam() == getTeam())
+                return true;
+        }
+        else if (atNum == 2)
+        {
+            if (target.getCurrentOpal() != null && target.getCurrentOpal().getTeam() == getTeam())
+                return true;
+        }
+        else if (atNum == 3)
+        {
+            if(currentTile.type != "Flood" && !useAdjacentToOpal(currentTile, false))
+                return true;
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
+        return 1;
     }
 }

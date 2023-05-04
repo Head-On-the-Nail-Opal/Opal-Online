@@ -13,7 +13,7 @@ public class Heant : OpalScript
         speed = 3;
         priority = 0;
         myName = "Heant";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.9f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -27,9 +27,9 @@ public class Heant : OpalScript
         offsetZ = 0;
         player = pl;
         Attacks[0] = new Attack("Hot Body", 0, 0, 0, "<Passive>\n On death leave a Flame at your location.");
-        Attacks[1] = new Attack("Fiery Venom", 1, 1, 0, "Light the target tile on fire. Can target an unoccupied tile.");
-        Attacks[2] = new Attack("Searing Sting", 1, 1, 0, "Raise the damage target Opal takes from their burn by 2.");
-        Attacks[3] = new Attack("Full Venom", 1, 1, 0, "Target takes damage from their burn. Die.");
+        Attacks[1] = new Attack("Fiery Venom", 1, 1, 0, "Light the target tile on fire. Can target an unoccupied tile.",0,3);
+        Attacks[2] = new Attack("Searing Sting", 1, 1, 0, "Raise the damage target Opal takes from their burn by 2.",0,3);
+        Attacks[3] = new Attack("Full Venom", 1, 1, 0, "Target takes damage from their burn. Die.",0,3);
         type1 = "Fire";
         type2 = "Swarm";
     }

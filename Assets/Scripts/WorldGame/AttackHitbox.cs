@@ -23,17 +23,6 @@ public class AttackHitbox : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        currentCollision = collision.gameObject.tag;
-        if(currentCollision == "Opal")
-        {
-            pl.catchOpal(collision.GetComponent<OpalScript>().getVariant());
-            
-            collision.transform.position = new Vector3(-100, -100, -100);
-        }
-        if(currentCollision == "OpalVendor")
-        {
-            pl.openShop(collision.GetComponent<Shop>());
-        }
     }
 
 

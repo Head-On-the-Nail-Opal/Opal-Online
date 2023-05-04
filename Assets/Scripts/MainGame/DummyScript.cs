@@ -27,10 +27,12 @@ public class DummyScript : MonoBehaviour {
      * 5 = target just growth tiles
      * 6 = laser beam, line which ignores line of sight
      * 7 = target all opals
+     * 8 = diagonal laser beam
      * */
     public void Spawn(int tD, int d, int attackState, bool original)
     {
-        if(attackState == 7)
+        boardScript.setRed((int)pos.x, (int)pos.z, true);
+        if (attackState == 7)
         {
             findHighestAttack(tD);
             return;
@@ -43,6 +45,11 @@ public class DummyScript : MonoBehaviour {
         if (attackState == 3 && !onFlood() && original)
         {
             Spawn(tD, d, 1, true);
+            return;
+        }
+        if(attackState == 8)
+        {
+            findDiagonals();
             return;
         }
         if ((d < tD && this.spawned < (tD - d)))
@@ -73,6 +80,7 @@ public class DummyScript : MonoBehaviour {
                                         DummyScript tempDummy = Instantiate<DummyScript>(this);
                                         tempDummy.setCoordinates((int)pos.x + i, (int)pos.z + j);
                                         boardScript.dummies[(int)pos.x + i, (int)pos.z + j] = tempDummy;
+                                        boardScript.setRed((int)pos.x + i, (int)pos.z + j, true);
                                         temps[numLoop] = tempDummy;
                                         if(i == 1 && j == 0)
                                         {
@@ -138,6 +146,7 @@ public class DummyScript : MonoBehaviour {
                 {
                     DummyScript tempDummy = Instantiate<DummyScript>(this);
                     tempDummy.setCoordinates((int)pos.x - i, (int)pos.z);
+                    boardScript.setRed((int)pos.x - i, (int)pos.z, true);
                     boardScript.dummies[(int)pos.x - i, (int)pos.z] = tempDummy;
                     currentPos = new Vector2(pos.x - i, pos.z);
                 }
@@ -149,6 +158,7 @@ public class DummyScript : MonoBehaviour {
                 {
                     DummyScript tempDummy = Instantiate<DummyScript>(this);
                     tempDummy.setCoordinates((int)pos.x + i, (int)pos.z);
+                    boardScript.setRed((int)pos.x + i, (int)pos.z, true);
                     boardScript.dummies[(int)pos.x + i, (int)pos.z] = tempDummy;
                     currentPos = new Vector2(pos.x + i, pos.z);
                 }
@@ -160,6 +170,7 @@ public class DummyScript : MonoBehaviour {
                 {
                     DummyScript tempDummy = Instantiate<DummyScript>(this);
                     tempDummy.setCoordinates((int)pos.x, (int)pos.z + i);
+                    boardScript.setRed((int)pos.x, (int)pos.z + i, true);
                     boardScript.dummies[(int)pos.x, (int)pos.z + i] = tempDummy;
                     currentPos = new Vector2(pos.x, pos.z + i);
                 }
@@ -171,6 +182,7 @@ public class DummyScript : MonoBehaviour {
                 {
                     DummyScript tempDummy = Instantiate<DummyScript>(this);
                     tempDummy.setCoordinates((int)pos.x, (int)pos.z - i);
+                    boardScript.setRed((int)pos.x, (int)pos.z - i, true);
                     boardScript.dummies[(int)pos.x, (int)pos.z - i] = tempDummy;
                     currentPos = new Vector2(pos.x, pos.z - i);
                 }
@@ -193,6 +205,7 @@ public class DummyScript : MonoBehaviour {
                 {
                     DummyScript tempDummy = Instantiate<DummyScript>(this);
                     tempDummy.setCoordinates(i, j);
+                    boardScript.setRed(i, j, true);
                     boardScript.dummies[i,j] = tempDummy;
                     //tempDummy.Spawn(range, 0, 1, false);
                 }
@@ -211,6 +224,24 @@ public class DummyScript : MonoBehaviour {
         DestroyImmediate(this.gameObject);
     }
 
+    private void findDiagonals()
+    {
+        for(int i = -1; i < 2; i++)
+        {
+            for(int j = -1; j < 2; j++)
+            {
+                if(Mathf.Abs(i) == Mathf.Abs(j) && (i != 0 && j != 0) && (pos.x + i > -1 && pos.x + i < 10 && pos.z + j > -1 && pos.z + j < 10))
+                {
+                    DummyScript tempDummy = Instantiate<DummyScript>(this);
+                    tempDummy.setCoordinates((int)(pos.x + i),(int)( pos.z + j));
+                    boardScript.setRed((int)pos.x + i, (int)pos.z + j, true);
+                    boardScript.dummies[(int)(pos.x + i),(int)( pos.z + j)] = tempDummy;
+                }
+            }
+        }
+        DestroyImmediate(this.gameObject);
+    }
+
     private void findHighestAttack(int range)
     {
         foreach(OpalScript o in boardScript.gameOpals)
@@ -219,6 +250,7 @@ public class DummyScript : MonoBehaviour {
             {
                 DummyScript tempDummy = Instantiate<DummyScript>(this);
                 tempDummy.setCoordinates((int)o.getPos().x, (int)o.getPos().z);
+                boardScript.setRed((int)o.getPos().x, (int)o.getPos().z, true);
                 boardScript.dummies[(int)o.getPos().x, (int)o.getPos().z] = tempDummy;
             }
         }

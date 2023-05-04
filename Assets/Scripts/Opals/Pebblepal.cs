@@ -19,7 +19,7 @@ public class Pebblepal : OpalScript
         speed = 0;
         priority = 9;
         myName = "Pebblepal";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.7f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 0.8f;
         if (pl == "Red" || pl == "Green")
         {
             GetComponent<SpriteRenderer>().flipX = true;
@@ -28,106 +28,72 @@ public class Pebblepal : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        if(pl != null)
+        if (pl != null)
         {
             cs = GameObject.Find("Cursor(Clone)").GetComponent<CursorScript>();
             myAura = Instantiate<ParticleSystem>(Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/RocklyAuraBuff"), transform);
-            myAura.transform.localScale = transform.localScale;
+            myAura.transform.localScale = transform.localScale / 5;
             //myAura.transform.localRotation = Quaternion.Euler(0, 90, 35);
         }
         offsetX = 0;
         offsetY = -0.3f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Flingable", 0, 0, 0, "<Passive>\nWhenever Pebblepal is attacked by an adjacent Opal, it moves in the opposite direction: a tile for each health point lost.");
-        Attacks[1] = new Attack("Rockly Aura", 0, 0, 0, "<Passive>\n At the end of Pebblepal's turn, give all adjacent Opals +5 attack, defense for 1 turn.");
-        Attacks[2] = new Attack("Indecisive", 0, 1, 0, "Rockly Aura deals damage to adjacent Opals instead of buffing.");
-        Attacks[3] = new Attack("Roll", 1, 1, 0, "Move one tile over.");
+        Attacks[0] = new Attack("Rockly Aura", 0, 0, 0, "<Passive>\nAt the end of Pebblepal's turn, friendly Opals adjacent to Pebblepal gain +5 attack and defense for 1 turn");
+        Attacks[1] = new Attack("Friend Boost", 0, 0, 0, "<Passive>\n Each Boulder adjacent to Pebblepal extends the range of its Rockly Aura ");
+        Attacks[2] = new Attack("Indecisive", 0, 1, 0, "Rockly Aura deals debuffs to adjacent enemy Opals instead of buffing. Debuffs are more powerful than buffs.");
+        Attacks[3] = new Attack("Roll", 1, 1, 0, "Move one tile over.", 0, 3);
         type1 = "Ground";
         type2 = "Air";
+
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Safety", 0,1) });
     }
 
 
     public override void onStart()
     {
         //cs = GameObject.Find("Cursor(Clone)").GetComponent<CursorScript>();
+        updateBoulderCount();
     }
 
-    public override void onDamage(int dam)
+    private int updateBoulderCount()
     {
-        if (dam > getDefense())
+        int currentBoulderCount = 1;
+        foreach (TileScript t in getSurroundingTiles(true))
         {
-            if (cs.getCurrentOpal() != this)
+            if (t.getCurrentOpal() != null && t.getCurrentOpal().getMyName() == "Boulder")
             {
-                string direct = "left";
-                int dist = (int)getPos().x - (int)cs.getCurrentOpal().getPos().x;
-                if (dist == 0)
-                {
-                    direct = "down";
-                    dist = (int)getPos().z - (int)cs.getCurrentOpal().getPos().z;
-                }
-                if (dist < 0)
-                {
-                    if (direct == "left")
-                    {
-                        direct = "right";
-                    }
-                    else if (direct == "down")
-                    {
-                        direct = "up";
-                    }
-                    dist = Mathf.Abs(dist);
-                }
-                if (direct == "right")
-                {
-                    nudge(dam-getDefense(), true, false);
-                }
-                else if (direct == "left")
-                {
-                    nudge(dam - getDefense(), true, true);
-                }
-                else if (direct == "up")
-                {
-                    nudge(dam - getDefense(), false, false);
-                }
-                else if (direct == "down")
-                {
-                    nudge(dam - getDefense(), false, true);
-                }
+                currentBoulderCount++;
             }
         }
+        Attacks[1].setDescription("<Passive>\n Each Boulder adjacent to Pebblepal extends the range of its Rockly Aura: (+" + (currentBoulderCount - 1) + ")");
+        return currentBoulderCount;
     }
 
     public override void onEnd()
     {
-        if (!atSwitch)
+        int currentBoulderCount = updateBoulderCount();
+        for(int i = -(currentBoulderCount); i < (currentBoulderCount)+1; i++)
         {
-            for (int i = -1; i < 2; i++)
+            for(int j = -(currentBoulderCount); j < (currentBoulderCount)+1; j++)
             {
-                for (int j = -1; j < 2; j++)
+                if (getPos().x + i < 10 && getPos().x + i > -1 && getPos().z + j < 10 && getPos().z + j > -1 && !(i == 0 && j == 0) && ((Mathf.Abs(i) != Mathf.Abs(j) || (Mathf.Abs(i) != Mathf.Abs(currentBoulderCount) && Mathf.Abs(j) != Mathf.Abs(currentBoulderCount)))))
                 {
-                    if (!(i == 0 && j == 0) && (i == 0 || j == 0))
+                    if (!atSwitch)
                     {
-                        if (getPos().x + i < 10 && getPos().x + i > -1 && getPos().z + j < 10 && getPos().z + j > -1 && boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer != null)
+                        if(boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer != null && boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer.getTeam() == getTeam())
                         {
                             boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer.doTempBuff(0, 1, 5);
                             boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer.doTempBuff(1, 1, 5);
                         }
                     }
-                }
-            }
-        }
-        else
-        {
-            for (int i = -1; i < 2; i++)
-            {
-                for (int j = -1; j < 2; j++)
-                {
-                    if (!(i == 0 && j == 0) && (i == 0 || j == 0))
+                    else
                     {
-                        if (getPos().x + i < 10 && getPos().x + i > -1 && getPos().z + j < 10 && getPos().z + j > -1 && boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer != null)
+                        if (boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer != null && boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer.getTeam() != getTeam())
                         {
-                            boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer.takeDamage(6+getAttack(), true, true);
+                            boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer.doTempBuff(0, 1, -8);
+                            boardScript.tileGrid[(int)getPos().x + i, (int)getPos().z + j].currentPlayer.doTempBuff(1, 1, -8);
                         }
                     }
                 }
@@ -151,17 +117,19 @@ public class Pebblepal : OpalScript
             atSwitch = !atSwitch;
             if (atSwitch)
             {
-                Attacks[1] = new Attack("Rockly Aura", 0, 0, 0, "<Passive>\n At the end of Pebblepal's turn, deal 15 damage to all adjacent Opals.");
+                Attacks[0] = new Attack("Rockly Aura", 0, 0, 0, "<Passive>\nAt the end of Pebblepal's turn, enemy Opals adjacent to Pebblepal gain -8 attack and defense for 1 turn");
+                Attacks[2].setDescription("Rockly Aura deals buffs to adjacent allied Opals instead of debuffing. Buffs are less powerful than debuffs.");
                 DestroyImmediate(myAura.gameObject);
                 myAura = Instantiate<ParticleSystem>(Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/RocklyAuraHarm"), transform);
             }
             else
             {
-                Attacks[1] = new Attack("Rockly Aura", 0, 0, 0, "<Passive>\n At the end of Pebblepal's turn, give all adjacent Opals +5 attack, defense and speed for 1 turn.");
+                Attacks[0] = new Attack("Rockly Aura", 0, 0, 0, "<Passive>\nAt the end of Pebblepal's turn, friendly Opals adjacent to Pebblepal gain +5 attack and defense for 1 turn");
+                Attacks[2].setDescription("Rockly Aura deals debuffs to adjacent enemy Opals instead of buffing. Debuffs are more powerful than buffs.");
                 DestroyImmediate(myAura.gameObject);
                 myAura = Instantiate<ParticleSystem>(Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/RocklyAuraBuff"), transform);
             }
-            myAura.transform.localScale = transform.localScale;
+            myAura.transform.localScale = transform.localScale/5;
             //myAura.transform.localRotation = Quaternion.Euler(0, 90, 35);
             return 0;
         }
@@ -231,5 +199,60 @@ public class Pebblepal : OpalScript
             return 0;
         }
         return -1;
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (atNum == 0)
+        {
+            return false;
+        }
+        else if (atNum == 1)
+        {
+            return false;
+        }
+        else if (atNum == 2)
+        {
+            if (atSwitch)
+            {
+                if (numNearbyOpals(target, rA, false) > numNearbyOpals(target, rA, true))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if (numNearbyOpals(target, rA, true) > numNearbyOpals(target, rA, false))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+        else if (atNum == 3)
+        {
+            if (!boardScript.myCursor.tileIsFalling((int)target.getPos().x, (int)target.getPos().z) && boardScript.myCursor.tileIsFalling((int)getPos().x, (int)getPos().z))
+            {
+                return true;
+            }
+            if (nearEdge(currentTile) && !nearEdge(target))
+            {
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
+        return 0;
     }
 }

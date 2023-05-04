@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 5651095771648089865}
   m_LocalRotation: {x: -0, y: -0.38268343, z: -0, w: 0.92387956}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.16000001, y: 0.16000001, z: 0.8}
+  m_LocalScale: {x: 3, y: 3, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -93,7 +93,7 @@ Animator:
   m_GameObject: {fileID: 5651095771648089865}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 6595a126cd438404680edc1486efc1c5, type: 2}
+  m_Controller: {fileID: 9100000, guid: 9f5f1a657b9d73c41bd7e66753c5705e, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -117,3 +117,11 @@ MonoBehaviour:
   display: 0
   shrouded: 0
   poisonCounter: 4
+  evolvesInto: []
+  evolvesFrom: []
+  defaultStage: 1
+  attackFrame: {fileID: -546877284357964437, guid: a04cd2eee2f72644e9546f7967d1ac11,
+    type: 3}
+  hurtFrame: {fileID: -3845013457378673178, guid: a04cd2eee2f72644e9546f7967d1ac11,
+    type: 3}
+  myBoulders: {fileID: 0}

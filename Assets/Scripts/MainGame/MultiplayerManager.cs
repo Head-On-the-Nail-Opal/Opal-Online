@@ -6,6 +6,7 @@ using Photon.Pun;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
 {
@@ -18,17 +19,29 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
     private string teamThree = "";
     private string teamFour = "";
     private string gameString = "";
+    private string gameHistory = "";
     private GroundScript boardScript;
     private CursorScript cs;
     public Text chatTextHistory;
     public InputField chatTextEnter;
     private bool typing = false;
     private string numPlayers = "2";
+    private GlobalScript glob;
+    private bool reconnecting = false;
 
 
     public void Awake()
     {
-        
+        if (SceneManager.GetActiveScene().name.Equals("MainGame"))
+        {
+            glob = GameObject.Find("GlobalObject").GetComponent<GlobalScript>();
+            if (glob.getMult() && PhotonNetwork.CurrentRoom.CustomProperties["GameActive"].ToString().Equals("True"))
+            {
+                Debug.Log("This client just joined a game after it has already begun. We will now update the game");
+                glob.setNumPlayers(PhotonNetwork.CurrentRoom.PlayerCount);
+                requestGameHistoryData();
+            }
+        }
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -41,7 +54,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(teamTwo);
             stream.SendNext(teamThree);
             stream.SendNext(teamFour);
-            stream.SendNext(gameString);
             stream.SendNext(numPlayers);
             stream.SendNext(chat);
         }
@@ -53,7 +65,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
             this.teamTwo = (string)stream.ReceiveNext();
             this.teamThree = (string)stream.ReceiveNext();
             this.teamFour = (string)stream.ReceiveNext();
-            this.gameString = (string)stream.ReceiveNext();
             this.numPlayers = (string)stream.ReceiveNext();
             this.chat = (string)stream.ReceiveNext();
         }
@@ -64,52 +75,20 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         Debug.LogError("Griff's Dumb Data!!!: " + data);
         string command = data;
+        if (gameHistory.Split('\n').Length <= 1)
+        {
+            gameHistory += command + ",1" + '\n';
+        }
+        else
+        {
+            gameHistory += command + "," + (int.Parse(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Replace('\n', ' ').Replace(" ", "")) + 1) + '\n';
+        }
+
         if (boardScript.getOnlineTeam() != cs.getCurrentOnlinePlayer())
         {
             if (command != "")
             {
-                print("Received command: " + command);
-                //multiplayerData = "";
-                string[] parsedCommand = command.Split(',');
-                if (parsedCommand[0] == "place" && int.Parse(parsedCommand[4]) != boardScript.getOnlineTeam())
-                {
-                    if (cs.getCurrentOpal().getMyName() == parsedCommand[1])
-                    {
-                        cs.getCurrentOpal().setPos(int.Parse(parsedCommand[2]), int.Parse(parsedCommand[3]));
-                        cs.getCurrentOpal().setMyTurn(false);
-                        cs.getCurrentOpal().updateTile();
-                        cs.getCurrentOpal().getCurrentTile().standingOn(cs.getCurrentOpal());
-                        cs.nextTurn();
-                    }
-                }
-                else if (parsedCommand[0] == "move" && int.Parse(parsedCommand[2]) != boardScript.getOnlineTeam())
-                {
-                    //print("moving");
-                    List<PathScript> p = new List<PathScript>();
-                    for (int i = 3; i < parsedCommand.Count(); i++)
-                    {
-                        if (parsedCommand[i] != "")
-                        {
-                            PathScript t = Instantiate<PathScript>(Resources.Load<PathScript>("Prefabs/Path"));
-                            p.Add(t);
-                            t.setCoordinates(int.Parse(parsedCommand[i].Split('_')[0]), int.Parse(parsedCommand[i].Split('_')[1]));
-                        }
-                    }
-                    cs.doMove(p);
-                }
-                else if (parsedCommand[0] == "end" && int.Parse(parsedCommand[1]) != boardScript.getOnlineTeam())
-                {
-                    cs.pressEndTurn();
-
-                }
-                else if (parsedCommand[0] == "attack" && int.Parse(parsedCommand[1]) != boardScript.getOnlineTeam())
-                {
-                    cs.doAttack(int.Parse(parsedCommand[2]), int.Parse(parsedCommand[3]), int.Parse(parsedCommand[4]));
-                }
-                else if (parsedCommand[0] == "reset")
-                {
-                    //boardScript.updateFromString(boardScript.getMM().getGameData());
-                }
+                processCommand(command);
             }
             else
             {
@@ -157,9 +136,62 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
         gameString = data;
     }
 
-    public string getGameData()
+    [PunRPC]
+    private void requestGameHistory()
     {
-        return gameString;
+        this.photonView.RPC("shareGameHistory", RpcTarget.All, gameHistory, -1);
+    }
+
+    [PunRPC]
+    private void updateGameHistory(string command, int actorNumber)
+    {
+        if (command != "" && PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
+        {
+            if (gameHistory.Split('\n').Length <= 1)
+            {
+                gameHistory += command + ",1" + '\n';
+            }
+            else
+            {
+                gameHistory += command + "," + (int.Parse(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Replace('\n', ' ').Replace(" ", "")) + 1) + '\n';
+            }
+            processCommand(command);
+        }
+    }
+
+    [PunRPC]
+    private void shareGameHistory(string data, int actorNumber)
+    {
+        if (gameHistory.Equals(""))
+        {
+            StartCoroutine(runReconnection(data));
+        } else if (!gameHistory.Equals(data))
+        {
+            Debug.LogError("THE MASTER CLIENT (YOU) IS DISCONNECTED FROM THE CLIENT THAT JUST ENDED THEIR TURN");
+            if (data.Length >= gameHistory.Length)
+            {
+                Debug.Log("THE CLIENT THAT JUST ENDED THEIR TURN HAS THE LONGER GAME HISTORY");
+                foreach (string command in data.Split('\n'))
+                {
+                    if (!gameHistory.Contains(command) && !command.Contains("end"))
+                    {
+                        Debug.Log("MISSING COMMAND: " + command);
+                        this.photonView.RPC("updateGameHistory", RpcTarget.All, command, actorNumber);
+                    }
+                }
+            } else
+            {
+                Debug.Log("THE MASTER CLIENT HAS THE LONGER GAME HISTORY");
+                foreach (string command in gameHistory.Split('\n'))
+                {
+                    if (!data.Contains(command) && !command.Contains("end"))
+                    {
+                        Debug.Log("MISSING COMMAND: " + command);
+                        this.photonView.RPC("updateGameHistory", RpcTarget.All, command, actorNumber);
+                    }
+                }
+            }
+        }
     }
 
     public void sendMultiplayerData(string data)
@@ -177,6 +209,16 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
     public void sendNum(int num)
     {
         this.photonView.RPC("sendNumPlayers", RpcTarget.All, num);
+    }
+
+    public void requestGameHistoryData()
+    {
+        this.photonView.RPC("requestGameHistory", RpcTarget.MasterClient);
+    }
+
+    public void verifyNoDisconnection()
+    {
+        this.photonView.RPC("shareGameHistory", RpcTarget.MasterClient, gameHistory, PhotonNetwork.LocalPlayer.ActorNumber);
     }
 
     [PunRPC]
@@ -202,6 +244,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
     public void sendMultiplayerTeam(string myTeam)
     {
         this.photonView.RPC("sendTeam", RpcTarget.All, myTeam);
+        print("Team sent!");
     }
 
     public void setUpMM(GroundScript bs, CursorScript c)
@@ -209,6 +252,10 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
         PlayerPrefs.SetString("CurrentMatch", PhotonNetwork.CurrentRoom.Name);
         boardScript = bs;
         cs = c;
+
+        Hashtable customProps = new Hashtable();
+        customProps.Add("GameActive", true);
+        PhotonNetwork.CurrentRoom.SetCustomProperties(customProps);
     }
 
     public string getTeamOne()
@@ -241,8 +288,64 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
         return multiplayerData;
     }
 
+    private void processCommand(string command)
+    {
+        print("Received command: " + command);
+        string[] parsedCommand = command.Split(',');
+        if (parsedCommand[0] == "place" && (reconnecting || int.Parse(parsedCommand[4]) != boardScript.getOnlineTeam()))
+        {
+            if (cs.getCurrentOpal().getMyName() == parsedCommand[1])
+            {
+                cs.getCurrentOpal().setPos(int.Parse(parsedCommand[2]), int.Parse(parsedCommand[3]));
+                cs.getCurrentOpal().setMyTurn(false);
+                cs.getCurrentOpal().updateTile();
+                cs.getCurrentOpal().getCurrentTile().standingOn(cs.getCurrentOpal());
+                cs.nextTurn();
+            }
+        }
+        else if (parsedCommand[0] == "move" && (reconnecting || int.Parse(parsedCommand[2]) != boardScript.getOnlineTeam()))
+        {
+            //print("moving");
+            List<PathScript> p = new List<PathScript>();
+            for (int i = 3; i < parsedCommand.Count(); i++)
+            {
+                if (parsedCommand[i] != "")
+                {
+                    PathScript t = Instantiate<PathScript>(Resources.Load<PathScript>("Prefabs/Path"));
+                    p.Add(t);
+                    t.setCoordinates(int.Parse(parsedCommand[i].Split('_')[0]), int.Parse(parsedCommand[i].Split('_')[1]));
+                }
+            }
+            cs.doMove(p);
+        }
+        else if (parsedCommand[0] == "end" && (reconnecting || int.Parse(parsedCommand[1]) != boardScript.getOnlineTeam()))
+        {
+            cs.pressEndTurn();
+
+        }
+        else if (parsedCommand[0] == "attack" && (reconnecting || int.Parse(parsedCommand[1]) != boardScript.getOnlineTeam()))
+        {
+            cs.doAttack(int.Parse(parsedCommand[2]), int.Parse(parsedCommand[3]), int.Parse(parsedCommand[4]));
+        }
+    }
+
     void Update()
     {
+        //if (Input.GetKeyUp(KeyCode.H))
+        //{
+        //    processCommand(gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2]);
+        //    string command = gameHistory.Split('\n')[gameHistory.Split('\n').Length - 2];
+
+        //    if (gameHistory.Split('\n').Length <= 1)
+        //    {
+        //        gameHistory += command + ",1" + '\n';
+        //    }
+        //    else
+        //    {
+        //        gameHistory += command + "," + (int.Parse(gameHistory.Substring(gameHistory.LastIndexOf(',') + 1).Replace('\n', ' ').Replace(" ", "")) + 1) + '\n';
+        //    }
+        //    Debug.Log("Just added fake game history item");
+        //}
         if (boardScript != null)
         {
             if (boardScript.getMult() == false)
@@ -291,10 +394,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
                     else if (parsedCommand[0] == "attack" && int.Parse(parsedCommand[1]) != boardScript.getOnlineTeam())
                     {
                         cs.doAttack(int.Parse(parsedCommand[2]), int.Parse(parsedCommand[3]), int.Parse(parsedCommand[4]));
-                    }
-                    else if (parsedCommand[0] == "reset")
-                    {
-                        boardScript.updateFromString(boardScript.getMM().getGameData());
                     }
                 }
                 else
@@ -502,5 +601,24 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks, IPunObservable
     public void loadGame()
     {
         SceneManager.LoadScene("MainGame");
+    }
+
+    public IEnumerator runReconnection(string data)
+    {
+        reconnecting = true;
+        boardScript.setResetting(true);
+        gameHistory = data;
+        Debug.LogError("GAME HISTORY: \n" + gameHistory);
+        foreach (string historyCommand in gameHistory.Split('\n'))
+        {
+            if (historyCommand != "")
+            {
+                Debug.LogError("PROCESSING GAME HISTORY: " + historyCommand);
+                processCommand(historyCommand);
+                yield return new WaitForSeconds(0.5f);
+            }
+        }
+        reconnecting = false;
+        boardScript.setResetting(false);
     }
 }

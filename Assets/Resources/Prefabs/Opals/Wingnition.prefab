@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 1787170969542336}
   m_LocalRotation: {x: 0, y: -0.38268343, z: 0, w: 0.92387956}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.22000001, y: 0.22000001, z: 1.1}
+  m_LocalScale: {x: 3.5, y: 3.5, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -58,6 +58,7 @@ SpriteRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -70,12 +71,13 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: b494b6f0b4a940b40ad137f29c35bd63, type: 3}
+  m_Sprite: {fileID: 6767376876750597734, guid: fd1f932ebb8f8bb4383d71736c81aead,
+    type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 8.32, y: 8.32}
+  m_Size: {x: 0.32, y: 0.32}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -91,7 +93,7 @@ Animator:
   m_GameObject: {fileID: 1787170969542336}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 3fa085b16475f2a4a8b28e8899c02eb8, type: 2}
+  m_Controller: {fileID: 9100000, guid: ce90260ddd85bbf48960ee5c7a5a2f03, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -115,3 +117,11 @@ MonoBehaviour:
   display: 0
   shrouded: 0
   poisonCounter: 4
+  evolvesInto: []
+  evolvesFrom: []
+  defaultStage: 1
+  attackFrame: {fileID: 5961437899409503196, guid: fd1f932ebb8f8bb4383d71736c81aead,
+    type: 3}
+  hurtFrame: {fileID: 5488306353730214246, guid: fd1f932ebb8f8bb4383d71736c81aead,
+    type: 3}
+  myBoulders: {fileID: 0}

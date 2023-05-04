@@ -13,6 +13,14 @@ public class Attack{
     int uses = 1;
     int currentUse = 0;
     bool freeAction = false;
+    string tidalDescription = "";
+    int effectiveRange = 0;
+    List<string> tags = new List<string>();
+    int attackAnim = 0;
+
+    private List<AbilityProj> proj =  new List<AbilityProj>();
+    private ParticleSystem chargeUp;
+    private ParticleSystem hitEffect;
 
     /**
      * Official description of attack keywords
@@ -28,6 +36,17 @@ public class Attack{
         shape = s;
         baseDamage = bd;
         description = d;
+    }
+
+    public Attack(string n, int r, int s, int bd, string d, int a, int aa)
+    {
+        aname = n;
+        range = r;
+        shape = s;
+        baseDamage = bd;
+        description = d;
+        aoe = a;
+        attackAnim = aa;
     }
 
     public Attack(string n, int r, int s, int bd, string d, int a)
@@ -54,9 +73,29 @@ public class Attack{
         shape = i;
     }
 
+    public int getAttackAnim()
+    {
+        return attackAnim;
+    }
+
+    public List<string> getTags()
+    {
+        return tags;
+    }
+
     public void setRange(int r)
     {
         range = r;
+    }
+
+    public void setEffectiveRange(int r)
+    {
+        effectiveRange = r;
+    }
+
+    public int getEffectiveRange()
+    {
+        return effectiveRange;
     }
 
     public int getBaseDamage()
@@ -109,4 +148,79 @@ public class Attack{
         currentUse += mod;
         return currentUse;
     }
+
+    public void setTidalD(string d)
+    {
+        tidalDescription = d;
+    }
+
+    public string getTidalD()
+    {
+        return tidalDescription;
+    }
+
+    public void setOnHit(string particlesystemName, string particleName, Color color, bool beforeDamage, int length)
+    {
+
+    }
+
+    public void addProjectile(string particlesystemName, string particleName, float particleMultiplier, Color color, float speed)
+    {
+        proj.Add(new AbilityProj(particlesystemName, particleName, particleMultiplier, color, speed));
+    }
+
+    public void addProjectile(string particlesystemName, string particleName, float particleMultiplier, Color color, Color color2, float speed)
+    {
+        proj.Add(new AbilityProj(particlesystemName, particleName, particleMultiplier, color, speed));
+    }
+
+    //'length' here is independent from the lifetime of the system, just the delay until 
+    public void setChargeUp(string particlesystemName, string particleName, Color color, int length)
+    {
+
+    }
+
+    public List<AbilityProj> getProj()
+    {
+        return proj;
+    }
+
+    public ParticleSystem getOnHit()
+    {
+        return hitEffect;
+    }
+
+    public ParticleSystem getChargeUp()
+    {
+        return chargeUp;
+    }
 }
+
+public class AbilityProj {
+    public string shapeName;
+    public string particleName;
+    public float particleMultiplier;
+    public Color clr;
+    public Color clr2;
+    public float speed;
+
+
+    public AbilityProj(string s, string p, float pM, Color c, float m){
+        shapeName = s;
+        particleName = p;
+        particleMultiplier = pM;
+        clr = c;
+        speed = m;
+    }
+
+    public AbilityProj(string s, string p, float pM, Color c, Color c2, float m)
+    {
+        shapeName = s;
+        particleName = p;
+        particleMultiplier = pM;
+        clr = c;
+        clr2 = c2;
+        speed = m;
+    }
+}
+

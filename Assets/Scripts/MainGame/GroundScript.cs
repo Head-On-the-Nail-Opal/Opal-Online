@@ -5,15 +5,19 @@ using UnityEngine;
 public class GroundScript : MonoBehaviour {
     static public GroundScript me;
     static public Transform GameBoard;
-    public TileScript[,] tileGrid = new TileScript[10,10];
+    public TileScript[,] tileGrid = new TileScript[10, 10];
     public DummyScript[,] dummies = new DummyScript[10, 10];
     public List<PathScript> paths = new List<PathScript>();
     public List<List<Vector3>> pathofpaths = new List<List<Vector3>>();
     public List<PathScript> generatedPaths = new List<PathScript>();
     public int switchCam = 1;
 
+    //private List<string> wildlife = new List<string>{"ButterflightSwarm", "Pebble", "Conspicuous Bush", "Diamond Coin", "Bombats"};
+    private List<string> wildlife = new List<string> { "ButterflightSwarm", "Pebble", "Conspicuous Bush"};
+
     public List<OpalScript> gameOpals = new List<OpalScript>();
     private List<OpalScript> nonSortedGameOpals = new List<OpalScript>();
+    public List<int> alreadyMoved = new List<int>();
     public List<OpalScript> p1Opals = new List<OpalScript>(); 
     public List<OpalScript> p2Opals = new List<OpalScript>();
     public List<OpalScript> p3Opals = new List<OpalScript>();
@@ -53,6 +57,7 @@ public class GroundScript : MonoBehaviour {
     private GameObject chargeLightning;
     private ParticleSystem chargeEffect;
     private List<GameObject> charges = new List<GameObject>();
+    private GameObject opalPlate2;
     private GameObject bluePlate;
     private GameObject redPlate;
     private GameObject greenPlate;
@@ -84,14 +89,41 @@ public class GroundScript : MonoBehaviour {
     private MultiplayerManager mm;
 
     private string bothTeams;
+    private int isBarriarray = -1;
 
+    private Canvas myCanvas;
+
+    private OpalScript boulder;
+    private OpalScript boulder2;
+
+    private bool gameWon = false;
+    private bool resetting = false;
+
+    public Vocabulary vocab;
+
+    private GroundScript AIBoard;
+    private bool secondary = false;
+    private bool madeBoard = false;
+
+    private string gameState;
+    private string gameState1;
+
+    private List<string> saveStates = new List<string>();
+    private List<OpalScript> allBoulders = new List<OpalScript>();
+
+    private bool noUpdate = false;
 
     private void Awake()
     {
+        for(int i = 0; i < 20; i++)
+        {
+            saveStates.Add("");
+        }
         me = this;
         GameObject board = new GameObject("Gameboard");
         glob = GameObject.Find("GlobalObject").GetComponent<GlobalScript>();
         mm = GameObject.Find("MultiplayerManager").GetComponent<MultiplayerManager>();
+        myCanvas = GameObject.Find("Canvas").GetComponent<Canvas>();
         blueTeamPriority = 0;
         redTeamPriority = 0;
 
@@ -102,13 +134,22 @@ public class GroundScript : MonoBehaviour {
         sporeTilePrefab = Resources.Load<TileScript>("Prefabs/Tiles/SporeTile");
         chargeLightning = Resources.Load<GameObject>("Prefabs/LightningCharge");
         chargeEffect = Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/ChargeEffect");
+        boulder = Resources.Load<OpalScript>("Prefabs/Boulder0");
+        boulder2 = Resources.Load<OpalScript>("Prefabs/Boulder1");
 
         redPlate = Resources.Load<GameObject>("Prefabs/RedPlate");
         bluePlate = Resources.Load<GameObject>("Prefabs/BluePlate");
         greenPlate = Resources.Load<GameObject>("Prefabs/GreenPlate");
         orangePlate = Resources.Load<GameObject>("Prefabs/OrangePlate");
 
+        opalPlate2 = Resources.Load<GameObject>("Prefabs/OpalPlate2");
+
         debuffEffect = Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/DebuffEffect");
+
+        growthTilePrefab = Resources.Load<TileScript>("Prefabs/Tiles/GrowthTile");
+        fireTilePrefab = Resources.Load<TileScript>("Prefabs/Tiles/FireTile");
+
+        vocab.setIt();
 
         tempB = glob.getBlueTeam();
         tempR = glob.getRedTeam();
@@ -132,7 +173,7 @@ public class GroundScript : MonoBehaviour {
             string sendMe = "";
             foreach (OpalScript o in tempB)
             {
-                sendMe += o.GetType() + ",";
+                sendMe += o.GetType().ToString() +o.saveOpal() + ",";
             }
             myTeam = sendMe;
             print(myTeam);
@@ -153,18 +194,41 @@ public class GroundScript : MonoBehaviour {
             tempR.Clear();
             tempG.Clear();
             tempO.Clear();
-            redController = glob.getBlueController();
-            blueController = glob.getBlueController();
-            greenController = glob.getBlueController();
-            orangeController = glob.getBlueController();
+            redController = glob.getRedController();
+            blueController = glob.getRedController();
+            greenController = glob.getRedController();
+            orangeController = glob.getRedController();
         }
+    }
+
+    public void setSecondary(bool s)
+    {
+        secondary = s;
+    }
+
+    public void setNoUpdate(bool n)
+    {
+        noUpdate = n;
+    }
+
+    public GlobalScript getGlob()
+    {
+        return glob;
+    }
+
+    public bool includeAI()
+    {
+        if (redController == "AI" || blueController == "AI" || orangeController == "AI" || greenController == "AI")
+            return true;
+        return false;
     }
 
     public void Update()
     {
         if(!setUp && glob.getMult() && mm.getTeamOne() != "" && mm.getTeamTwo() != "" && (numTeams < 3 || mm.getTeamThree() != "") && (numTeams < 4 || mm.getTeamFour() != ""))
         {
-            print(mm.getTeamOne() + " vs " + mm.getTeamTwo());
+           
+            print(mm.getTeamOne()+ " vs " + mm.getTeamTwo());
             setUp = true;
             
             string[] team1Names = mm.getTeamOne().Split(',');
@@ -196,7 +260,7 @@ public class GroundScript : MonoBehaviour {
                 if (s != "")
                 {
                     //print(s);
-                    OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + s));
+                    OpalScript temp = convertOpalFromString(s);
                     temp.setPos(-100, -100);
                     tempB.Add(temp);
                 }
@@ -207,7 +271,7 @@ public class GroundScript : MonoBehaviour {
                 if (s != "")
                 {
                     //print(s);
-                    OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + s));
+                    OpalScript temp = convertOpalFromString(s);
                     temp.setPos(-100, -100);
                     tempR.Add(temp);
                 }
@@ -220,7 +284,7 @@ public class GroundScript : MonoBehaviour {
                     if (s != "")
                     {
                         //print(s);
-                        OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + s));
+                        OpalScript temp = convertOpalFromString(s);
                         temp.setPos(-100, -100);
                         tempG.Add(temp);
                     }
@@ -234,7 +298,7 @@ public class GroundScript : MonoBehaviour {
                     if (s != "")
                     {
                         //print(s);
-                        OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + s));
+                        OpalScript temp = convertOpalFromString(s);
                         temp.setPos(-100, -100);
                         tempO.Add(temp);
                     }
@@ -245,25 +309,61 @@ public class GroundScript : MonoBehaviour {
         }
     }
 
+    public OpalScript convertOpalFromString(string data)
+    {
+        string[] parsed = data.Split('|');
+        //Debug.LogError("du hello:" +data);
+        OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + parsed[0]));
+        temp.setPersonality(parsed[2]);
+        temp.setCharmFromString(parsed[1],false);
+        return temp;
+    }
+
     public int getOnlineTeam()
     {
         return onlinePlayerNum;
+    }
+
+    public void setGameWon(bool input)
+    {
+        gameWon = input;
+    }
+
+    public bool getGameWon()
+    {
+        return gameWon;
+    }
+
+    public void setResetting(bool input)
+    {
+        resetting = input;
+    }
+
+    public bool getResetting()
+    {
+        return resetting;
     }
 
     private void setTheRestUp()
     {
         myCursor = Instantiate<CursorScript>(cursorPrefab);
         int p = 0;
+        int idCount = 0;
         foreach (OpalScript o in tempB)
         {
-            print(o.GetType());
+            //print(o.GetType());
             OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + o.GetType()));
-            temp.GetComponent<SpriteRenderer>().flipX = false;
             temp.setOpal("Blue");
+            temp.setDetails(o);
+            temp.GetComponent<SpriteRenderer>().flipX = false;
+            temp.transform.rotation = Quaternion.Euler(40,-45,0);
+            //temp.setPersonality(o.getPersonality());
             temp.setPos(-100, -100);
             p2Opals.Add(temp);
             blueTeamPriority += temp.getSpeed() * 10;
             blueTeamPriority += temp.getPriority();
+            temp.setID(idCount);
+            idCount++;
             p += 3;
         }
         p = 0;
@@ -272,10 +372,15 @@ public class GroundScript : MonoBehaviour {
             OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + o.GetType()));
             temp.GetComponent<SpriteRenderer>().flipX = true;
             temp.setOpal("Red");
+            temp.setDetails(o);
+            temp.transform.rotation = Quaternion.Euler(40, -45, 0);
+            //temp.setPersonality(o.getPersonality());
             temp.setPos(-100, -100);
             p1Opals.Add(temp);
             redTeamPriority += temp.getSpeed() * 10;
             redTeamPriority += temp.getPriority();
+            temp.setID(idCount);
+            idCount++;
             p += 3;
         }
         p = 0;
@@ -283,11 +388,16 @@ public class GroundScript : MonoBehaviour {
         {
             OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + o.GetType()));
             temp.GetComponent<SpriteRenderer>().flipX = false;
+            temp.transform.rotation = Quaternion.Euler(40, -45, 0);
             temp.setOpal("Green");
+            temp.setDetails(o);
+            // temp.setPersonality(o.getPersonality());
             temp.setPos(-100, -100);
             p3Opals.Add(temp);
             greenTeamPriority += temp.getSpeed() * 10;
             greenTeamPriority += temp.getPriority();
+            temp.setID(idCount);
+            idCount++;
             p += 3;
         }
         p = 0;
@@ -295,11 +405,16 @@ public class GroundScript : MonoBehaviour {
         {
             OpalScript temp = Instantiate<OpalScript>(Resources.Load<OpalScript>("Prefabs/Opals/" + o.GetType()));
             temp.GetComponent<SpriteRenderer>().flipX = false;
+            temp.transform.rotation = Quaternion.Euler(40, -45, 0);
             temp.setOpal("Orange");
+            temp.setDetails(o);
+            // temp.setPersonality(o.getPersonality());
             temp.setPos(-100, -100);
             p4Opals.Add(temp);
             orangeTeamPriority += temp.getSpeed() * 10;
             orangeTeamPriority += temp.getPriority();
+            temp.setID(idCount);
+            idCount++;
             p += 3;
         }
         if (!getMult()) { 
@@ -337,23 +452,42 @@ public class GroundScript : MonoBehaviour {
         {
             for (int j = 0; j < 10; j++)
             {
-                TileScript temp;
-                if ((int)(i + j) % 2 == 0)
-                    temp = Instantiate<TileScript>(tilePrefab);
-                else
-                    temp = Instantiate<TileScript>(tilePrefab2);
+                TileScript temp = Instantiate<TileScript>(tilePrefab);
                 temp.transform.SetParent(GameBoard);
                 temp.setCoordinates(i , j);
-                if (i != 10 && j != 10)
+                if (i < 10 && i >= 0 && j < 10 && j >= 0)
                 {
                     tileGrid[i, j] = temp;
                     temp.toggleStarting();
                 }
+                
             }
         }
+        foreach(TileScript t in tileGrid)
+        {
+            t.updateConnection();
+            t.setRandomDecor();
+            if(Random.Range(0,15) == 4)
+            {
+                t.spawnWildlife(wildlife[Random.Range(0,wildlife.Count)]);
+            }
+        }
+        foreach(OpalScript o in gameOpals)
+        {
+            if(glob.getOverload(o.getTeam()).Contains(o.getMainType()) || glob.getOverload(o.getTeam()).Contains(o.getSecondType()))
+            {
+                o.setOverloaded(true);
+            }
+        }
+        setUpSurroundings();
         sortOpals(gameOpals);
         nonSortedGameOpals.AddRange(gameOpals);
         switchCam = 1;
+    }
+
+    public CursorScript getMyCursor()
+    {
+        return myCursor;
     }
 
     public void addToUnsorted(OpalScript o)
@@ -416,6 +550,11 @@ public class GroundScript : MonoBehaviour {
         }
     }
     
+
+    public void setUpGlob()
+    {
+        glob.setFinishedGame(true); 
+    }
 
     public PathScript getPath(int x, int z)
     {
@@ -503,15 +642,7 @@ public class GroundScript : MonoBehaviour {
                 }
                 if(result == 0)
                 {
-                    List<string> temp = new List<string>();
-                    temp.Add(t.getMyName());
-                    temp.Add(o.getMyName());
-                    temp.Sort();
-                    result = temp.IndexOf(t.getMyName());
-                    if (result == 0)
-                        result = 1;
-                    else if (result == 1)
-                        result = -1;
+                    result = t.getID() - o.getID();
                 }
             }
         }
@@ -590,165 +721,299 @@ public class GroundScript : MonoBehaviour {
         }
     }
 
-    public void setTile(OpalScript o, string type, bool over)
+    public TileScript getTile(int x,int z)
     {
-        setTile((int)o.getPos().x, (int)o.getPos().z, type, over);
+        if (x < 0 || x > 9 || z < 0 || z > 9 || tileGrid[x, z].getFallen())
+        {
+            return null;
+        }
+        return tileGrid[x, z];
     }
 
-    public void setTile(TileScript t, string type, bool over)
+    public TileScript setTile(OpalScript o, string type, bool over)
     {
-        setTile((int)t.getPos().x, (int)t.getPos().z, type, over);
+        return setTile((int)o.getPos().x, (int)o.getPos().z, type, over);
     }
 
-    public void setTile(int x, int y, string type, bool over)
+    public TileScript setTile(TileScript t, string type, bool over)
+    {
+        return setTile((int)t.getPos().x, (int)t.getPos().z, type, over);
+    }
+
+    public TileScript setTile(int x, int y, string type, bool over)
     {
         if(x < 0 || x > 9 || y < 0 || y > 9 || tileGrid[x,y].getFallen())
         {
-            return;
+            return null;
         }
-        TileScript replaced = tileGrid[x, y];
-        OpalScript standing = replaced.currentPlayer;
+        if(tileGrid[x,y].getDecayTurn() != 1 && tileGrid[x, y].type != "Grass" && tileGrid[x, y].type != type && type != "Grass")
+        {
+            tileGrid[x, y].reduceDecay(1);
+            ParticleSystem temp = Instantiate<ParticleSystem>(Resources.Load<ParticleSystem>("Prefabs/ParticleSystems/TilePuff"), tileGrid[x,y].transform);
+            return tileGrid[x,y];
+        }
+        if (tileGrid[x, y].type != "Grass" && tileGrid[x, y].type == type)
+        {
+            tileGrid[x, y].resetDecay(1);
+            return tileGrid[x, y];
+        }
+
+            TileScript replaced = tileGrid[x, y];
+        bool wasFlood = false;
+        if(replaced.type == "Flood")
+        {
+            wasFlood = true;
+        }
+        List<string> tileCharm = replaced.getCharms();
+        OpalScript standing = replaced.getCurrentOpal();
         if(type == replaced.type)
         {
-            return;
+            return null;
         }
         if (type == "Boulder")
         {
             if (replaced.currentPlayer != null)
             {
-                return;
+                return null;
             }
         }
-        
-        /**if (replaced.type == "Miasma" && type != "Miasma" && replaced.currentPlayer != null)
-        {
-            //replaced.currentPlayer.doBuff(0, -2, 0, false);
-        }
-        else if (replaced.type == "Growth" && type != "Growth" && replaced.currentPlayer != null)
-        {
-            DestroyImmediate(replaced.currentEffect);
-            replaced.currentPlayer.doBuff(-2, -2, 0, false);
-        }*/
+        TileScript tempTile = null;
         if (type.Equals("Grass"))
         {
             replaced.standingOn(null);
             replaced.setCoordinates(-100, -100);
-            TileScript tempTile;
             if ((int)(x + y) % 2 == 0)
                 tempTile = Instantiate<TileScript>(tilePrefab);
             else
-                tempTile = Instantiate<TileScript>(tilePrefab2);
+                tempTile = Instantiate<TileScript>(tilePrefab);
             tempTile.transform.SetParent(GameBoard);
             tempTile.setCoordinates(x, y);
+            if(replaced.type != "Grass")
+                tempTile.setTexture(getTextureName(replaced.type));
             tileGrid[x, y] = tempTile;
             tempTile.standingOn(standing);
+            if (standing != null)
+                standing.setCurrentTile(tempTile);
         }
         else if (type.Equals("Fire")) {
-            if (replaced.type != "Miasma" && replaced.type != "Flood" && replaced.type != "Boulder" || over)
+            if (!(replaced.getCurrentOpal() != null && replaced.getCurrentOpal().getMyName() == "Boulder") || over)
             {
                 if(replaced.getWet() == true)
                 {
                     doWet((int)replaced.getPos().x, (int)replaced.getPos().z, false);
-                    return;
+                    return null;
                 }
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
-                TileScript tempTile = Instantiate<TileScript>(fireTilePrefab);
+                tempTile = Instantiate<TileScript>(tilePrefab);
+                tempTile.type = "Fire";
                 tempTile.transform.SetParent(GameBoard);
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
                 tempTile.standingOn(standing);
+                if(standing != null)
+                    standing.setCurrentTile(tempTile);
             }
         }
         else if (type.Equals("Miasma"))
         {
-            if (replaced.type != "Growth" && replaced.type != "Fire" && replaced.type != "Flood" || over)
+            if ( !(replaced.getCurrentOpal() != null && replaced.getCurrentOpal().getMyName() == "Boulder") || over)
             {
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
-                TileScript tempTile = Instantiate<TileScript>(miasmaTilePrefab);
+                tempTile = Instantiate<TileScript>(tilePrefab);
+                tempTile.type = "Miasma";
                 tempTile.transform.SetParent(GameBoard);
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
                 tempTile.standingOn(standing);
+                if (standing != null)
+                    standing.setCurrentTile(tempTile);
             }
         }
         else if (type.Equals("Growth"))
         {
-            if (replaced.type != "Fire" && replaced.type != "Growth" && replaced.type != "Boulder" || over)
+            if (!(replaced.getCurrentOpal() != null && replaced.getCurrentOpal().getMyName() == "Boulder") || over)
             {
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
-                TileScript tempTile = Instantiate<TileScript>(growthTilePrefab);
+                tempTile = Instantiate<TileScript>(tilePrefab);
+                tempTile.type = "Growth";
                 tempTile.transform.SetParent(GameBoard);
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
                 tempTile.standingOn(standing);
+                
+                if (standing != null)
+                    standing.setCurrentTile(tempTile);
             }
         }
         else if (type.Equals("Flood"))
         {
-            if (replaced.type != "Boulder" && replaced.type != "Spore" && replaced.type != "Growth" || over)
+            if (!(replaced.getCurrentOpal() != null && replaced.getCurrentOpal().getMyName() == "Boulder") || over)
             {
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
-                TileScript tempTile = Instantiate<TileScript>(floodTilePrefab);
+                tempTile = Instantiate<TileScript>(tilePrefab);
+                tempTile.type = "Flood";
                 tempTile.transform.SetParent(GameBoard);
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
                 tempTile.standingOn(standing);
-            }else if(replaced.type == "Boulder")
+                if (standing != null)
+                    standing.setCurrentTile(tempTile);
+                
+            }
+            else if(replaced.getCurrentOpal() != null && replaced.getCurrentOpal().getMyName() == "Boulder")
             {
+                standing.takeDamage(standing.getHealth(), false, false);
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
-                TileScript tempTile = Instantiate<TileScript>(tilePrefab);
+                tempTile = Instantiate<TileScript>(tilePrefab);
                 tempTile.transform.SetParent(GameBoard);
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
                 tempTile.standingOn(standing);
+                if (standing != null)
+                    standing.setCurrentTile(tempTile);
             }
         }
         else if (type.Equals("Boulder"))
         {
             if(replaced.currentPlayer != null)
             {
-                return;
+                return null;
             }
             if (replaced.type != "Flood" || over)
             {
-                replaced.standingOn(null);
-                replaced.setCoordinates(-100, -100);
-                TileScript tempTile = Instantiate<TileScript>(boulderTilePrefab);
-                tempTile.transform.SetParent(GameBoard);
-                tempTile.setCoordinates(x, y);
-                tileGrid[x, y] = tempTile;
-                tempTile.standingOn(standing);
+                placeBoulder(tileGrid[x, y], myCursor.getCurrentOpal());
+                
             }
             else if (replaced.type == "Flood")
             {
                 replaced.standingOn(null);
                 replaced.setCoordinates(-100, -100);
-                TileScript tempTile = Instantiate<TileScript>(tilePrefab);
+                tempTile = Instantiate<TileScript>(tilePrefab);
                 tempTile.transform.SetParent(GameBoard);
                 tempTile.setCoordinates(x, y);
                 tileGrid[x, y] = tempTile;
                 tempTile.standingOn(standing);
             }
         }
-        else if (type == "Spore")
+        if(tileGrid[x,y].type == "Flood" || wasFlood)
         {
-            if (replaced.type != "Fire" && replaced.type != "Growth" && replaced.type != "Boulder" && replaced.type != "Flood" || over)
+            
+            List<TileScript> output = new List<TileScript>();
+            TileScript temp = tileGrid[x, y];
+            temp.determineShape();
+            bool adj = false;
+            for (int i = -1; i < 2; i++)
             {
-                replaced.standingOn(null);
-                replaced.setCoordinates(-100, -100);
-                TileScript tempTile = Instantiate<TileScript>(sporeTilePrefab);
-                tempTile.transform.SetParent(GameBoard);
-                tempTile.setCoordinates(x, y);
-                tileGrid[x, y] = tempTile;
-                tempTile.standingOn(standing);
+                for (int j = -1; j < 2; j++)
+                {
+                    if (temp.getPos().x + i < 10 && temp.getPos().x + i > -1 && temp.getPos().z + j < 10 && temp.getPos().z + j > -1 && !(i == 0 && j == 0) && (!adj || (Mathf.Abs(i) != Mathf.Abs(j))))
+                    {
+                        output.Add(tileGrid[(int)temp.getPos().x + i, (int)temp.getPos().z + j]);
+                        if(tileGrid[(int)temp.getPos().x + i, (int)temp.getPos().z + j].type == "Flood")
+                            tileGrid[(int)temp.getPos().x + i, (int)temp.getPos().z + j].determineShape();
+                    }
+                }
+            }
+        }
+
+        if (!noUpdate)
+        {
+            if (tempTile != null)
+            {
+                tempTile.updateConnection();
+                tempTile.setRandomDecor();
+                foreach (TileScript t in tempTile.getSurroundingTiles(false))
+                {
+                    t.updateConnection();
+                }
+            }
+        }
+
+        foreach (string c in tileCharm)
+        {
+            if(c != "" && c != "None" && tileGrid[x,y] != replaced)
+                tileGrid[x, y].addCharm(c);
+        }
+        return tileGrid[x, y];
+    }
+
+    private string getTextureName(string tile)
+    {
+        string output = "";
+        switch (tile)
+        {
+            case "Fire":
+                output = "ScorchedGrass";
+                break;
+            case "Flood":
+                output = "Puddled";
+                break;
+            case "Growth":
+                output = "DeadGrass";
+                break;
+            case "Miasma":
+                output = "PoisonScar";
+                break;
+        }
+        return output;
+    }
+
+    public bool isValidTile(int x, int y)
+    {
+        if (x < 10 && x > -1 && y < 10 && y > -1)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public void setTiles(TileScript start, int dist, string type)
+    {
+        setTile(start, type, false);
+        for(int i = -dist+1; i < dist; i++)
+        {
+            for(int j = -dist+1; j < dist; j++)
+            {
+                if (isValidTile(i + (int)start.getPos().x, j + (int)start.getPos().z))
+                {
+                    setTile(tileGrid[i + (int)start.getPos().x, j + (int)start.getPos().z], type, false);
+                }
             }
         }
     }
+
+    public void setTilesRound(TileScript start, int dist, string type)
+    {
+        TileScript tileCatch = setTile(start, type, false);
+        if (start.getPos().x == -100)
+            start = tileCatch;
+        int x = (int)start.getPos().x;
+        int y = (int)start.getPos().z;
+        for (int i = -dist + 1; i < dist; i++)
+        {
+            for (int j = -dist + 1; j < dist; j++)
+            {
+                if (Mathf.Abs(i) + Mathf.Abs(j) < dist)
+                {
+                    if (isValidTile(i + x, j + y))
+                    {
+                        setTile(tileGrid[i + x, j + y], type, false);
+                    }
+                }
+            }
+        }
+    }
+
+    public void fireProjectile(OpalScript from, OpalScript to, int attackNum)
+    {
+        myCursor.doAttack((int)to.getPos().x, (int)to.getPos().z, attackNum, from);
+    }
+
 
     public void protSetTrap(float x, float y, string traptype)
     {
@@ -784,6 +1049,23 @@ public class GroundScript : MonoBehaviour {
         }
     }
 
+    public List<TileScript> getSurroundingTiles(TileScript tile, bool adj)
+    {
+        List<TileScript> output = new List<TileScript>();
+        for (int i = -1; i < 2; i++)
+        {
+            for (int j = -1; j < 2; j++)
+            {
+                if (tile.getPos().x + i < 10 && tile.getPos().x + i > -1 && tile.getPos().z + j < 10 && tile.getPos().z + j > -1 && !(i == 0 && j == 0) && (!adj || (Mathf.Abs(i) != Mathf.Abs(j))))
+                {
+                    //print((int)getPos().x + i + ", " + ((int)getPos().z + j));
+                    output.Add(tileGrid[(int)tile.getPos().x + i, (int)tile.getPos().z + j]);
+                }
+            }
+        }
+        return output;
+    }
+
     public string getCurrentController(string player)
     {
         if (player == "Red")
@@ -803,71 +1085,146 @@ public class GroundScript : MonoBehaviour {
         return null;
     }
 
-    public void updateTurnOrder(int currentTurn)
+    public string setCurrentController(string controller, string player)
     {
-        float i = 0;
-        if (currentTurn == 0)
+        if (player == "Red")
         {
-            if(opalTurns.Count > 0 && opalTurns[opalTurns.Count - 1] != null)
-                DestroyImmediate(opalTurns[opalTurns.Count-1].gameObject);
-            opalTurns.Clear();
-            foreach (OpalScript o in gameOpals)
+            redController = controller;
+        }
+        else if (player == "Blue")
+        {
+            blueController = controller;
+        }
+        else if (player == "Green")
+        {
+            greenController = controller;
+        }
+        else if (player == "Orange")
+        {
+            orangeController = controller;
+        }
+        return null;
+    }
+
+    public void updateTurnOrder(int currentTurn, List<int> aM)
+    {
+        if (aM != null)
+        {
+            alreadyMoved = aM;
+        } 
+        float i = 0;
+        foreach(OpalScript o in opalTurns)
+        {
+            DestroyImmediate(o.gameObject);
+        }
+        opalTurns.Clear();
+        sortOpals(gameOpals);
+        if(myCursor.getCurrentOpal() != null)
+        {
+            int num = 0;
+            foreach(OpalScript o in gameOpals)
             {
-                if (!o.getDead())
+                if(o.getID() == myCursor.getCurrentOpal().getID())
                 {
-                    OpalScript temp = Instantiate<OpalScript>(o);
-                    opalTurns.Add(temp);
-                    temp.healStatusEffects();
-                    temp.transform.position = new Vector3(14, 10 - i, 8);
-                    if(o.getTeam() == "Red")
-                    {
-                        GameObject pl = Instantiate<GameObject>(redPlate, temp.transform);
-                        pl.transform.localScale = new Vector3(pl.transform.localScale.x / temp.transform.localScale.x, pl.transform.localScale.y / temp.transform.localScale.y, pl.transform.localScale.z / temp.transform.localScale.z);
-                        pl.transform.position = new Vector3(pl.transform.position.x, pl.transform.position.y - 0.00001f, pl.transform.position.z);
-                    }
-                    else if(o.getTeam() == "Blue")
-                    {
-                        GameObject pl = Instantiate<GameObject>(bluePlate, temp.transform);
-                        pl.transform.localScale = new Vector3(pl.transform.localScale.x / temp.transform.localScale.x, pl.transform.localScale.y / temp.transform.localScale.y, pl.transform.localScale.z / temp.transform.localScale.z);
-                        pl.transform.position = new Vector3(pl.transform.position.x, pl.transform.position.y - 0.00001f, pl.transform.position.z);
-                    }
-                    else if (o.getTeam() == "Green")
-                    {
-                        GameObject pl = Instantiate<GameObject>(greenPlate, temp.transform);
-                        pl.transform.localScale = new Vector3(pl.transform.localScale.x / temp.transform.localScale.x, pl.transform.localScale.y / temp.transform.localScale.y, pl.transform.localScale.z / temp.transform.localScale.z);
-                        pl.transform.position = new Vector3(pl.transform.position.x, pl.transform.position.y - 0.00001f, pl.transform.position.z);
-                    }
-                    else if (o.getTeam() == "Orange")
-                    {
-                        GameObject pl = Instantiate<GameObject>(orangePlate, temp.transform);
-                        pl.transform.localScale = new Vector3(pl.transform.localScale.x / temp.transform.localScale.x, pl.transform.localScale.y / temp.transform.localScale.y, pl.transform.localScale.z / temp.transform.localScale.z);
-                        pl.transform.position = new Vector3(pl.transform.position.x, pl.transform.position.y - 0.00001f, pl.transform.position.z);
-                    }
-                    i += 1.8f;
+                    break;
+                }
+                num++;
+            }
+            gameOpals.RemoveAt(num);
+            gameOpals.Insert(0,myCursor.getCurrentOpal());
+        }
+        int indent = 0;
+        foreach (OpalScript o in gameOpals)
+        {
+            if (i / 150f > 5)
+                break;
+            if (gameWon)
+                return;
+            if (!o.getDead() && !alreadyMoved.Contains(o.getID())) 
+            {
+                OpalScript temp = Instantiate<OpalScript>(o.getMyModel(), myCanvas.transform.Find("TurnOrder").transform);
+                temp.setOpal(o.getTeam());
+                temp.setDisplayOpal();
+                opalTurns.Add(temp);
+                temp.healStatusEffects();
+                temp.doHighlight();
+                if (indent == 0)
+                {
+                    temp.transform.localPosition = new Vector3(862.5f, 442.5f - i * 0.96f, 0);
+                    indent++;
                 }
                 else
                 {
-                    OpalScript temp = Instantiate<OpalScript>(o);
-                    temp.setDead();
-                    
-                    opalTurns.Add(temp);
-                    temp.transform.position = new Vector3(-100, -100, -100);
+                    temp.transform.localPosition = new Vector3(878, 283 - (i-150f) * 0.96f, 0);
                 }
-            }
-        } else
-        {
-            if (opalTurns.Count > 0 && opalTurns[opalTurns.Count - 1] != null && opalTurns[currentTurn - 1] != null && opalTurns[currentTurn - 1].gameObject)
-                DestroyImmediate(opalTurns[currentTurn - 1].gameObject);
-            foreach(OpalScript o in opalTurns)
-            {
-                if (o != null && !o.getDead())
+                temp.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
+                temp.transform.localScale = o.transform.localScale * 170f;
+                //temp.transform.localScale = new Vector3(100*temp.transform.localScale.x, 100 * temp.transform.localScale.y, 1);
+                GameObject pl = Instantiate<GameObject>(opalPlate2, temp.transform);
+                pl.transform.position = new Vector3(pl.transform.position.x, pl.transform.position.y - 0.00001f, pl.transform.position.z);
+                if (o.getTeam() == "Red")
                 {
-                    o.transform.position = new Vector3(14, 10 - i, 8);
-                    o.healStatusEffects();
-                    i += 1.8f;
+                    pl.GetComponent<SpriteRenderer>().color = new Color(1, 0.2f, 0.2f);
+
                 }
+                else if(o.getTeam() == "Blue")
+                {
+                    pl.GetComponent<SpriteRenderer>().color = new Color(0.2f, 0.2f, 1); 
+                }
+                else if (o.getTeam() == "Green")
+                {
+                    pl.GetComponent<SpriteRenderer>().color = new Color(0.2f, 1, 0.2f); 
+                }
+                else
+                {
+                    pl.GetComponent<SpriteRenderer>().color = new Color(1, 0.4f, 0f);
+                }
+                pl.transform.localScale /= temp.transform.lossyScale.x;
+                pl.transform.localScale *= 5f;
+                pl.AddComponent<TurnHighlighter>();
+                pl.AddComponent<BoxCollider>();
+                pl.GetComponent<TurnHighlighter>().setUp(this, o.getID());
+                i += 150f;
             }
         }
+    }
+
+    public List<int> getAlreadyMoved()
+    {
+        return alreadyMoved;
+    }
+
+    public void updateTurnOrder(int currentTurn)
+    {
+        updateTurnOrder(currentTurn, null);
+    }
+
+    public void highlightOpal(int id, bool highlight)
+    {
+        foreach(OpalScript o in gameOpals)
+        {
+            if(o.getID() == id)
+            {
+                o.showSpot(highlight);
+                return;
+            }
+        }
+    }
+
+    public void updateCurrent(int id)
+    {
+
+        myCursor.updateCurrent(id);
+    }
+
+    public void updateCurrent()
+    {
+        myCursor.updateCurrent();
+    }
+
+    public void updateCurrentActually()
+    {
+        myCursor.updateCurrentActually();
     }
 
     public void doWet(int x, int y, bool wet)
@@ -887,20 +1244,339 @@ public class GroundScript : MonoBehaviour {
         }
     }
 
-    public void setChargeDisplay(int num)
+    public bool checkForBarriarray()
     {
-        foreach(GameObject g in charges)
-        {
-            DestroyImmediate(g);
+        if (isBarriarray == -1)
+        { 
+            foreach(OpalScript o in gameOpals)
+            {
+                if (o.getMyName() == "Barriarray")
+                {
+                    isBarriarray = 1;
+                    return true;
+                }
+                else
+                {
+                    isBarriarray = 0;
+                    return false;
+                }
+            }
         }
-        charges.Clear();
-        for(int i = 0; i < num; i++)
+        else if (isBarriarray == 1)
         {
-            GameObject tempCharge = Instantiate<GameObject>(chargeLightning);
-            tempCharge.transform.position = new Vector3(6.5f + 0.1f * i, 4.5f, -7.8f + 0.1f * i);
-            tempCharge.transform.eulerAngles = new Vector3(35, -45, 0);
-            tempCharge.transform.localScale = new Vector3(0.1111f, 0.1111f, 0.11111f);
-            charges.Add(tempCharge);
-        } //6.5,-7.8 ---> 7.501, -6.799
+            return true;
+        }
+        return false;
+    }
+
+    public void placeBoulder(int x, int y, OpalScript placed)
+    {
+        if (x < 0 || x > 9 || y < 0 || y > 9)
+        {
+            return;
+        }
+        placeBoulder(tileGrid[x, y], placed);
+    }
+
+    public void placeBoulder(TileScript target, OpalScript placed)
+    {
+        if (target.currentPlayer != null || target.getFallen())
+            return;
+        if(target.type == "Flood")
+        {
+            setTile(target, "Grass", true);
+            return;
+        }
+        OpalScript b = boulder;
+        if (Random.Range(0,2)==0)
+        {
+            b = boulder2;
+        }
+        OpalScript opalTwo = Instantiate<OpalScript>(b);
+        opalTwo.setOpal(myCursor.getCurrentOpal().getTeam());
+        opalTwo.setPos((int)target.getPos().x, (int)target.getPos().z);
+        if (myCursor.getCurrentOpal().myBoulders != null)
+        {
+            opalTwo.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+            opalTwo.GetComponent<SpriteRenderer>().enabled = true;
+            opalTwo.GetComponent<SpriteRenderer>().sprite = placed.myBoulders;
+            opalTwo.transform.localScale = new Vector3(3, 3, 1);
+        }
+        //opalTwo.transform.localPosition = new Vector3(opalTwo.transform.localPosition.x + 0.3f, opalTwo.transform.localPosition.y - 0.1f, opalTwo.transform.localPosition.z - 0.3f);
+        opalTwo.setCurrentTile(target);
+        target.standingOn(opalTwo);
+        allBoulders.Add(opalTwo);
+    }
+
+    public void clearGhosts(int x, int y)
+    {
+        if (x > -1 && x < 10 && y >-1 && y < 10)
+        myCursor.clearGhosts(tileGrid[x,y]);
+    }
+
+    public void refundMovement(int i)
+    {
+        myCursor.setDistance(i);
+    }
+
+    public void nextTurn()
+    {
+        myCursor.nextTurn();
+    }
+
+    public OpalScript getCurrentOpal()
+    {
+        return myCursor.getCurrentOpal();
+    }
+
+    public string getTileType(int x, int z)
+    {
+        if(x >= 0 && x <= 9 && z >= 0 && z <= 9)
+        {
+            return tileGrid[x, z].type;
+        }
+        return null;
+    }
+
+    public int getNextID()
+    {
+        int i = 0;
+        foreach(OpalScript o in gameOpals)
+        {
+            if(o.getID() != -1)
+            {
+                i++;
+            }
+        }
+        return i;
+    }
+
+    public OpalScript getOpalByID(int id)
+    {
+        foreach(OpalScript o in gameOpals)
+        {
+            if(o.getID() == id)
+            {
+                return o;
+            }
+        }
+        return null;
+    }
+
+    public OpalScript getBoulderByID(int id)
+    {
+        foreach (OpalScript o in allBoulders)
+        {
+            if (o.getID() == id)
+            {
+                return o;
+            }
+        }
+        return null;
+    }
+
+    public string isVocabWord(string word)
+    {
+        string strippedWord = "";
+        foreach (char c in word) {
+            if(c != '.' && c != ',')
+            {
+                strippedWord += c;
+            }
+        }
+        strippedWord = strippedWord.ToLower();
+        return vocab.getDefinition(strippedWord);
+    }
+
+    public void setRed(int x, int z, bool red)
+    {
+        //print(myCursor.getMoving());
+        if(x < 10 && x > -1 && z < 10 && z > -1)
+            tileGrid[x, z].setRed(red, myCursor.getMoving());
+    }
+
+    public IEnumerator screenShake(int intensity, int length)
+    {
+        Camera target = Camera.main;
+        target.transform.localPosition = new Vector3(6, 0, -7);
+
+        intensity = 6;
+
+        bool up = false;
+        for (int i = 0; i < length/2 * 2; i++)
+        {
+            if (up) {
+                target.transform.position += Vector3.up * intensity * Time.deltaTime;
+                target.transform.position += Vector3.right * intensity * Time.deltaTime;
+            }
+            else {
+                target.transform.position -= Vector3.up * intensity * Time.deltaTime;
+                target.transform.position -= Vector3.right * intensity * Time.deltaTime;
+            }
+
+            if(i % 2 == 0)
+            {
+                up = !up;
+            }
+            yield return new WaitForFixedUpdate();
+            yield return new WaitForFixedUpdate();
+            yield return new WaitForFixedUpdate();
+        }
+    }
+
+    private void setUpSurroundings()
+    {
+
+    }
+
+    public void saveGame(int input)
+    {
+        string state = "";
+
+        for (int i = 0; i < 10; i++)
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                state += tileGrid[i, j].type+"&";
+            }
+        }
+        state += "^";
+
+        for (int i = 0; i < 10; i++)
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                state += tileGrid[i, j].saveState() + "\n";
+            }
+        }
+
+        state += "^";
+
+        for(int i = 0; i < nonSortedGameOpals.Count; i++)
+        {
+            state += nonSortedGameOpals[i].saveStateSB() + "\n";
+        }
+        state += "^";
+
+        state += myCursor.saveGameState();
+
+        state += "^";
+
+        foreach (OpalScript o in nonSortedGameOpals)
+        {
+            state += o.getID() + "&";
+        }
+
+        state += "^";
+
+        string allBouldersState = "^";
+
+        for (int i = 0; i < allBoulders.Count; i++)
+        {
+            state += allBoulders[i].saveStateSB() + "\n";
+            allBouldersState += allBoulders[i].getID() + '&';
+        }
+
+        state += allBouldersState;
+
+        saveStates[input] = state;
+    }
+
+    public void loadGame(int input)
+    {
+        string[] data;
+        data = saveStates[input].Split('^');
+        string[] tileLayout = data[0].Split('&');
+        string[] tileStates = data[1].Split('\n');
+        string[] opalStates = data[2].Split('\n');
+        string[] allOpals = data[4].Split('&');
+        string[] boulderStates = data[5].Split('\n');
+        string[] allBouldersState = data[6].Split('&');
+
+
+        List<OpalScript> leftOut = new List<OpalScript>();
+        leftOut.AddRange(nonSortedGameOpals);
+        for(int i = 0; i < allOpals.Length; i++)
+        {
+            if(allOpals[i] != "")
+                leftOut.Remove(getOpalByID(int.Parse(allOpals[i])));
+        }
+
+        List<OpalScript> bouldersLeftOut = new List<OpalScript>();
+        bouldersLeftOut.AddRange(allBoulders);
+        for (int i = 0; i < allBouldersState.Length; i++)
+        {
+            if (allBouldersState[i] != "")
+                bouldersLeftOut.Remove(getBoulderByID(int.Parse(allBouldersState[i])));
+        }
+
+
+        if (leftOut.Count > 0)
+        {
+            foreach(OpalScript o in leftOut)
+            {
+                nonSortedGameOpals.Remove(o);
+                gameOpals.Remove(o);
+                if(o.getCurrentTile() != null)
+                    o.getCurrentTile().currentPlayer = null;
+                Destroy(o.gameObject);
+            }
+        }
+
+        if (bouldersLeftOut.Count > 0)
+        {
+            foreach (OpalScript o in bouldersLeftOut)
+            {
+                allBoulders.Remove(o);
+                if (o.getCurrentTile() != null)
+                    o.getCurrentTile().currentPlayer = null;
+                Destroy(o.gameObject);
+            }
+        }
+
+        int k = 0;
+        k = 0;
+        for (int i = 0; i < 10; i++)
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                setTile(tileGrid[i, j], tileLayout[k], true);
+                k++;
+            }
+        }
+
+
+        k = 0;
+        for (int i = 0; i < 10; i++)
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                tileGrid[i, j].loadState(tileStates[k]);
+                k++;
+            }
+        }
+
+
+        for (int i = 0; i < nonSortedGameOpals.Count; i++)
+        {
+            nonSortedGameOpals[i].loadState(opalStates[i]);
+        }
+        for (int i = 0; i < allBoulders.Count; i++)
+        {
+            if (boulderStates.Length == i)
+                break;
+            if(boulderStates[i] != "")
+                allBoulders[i].loadState(boulderStates[i]);
+        }
+
+
+        foreach (TileScript t in tileGrid)
+        {
+            t.updateConnection();
+        }
+
+
+        myCursor.loadGameState(data[3]);
+
     }
 }

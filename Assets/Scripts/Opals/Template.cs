@@ -37,15 +37,15 @@ public class Template : OpalScript
     public override int getAttackEffect(int attackNum, OpalScript target)
     {
         Attack cA = Attacks[attackNum];
-        if (attackNum == 0) 
+        if (attackNum == 0)
         {
             return 0;
         }
-        else if (attackNum == 1) 
+        else if (attackNum == 1)
         {
             return 0;
         }
-        else if (attackNum == 2) 
+        else if (attackNum == 2)
         {
             return 0;
         }
@@ -59,7 +59,7 @@ public class Template : OpalScript
     public override int getAttackEffect(int attackNum, TileScript target)
     {
         Attack cA = Attacks[attackNum];
-        if (attackNum == 0) 
+        if (attackNum == 0)
         {
             return 0;
         }
@@ -67,7 +67,7 @@ public class Template : OpalScript
         {
             return 0;
         }
-        else if (attackNum == 2) 
+        else if (attackNum == 2)
         {
             return 0;
         }

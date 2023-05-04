@@ -17,6 +17,8 @@ public class MainBuilder : MonoBehaviour
     private Vector2 dim = new Vector2();
     private List<List<string>> opalSpawns = new List<List<string>>();
     private int currentSpawn = 0;
+    private Vector3 lastPos;
+    private int lastAction = -1;
     // Start is called before the first frame update
     void Start()
     {
@@ -32,7 +34,11 @@ public class MainBuilder : MonoBehaviour
         }
         tileInst = Instantiate<TileCode>(tiles[currentTile]);
         tileInst.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.8f);
-        tileInst.transform.localScale = new Vector3(0.125f, 0.125f, 1.001f);
+        tileInst.transform.localScale = new Vector3(6.4f, 6.4f, 1.001f);
+        if (tileInst.baseCode == "!")
+        {
+            tileInst.transform.localScale = new Vector3(0.5f, 0.5f, 1.001f);
+        }
         getTileByCode = new Dictionary<string, TileCode>() {
             { "_", null },
             { "F", Resources.Load<TileCode>("Prefabs/WorldTiles/ForestB") },
@@ -43,6 +49,9 @@ public class MainBuilder : MonoBehaviour
             { "W", Resources.Load<TileCode>("Prefabs/WorldTiles/Water")},
             { "S", Resources.Load<TileCode>("Prefabs/WorldTiles/StoneWall") },
             { "C", Resources.Load<TileCode>("Prefabs/WorldTiles/RockyFloor")},
+            { "r", Resources.Load<TileCode>("Prefabs/WorldTiles/FlowerGrassA")},
+            { "R", Resources.Load<TileCode>("Prefabs/WorldTiles/FlowerGrassB")},
+            { "N", Resources.Load<TileCode>("Prefabs/WorldTiles/NPCTile")},
             {"O", Resources.Load<TileCode>("Prefabs/WorldTiles/Ore") } };
     }
 
@@ -51,9 +60,12 @@ public class MainBuilder : MonoBehaviour
     {
         Vector3 mousePos = doMousePos();
         moveMe();
-        tileInst.transform.position = new Vector3(Mathf.Round(mousePos.x), Mathf.Round(mousePos.y), 0);
-        if (Input.GetMouseButtonDown(0))
+        Vector3 roundedPos = new Vector3(Mathf.Round(mousePos.x), Mathf.Round(mousePos.y), 0);
+        tileInst.transform.position = roundedPos;
+        if (Input.GetMouseButton(0) && (roundedPos != lastPos || lastAction != 0))
         {
+            lastPos = roundedPos;
+            lastAction = 0;
             int index = -1;
             for (int i = 0; i < allTiles.Count; i++)
             {
@@ -86,8 +98,10 @@ public class MainBuilder : MonoBehaviour
             }
 
         }
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButton(1) && (roundedPos != lastPos || lastAction != 1))
         {
+            lastPos = roundedPos;
+            lastAction = 1;
             int index = -1;
             for(int i = 0; i < allTiles.Count; i++)
             {
@@ -161,12 +175,12 @@ public class MainBuilder : MonoBehaviour
             rightSpeed *= 2;
             upSpeed *= 2;
         }
-        if (Input.GetKey(KeyCode.Q))
+        if (Input.GetKey(KeyCode.Space))
         {
             Camera.main.orthographicSize++;
 
         }
-        else if (Input.GetKey(KeyCode.E))
+        else if (Input.GetKey(KeyCode.LeftShift))
         {
             if(Camera.main.orthographicSize > 1)
                 Camera.main.orthographicSize--;
@@ -186,7 +200,7 @@ public class MainBuilder : MonoBehaviour
 
     private void manageTile()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.E))
         {
             currentTile++;
             if (currentTile >= tiles.Count)
@@ -196,9 +210,13 @@ public class MainBuilder : MonoBehaviour
             DestroyImmediate(tileInst.gameObject);
             tileInst = Instantiate<TileCode>(tiles[currentTile]);
             tileInst.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.8f);
-            tileInst.transform.localScale = new Vector3(0.125f, 0.125f, 1.001f);
+            tileInst.transform.localScale = new Vector3(6.4f, 6.4f, 1.001f);
+            if (tileInst.baseCode == "!")
+            {
+                tileInst.transform.localScale = new Vector3(0.5f, 0.5f, 1.001f);
+            }
         }
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetKeyDown(KeyCode.Q))
         {
             currentTile--;
             if (currentTile < 0)
@@ -208,7 +226,11 @@ public class MainBuilder : MonoBehaviour
             DestroyImmediate(tileInst.gameObject);
             tileInst = Instantiate<TileCode>(tiles[currentTile]);
             tileInst.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.8f);
-            tileInst.transform.localScale = new Vector3(0.125f, 0.125f, 1.001f);
+            tileInst.transform.localScale = new Vector3(6.4f, 6.4f, 1.001f);
+            if(tileInst.baseCode == "!")
+            {
+                tileInst.transform.localScale = new Vector3(0.5f, 0.5f, 1.001f);
+            }
 
         }
     }
@@ -305,7 +327,7 @@ public class MainBuilder : MonoBehaviour
 
     private void writeMap(string[,] map)
     {
-        string path = "Assets/Resources/Maps/map.txt";
+        string path = "Assets/StreamingAssets/map.txt";
         using (var stream = new FileStream(path, FileMode.Truncate))
         {
             using (var writer = new StreamWriter(stream))
@@ -348,7 +370,7 @@ public class MainBuilder : MonoBehaviour
             allTiles[num] = null;
         }
         cleanAllTiles(false);
-        string path = "Assets/Resources/Maps/map.txt";
+        string path = "Assets/StreamingAssets/map.txt";
         string map = "";
         //Read the text from directly from the test.txt file
         StreamReader reader = new StreamReader(path);
@@ -410,7 +432,7 @@ public class MainBuilder : MonoBehaviour
                             tc.setSpawning(true);
                         }
                         tc.transform.position = new Vector3(j, s.Length - i, 1);
-                        tc.transform.localScale = new Vector3(0.125f, 0.125f, 1.001f);
+                        tc.transform.localScale = new Vector3(6.4f, 6.4f, 1.001f);
                         allTiles.Add(tc);
                         j++;
                     }
@@ -458,14 +480,14 @@ public class MainBuilder : MonoBehaviour
         //check left and right
         if(index != 0)
         {
-            if(allTiles[index - 1].getSecondary() != "__")
+            if(allTiles[index - 1] != null && allTiles[index - 1].getSecondary() != "__")
             {
                 return int.Parse(allTiles[index - 1].getSecondary());
             }
         }
         if(index != allTiles.Count - 1)
         {
-            if (allTiles[index + 1].getSecondary() != "__")
+            if (allTiles[index + 1] != null && allTiles[index + 1].getSecondary() != "__")
             {
                 return int.Parse(allTiles[index + 1].getSecondary());
             }
@@ -495,14 +517,14 @@ public class MainBuilder : MonoBehaviour
     {
         if (index != 0)
         {
-            if (allTiles[index - 1].getCode() == tile.getCode())
+            if (allTiles[index - 1] != null && allTiles[index - 1].getCode() == tile.getCode())
             {
                 addSpawnCode(allTiles[index - 1], index - 1, int.Parse(tile.getSecondary()));
             }
         }
         if (index != allTiles.Count - 1)
         {
-            if (allTiles[index + 1].getCode() == tile.getCode())
+            if (allTiles[index + 1] != null && allTiles[index + 1].getCode() == tile.getCode())
             {
                 addSpawnCode(allTiles[index + 1], index + 1, int.Parse(tile.getSecondary()));
             }

@@ -5,17 +5,21 @@ using UnityEngine;
 public class Experiment42 : OpalScript
 {
     int currentUpgrade = 1;
-    //(10, 0, 0, 3, "Experiment42", 0.7f, 0, 0, 0, "Blue", "Metal", "Plague");
+    public bool isCorpse = false;
+
+    public Sprite deadSprite;
+    private List<Sprite> aliveSprites;
+
     override public void setOpal(string pl)
     {
-        health = 20;
+        health = 15;
         maxHealth = health;
         attack = 3;
         defense = 1;
         speed = 3;
         priority = 2;
         myName = "Experiment42";
-        transform.localScale = new Vector3(0.2f, 0.2f, 1) * 0.7f;
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         offsetX = 0;
         offsetY = 0;
         offsetZ = 0;
@@ -28,13 +32,81 @@ public class Experiment42 : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Upgrade", 1, 1, 6, "<Incremental>\nGain +1 attack and +1 defense. Snappy.");
-        Attacks[1] = new Attack("Optimize", 0, 1, 0, "Gain +2 attack and +3 speed for the next turn, and spawn a miasma under your feet.");
-        Attacks[2] = new Attack("Sick Shot", 2, 4, 3, "Deal 3 damage and poison target. If target is already poisoned, gain +4 attack.");
-        Attacks[3] = new Attack("Influx",1,1,0,"Remove a poison from a target and gain +1 armor.");
+        Attacks[0] = new Attack("Immortal", 0, 0, 0, "<Passive>\nAfter Experiment42 dies it leaves an unbreakable corpse. That corpse can return to being Experiment42.");
+        Attacks[1] = new Attack("Upgrade", 1, 1, 6, "Deal damage, and Experiment42 gains +" + currentUpgrade + " attack and +" + currentUpgrade + " defense.",0,3);
+        Attacks[2] = new Attack("Fortify", 0, 1, 0, "Gain +1 armor, lose -1 speed for 1 turn.",0,3);
+        Attacks[3] = new Attack("Tinker",0,1,0,"Upgrade provides an additional +1 attack and defense permanently. Take 5 damage.",0,3);
         type1 = "Metal";
-        type2 = "Plague";
+        type2 = "Spirit";
         og = true;
+
+        getSpeciesPriorities().AddRange(new List<Behave>{
+            new Behave("Close-Combat", 1, 10), new Behave("Cautious", 1, 1),
+            new Behave("Safety", 0,1) });
+    }
+
+    public void corpse(TileScript target)
+    {
+        health = 1;
+        maxHealth = 10;
+        type2 = "Plague";
+        Attacks[0] = new Attack("Undead", 0, 0, 0, "<Passive>\n Starts damaged. When this reaches full health it will revive itself.");
+        Attacks[1] = new Attack("Impervious", 0, 0, 0, "<Passive>\n This corpse cannot be destroyed until every allied Opal is dead.");
+        Attacks[2] = new Attack("Returning", 0, 1, 0, "Heal 5 health.");
+        Attacks[3] = new Attack("Toxic Byproduct", 0, 1, 0, "Poison Opals on adjacent tiles.");
+
+        clearAllBuffs();
+        speed = 0;
+
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
+
+        pauseAnim = true;
+        pauseFrame = true;
+        GetComponent<SpriteRenderer>().sprite = myBoulders;
+
+        doHighlight();
+        if (boardScript.myCursor.getCurrentOpal() == this)
+            showHighlight();
+
+        isCorpse = true;
+    }
+
+    private void revive(TileScript target)
+    {
+        health = 10;
+        maxHealth = health;
+        type2 = "Spirit";
+        Attacks[0] = new Attack("Immortal", 0, 0, 0, "<Passive>\nAfter Experiment42 dies it leaves an unbreakable corpse. That corpse can return to being Experiment42.");
+        Attacks[1] = new Attack("Upgrade", 1, 1, 8, "Deal damage, and Experiment42 gains +" + currentUpgrade + " attack and +" + currentUpgrade + " defense.");
+        Attacks[2] = new Attack("Fortify", 0, 1, 0, "Gain +1 armor, lose -1 speed for 1 turn.");
+        Attacks[3] = new Attack("Tinker", 0, 1, 0, "Upgrade provides an additional +1 attack and defense permanently. Take 5 damage.");
+
+        clearAllBuffs();
+        speed = 3;
+
+        transform.localScale = new Vector3(3f, 3f, 1) * 1f;
+
+        pauseAnim = false;
+        pauseFrame = false;
+
+        doHighlight();
+        if (boardScript.myCursor.getCurrentOpal() == this)
+            showHighlight();
+
+        isCorpse = false;
+    }
+
+    public override void onDeathTile(TileScript t)
+    {
+        corpse(t);
+    }
+
+    public override void onHeal(int amount)
+    {
+        if(health + amount >= maxHealth && isCorpse && currentTile != null)
+        {
+            revive(currentTile);
+        }
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -42,35 +114,41 @@ public class Experiment42 : OpalScript
         Attack cA = Attacks[attackNum];
         if (attackNum == 0) //Upgrade
         {
-            doTempBuff(0, -1, currentUpgrade);
-            doTempBuff(1, -1, currentUpgrade);
-            currentUpgrade++;
-            Attacks[0] = new Attack("Upgrade", 1, 1, 6, "<Incremental>\nGain +"+currentUpgrade+" attack and +"+currentUpgrade+" defense. Snappy.");
-            return cA.getBaseDamage() + getAttack() -(currentUpgrade- 1);
+            return 0;
         }
         else if (attackNum == 1) //Optimize
         {
-            doTempBuff(2, 2, 3);
-            doTempBuff(0, 2, 2);
-            getBoard().setTile((int)getPos().x, (int)getPos().z, "Miasma", false);
-            return cA.getBaseDamage() - getAttack();
+            doTempBuff(0, -1, currentUpgrade);
+            doTempBuff(1, -1, currentUpgrade);
         }
         else if (attackNum == 2) //Sick Shot
         {
-            if (target.getPoison())
+            if (isCorpse)
             {
-                doTempBuff(0, -1, 4);
-                return cA.getBaseDamage() + getAttack() - 4;
+                doHeal(5, false);
+                return 0;
             }
-            target.setPoison(true);
+            addArmor(1);
+            doTempBuff(2, 2, -1);
+            return 0;
         }
         else if (attackNum == 3) //Sick Shot
         {
-            if (target.getPoison())
+            if (isCorpse)
             {
-                target.setPoison(false);
-                addArmor(1);
+                foreach(TileScript t in getSurroundingTiles(true))
+                {
+                    if(t.getCurrentOpal() != null)
+                    {
+                        t.getCurrentOpal().setPoison(true);
+                    }
+                }
+                return 0;
             }
+            currentUpgrade++;
+            takeDamage(5, false, true);
+            Attacks[1] = new Attack("Upgrade", 1, 1, 0, "Deal damage, and Experiment42 gains +" + currentUpgrade + " attack and +" + currentUpgrade + " defense.");
+            return 0;
         }
         return cA.getBaseDamage() + getAttack();
     }
@@ -81,16 +159,78 @@ public class Experiment42 : OpalScript
             return 0;
         if (attackNum == 0)
         {
-            return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+            return 0;
         }
         else if (attackNum == 1)
         {
-            return 0;
+            return Attacks[attackNum].getBaseDamage() + getAttack() + currentUpgrade - target.currentPlayer.getDefense();
         }
         else if (attackNum == 2)
         {
-            return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+            return 0;
+        }
+        else if (attackNum == 3)
+        {
+            return 0;
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+    }
+
+    public override bool getIdealAttack(int atNum, TileScript target)
+    {
+        if (!isCorpse)
+        {
+            if (atNum == 0)
+            {
+                return false;
+            }
+            else if (atNum == 1)
+            {
+                if(targettingEnemy(target))
+                    return true;
+            }
+            else if (atNum == 2)
+            {
+                if(notNearEnemy(target))
+                    return true;
+            }
+            else if (atNum == 3)
+            {
+                if (notNearEnemy(target) && health > 10)
+                    return true;
+            }
+        }
+        else
+        {
+            if (atNum == 0)
+            {
+                return false;
+            }
+            else if (atNum == 1)
+            {
+                return false;
+            }
+            else if (atNum == 2)
+            {
+                return true;
+            }
+            else if (atNum == 3)
+            {
+                int output = 0;
+                foreach (TileScript t in getSurroundingTiles(true))
+                {
+                    if (t.getCurrentOpal() != null)
+                        output++;
+                }
+                if(output >= 2)
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public override int getMaxRange()
+    {
+        return 1;
     }
 }
