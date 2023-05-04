@@ -1142,7 +1142,7 @@ public class GroundScript : MonoBehaviour {
                 return;
             if (!o.getDead() && !alreadyMoved.Contains(o.getID())) 
             {
-                OpalScript temp = Instantiate<OpalScript>(o.getMyModel(), myCanvas.transform);
+                OpalScript temp = Instantiate<OpalScript>(o.getMyModel(), myCanvas.transform.Find("TurnOrder").transform);
                 temp.setOpal(o.getTeam());
                 temp.setDisplayOpal();
                 opalTurns.Add(temp);

@@ -212,15 +212,15 @@ public class TextScript : MonoBehaviour {
         }
         if (displayCurrent == null)
         {
-            displayCurrent = Instantiate<OpalScript>(opal.getMyModel());
+            displayCurrent = Instantiate<OpalScript>(opal.getMyModel(), currentOpalDisplay.transform);
             displayCurrent.setOpal(opal.getTeam());
             displayCurrent.setDetails(opal);
             displayCurrent.setDisplayOpal();
             displayCurrent.doHighlight();
             //displayCurrent.setOpal(null);
-            displayCurrent.transform.position = new Vector3(5.228f, 3.6f, -10.078f);
-            displayCurrent.transform.localRotation = Quaternion.Euler(40, -45, 0);
-            displayCurrent.transform.localScale = opal.transform.localScale*2;
+            displayCurrent.transform.localPosition = new Vector3(0, 0.075f, 0);
+            displayCurrent.transform.localRotation = Quaternion.Euler(0, 0, 0);
+            displayCurrent.transform.localScale = opal.transform.localScale*0.25f;
             displayCurrent.GetComponent<SpriteRenderer>().sortingLayerName = "UI Back";
             //displayCurrent.resetHighlight();
             //displayCurrent.transform.localScale *= 2;
@@ -402,15 +402,15 @@ public class TextScript : MonoBehaviour {
             }
             if (displaySelected == null)
             {
-                displaySelected = Instantiate<OpalScript>(opal.getMyModel());
+                displaySelected = Instantiate<OpalScript>(opal.getMyModel(), selectedOpalDisplay.transform);
                 displaySelected.setOpal(opal.getTeam());
                 displaySelected.setDetails(opal);
                 displaySelected.setDisplayOpal();
                 displaySelected.doHighlight();
                 //displaySelected.setOpal(null);
-                displaySelected.transform.position = new Vector3(15.69f, 3.6f, 0.61f);
-                displaySelected.transform.localRotation = Quaternion.Euler(40, -45, 0);
-                displaySelected.transform.localScale = opal.transform.localScale*2;
+                displaySelected.transform.localPosition = new Vector3(0, 0.075f, 0);
+                displaySelected.transform.localRotation = Quaternion.Euler(0, 0, 0);
+                displaySelected.transform.localScale = opal.transform.localScale*0.25f;
                 
                 displaySelected.GetComponent<SpriteRenderer>().sortingLayerName = "UI Back";
                 //displaySelected.resetHighlight();
