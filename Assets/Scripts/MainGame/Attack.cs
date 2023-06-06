@@ -17,6 +17,7 @@ public class Attack{
     int effectiveRange = 0;
     List<string> tags = new List<string>();
     int attackAnim = 0;
+    bool instant = false;
 
     private List<AbilityProj> proj =  new List<AbilityProj>();
     private ParticleSystem chargeUp;
@@ -178,6 +179,16 @@ public class Attack{
     public void setChargeUp(string particlesystemName, string particleName, Color color, int length)
     {
 
+    }
+
+    public void setInstant(bool inst)
+    {
+        instant = inst;
+    }
+
+    public bool getInstant()
+    {
+        return instant;
     }
 
     public List<AbilityProj> getProj()

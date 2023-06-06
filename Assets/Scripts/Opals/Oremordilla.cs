@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Oremordilla : OpalScript
 {
+    protected bool movingLeft = true;
     override public void setOpal(string pl)
     {
         health = 15;
@@ -26,10 +27,13 @@ public class Oremordilla : OpalScript
         offsetY = -0.1f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Hidey Hole", 0, 1, 0, "Place Boulders on adjacent tiles",0,3);
-        Attacks[1] = new Attack("Balled Thrust", 1, 1, 4, "Take 1 damage. Deal more damage for each Armor on Oremordilla.",0,3);
-        Attacks[2] = new Attack("Roll Up", 0, 1, 0, "Gain +1 Defense and +1 Armor",0,3);
-        Attacks[3] = new Attack("Armor Plating", 0, 1, 0, "Gain +2 defense for each Armor, and lose all Armor.",0,3);
+        Attacks[1] = new Attack("Plan Ahead", 0, 1, 0, "Adjust Tumble to turn right instead of left.",0,3);
+        Attacks[1].setFreeAction(true);
+        Attacks[0] = new Attack("Tumble", 5, 4, 7, "Roll into a target to damage them. After hitting a target, turn to your left and repeat this ability.",0,3);
+        Attacks[0].setInstant(true);
+        Attacks[2] = new Attack("Natural Deposits", 5, 1, 0, "Place 3 Boulders.",0,3);
+        Attacks[2].setUses(3);
+        Attacks[3] = new Attack("Armor Plating", 0, 1, 0, "Gain +2 defense and 1 Armor.",0,3);
         type1 = "Ground";
         type2 = "Metal";
     }
@@ -47,6 +51,7 @@ public class Oremordilla : OpalScript
         }
         else if (attackNum == 2)
         {
+            boardScript.setTile(target, "Boulder", false);
             return 0;
         }
         return cA.getBaseDamage() + getAttack();
@@ -55,29 +60,79 @@ public class Oremordilla : OpalScript
     public override int getAttackEffect(int attackNum, OpalScript target)
     {
         Attack cA = Attacks[attackNum];
-        if (attackNum == 0)
+        if (attackNum == 1)
         {
-            boardScript.setTile((int)transform.position.x + 1, (int)transform.position.z, "Boulder", false);
-            boardScript.setTile((int)transform.position.x - 1, (int)transform.position.z, "Boulder", false);
-            boardScript.setTile((int)transform.position.x, (int)transform.position.z + 1, "Boulder", false);
-            boardScript.setTile((int)transform.position.x, (int)transform.position.z - 1, "Boulder", false);
+            movingLeft = !movingLeft;
+            string str = "right";
+            string str1 = "left";
+            if (movingLeft)
+            {
+                str = "left";
+                str1 = "right";
+            }
+            Attacks[0].setDescription("Roll into a target to damage them. After hitting a target, turn to your "+str+" and repeat this ability");
+            Attacks[1].setDescription("Adjust Tumble to turn "+str1+" instead of " + str);
             return 0;
         }
-        else if (attackNum == 1)
+        else if (attackNum == 0)
         {
-            takeDamage(1 + getDefense(), true, true);
-            return cA.getBaseDamage() + getAttack() + getArmor();
+            string direct = "right";
+            int dist = (int)getPos().x - (int)target.getPos().x;
+            if (dist == 0)
+            {
+                direct = "up";
+                dist = (int)getPos().z - (int)target.getPos().z;
+            }
+            if (dist < 0)
+            {
+                if (direct == "right")
+                {
+                    direct = "left";
+                }
+                else if (direct == "up")
+                {
+                    direct = "down";
+                }
+                dist = Mathf.Abs(dist);
+            }
+            if (direct == "right")
+            {
+                oremordillaIndex = 0;
+                if (!movingLeft)
+                    oremordillaIndex = 1;
+                nudge(10, true, false);
+            }
+            else if (direct == "left")
+            {
+                oremordillaIndex = 0;
+                if (!movingLeft)
+                    oremordillaIndex = 1;
+                nudge(10, true, true);
+            }
+            else if (direct == "up")
+            {
+                oremordillaIndex = 1;
+                if (!movingLeft)
+                    oremordillaIndex = 0;
+                nudge(10, false, false);
+            }
+            else if (direct == "down")
+            {
+                oremordillaIndex = 1;
+                if (!movingLeft)
+                    oremordillaIndex = 0;
+                nudge(10, false, true);
+            }
+            return 0;
         }
         else if (attackNum == 2)
         {
-            addArmor(1);
-            doTempBuff(1, -1, 1);
             return 0;
         }
         else if (attackNum == 3)
         {
-            doTempBuff(1, -1, getArmor()*2);
-            addArmor(-getArmor());
+            doTempBuff(1, -1, 2);
+            addArmor(1);
             return 0;
         }
         return cA.getBaseDamage() + getAttack();
@@ -87,19 +142,31 @@ public class Oremordilla : OpalScript
     {
         if (target.currentPlayer == null)
             return 0;
-        if (attackNum == 0)
+        if (attackNum == 1)
         {
             return 0;
         }
-        else if (attackNum == 1)
+        else if (attackNum == 0)
         {
-            if(getArmor() != 0)
-                return Attacks[attackNum].getBaseDamage() + getAttack() + getArmor()-1;
+            
         }
         else if (attackNum == 2)
         {
             return 0;
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+    }
+
+    public override int checkCanAttack(TileScript target, int attackNum)
+    {
+        if (attackNum == 2)
+        {
+            return 0;
+        }
+        if (target.currentPlayer != null)
+        {
+            return 0;
+        }
+        return -1;
     }
 }

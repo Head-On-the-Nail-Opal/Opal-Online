@@ -1107,7 +1107,7 @@ public class CursorScript : MonoBehaviour {
                         boardScript.getMM().sendMultiplayerData("attack," + currentOnlinePlayer + "," + t.getTile().getPos().x + "," + t.getTile().getPos().z + "," + attacking);
                         lastCommand = "attack," + currentOnlinePlayer + "," + t.getTile().getPos().x + "," + t.getTile().getPos().z + "," + attacking;
                     }
-                    if (!boardScript.getResetting() && !instant)
+                    if (!boardScript.getResetting() && !instant && !selectedPlayer.Attacks[attacking].getInstant())
                     {
                         if (selectedPlayer.Attacks[attacking].getProj() != null)
                             StartCoroutine(selectedPlayer.doAttackAnim(target, this, attacking, projToProjectile(selectedPlayer.Attacks[attacking].getProj())));
@@ -1119,6 +1119,11 @@ public class CursorScript : MonoBehaviour {
                     {
                         selectedPlayer.prepAttack(at);
                         boardScript.tileGrid[(int)myPos.x, (int)myPos.z].currentPlayer.takeDamage(selectedPlayer.getAttackEffect(at, boardScript.tileGrid[(int)myPos.x, (int)myPos.z].currentPlayer), true, false);
+                        if (selectedPlayer.Attacks[attacking].getInstant())
+                        {
+                            destroyDummies();
+                            finishAttack = true;
+                        }
                         return;
                     }
                 }

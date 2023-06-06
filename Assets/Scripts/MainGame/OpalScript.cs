@@ -97,6 +97,7 @@ abstract public class OpalScript : MonoBehaviour {
     private bool waddling = false;
 
     private int succuumTurns = 0;
+    protected int oremordillaIndex = 0;
 
     private Vector3 coordinates = new Vector3();
 
@@ -2157,6 +2158,7 @@ abstract public class OpalScript : MonoBehaviour {
     public IEnumerator nudgeAnim(int dist, bool xorz, bool sign) //true for x, false for z
     {
         int flip = 1;
+        OpalScript hit = null;
         if (!sign)
         {
             flip *= -1;
@@ -2178,9 +2180,44 @@ abstract public class OpalScript : MonoBehaviour {
             {
                 yield return new WaitForFixedUpdate();
             }
+
             if (getPos().x + xVel > -1 && getPos().x + xVel < 10 && getPos().z + zVel > -1 && getPos().z + zVel < 10 && !boardScript.tileGrid[(int)getPos().x + xVel, (int)getPos().z + zVel].getImpassable() && boardScript.tileGrid[(int)getPos().x + xVel, (int)getPos().z + zVel].currentPlayer == null)
                 doMove((int)getPos().x + xVel, (int)getPos().z + zVel, 1);
+            else if (getPos().x + xVel > -1 && getPos().x + xVel < 10 && getPos().z + zVel > -1 && getPos().z + zVel < 10)
+            {
+                hit = boardScript.tileGrid[(int)getPos().x + xVel, (int)getPos().z + zVel].currentPlayer;
+            }
+
+            if(getMyName() == "Oremordilla" && boardScript.getMyCursor().getCurrentOpal().getMyName() == "Oremordilla")
+            {
+                summonNewParticle("Dirt");
+                transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z-40);
+            }
             yield return new WaitForFixedUpdate();
+        }
+        doOremordillaStuff(hit, xorz, sign);
+    }
+
+    public void doOremordillaStuff(OpalScript hit, bool xorz, bool sign)
+    {
+        List<bool> xorzs = new List<bool>() {!xorz, !xorz, !xorz, !xorz};
+        List<bool> signs = new List<bool>() {!sign, sign, !sign, sign };
+
+        if (getMyName() == "Oremordilla" && boardScript.getMyCursor().getCurrentOpal().getMyName() == "Oremordilla")
+        {
+            if (hit != null)
+            {
+                hit.takeDamage(getAttacks()[0].getBaseDamage() + getAttack(), true, true);
+                oremordillaIndex++;
+                if (oremordillaIndex > 3)
+                    oremordillaIndex = 0;
+                StartCoroutine(nudgeAnim(10, xorzs[oremordillaIndex], signs[oremordillaIndex]));
+            }
+            else
+            {
+                oremordillaIndex = 0;
+                transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, 0);
+            }
         }
     }
 
