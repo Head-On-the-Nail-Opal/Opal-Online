@@ -159,7 +159,7 @@ public class Oremordilla : OpalScript
 
     public override int checkCanAttack(TileScript target, int attackNum)
     {
-        if (attackNum == 2)
+        if (attackNum == 2 && target.currentPlayer == null)
         {
             return 0;
         }

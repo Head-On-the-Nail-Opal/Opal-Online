@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Mechalodon : OpalScript
 {
+    private bool submerged = false;
+
     override public void setOpal(string pl)
     {
         health = 30;
@@ -42,6 +44,7 @@ public class Mechalodon : OpalScript
         {
             clearBuffs();
             addArmor(-getArmor());
+            handleSubmerge(false);
         }
     }
 
@@ -65,6 +68,7 @@ public class Mechalodon : OpalScript
                 doTempBuff(0, -1, 1);
                 doTempBuff(2, -1, 1);
             }
+            handleSubmerge(true);
             return 0;
         }
         else if (attackNum == 2) //Gnash
@@ -127,5 +131,23 @@ public class Mechalodon : OpalScript
             return 0;
         }
         return Attacks[attackNum].getBaseDamage() + getAttack() - target.currentPlayer.getDefense();
+    }
+
+    private void handleSubmerge(bool sub)
+    {
+        if(submerged != sub)
+        {
+            submerged = sub;
+            if (submerged)
+            {
+                offsetY = -0.4f;
+                transform.position = new Vector3(transform.position.x, 0.25f + offsetY, transform.position.z);
+            }
+            else
+            {
+                offsetY = 0;
+                transform.position = new Vector3(transform.position.x, 0.5f + offsetY, transform.position.z);
+            }
+        }
     }
 }

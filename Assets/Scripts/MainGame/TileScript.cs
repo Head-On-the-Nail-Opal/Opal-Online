@@ -1003,7 +1003,7 @@ public class TileScript : MonoBehaviour {
                 {
                     if(o.getMyName() == "Mistery")
                     {
-                        target.takeDamage(14,true, true);
+                        target.takeDamage(14,false, true);
                         DestroyImmediate(trapEffect);
                         break;
                     }

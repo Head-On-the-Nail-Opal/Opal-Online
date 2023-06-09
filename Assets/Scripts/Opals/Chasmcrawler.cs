@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class Chasmcrawler : OpalScript
 {
+    private bool rampaging = true;
     override public void setOpal(string pl)
     {
         health = 30;
         maxHealth = health;
-        attack = 5;
+        attack = 4;
         defense = 4;
         speed = 2;
         priority = 0;
@@ -23,12 +24,13 @@ public class Chasmcrawler : OpalScript
             GetComponent<SpriteRenderer>().flipX = false;
         }
         offsetX = 0;
-        offsetY = 0.15f;
+        offsetY = 0f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Sealed Away", 0, 0, 0, "<Passive>\n Chasmcrawler begins the game with two layers of boulders surrounding it.");
-        Attacks[1] = new Attack("Rampage", 3, 4, 4, "Deal damage to up to 5 Opals. Gain +1 attack for each Opal damaged. Cannot break boulders.", 1,3);
-        Attacks[2] = new Attack("Stone Monument", 4, 4, 0, "Place a Boulder. It has +10 defense.",0,3);
+        Attacks[0] = new Attack("Sealed Away", 0, 0, 0, "<Passive>\nChasmcrawler begins the game with two layers of boulders surrounding it.");
+        Attacks[1] = new Attack("Rampage", 1, 1, 1, "<Free Ability>\nTeleport to the opposite side of the target, leaving a Boulder behind where you started. If the opposite Tile is full already, this ability ends for this turn.", 0,3);
+        Attacks[1].setFreeAction(true);
+        Attacks[2] = new Attack("Cave In", 1, 1, 0, "Place Boulders on the Tiles adjacent to the target.",0,3);
         Attacks[3] = new Attack("Frustrated Slumber", 0, 1, 0, "Gain +2 attack. Lose -3 speed for 1 turn.",0,3);
         type1 = "Ground";
         type2 = "Dark";
@@ -46,6 +48,45 @@ public class Chasmcrawler : OpalScript
         }
     }
 
+    public override void onStart()
+    {
+        rampaging = true;
+    }
+
+    private TileScript getOppositeTile(OpalScript target)
+    {
+        int targetX = (int)getPos().x;
+        int targetY = (int)getPos().z;
+        if(getPos().x < target.getPos().x)
+        {
+            targetX = (int)target.getPos().x + 1;
+        }else if(getPos().x > target.getPos().x)
+        {
+            targetX = (int)target.getPos().x - 1;
+        }
+        else if (getPos().z < target.getPos().z)
+        {
+            targetY = (int)target.getPos().z + 1;
+        }
+        else if (getPos().z > target.getPos().z)
+        {
+            targetY = (int)target.getPos().z - 1;
+        }
+        return checkTile(targetX, targetY);
+    }
+
+    private TileScript checkTile(int x, int y)
+    {
+        if(x > -1 && x < 10 && y > -1 && y < 10 && !boardScript.tileGrid[x, y].getImpassable())
+        {
+            return boardScript.tileGrid[x, y];
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     public override int getAttackEffect(int attackNum, OpalScript target)
     {
         Attack cA = Attacks[attackNum];
@@ -56,15 +97,27 @@ public class Chasmcrawler : OpalScript
         }
         else if (attackNum == 1) //Seed Launch
         {
-            if (target != this && target.getMyName() != "Boulder")
+            if (rampaging)
             {
-                doTempBuff(0, -1, 1);
-                target.takeDamage(5 + getAttack(), true, true);
+                TileScript pastTile = currentTile;
+                TileScript nextTile = getOppositeTile(target);
+                if (nextTile != null)
+                {
+                    doMove((int)nextTile.getPos().x, (int)nextTile.getPos().z, 0);
+                    boardScript.setTile(pastTile, "Boulder", false);
+                }
+                else
+                {
+                    rampaging = false;
+                }
             }
-            return 0;
         }
         else if (attackNum == 2) //Grass Cover
         {
+            foreach(TileScript t in target.getSurroundingTiles(true))
+            {
+                boardScript.setTile(t, "Boulder", false);
+            }
             return 0;
         }else if (attackNum == 3)
         {
@@ -89,11 +142,6 @@ public class Chasmcrawler : OpalScript
         }
         else if (attackNum == 2) //Grass Cover
         {
-            TileScript t = boardScript.setTile(target, "Boulder", false);
-            if(t.currentPlayer != null && t.currentPlayer.getMyName() == "Boulder")
-            {
-                t.currentPlayer.doTempBuff(1,-1,10);
-            }
             return 0;
         }
         return cA.getBaseDamage() + getAttack();
@@ -109,7 +157,7 @@ public class Chasmcrawler : OpalScript
         }
         else if (attackNum == 1)
         {
-            return 5 + getAttack() - target.currentPlayer.getDefense();
+            
         }
         else if (attackNum == 2)
         {
@@ -123,9 +171,9 @@ public class Chasmcrawler : OpalScript
     }
     public override int checkCanAttack(TileScript target, int attackNum)
     {
-        if (attackNum == 2)
+        if(attackNum == 1 && !rampaging)
         {
-            return 0;
+            return -1;
         }
         if (target.currentPlayer != null)
         {

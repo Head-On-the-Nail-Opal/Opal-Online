@@ -1293,9 +1293,14 @@ public class GroundScript : MonoBehaviour {
             b = boulder2;
         }
         OpalScript opalTwo = Instantiate<OpalScript>(b);
-        opalTwo.setOpal(myCursor.getCurrentOpal().getTeam());
+        OpalScript placer = myCursor.getCurrentOpal();
+        if(placed != null)
+        {
+            placer = placed;
+        }
+        opalTwo.setOpal(placer.getTeam());
         opalTwo.setPos((int)target.getPos().x, (int)target.getPos().z);
-        if (myCursor.getCurrentOpal().myBoulders != null)
+        if (placer.myBoulders != null)
         {
             opalTwo.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
             opalTwo.GetComponent<SpriteRenderer>().enabled = true;
@@ -1399,7 +1404,6 @@ public class GroundScript : MonoBehaviour {
     {
         Camera target = Camera.main;
         target.transform.localPosition = new Vector3(6, 0, -7);
-
         intensity = 6;
 
         bool up = false;

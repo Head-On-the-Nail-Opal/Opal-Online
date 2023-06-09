@@ -26,11 +26,11 @@ public class Shineode : OpalScript
         offsetY = 0f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Shatter Geode", 3, 1, 0, "Destroy a boulder. Deal damage based on its defense to adjacent Opals.",0,3);
-        Attacks[1] = new Attack("Rock Drop", 4, 1, 0, "Place 3 boulders. They share your defense value.",0,3);
-        Attacks[1].setUses(3);
-        Attacks[2] = new Attack("Mineral Health", 2, 1, 0, "Heal a target by 5. If they're next to a boulder overheal.",0,3);
-        Attacks[3] = new Attack("Rocky Fortitude", 0, 1, 0, "Surrounding Opals and boulders, and Shineode, gain +2 defense.",0,3);
+        Attacks[0] = new Attack("Crystal Healing", 3, 1, 0, "Destroy a Boulder, overheal Opals adjacent to Shineode by that Boulder's defense.",0,3);
+        Attacks[1] = new Attack("Flash Shatter", 2, 1, 8, "Destroy a Boulder, and deal damage to all adjacent Opals. If a Boulder is destroyed by this ability, it also deals damage to all adjacent Opals.",0,3);
+        Attacks[2] = new Attack("Geode Drop", 5, 1, 0, "Place two Boulders, they share your defense.",0,3);
+        Attacks[2].setUses(2);
+        Attacks[3] = new Attack("Rocky Fortitude", 1, 1, 0, "Gain +2 defense. Give an adjacent Opal +2 defense.",0,3);
         type1 = "Ground";
         type2 = "Light";
     }
@@ -42,12 +42,12 @@ public class Shineode : OpalScript
         {
             if(target.getMyName() == "Boulder")
             {
-                int dam = target.getDefense();
-                foreach(TileScript t in target.getSurroundingTiles(true))
+                int heal = target.getDefense();
+                foreach(TileScript t in getSurroundingTiles(true))
                 {
                     if(t.currentPlayer != null && t.currentPlayer.getMyName() != "Boulder")
                     {
-                        t.currentPlayer.takeDamage(dam, true, true);
+                        t.currentPlayer.doHeal(heal, true);
                     }
                 }
                 target.takeDamage(target.getHealth(), false, false);
@@ -56,6 +56,12 @@ public class Shineode : OpalScript
         }
         else if (attackNum == 1)
         {
+            if (target.getMyName() == "Boulder")
+            {
+                StartCoroutine(shatter(cA.getBaseDamage() + getAttack(), target));
+                target.summonNewParticle("Shatter");
+                target.takeDamage(cA.getBaseDamage() + getAttack(), true, false);
+            }
             return 0;
         }
         else if (attackNum == 2)
@@ -74,11 +80,7 @@ public class Shineode : OpalScript
         else if (attackNum == 3)
         {
             doTempBuff(1, -1, 2);
-            foreach(TileScript t in getSurroundingTiles(false))
-            {
-                if (t.currentPlayer != null)
-                    t.currentPlayer.doTempBuff(1, -1, 2);
-            }
+            target.doTempBuff(1, -1, 2);
             return 0;
         }
         return cA.getBaseDamage() + getAttack();
@@ -93,15 +95,16 @@ public class Shineode : OpalScript
         }
         else if (attackNum == 1)
         {
+            
+            return 0;
+        }
+        else if (attackNum == 2)
+        {
             TileScript t = boardScript.setTile(target, "Boulder", false);
             if (t.currentPlayer != null && t.currentPlayer.getMyName() == "Boulder")
             {
                 t.currentPlayer.doTempBuff(1, -1, getDefense());
             }
-            return 0;
-        }
-        else if (attackNum == 2)
-        {
             return 0;
         }
         else if (attackNum == 3)
@@ -111,21 +114,52 @@ public class Shineode : OpalScript
         return cA.getBaseDamage() + getAttack();
     }
 
+    private IEnumerator shatter(int damage, OpalScript target)
+    {
+        boardScript.myCursor.setAnimating(true);
+        if (target != null && !target.getDead())
+        {
+            foreach(TileScript t in target.getSurroundingTiles(true))
+            {
+                if(t.getCurrentOpal() != null)
+                {
+                    if(t.getCurrentOpal().getMyName() == "Boulder")
+                    {
+                        for (int i = 0; i < 8; i++)
+                        {
+                            yield return new WaitForFixedUpdate();
+                        }
+                       
+                        StartCoroutine(shatter(damage, t.getCurrentOpal()));
+                        if (t.getCurrentOpal() != null)
+                        {
+                            t.getCurrentOpal().summonNewParticle("Shatter");
+                            t.getCurrentOpal().takeDamage(damage, true, false);
+                        }
+                    }
+                    else
+                    {
+                        t.getCurrentOpal().summonNewParticle("Shatter");
+                        t.getCurrentOpal().takeDamage(damage, true, true);
+                    }
+                }
+            }
+        }
+        boardScript.myCursor.setAnimating(false);
+    }
+
+
     public override int getAttackDamage(int attackNum, TileScript target)
     {
         if (target.currentPlayer == null)
             return 0;
         if (attackNum == 0)
         {
-            if(target.getCurrentOpal() != null && target.getCurrentOpal().getMyName() == "Boulder")
-            {
-                return target.getCurrentOpal().getDefense();
-            }
             return 0;
         }
         else if (attackNum == 1)
         {
-            return 0;
+            
         }
         else if (attackNum == 2)
         {
@@ -143,10 +177,13 @@ public class Shineode : OpalScript
         if(attackNum == 0 && target.getCurrentOpal() != null && target.getCurrentOpal().getMyName() == "Boulder")
         {
             return 1;
-        }else if(attackNum == 1 && target.getCurrentOpal() == null)
+        }else if(attackNum == 1 && target.getCurrentOpal() != null && target.getCurrentOpal().getMyName() == "Boulder")
         {
             return 1;
-        }else if(attackNum == 2 || attackNum == 3 && target.getCurrentOpal() != null)
+        }else if(attackNum == 3 && target.getCurrentOpal() != null)
+        {
+            return 1;
+        }else if (attackNum == 2 && target.getCurrentOpal() == null)
         {
             return 1;
         }
