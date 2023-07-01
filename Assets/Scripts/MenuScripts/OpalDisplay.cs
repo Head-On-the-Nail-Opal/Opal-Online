@@ -72,6 +72,7 @@ public class OpalDisplay : MonoBehaviour {
             currentOpal.setPersonality(o.getPersonality());
             currentOpalInstance.setVariant(o.getVariant());
             currentOpalInstance.transform.position = new Vector3(OpalSpot.transform.position.x, OpalSpot.transform.position.y, -3);
+            currentOpalInstance.GetComponent<SpriteRenderer>().sortingOrder = 1;
             currentOpalInstance.transform.localScale *= 6;
             currentOpalInstance.transform.rotation = Quaternion.Euler(0, 0, 0);
             //TargetInfo.transform.position = new Vector3(0, 18, -1);

@@ -15,6 +15,10 @@ public class GlobalScript : MonoBehaviour {
     private List<string> greenOverloads = new List<string>();
     private List<string> orangeOverloads = new List<string>();
 
+    private string redPal = "";
+    private string bluePal = "";
+    private string greenPal = "";
+    private string orangePal = "";
 
     private string blueController;
     private string redController;
@@ -126,6 +130,23 @@ public class GlobalScript : MonoBehaviour {
                 return orangeOverloads;
         }
         return null;
+    }
+
+    public void setPals(string rP, string bP, string gP, string oP)
+    {
+        if(rP != "")
+            redPal = rP;
+        if (bP != "")
+            bluePal = bP;
+        if(gP != "")
+            greenPal = gP;
+        if(oP != "")
+            orangePal = oP;
+    }
+
+    public List<string> getPals()
+    {
+        return new List<string>() { redPal, bluePal, greenPal, orangePal };
     }
 
     public List<OpalScript> getBlueTeam()

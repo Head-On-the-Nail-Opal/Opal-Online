@@ -3129,8 +3129,11 @@ abstract public class OpalScript : MonoBehaviour {
                 boardScript.callParticles("damage", transform.position);
             
         }
-        if(this.health <= 0)
+        boardScript.checkPalZero(this);
+        boardScript.checkPalOne(this);
+        if (this.health <= 0)
         {
+            boardScript.checkPalTwo(this);
             if(haveCharm("Spectre Essence") && !checkRevealed("Spectre Essence"))
             {
                 health = 1;

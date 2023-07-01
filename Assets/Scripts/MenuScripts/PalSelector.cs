@@ -42,6 +42,7 @@ public class PalSelector : MonoBehaviour
 
     public void setPal(Pal p)
     {
+        
         if(myPal != null)
         {
             Destroy(myPal.gameObject);
@@ -51,12 +52,24 @@ public class PalSelector : MonoBehaviour
         }
         if(p != null)
         {
+            //gameObject.SetActive(true);
             myPal = Instantiate<Pal>(p, transform);
+            myPal.gameObject.SetActive(true);
             myPal.transform.localPosition = new Vector3(-0.015f, 0.015f, -1);
             myPal.transform.localScale *= 0.8f;
+            myPal.GetComponent<SpriteRenderer>().sortingOrder = 1;
             if (myParent == null)
                 main.setCurrentPal(p);
         }
+        else
+        {
+            //gameObject.SetActive(false);
+        }
+    }
+
+    public Pal getPal()
+    {
+        return myPal;
     }
 
     private void displayPals(bool show)

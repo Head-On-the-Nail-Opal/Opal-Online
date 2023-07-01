@@ -27,16 +27,23 @@ public class Gritwit : OpalScript
         offsetY = -0.1f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Drop Off", 1, 0, 0, "Lose -1 attack and place a boulder. If your attack is less than one, do nothing instead.",0,3);
-        Attacks[1] = new Attack("Reclaim", 1, 1, 0, "Break a boulder and gain +1 attack.",0,3);
-        Attacks[2] = new Attack("Gather", 0, 1, 0, "If next to Excremite then gain +3 attack",0,3);
-        Attacks[3] = new Attack("Assist", 1, 1, 0, "Give target +1 attack and +3 defense. Lose -1 attack.",0,3);
+        Attacks[0] = new Attack("Crag Advantage", 0, 0, 0, "<Passive>\nGritwit gains +1 defense (for 1 turn) at the start of its turn equal to the amount of Boulders adjacent to it..",0,3);
+        Attacks[1] = new Attack("Pave", 1, 1, 0, "If your attack is greater than 0, place a Boulder and lose -1 attack.",0,3);
+        Attacks[2] = new Attack("Reclaim", 1, 1, 0, "Target a Boulder. Gain +1 attack, and remove that Boulder.",0,3);
+        Attacks[3] = new Attack("Shake It Off", 0, 1, 0, "Gain +1 attack and +1 speed.",0,3);
         type1 = "Ground";
         type2 = "Swarm";
     }
 
-    public override void onDamage(int dam)
+    public override void onStart()
     {
+        foreach(TileScript t in boardScript.getSurroundingTiles(currentTile, true))
+        {
+            if(t.currentPlayer != null && t.currentPlayer.getMyName() == "Boulder")
+            {
+                doTempBuff(1, 1, 1);
+            }
+        }
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -44,9 +51,13 @@ public class Gritwit : OpalScript
         Attack cA = Attacks[attackNum];
         if (attackNum == 0) //Thorns
         {
-
+            return 0;
         }
         else if (attackNum == 1) //Seed Launch
+        {
+            return 0;
+        }
+        else if (attackNum == 2) //Grass Cover
         {
             if (target.getMyName() == "Boulder")
             {
@@ -55,21 +66,10 @@ public class Gritwit : OpalScript
             }
             return 0;
         }
-        else if (attackNum == 2) //Grass Cover
+        else if(attackNum == 3)
         {
-            if((boardScript.tileGrid[(int)getPos().x + 1, (int)getPos().z].currentPlayer != null && boardScript.tileGrid[(int)getPos().x+1,(int)getPos().z].currentPlayer.getMyName() == "Excremite")
-                || (boardScript.tileGrid[(int)getPos().x - 1, (int)getPos().z].currentPlayer != null && boardScript.tileGrid[(int)getPos().x - 1, (int)getPos().z].currentPlayer.getMyName() == "Excremite") ||
-                (boardScript.tileGrid[(int)getPos().x, (int)getPos().z + 1].currentPlayer != null && boardScript.tileGrid[(int)getPos().x, (int)getPos().z + 1].currentPlayer.getMyName() == "Excremite") ||
-                (boardScript.tileGrid[(int)getPos().x, (int)getPos().z - 1].currentPlayer != null && boardScript.tileGrid[(int)getPos().x, (int)getPos().z - 1].currentPlayer.getMyName() == "Excremite"))
-            {
-                doTempBuff(0, -1, 3);
-            }
-            return 0;
-        }else if(attackNum == 3)
-        {
-            target.doTempBuff(0, -1, 1);
-            target.doTempBuff(1, -1, 3);
-            doTempBuff(0, -1, -1);
+            doTempBuff(0, -1, 1);
+            doTempBuff(2, -1, 1);
             return 0;
         }
         return cA.getBaseDamage() + getAttack();
@@ -80,16 +80,15 @@ public class Gritwit : OpalScript
         Attack cA = Attacks[attackNum];
         if (attackNum == 0) //Thorns
         {
-            if (getAttack() > 0)
-            {
-                doTempBuff(0, -1, -1);
-                int tempx = (int)target.getPos().x;
-                int tempz = (int)target.getPos().z;
-                boardScript.setTile((int)target.getPos().x, (int)target.getPos().z, "Boulder", false);
-            }
+            return 0;
         }
         else if (attackNum == 1) //Seed Launch
         {
+            if(getAttack() > 0)
+            {
+                boardScript.setTile(target, "Boulder", false);
+                doTempBuff(0, -1, -1);
+            }
             return 0;
         }
         else if (attackNum == 2) //Grass Cover
@@ -127,21 +126,14 @@ public class Gritwit : OpalScript
     {
         if (attackNum == 0)
         {
-            if (getAttack() > 0)
-                return 0;
-            else
-                return -1;
+            return -1;
         }else if(attackNum == 2)
         {
-            foreach(TileScript t in getSurroundingTiles(true))
-            {
-                if (t.getCurrentOpal() != null && t.getCurrentOpal().getMyName() == "Excremite")
-                    return 0;
-            }
-            return -1;
+            if (target.currentPlayer != null && target.currentPlayer.getMyName() == "Boulder")
+                return 0;
         }else if (attackNum == 1)
         {
-            if (target.getCurrentOpal() != null && target.getCurrentOpal().getMyName() == "Boulder")
+            if (target.getCurrentOpal() == null && getAttack() > 0)
                 return 0;
             return -1;
         }

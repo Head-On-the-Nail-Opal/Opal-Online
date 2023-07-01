@@ -22,8 +22,10 @@ public class GroundScript : MonoBehaviour {
     public List<OpalScript> p2Opals = new List<OpalScript>();
     public List<OpalScript> p3Opals = new List<OpalScript>();
     public List<OpalScript> p4Opals = new List<OpalScript>();
-    public int numTeams;
 
+    private List<Pal> gamePals = new List<Pal>();
+
+    public int numTeams;
     private List<OpalScript> opalTurns = new List<OpalScript>();
 
     private GlobalScript glob;
@@ -73,6 +75,8 @@ public class GroundScript : MonoBehaviour {
     List<OpalScript> tempR = new List<OpalScript>();
     List<OpalScript> tempG = new List<OpalScript>();
     List<OpalScript> tempO = new List<OpalScript>();
+
+
 
     bool setUp = false;
     string myTeam = "";
@@ -159,10 +163,10 @@ public class GroundScript : MonoBehaviour {
         blueController = glob.getBlueController();
         greenController = glob.getGreenController();
         orangeController = glob.getOrangeController();
+        doPalStuff();
         if (!glob.getMult())
         {
             setTheRestUp();
-            
         }
         else
         {
@@ -198,6 +202,45 @@ public class GroundScript : MonoBehaviour {
             blueController = glob.getRedController();
             greenController = glob.getRedController();
             orangeController = glob.getRedController();
+        }
+    }
+
+    private Pal palFromString(string name)
+    {
+        if (name == "")
+            return null;
+        return Instantiate<Pal>(Resources.Load<Pal>("Prefabs/Pals/"+name));
+    }
+
+    private void doPalStuff()
+    {
+        List<string> teams = new List<string>() { "Red", "Blue", "Green", "Orange" };
+        for (int i = 0; i < glob.getNumPlayers(); i++)
+        {
+            string[] palData = glob.getPals()[i].Split('|');
+            gamePals.Add(palFromString(palData[0]));
+            if (gamePals[i] != null)
+            {
+                gamePals[i].setDetails(palData[1], palData[2]);
+                gamePals[i].setMain(this, teams[i]);
+                switch (i)
+                {
+                    case 0:
+                        gamePals[i].setTile(0, 5);
+                        gamePals[i].flip(true);
+                        break;
+                    case 1:
+                        gamePals[i].setTile(9, 5);
+                        break;
+                    case 2:
+                        gamePals[i].setTile(5, 0);
+                        gamePals[i].flip(true);
+                        break;
+                    case 3:
+                        gamePals[i].setTile(5, 9);
+                        break;
+                }
+            }
         }
     }
 
@@ -1582,5 +1625,162 @@ public class GroundScript : MonoBehaviour {
 
         myCursor.loadGameState(data[3]);
 
+    }
+
+    private int teamNameToInt(string teamName)
+    {
+        int teamNum = 0;
+        switch (teamName)
+        {
+            case "Blue":
+                teamNum = 1;
+                break;
+            case "Green":
+                teamNum = 2;
+                break;
+            case "Orange":
+                teamNum = 3;
+                break;
+        }
+        return teamNum;
+    }
+
+    public void checkPalZero(OpalScript damaged)
+    {
+        int teamNum = teamNameToInt(damaged.getTeam());
+        if (gamePals[teamNum] != null)
+        {
+            if (gamePals[teamNum].getCondition() == "0")
+            {
+                foreach (OpalScript o in gameOpals)
+                {
+                    if (o.getTeam() == damaged.getTeam() && o.getHealth() == o.getMaxHealth())
+                        return;
+                }
+                switch (gamePals[teamNum].getEffect())
+                {
+                    case "0":
+                        foreach (OpalScript o in gameOpals)
+                        {
+                            if (!o.getDead() && o != damaged && o.getTeam() == damaged.getTeam())
+                            {
+                                o.doHeal(4, false);
+                                gamePals[teamNum].doDance(o);
+                            }
+                        }
+                        break;
+                    case "1":
+                        foreach (OpalScript o in gameOpals)
+                        {
+                            if (!o.getDead() && o.getTeam() != damaged.getTeam())
+                            {
+                                o.takeDamage(4, false, true);
+                                gamePals[teamNum].doDance(o);
+                            }
+                        }
+                        break;
+                    case "2":
+                        damaged.doTempBuff(0, -1, 4);
+                        gamePals[teamNum].doDance(damaged);
+                        break;
+                }
+                gamePals[teamNum].setSleep();
+
+            }
+        }
+    }
+
+    public void checkPalOne(OpalScript damaged)
+    {
+        int teamNum = teamNameToInt(damaged.getTeam());
+        if (gamePals[teamNum] != null)
+        {
+            if(gamePals[teamNum].getCondition() == "1")
+            {
+                switch (gamePals[teamNum].getEffect()) {
+                    case "0":
+                        foreach(TileScript t in damaged.getSurroundingTiles(true))
+                        {
+                            TileScript newTile = setTile(t, "Fire", false);
+                            gamePals[teamNum].doDance(newTile);
+                        }
+                        break;
+                    case "1":
+                        foreach (TileScript t in damaged.getSurroundingTiles(true))
+                        {
+                            if (t.getCurrentOpal() != null)
+                            {
+                                t.getCurrentOpal().setPoison(true);
+                            }
+                            gamePals[teamNum].doDance(t);
+                        }
+                        break;
+                    case "2":
+                        setTile(damaged, "Growth", false);
+                        damaged.doTempBuff(1, -1, 2);
+                        gamePals[teamNum].doDance(damaged);
+                        break;
+                }
+                gamePals[teamNum].setSleep();
+
+            }
+        }
+    }
+
+    public void checkPalTwo(OpalScript dead)
+    {
+        int teamNum = teamNameToInt(dead.getTeam());
+        if (gamePals[teamNum] != null)
+        {
+            if (gamePals[teamNum].getCondition() == "2")
+            {
+                switch (gamePals[teamNum].getEffect())
+                {
+                    case "0":
+                        foreach(TileScript t in dead.getSurroundingTiles(false))
+                        {
+                            gamePals[teamNum].doDance(t.getCurrentOpal());
+                            if (t.getCurrentOpal() != null)
+                            {
+                                t.getCurrentOpal().takeDamage(8, false, true);
+                            }
+                        }
+                        break;
+                    case "1":
+                        foreach(OpalScript o in gameOpals)
+                        {
+                            if(!o.getDead() && o != dead && o.getTeam() == dead.getTeam())
+                            {
+                                o.doTempBuff(0, 1, 5);
+                                o.doTempBuff(1, 1, 5);
+                                gamePals[teamNum].doDance(o);
+                            }
+                        }
+                        break;
+                    case "2":
+                        float slowest = Mathf.Infinity;
+                        OpalScript slowestOpal = null;
+                        foreach (OpalScript o in gameOpals)
+                        {
+                            if (!o.getDead() && o != dead && o.getTeam() == dead.getTeam())
+                            {
+                                float mySpeed = o.getSpeed() + 0.1f * o.getPriority();
+                                if(mySpeed < slowest)
+                                {
+                                    slowest = mySpeed;
+                                    slowestOpal = o;
+                                }
+                            }
+                        }
+                        if(slowestOpal != null)
+                        {
+                            slowestOpal.doTempBuff(2, 1, 3);
+                            gamePals[teamNum].doDance(slowestOpal);
+                        }
+                        break;
+                }
+                gamePals[teamNum].setSleep();
+            }
+        }
     }
 }

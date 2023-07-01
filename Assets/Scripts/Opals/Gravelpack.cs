@@ -5,7 +5,7 @@ using UnityEngine;
 public class Gravelpack : OpalScript
 {
     private Gritwit dungletPrefab;
-    private int boulderDamage = 0;
+    private int gravelLevel = 0;
 
     public override void onAwake()
     {
@@ -36,39 +36,18 @@ public class Gravelpack : OpalScript
         }
         Attacks[0] = new Attack("Rocky Load", 2, 4, 0, "Summon two Gritwits",0,3);
         Attacks[0].setUses(2);
-        Attacks[1] = new Attack("Winning Path", 4, 1, 0, "Give an Opal +2 attack.",0,3);
-        Attacks[2] = new Attack("Crunchy Bite", 3, 4, 6, "Deal 6 damage for each Boulder on surrounding tiles (0)",0,3);
-        Attacks[3] = new Attack("Rock Carapace", 0, 1, 0, "Surrounding Boulders gain +3 defense.",0,3);
+        Attacks[1] = new Attack("Winning Path", 3, 1, 0, "Break a Boulder, and add a level of Gravel to your pack. (0)",0,3);
+        Attacks[2] = new Attack("Crunchy Bite", 2, 4, 4, "Deal 4 damage for each level of Gravel in your pack. (+0 damage)",0,3);
+        Attacks[3] = new Attack("Rock Carapace", 3, 1, 0, "Place a Boulder with defense equal to your total number of Gravel. Reduce your level of Gravel by -1.",0,3);
         type1 = "Ground";
         type2 = "Swarm";
     }
 
-    public override void onStart()
-    {
-        boulderDamage = 0;
-        List<TileScript> sur = getSurroundingTiles(false);
-        foreach (TileScript t in sur)
-        {
-            if (t.currentPlayer != null && t.currentPlayer.getMyName() == "Boulder")
-            {
-                boulderDamage++;
-            }
-        }
-        Attacks[2] = new Attack("Crunchy Bite", 3, 4, 6, "Deal 6 damage for each Boulder on surrounding tiles ("+boulderDamage+")");
-    }
 
-    public override void onMove(int distanceMoved)
+    private void adjustGravelText()
     {
-        boulderDamage = 0;
-        List<TileScript> sur = getSurroundingTiles(false);
-        foreach (TileScript t in sur)
-        {
-            if (t.currentPlayer != null && t.currentPlayer.getMyName() == "Boulder")
-            {
-                boulderDamage++;
-            }
-        }
-        Attacks[2] = new Attack("Crunchy Bite", 3, 4, 6, "Deal 6 damage for each Boulder on surrounding tiles (" + boulderDamage + ")");
+        Attacks[1].setDescription("Break a Boulder, and add a level of Gravel to your pack. ("+gravelLevel+")");
+        Attacks[2].setDescription("Deal 4 damage for each level of Gravel in your pack. (+"+(gravelLevel*4)+" damage)");
     }
 
     public override int getAttackEffect(int attackNum, OpalScript target)
@@ -80,23 +59,21 @@ public class Gravelpack : OpalScript
         }
         else if (attackNum == 1) //Insight
         {
-            target.doTempBuff(0, -1, 2);
+            if(target.getMyName() == "Boulder")
+            {
+                target.takeDamage(target.getHealth(), false, true);
+                gravelLevel++;
+                adjustGravelText();
+            }
             return 0;
         }
         else if (attackNum == 2) //Spectral Lunge
         {
 
-            return cA.getBaseDamage() * boulderDamage + getAttack();
+            return cA.getBaseDamage() * gravelLevel + getAttack();
         }else if(attackNum == 3)
         {
-            List<TileScript> sur = getSurroundingTiles(false);
-            foreach(TileScript t in sur)
-            {
-                if(t.currentPlayer != null && t.currentPlayer.getMyName() == "Boulder")
-                {
-                    t.currentPlayer.doTempBuff(1, -1, 3);
-                }
-            }
+            
             return 0;
         }
         return cA.getBaseDamage() + getAttack();
@@ -119,11 +96,10 @@ public class Gravelpack : OpalScript
           
         }else if(attackNum == 3)
         {
-            if(target.type == "Boulder")
-            {
-                boardScript.setTile(target, "Grass", true);
-                doTempBuff(1, -1, 3);
-            }
+            TileScript newBoulder = boardScript.setTile(target, "Boulder", false);
+            newBoulder.getCurrentOpal().doTempBuff(1, -1, gravelLevel);
+            gravelLevel--;
+            adjustGravelText();
         }
         return cA.getBaseDamage() + getAttack();
     }
@@ -150,11 +126,15 @@ public class Gravelpack : OpalScript
         }
         else if (attackNum == 1)
         {
+            if(target.currentPlayer.getMyName() == "Boulder")
+            {
+                return target.currentPlayer.getHealth();
+            }
             return 0;
         }
         else if (attackNum == 2)
         {
-            return Attacks[attackNum].getBaseDamage() * boulderDamage + getAttack() - target.currentPlayer.getDefense();
+            return Attacks[attackNum].getBaseDamage() * gravelLevel + getAttack() - target.currentPlayer.getDefense();
         }else if(attackNum == 3)
         {
             return 0;
@@ -164,17 +144,23 @@ public class Gravelpack : OpalScript
 
     public override int checkCanAttack(TileScript target, int attackNum)
     {
-        if (attackNum == 0 && target.currentPlayer == null)
+        if(attackNum == 0)
         {
-            return 0;
+            if (target.currentPlayer == null)
+                return 0;
+        }else if(attackNum == 1)
+        {
+            if (target.currentPlayer != null && target.currentPlayer.getMyName() == "Boulder")
+                return 0;
+        }else if(attackNum == 2)
+        {
+            if (target.currentPlayer != null)
+                return 0;
         }
-        if(attackNum == 3 && target.currentPlayer != null)
+        else if(attackNum == 3)
         {
-            return 0;
-        }
-        if (target.currentPlayer != null && attackNum!= 0 && attackNum != 3)
-        {
-            return 0;
+            if (target.currentPlayer == null || gravelLevel < 1)
+                return 0;
         }
         return -1;
     }

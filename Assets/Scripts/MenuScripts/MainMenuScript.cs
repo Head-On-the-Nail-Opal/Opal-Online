@@ -17,6 +17,7 @@ public class MainMenuScript : MonoBehaviour {
     private List<OpalScript> myOpals = new List<OpalScript>();
     private List<List<OpalScript>> activeTeams = new List<List<OpalScript>>();
     private List<Pal> palTrackerTwo = new List<Pal>();
+    private List<Pal> palTrackerThree = new List<Pal>();
     private GlobalScript glob;
     public string currentTeam;
     public string blueController;
@@ -88,15 +89,28 @@ public class MainMenuScript : MonoBehaviour {
     private int controlTracker = 0;
     private bool doingCampfire = false;
 
+    public PalSelector palSelector;
+    public Text preconditionText;
+    public Text effectText;
+
+    private List<string> palConditions = new List<string>();
+    private Dictionary<string, List<string>> palEffects = new Dictionary<string, List<string>>();
+
 
     // Use this for initialization
     private void Awake()
     {
-        for (int i = 0; i < 10; i++)
-        {
-            palTrackerTwo.Add(null);
-        }
-    }
+        palConditions = new List<string>() {
+            "When all allied Opals are under full health:",
+            "When the first allied Opal takes damage:",
+            "When the first allied Opal dies:"
+        };
+        palEffects = new Dictionary<string, List<string>>() {
+            {"When all allied Opals are under full health:", new List<string>() { "Heal all allied Opals by 4 health.", "Deal 4 damage to all enemy Opals.", "Give the Opal most recently damaged +4 Attack." } },
+            {"When the first allied Opal takes damage:", new List<string>() { "Tiles adjacent to the damaged Opal turn to Flame.", "Opals surrounding the damaged Opal are poisoned.", "Place a Growth under the damaged Opal and give it +2 Defense." } },
+            {"When the first allied Opal dies:", new List<string>() { "Opals on tiles surrounding where the allied Opal died take 10 damage.", "All allied Opals gain +5 attack and defense for 1 turn.", "The slowest allied Opal gains +3 Speed for 1 turn." } }
+    };
+}
 
     void Start() {
         Cursor.visible = true;
@@ -189,6 +203,7 @@ public class MainMenuScript : MonoBehaviour {
                     doMultiplayerSettings();
                     blueTeam = activeTeams[0];
                     blueController = "keyboard";
+                    glob.setPals(formatPalString(palTrackerThree[0]), null, null, null);
                     startGame();
                 }
             }
@@ -209,14 +224,17 @@ public class MainMenuScript : MonoBehaviour {
                         case 2:
                             glob.setTeams(activeTeams[0], activeTeams[1], null, null);
                             glob.setOverloads(calculateTypeOverload(activeTeams[0]), calculateTypeOverload(activeTeams[1]), null, null);
+                            glob.setPals(formatPalString(palTrackerThree[0]), formatPalString(palTrackerThree[1]), null, null);
                             break;
                         case 3:
                             glob.setTeams(activeTeams[0], activeTeams[1], activeTeams[2], null);
                             glob.setOverloads(calculateTypeOverload(activeTeams[0]), calculateTypeOverload(activeTeams[1]), calculateTypeOverload(activeTeams[2]), null);
+                            glob.setPals(formatPalString(palTrackerThree[0]), formatPalString(palTrackerThree[1]), formatPalString(palTrackerThree[2]), null);
                             break;
                         case 4:
                             glob.setTeams(activeTeams[0], activeTeams[1], activeTeams[2], activeTeams[3]);
                             glob.setOverloads(calculateTypeOverload(activeTeams[0]), calculateTypeOverload(activeTeams[1]), calculateTypeOverload(activeTeams[2]), calculateTypeOverload(activeTeams[3]));
+                            glob.setPals(formatPalString(palTrackerThree[0]), formatPalString(palTrackerThree[1]), formatPalString(palTrackerThree[2]), formatPalString(palTrackerThree[3]));
                             break;
                     }
 
@@ -1733,6 +1751,7 @@ public class MainMenuScript : MonoBehaviour {
                 toggleAI.setToggle(false);
                 controls[activeTeams.Count-1] = "AI";
             }
+            palTrackerThree.Add(palTrackerTwo[teamNum]);
             return;
         }
         foreach(OpalScript o in opals)
@@ -2156,7 +2175,12 @@ public class MainMenuScript : MonoBehaviour {
             o.setOpal(null);
             output += o.getMyName() + ",";
         }
-        output += "\nendOpals\n";
+        output += "\nendOpals\n,";
+        foreach(Pal p in palTrackerTwo)
+        {
+            output += formatPalString(p) + ",";
+        }
+        output += "\nendPals\n";
         PlayerPrefs.SetString("save", output);
     }
 
@@ -2196,6 +2220,27 @@ public class MainMenuScript : MonoBehaviour {
                 myOpals.Add(o);
             currentPos++;
         }
+        currentPos++;
+        if (parsing.Length > currentPos)
+        {
+            int i = 0;
+            while (!parsing[currentPos].Contains("endPals"))
+            {
+                if (i > teams.Count)
+                    break;
+                else
+                    i++;
+                if (parsing[currentPos] == "")
+                    palTrackerTwo.Add(null);
+                else
+                    palTrackerTwo.Add(palFromString(parsing[currentPos]));
+                currentPos++;
+            }
+        }
+        for (int i = 0; i < 10; i++)
+        {
+            palTrackerTwo.Add(null);
+        }
 
         if (myOpals.Count == 0)
         {
@@ -2206,9 +2251,10 @@ public class MainMenuScript : MonoBehaviour {
             myOpals.Add(pickNewOpal(false));
             myOpals.Add(pickNewOpal(false));
         }
-
+        print(saveGame);
         loadTeams();
         populateOpalScreen();
+        displayPals();
     }
 
     public OpalScript getRandomAIOpal()
@@ -2290,23 +2336,103 @@ public class MainMenuScript : MonoBehaviour {
         {
             palTrackerTwo[currentEditorTeam] = Instantiate<Pal>(p);
             palTrackerTwo[currentEditorTeam].gameObject.SetActive(false);
+            palTrackerTwo[currentEditorTeam].setDetails(preconditionText.text, effectText.text);
         }
         //displayTeams[currentEditorTeam].setPal(palTrackerTwo[currentEditorTeam]);
+    }
+
+    public void setCurrentPal()
+    {
+        setCurrentPal(palSelector.getPal());
     }
 
     private void displayPals()
     {
         for(int i = 0; i < palTrackerTwo.Count; i++)
         {
-            if(palTrackerTwo[i] != null)
+            if (palTrackerTwo[i] != null && i < displayTeams.Count)
             {
                 displayTeams[i].setPal(palTrackerTwo[i]);
             }
         }
     }
 
+    public void incrementPalDescription(bool condition, bool backwards)
+    {
+        if (condition)
+        {
+            int currentIndex = palConditions.IndexOf(preconditionText.text);
+            if (!backwards)
+            {
+                currentIndex += 1;
+                if (currentIndex >= palConditions.Count)
+                    currentIndex = 0;
+            }
+            else
+            {
+                currentIndex -= 1;
+                if (currentIndex < 0)
+                    currentIndex = palConditions.Count-1;
+            }
+            preconditionText.text = palConditions[currentIndex];
+            effectText.text = palEffects[preconditionText.text][0];
+        }
+        else
+        {
+            int currentIndex = palEffects[preconditionText.text].IndexOf(effectText.text);
+            if (!backwards)
+            {
+                currentIndex += 1;
+                if (currentIndex >= palEffects[preconditionText.text].Count)
+                    currentIndex = 0;
+            }
+            else
+            {
+                currentIndex -= 1;
+                if (currentIndex < 0)
+                    currentIndex = palEffects[preconditionText.text].Count - 1;
+            }
+            effectText.text = palEffects[preconditionText.text][currentIndex];
+        }
+    }
+
+    public void resetDisplayPal()
+    {
+        Pal p = palTrackerTwo[currentEditorTeam];
+        if (p != null)
+        {
+            palSelector.setPal(p);
+            preconditionText.text = p.getCondition();
+            effectText.text = p.getEffect();
+        }
+        else
+        {
+            palSelector.setPal(null);
+            if (palConditions.Count > 0 && palEffects[palConditions[0]].Count > 0)
+            {
+                preconditionText.text = palConditions[0];
+                effectText.text = palEffects[palConditions[0]][0];
+            }
+        }
+    }
+
+    public string formatPalString(Pal p)
+    {
+        if (p == null)
+            return "";
+        return p.getMyName() + "|" + palConditions.IndexOf(p.getCondition()) +"|"+palEffects[p.getCondition()].IndexOf(p.getEffect());
+    }
+
+    private Pal palFromString(string s)
+    {
+        string[] parsed = s.Split('|');
+        Pal output = Instantiate<Pal>(Resources.Load<Pal>("Prefabs/Pals/" + parsed[0]));
+        output.setDetails(palConditions[int.Parse(parsed[1])], palEffects[palConditions[int.Parse(parsed[1])]][int.Parse(parsed[2])]);
+        return output;
+    }
+
     private string getDefault()
     {
-        return "Mechalodon|None|Straight-Edge,Succuum|None|Straight-Edge,\nSentree|None|Straight-Edge,Ambush|None|Straight-Edge,\nHearthhog|None|Straight-Edge,Fluttorch|None|Straight-Edge,\nDuplimorph|None|Straight-Edge,Gorj|None|Straight-Edge,\nendTeams\n,Abysmeel,Amalgum,Ambush,Aquarican,Aughtment,Barriarray,Beamrider,Betary,Bubbacle,Butterflight,Cactoid,Charayde,Chardinal,Chasmcrawler,Cottonmaw,Drizziphyl,Duplimorph,Experiment42,Finbow,Fluttorch,Froxic,FumePlume,Gilsplish,Glintrey,Glorm,Glummer,Gorj,Gravelpack,Grimmline,Groth,Hearthhog,Heatriarch,Hopscure,Hoviron,Infermal,Inflicshun,Inseedious,Investigator,KnightLite,Luminute,Meadowebb,Mechalodon,Mintick,Mistery,Moppet,Nachteous,Nekrokrab,Oozwl,Oremordilla,Overgroink,Pebblepal,Prismin,Protectric,Puffsqueak,Rekindle,Scorpirad,Sentree,Shineode,Shocket,Slungus,Snugbun,Sorceraura,Spillarc,Spiritch,Squirmtongue,Strikel,Succuum,Swoopitch,Teslamp,Thermor,Tortquoise,Verminfection,Volcoco,Wingnition,Woolloy,\nendOpals";
+        return "Mechalodon|None|Straight-Edge,Succuum|None|Straight-Edge,\nSentree|None|Straight-Edge,Ambush|None|Straight-Edge,\nHearthhog|None|Straight-Edge,Fluttorch|None|Straight-Edge,\nDuplimorph|None|Straight-Edge,Gorj|None|Straight-Edge,\nendTeams\n,Abysmeel,Amalgum,Ambush,Aquarican,Aughtment,Barriarray,Beamrider,Betary,Bubbacle,Butterflight,Cactoid,Charayde,Chardinal,Chasmcrawler,Cottonmaw,Drizziphyl,Duplimorph,Experiment42,Finbow,Fluttorch,Froxic,FumePlume,Gilsplish,Glintrey,Glorm,Glummer,Gorj,Gravelpack,Grimmline,Groth,Hearthhog,Heatriarch,Hopscure,Hoviron,Infermal,Inflicshun,Inseedious,Investigator,KnightLite,Luminute,Meadowebb,Mechalodon,Mintick,Mistery,Moppet,Nachteous,Nekrokrab,Oozwl,Oremordilla,Overgroink,Pebblepal,Prismin,Protectric,Puffsqueak,Rekindle,Scorpirad,Sentree,Shineode,Shocket,Slungus,Snugbun,Sorceraura,Spillarc,Spiritch,Squirmtongue,Strikel,Succuum,Swoopitch,Teslamp,Thermor,Tortquoise,Verminfection,Volcoco,Wingnition,Woolloy,\nendOpals,,,,,,\nendPals";
     }
 }

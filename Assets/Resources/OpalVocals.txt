@@ -1,0 +1,8 @@
+Ambush{
+damage-"didn't see it coming.."
+kill-"fall like the others.."
+hurt-"ow.."
+ally_damage-"don't get hit.."
+turn-start-"what to do.."
+death-"outta here.."
+}

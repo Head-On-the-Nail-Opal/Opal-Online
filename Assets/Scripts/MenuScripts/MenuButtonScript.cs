@@ -132,6 +132,11 @@ public class MenuButtonScript : MonoBehaviour {
         }else if(purpose == "teamdetails")
         {
             mainCam.transform.position = target;
+            main.resetDisplayPal();
+        }else if (purpose == "savePals")
+        {
+            mainCam.transform.position = target;
+            main.setCurrentPal();
         }
         else if (purpose == "incTeam")
         {
@@ -227,6 +232,28 @@ public class MenuButtonScript : MonoBehaviour {
             if (Input.GetMouseButton(0))
             {
                 main.randomizeCurrentOpal();
+            }
+        }
+        else if (purpose == "nextCondition")
+        {
+            if (Input.GetMouseButtonUp(0))
+            {
+                main.incrementPalDescription(true, true);
+            }
+            if (Input.GetMouseButtonUp(1))
+            {
+                main.incrementPalDescription(true, false);
+            }
+        }
+        else if (purpose == "nextEffect")
+        {
+            if (Input.GetMouseButtonUp(0))
+            {
+                main.incrementPalDescription(false, true);
+            }
+            if (Input.GetMouseButtonUp(1))
+            {
+                main.incrementPalDescription(false, false);
             }
         }
     }

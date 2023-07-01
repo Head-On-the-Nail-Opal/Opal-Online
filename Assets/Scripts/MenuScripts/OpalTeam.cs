@@ -136,6 +136,7 @@ public class OpalTeam : MonoBehaviour
         {
             myPal = Instantiate<Pal>(p, actualPalPlate.transform);
             myPal.transform.localPosition = new Vector3(0, 0, 0);
+            myPal.GetComponent<SpriteRenderer>().sortingOrder = 1;
             myPal.gameObject.SetActive(true);
         }
     }
