@@ -287,6 +287,7 @@ public class CursorScript : MonoBehaviour {
                     selectedPlayer.setMyTurn(false);
                     selectedPlayer.updateTile();
                     selectedPlayer.getCurrentTile().standingOn(selectedPlayer);
+                    selectedPlayer.triggerVocal("placement");
                     nextTurn();
                 }
             }
@@ -1090,6 +1091,8 @@ public class CursorScript : MonoBehaviour {
         {
             targetedSelf = true;
         }
+        if (!targetedSelf)
+            selectedPlayer.triggerVocal("damage");
         foreach (Target t in targets)
         {
             if (t.getTile() != null)

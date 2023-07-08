@@ -166,7 +166,7 @@ public class AttackScreen : MonoBehaviour
                 if (board.isVocabWord(s) != null)
                 {
                     
-                    checkVocab += "<b><color=navy>" + s +"</color></b> ";
+                    checkVocab += "<color=navy>" + s +"</color> ";
                 }
                 else
                     checkVocab += s + " ";

@@ -28,9 +28,9 @@ public class Mechalodon : OpalScript
         offsetY = 0f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Fish Outta", 0, 0, 0, "<Passive>\nWhen Mechalodon ends its turn outside of Flood, it loses all stat changes and armor. ");
-        Attacks[1] = new Attack("Submerge", 0, 1, 0, "Gain +1 armor, +2 attack and +1 speed. Tidal: +3 attack and +2 speed",0,3);
-        Attacks[1].setTidalD("Gain +1 armor, +3 attack and +2 speed. Tidal: +2 attack and +1 speed");
+        Attacks[0] = new Attack("Fish Outta", 0, 0, 0, "<Passive>\nWhen Mechalodon ends its turn outside of Flood, it loses all stat changes and armor.");
+        Attacks[1] = new Attack("Submerge", 0, 1, 0, "Gain +1 armor, +2 attack and +1 speed. Tidal: +3 attack and +2 speed.",0,3);
+        Attacks[1].setTidalD("Gain +1 armor, +3 attack and +2 speed. Tidal: +2 attack and +1 speed.");
         Attacks[2] = new Attack("Gnash", 1, 3, 4, "<Water Rush>\nDeal damage, add two damage for each point of Armor you have.",0,6);
         Attacks[3] = new Attack("Teary Flop", 0, 1, 0,"Place a Flood under Mechalodon and on adjacent tiles. Then gain +2 attack.",0,3);
         type1 = "Water";

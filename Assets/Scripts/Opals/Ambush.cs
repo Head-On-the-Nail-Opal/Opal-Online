@@ -25,7 +25,7 @@ public class Ambush : OpalScript {
         offsetY = -0.1f;
         offsetZ = 0;
         player = pl;
-        Attacks[0] = new Attack("Relocation", 0, 5, 0, "<Free Ability>\n Teleport from a Growth tile to any Growth tile.", 0,0);
+        Attacks[0] = new Attack("Relocation", 0, 5, 0, "<Free Ability>\nTeleport from a Growth tile to any Growth tile.", 0,0);
         Attacks[0].addProjectile("Default", "Default", 1, Color.black, 5);
         Attacks[0].setFreeAction(true);
         Attacks[1] = new Attack("Seed Launch", 4, 1, 0, "Place a Growth at the feet of your target and at your feet.",0,3);

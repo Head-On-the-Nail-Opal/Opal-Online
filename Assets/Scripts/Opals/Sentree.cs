@@ -27,8 +27,8 @@ public class Sentree : OpalScript
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Canopy", 0, 1, 0, "All adjacent Opals gain +1 attack and +2 defense, and place growths at their and your feet", 2,3);
-        Attacks[1] = new Attack("Nature Call", 0, 5, 0, "Target any growth, place growths on adjacent tiles", 2,3);
+        Attacks[0] = new Attack("Canopy", 0, 1, 0, "All adjacent Opals gain +1 attack and +2 defense, and place growths at their and your feet.", 2,3);
+        Attacks[1] = new Attack("Nature Call", 0, 5, 0, "Target any growth, place growths on adjacent tiles.", 2,3);
         Attacks[2] = new Attack("Stray Limb", 1, 1, 16, "Deal 16 damage. Take 12 damage. Place a growth under the target's feet.",0,3);
         Attacks[3] = new Attack("Deep Roots", 0, 1, 0, "Gain +2 attack and +4 defense. Lose -2 speed for 1 turn.",0,3);
         type1 = "Grass";

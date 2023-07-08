@@ -20,7 +20,7 @@ public class Prismin : OpalScript
         //baseSize = new Vector3(0.2f, 0.2f, 1);
         transform.localScale = new Vector3(3f, 3f, 1) * 1f;
         offsetX = 0;
-        offsetY = 0f;
+        offsetY = -0.1f;
         offsetZ = 0;
         player = pl;
         if (pl == "Red" || pl == "Green")
@@ -54,6 +54,7 @@ public class Prismin : OpalScript
         {
             if(restore > 0)
             {
+                triggerVocal("custom0");
                 target.doHeal(target.getMaxHealth() - target.getHealth(), false);
                 restore--;
                 Attacks[0] = new Attack("Restore", 1, 1, 0, "Fully heal the targeted Opal. Prismin has [" + restore + "] use of this ability.",0,5);
@@ -89,6 +90,7 @@ public class Prismin : OpalScript
         }
         else if(attackNum == 3)
         {
+            triggerVocal("custom1");
             takeDamage(10, false, true);
             restore++;
             Attacks[0] = new Attack("Restore", 1, 1, 0, "Fully heal the targeted Opal. Prismin has ["+restore+"] use of this ability.",0,5);

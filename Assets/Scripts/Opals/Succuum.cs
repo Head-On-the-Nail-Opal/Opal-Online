@@ -27,7 +27,7 @@ public class Succuum : OpalScript {
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        Attacks[0] = new Attack("Suck Essence", 0, 0, 0, "<Passive>\nEnemy Opals that start their turn surrounding Succuum lose -3 attack and -1 speed. This debuff lasts until they start their turn on a non-adjacent tile.");
+        Attacks[0] = new Attack("Suck Essence", 0, 0, 0, "<Passive>\nEnemy Opals that start their turn surrounding Succuum lose -3 attack and -1 speed, until they start their turn away.");
         Attacks[1] = new Attack("Vaccuum Breath", 3, 4, 0, "Pull target Opal to Succuum. Tiles the target moves over, and under Succuum, become Flood.",0, 3);
         Attacks[2] = new Attack("Empowered Deluge", 8, 1, 0, "For each enemy Opal surrounding Succuum, place a Flood. Tidal: And place Flood on adjacent tiles.",0,3);
         Attacks[2].setTidalD("For each enemy Opal surrounding Succuum, place a Flood, and Flood adjacent tiles. Tidal: Adjacent tiles are not Flooded.");

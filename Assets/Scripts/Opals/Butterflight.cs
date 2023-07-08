@@ -66,6 +66,7 @@ public class Butterflight : OpalScript
                 useNum = 1;
                 Attacks[1].setRange(1);
                 pushOpal = target;
+                triggerVocal("custom0");
             }
             else
             {
@@ -102,6 +103,7 @@ public class Butterflight : OpalScript
                 }
                 pushOpal.nudge(4, xorz,sign);
                 useNum = 0;
+                triggerVocal("custom1");
             }
             return 0;
         }
@@ -163,6 +165,7 @@ public class Butterflight : OpalScript
                 }
                 pushOpal.nudge(4, xorz, sign);
                 useNum = 0;
+                triggerVocal("custom1");
             }
         }
         else if (attackNum == 2) //

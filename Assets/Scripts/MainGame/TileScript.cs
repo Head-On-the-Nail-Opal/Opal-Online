@@ -676,7 +676,7 @@ public class TileScript : MonoBehaviour {
             player.toggleFlood(type == "Flood");
             if(type == "Flood")
             {
-                player.setBurning(false);
+                //player.setBurning(false);
             }
             if (type.Equals("Fire"))
             {
@@ -693,7 +693,7 @@ public class TileScript : MonoBehaviour {
             }
             if (type.Equals("Growth"))
             {
-                player.setPoison(false);
+                //player.setPoison(false);
                 if (currentEffect == null)
                 {
                     currentPlayer.onGrowth(true);

@@ -138,6 +138,7 @@ abstract public class OpalScript : MonoBehaviour {
     private bool overloaded = false;
 
     private StringBuilder sb = new StringBuilder(150);
+    private int triggerCooldown = 0;
 
     private void Awake()
     {
@@ -245,6 +246,8 @@ abstract public class OpalScript : MonoBehaviour {
                 }
             }
         }
+        if (triggerCooldown > 0)
+            triggerCooldown--;
     }
 
     void Update () {
@@ -2522,7 +2525,7 @@ abstract public class OpalScript : MonoBehaviour {
         }
         if (type1 != "Fire" && type2 != "Fire")
         {
-            if(newburn && !burning && !(currentTile != null && currentTile.type == "Flood"))
+            if(newburn && !burning)
             {
                 onStatusCondition(false, true, false);
                 currentBurn = Instantiate<ParticleSystem>(burningParticle, this.transform);
@@ -2624,7 +2627,7 @@ abstract public class OpalScript : MonoBehaviour {
         }
         if ((type1 != "Plague" && type2 != "Plague"))
         {
-            if (newpoison && !poisoned && currentTile != null && !(currentTile.type == "Growth"))
+            if (newpoison && !poisoned)
             {
                 onStatusCondition(true, false, false);
                 currentPoison = Instantiate<ParticleSystem>(poisonedParticle, this.transform);
@@ -3161,7 +3164,7 @@ abstract public class OpalScript : MonoBehaviour {
                     return;
                 }
             }
-
+            triggerVocal("death");
             TileScript temp = currentTile;
             if (currentTile != null)
                 temp.standingOn(null);
@@ -3187,8 +3190,18 @@ abstract public class OpalScript : MonoBehaviour {
                 boardScript.getMyCursor().getCurrentOpal().spawnOplet(spiritchPrefab, boardScript.tileGrid[(int)getPos().x, (int)getPos().z], 0);
             }
         }
-        if(!dead)
+        if (!dead)
+        {
+            triggerVocal("hurt");
+            foreach(OpalScript o in boardScript.gameOpals)
+            {
+                if(o.getTeam() == getTeam() && o != this)
+                {
+                    o.triggerVocal("ally_damage");
+                }
+            }
             triggerBubbled();
+        }
         onDamage(dam);
         onDamageItem(dam);
         damagedByPoison = false;
@@ -3548,28 +3561,15 @@ abstract public class OpalScript : MonoBehaviour {
         {
             currentTile.setCurrentOpal(this);
         }
+        triggerVocal("turn_start");
         moveAfter = false;
         if (burning)
         {
-            if (currentTile.type == "Flood")
-            {
-                setBurning(false);
-            } 
-            else
-            {
-                takeBurnDamage(true);
-            }
+            takeBurnDamage(true);
         }
         if (poisoned)
         {
-            if (currentTile != null && currentTile.type == "Growth")
-            {
-                setPoison(false);
-            }
-            else
-            {
-                takePoisonDamage(true);
-            }
+            takePoisonDamage(true);
         }
         if (lifted)
         {
@@ -3638,12 +3638,14 @@ abstract public class OpalScript : MonoBehaviour {
             {
                 if (GetComponent<Inflicshun>() != null)
                 {
-                    o.takeDamage(burnCounter/2, false, false);
+                    if (currentTile.type != "Flood")
+                        o.takeDamage(burnCounter/2, false, false);
                     cursedByMoppet = true;
                 }
                 else
                 {
-                    o.takeDamage(burnCounter, false, false);
+                    if (currentTile.type != "Flood")
+                        o.takeDamage(burnCounter, false, false);
                     cursedByMoppet = true;
                 }
             }
@@ -3653,11 +3655,13 @@ abstract public class OpalScript : MonoBehaviour {
             onBurnDamage(burnCounter);
             if (GetComponent<Inflicshun>() != null)
             {
-                takeDamage(burnCounter / 2, false, false);
+                if(currentTile.type != "Flood")
+                    takeDamage(burnCounter / 2, false, false);
             }
             else
             {
-                takeDamage(burnCounter, false, false);
+                if (currentTile.type != "Flood")
+                    takeDamage(burnCounter, false, false);
             }
         }
         if (haveCharm("Heat-Proof Cloth"))
@@ -3703,25 +3707,31 @@ abstract public class OpalScript : MonoBehaviour {
             {
                 if (GetComponent<Inflicshun>() != null)
                 {
-                    o.takeDamage(poisonCounter / 2, false, false);
-                    o.doTempBuff(0, -1, -1);
-                    o.doTempBuff(1, -1, -1);
-                    if (cursedByOozwl)
+                    if (currentTile.type != "Growth")
                     {
+                        o.takeDamage(poisonCounter / 2, false, false);
                         o.doTempBuff(0, -1, -1);
                         o.doTempBuff(1, -1, -1);
+                        if (cursedByOozwl)
+                        {
+                            o.doTempBuff(0, -1, -1);
+                            o.doTempBuff(1, -1, -1);
+                        }
                     }
                     cursedByMoppet = true;
                 }
                 else
                 {
-                    o.takeDamage(poisonCounter, false, false);
-                    o.doTempBuff(0, -1, -1);
-                    o.doTempBuff(1, -1, -1);
-                    if (cursedByOozwl)
+                    if (currentTile.type != "Growth")
                     {
+                        o.takeDamage(poisonCounter, false, false);
                         o.doTempBuff(0, -1, -1);
                         o.doTempBuff(1, -1, -1);
+                        if (cursedByOozwl)
+                        {
+                            o.doTempBuff(0, -1, -1);
+                            o.doTempBuff(1, -1, -1);
+                        }
                     }
                     cursedByMoppet = true;
                 }
@@ -3731,26 +3741,32 @@ abstract public class OpalScript : MonoBehaviour {
         {
             if (GetComponent<Inflicshun>() != null)
             {
-                takeDamage(poisonCounter / 2, false, false);
-                damagedByPoison = true;
-                doTempBuff(0, -1, -1);
-                doTempBuff(1, -1, -1);
-                if (cursedByOozwl)
+                if (currentTile.type != "Growth")
                 {
+                    takeDamage(poisonCounter / 2, false, false);
+                    damagedByPoison = true;
                     doTempBuff(0, -1, -1);
                     doTempBuff(1, -1, -1);
+                    if (cursedByOozwl)
+                    {
+                        doTempBuff(0, -1, -1);
+                        doTempBuff(1, -1, -1);
+                    }
                 }
             }
             else
             {
-                damagedByPoison = true;
-                takeDamage(poisonCounter, false, false);
-                doTempBuff(0, -1, -1);
-                doTempBuff(1, -1, -1);
-                if (cursedByOozwl)
+                if (currentTile.type != "Growth")
                 {
+                    damagedByPoison = true;
+                    takeDamage(poisonCounter, false, false);
                     doTempBuff(0, -1, -1);
                     doTempBuff(1, -1, -1);
+                    if (cursedByOozwl)
+                    {
+                        doTempBuff(0, -1, -1);
+                        doTempBuff(1, -1, -1);
+                    }
                 }
             }
 
@@ -4123,6 +4139,44 @@ abstract public class OpalScript : MonoBehaviour {
                     setCharmRevealed("Grieving Shrimp", true);
                     break;
             }
+        }
+    }
+
+    public void triggerVocal(string criteria)
+    {
+        if (triggerCooldown > 0)
+            return;
+        string voice = boardScript.getMyVocal(criteria, this);
+        if (voice != "")
+        {
+            int voiceChance = 100;
+            switch (criteria) {
+                case "placement":
+                    voiceChance = 100;
+                    break;
+                case "damage":
+                    voiceChance = 25;
+                    break;
+                case "hurt":
+                    voiceChance = 25;
+                    break;
+                case "ally_damage":
+                    voiceChance = 25;
+                    break;
+                case "death":
+                    voiceChance = 100;
+                    break;
+                case "turn_start":
+                    voiceChance = 33;
+                    break;
+            }
+            if(Random.Range(0,100) > voiceChance)
+            {
+                return;
+            }
+            DamageResultScript temp = Instantiate<DamageResultScript>(damRes);
+            temp.setUpVocal(voice, this);
+            triggerCooldown = 60;
         }
     }
 

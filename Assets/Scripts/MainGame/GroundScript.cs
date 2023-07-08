@@ -24,6 +24,7 @@ public class GroundScript : MonoBehaviour {
     public List<OpalScript> p4Opals = new List<OpalScript>();
 
     private List<Pal> gamePals = new List<Pal>();
+    private List<OpalScript> vocalTrigger = new List<OpalScript>(); 
 
     public int numTeams;
     private List<OpalScript> opalTurns = new List<OpalScript>();
@@ -116,6 +117,8 @@ public class GroundScript : MonoBehaviour {
     private List<OpalScript> allBoulders = new List<OpalScript>();
 
     private bool noUpdate = false;
+
+    private List<Dictionary<string, List<string>>> vocals = new List<Dictionary<string, List<string>>>();
 
     private void Awake()
     {
@@ -525,6 +528,7 @@ public class GroundScript : MonoBehaviour {
         setUpSurroundings();
         sortOpals(gameOpals);
         nonSortedGameOpals.AddRange(gameOpals);
+        setUpVocals();
         switchCam = 1;
     }
 
@@ -535,7 +539,9 @@ public class GroundScript : MonoBehaviour {
 
     public void addToUnsorted(OpalScript o)
     {
+        
         nonSortedGameOpals.Add(o);
+        setUpVocals();
     }
 
     public string generateString()
@@ -1643,6 +1649,57 @@ public class GroundScript : MonoBehaviour {
                 break;
         }
         return teamNum;
+    }
+
+    public void setUpVocals()
+    {
+        string vocalFile = Resources.Load<TextAsset>("OpalVocals").text;
+        string[] v = vocalFile.Split('\n');
+        vocals.Clear();
+        for(int i = 0; i < nonSortedGameOpals.Count; i++)
+        {
+            Dictionary<string, List<string>> output = new Dictionary<string, List<string>>();
+            int j = 0;
+            while(!v[j].Equals(nonSortedGameOpals[i].getMyName()+"{" + (char)13))
+            {
+                j++;
+                if(j >= v.Length)
+                {
+                    j -= 2;
+                    break;
+                }
+            }
+            j++;
+            while(!v[j].Contains("}"))
+            {
+                string[] parsed = v[j].Split('-');
+                if (!output.ContainsKey(parsed[0]))
+                {
+                    //print(v[j]);
+                    output.Add(parsed[0], new List<string>() { parsed[1] });
+                }
+                else
+                    output[parsed[0]].Add(parsed[1]);
+                j++;
+                if (j >= v.Length)
+                {
+                    break;
+                }
+            }
+            vocals.Add(output);
+        }
+    }
+
+    public string getMyVocal(string criteria, OpalScript opal)
+    {
+        int index = nonSortedGameOpals.IndexOf(opal);
+        string output = "";
+        if (vocals[index].ContainsKey(criteria))
+        {
+            int voCount = vocals[index][criteria].Count;
+            output = vocals[index][criteria][Random.Range(0, voCount)];
+        }
+        return output;
     }
 
     public void checkPalZero(OpalScript damaged)
